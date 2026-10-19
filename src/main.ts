@@ -2,29 +2,36 @@ import Phaser from "phaser";
 import { Arranque } from "./escenas/Arranque";
 import { Mundo } from "./escenas/Mundo";
 
-export const ANCHO = 640;
-export const ALTO = 360;
 const debug = new URLSearchParams(location.search).has("debug");
 
-// Integer scaling keeps pixel art sharp; below 1× it shrinks to fit.
-const zoom = () => {
-  const z = Math.min(innerWidth / ANCHO, innerHeight / ALTO);
-  return z >= 1 ? Math.floor(z) : z;
+// The game fills the screen in any orientation. The short side shows about LADO_CORTO
+// game pixels, and each game pixel is a whole number of screen pixels, so pixel art stays sharp.
+const LADO_CORTO = 360;
+const medida = () => {
+  const dpr = devicePixelRatio || 1;
+  const w = innerWidth * dpr;
+  const h = innerHeight * dpr;
+  const z = Math.max(1, Math.floor(Math.min(w, h) / LADO_CORTO));
+  return { ancho: Math.ceil(w / z), alto: Math.ceil(h / z), zoom: z / dpr };
 };
 
 const juego = new Phaser.Game({
   type: Phaser.AUTO,
-  width: ANCHO,
-  height: ALTO,
+  width: medida().ancho,
+  height: medida().alto,
   pixelArt: true,
   roundPixels: true,
   backgroundColor: "#1d1a24",
-  scale: { mode: Phaser.Scale.NONE, zoom: zoom() },
+  scale: { mode: Phaser.Scale.NONE, zoom: medida().zoom },
   physics: { default: "arcade", arcade: { debug } },
   scene: [Arranque, Mundo],
 });
 
-addEventListener("resize", () => juego.scale.setZoom(zoom()));
+addEventListener("resize", () => {
+  const m = medida();
+  juego.scale.resize(m.ancho, m.alto);
+  juego.scale.setZoom(m.zoom);
+});
 
 // Debug mode exposes the game so automated checks can read positions.
 if (debug) Object.assign(window, { juego });

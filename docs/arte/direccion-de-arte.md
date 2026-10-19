@@ -27,15 +27,15 @@ Estilo propuesto por Dayana: pixel art cálido en vista de tres cuartos, ambient
 | **Uniforme mexicano genérico.** El suéter con cuello, mocasines y falda corta plisada se leen como uniforme japonés o inglés. Usar suéter liso (color a elegir), playera blanca tipo polo, pantalón o falda a la rodilla con short, tenis. | Identificación y ropa adecuada para la edad |
 | **Personaje por capas.** Las referencias son personajes cerrados. La creación de personaje (GDD §6) necesita sprites armados por capas: cuerpo, tono de piel, cabello, ropa, extras. | Sin capas no hay creación de personaje |
 | **8 tonos de piel.** Ambas referencias son de piel clara. | La mayoría de los niños mexicanos no se verían representados |
-| **Composición horizontal.** Las referencias son verticales; el juego corre en tabletas y computadoras en horizontal. | Formato de pantalla |
-| **Tiles, no pinturas.** Las referencias son imágenes completas. El juego necesita mosaicos repetibles (tilesets) con el mismo estilo. | Así se arman mapas y se ahorra memoria en tabletas baratas |
+| **Composición para cualquier pantalla.** El juego llena la pantalla en horizontal y en vertical; un lugar no puede depender de verse completo en un solo encuadre. | Se juega en teléfonos, tabletas y computadoras, en cualquier orientación |
+| **Piezas separadas, no una pintura cerrada.** Las referencias son imágenes completas. El juego necesita el lugar vacío (piso y muros) y cada mueble u objeto aparte (ver "Cómo entregarlo"). | El personaje pasa detrás de los muebles y los choques salen de cada pieza |
 | **Consistencia.** Las referencias parecen generadas por IA (detalles que cambian entre imágenes, etiquetas repetidas en el plano). Sirven como guía; el arte final debe salir de un mismo tileset y una misma paleta. | Coherencia visual y derechos claros sobre el arte |
 
 ## Especificación técnica
 
 | Elemento | Medida |
 | --- | --- |
-| Resolución base | 640 × 360, escalado en enteros (×2 = 1280 × 720, ×3 = 1920 × 1080) |
+| Pantalla | Llena la pantalla en cualquier orientación; el lado corto muestra unos 360 píxeles del juego, cada uno ampliado a un número entero de píxeles de pantalla (una computadora de 1920 × 1080 ve 640 × 360) |
 | Tile | 32 × 32 |
 | Sprite de personaje | 32 × 48; 4 direcciones; quieto (1 cuadro) y caminata (4 cuadros) por dirección |
 | Capas de sprite | cuerpo/piel, ropa inferior, ropa superior, calzado, cabello, extras; mismo lienzo y misma posición |

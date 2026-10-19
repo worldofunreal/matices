@@ -153,7 +153,7 @@ En el paso 6, si el niño abre el panel y elige sensaciones intensas, el ambient
 
 ## 11. Dirección visual
 
-Pixel art en vista de tres cuartos, paleta cálida, pantalla horizontal. Estilo, medidas y lista de arte en `docs/arte/direccion-de-arte.md`.
+Pixel art en vista de tres cuartos, paleta cálida, llena la pantalla en horizontal o vertical. Estilo, medidas y lista de arte en `docs/arte/direccion-de-arte.md`.
 
 ## 12. Controles
 

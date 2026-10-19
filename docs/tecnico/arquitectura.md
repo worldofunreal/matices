@@ -50,7 +50,7 @@ Esquema en `docs/clinico/codigos-y-eventos.md`. Cada evento lleva la versión de
 
 | Carpeta | Qué hay |
 | --- | --- |
-| `src/` | El juego: `main.ts` (pantalla de 640 × 360 escalada en enteros) y `escenas/` |
+| `src/` | El juego: `main.ts` (llena la pantalla en cualquier orientación, pixel art escalado en enteros) y `escenas/` |
 | `herramientas/contenido.ts` | Lee `contenido/`, lo revisa contra los códigos de `docs/clinico/codigos-y-eventos.md` y las áreas de `docs/clinico/marco-clinico.md`, y detiene la compilación si algo no cuadra |
 | `public/mapas/` | Mapas en formato Tiled (capas `piso`, `muros`, `objetos`) |
 

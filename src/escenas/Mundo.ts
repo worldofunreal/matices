@@ -30,9 +30,9 @@ export class Mundo extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, mapa.widthInPixels, mapa.heightInPixels);
     this.physics.add.collider(this.prota, this.muros);
 
-    const cam = this.cameras.main;
-    cam.setBounds(0, 0, mapa.widthInPixels, mapa.heightInPixels);
-    cam.startFollow(this.prota, true);
+    this.encuadrar(mapa);
+    this.scale.on("resize", () => this.encuadrar(mapa));
+    this.cameras.main.startFollow(this.prota, true);
 
     const k = this.input.keyboard!;
     const K = Phaser.Input.Keyboard.KeyCodes;
@@ -50,6 +50,16 @@ export class Mundo extends Phaser.Scene {
       for (const o of mapa.getObjectLayer("objetos")!.objects)
         this.add.text(o.x!, o.y!, o.name, { fontSize: "8px", color: "#000" }).setOrigin(0.5).setDepth(1e6);
     }
+  }
+
+  // The camera follows inside the map; on an axis where the map is smaller than the screen, it is centered.
+  private encuadrar(mapa: Phaser.Tilemaps.Tilemap) {
+    const cam = this.cameras.main;
+    cam.setSize(this.scale.width, this.scale.height);
+    const eje = (mide: number, vista: number) => (mide >= vista ? [0, mide] : [(mide - vista) / 2, vista]);
+    const [x, w] = eje(mapa.widthInPixels, cam.width);
+    const [y, h] = eje(mapa.heightInPixels, cam.height);
+    cam.setBounds(x, y, w, h);
   }
 
   update() {
