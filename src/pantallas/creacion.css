@@ -1,0 +1,192 @@
+/* Character creation: stage with the character and the workshop with the choices.
+   Tall screens stack them; wide screens put them side by side. */
+
+.creacion {
+  display: grid;
+  gap: var(--espacio);
+  grid-template-rows: minmax(200px, 40%) 1fr;
+  background: linear-gradient(180deg, #fff6e8 0%, var(--papel) 40%);
+}
+
+@media (orientation: landscape) {
+  .creacion {
+    grid-template-rows: 1fr;
+    grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
+  }
+}
+
+.escenario {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+}
+
+.escenario .foco {
+  position: absolute;
+  width: min(78%, 70vmin);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%, #fff 0%, #ffe9c7 55%, rgb(255 233 199 / 0) 72%);
+}
+
+.escenario canvas {
+  position: relative;
+  filter: drop-shadow(0 10px 8px rgb(43 34 51 / 0.12));
+}
+
+.nombre-escenario {
+  position: absolute;
+  bottom: 4%;
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: var(--tarjeta);
+  box-shadow: var(--sombra);
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.taller {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pestanas {
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+  border-bottom: 1px solid var(--linea);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.pestana {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: var(--toque);
+  border: 0;
+  border-radius: var(--radio-chico);
+  background: transparent;
+  color: var(--tinta-suave);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background var(--rapido), color var(--rapido);
+}
+
+.pestana svg {
+  width: 24px;
+  height: 24px;
+}
+
+.pestana[aria-selected="true"] {
+  background: #fff1dc;
+  color: var(--terracota);
+}
+
+.pregunta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px 4px;
+}
+
+.pregunta h2 {
+  margin: 0;
+  font-size: clamp(19px, 2.6vmin, 23px);
+  font-weight: 800;
+}
+
+.opciones {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 12px 16px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+  gap: 12px;
+  animation: aparecer var(--suave) both;
+}
+
+.opciones.cuerpo .opcion,
+.opciones.ropa .opcion {
+  padding: 12px 14px 10px;
+}
+
+.fila-colores {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding-bottom: 4px;
+}
+
+.opciones.piel {
+  align-content: center;
+  gap: 16px;
+}
+
+.opciones.piel .muestra {
+  width: 64px;
+  height: 64px;
+}
+
+.escribir {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--tinta-suave);
+}
+
+.escribir svg {
+  width: 24px;
+  height: 24px;
+  flex: none;
+}
+
+.escribir .campo {
+  flex: 1;
+  min-width: 0;
+}
+
+.nombres {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pie-taller {
+  padding: 12px 16px;
+  border-top: 1px solid var(--linea);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pie-taller .boton {
+  min-width: 160px;
+}
+
+@media (orientation: portrait) {
+  .pie-taller .boton {
+    width: 100%;
+  }
+}
+
+.opcion .pie {
+  max-width: 86px;
+  text-align: center;
+  line-height: 1.15;
+}

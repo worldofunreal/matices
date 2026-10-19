@@ -1,0 +1,17 @@
+.continuara {
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.continuara h2 {
+  margin: 8px 0 0;
+  font-size: 26px;
+  font-weight: 850;
+}
+
+.continuara p {
+  margin: 0 0 12px;
+  color: var(--tinta-suave);
+}

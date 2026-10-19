@@ -1,0 +1,265 @@
+/* Matices · interface style. Calm, warm and readable for kids 8-12 (GDD §2, §12, §15).
+   Pixel art lives only on canvases (world, characters); everything else is crisp HTML. */
+
+@import "@fontsource-variable/nunito";
+
+:root {
+  --papel: #fbf6ee;
+  --papel-2: #f3eadb;
+  --tarjeta: #ffffff;
+  --tinta: #2b2233;
+  --tinta-suave: #6d6372;
+  --linea: #e6dac7;
+  --terracota: #d9653b;
+  --terracota-oscuro: #b84f2a;
+  --girasol: #f2b83a;
+  --verde: #3e9e7a;
+  --azul: #3b6fb6;
+  --sombra: 0 1px 2px rgb(43 34 51 / 0.06), 0 6px 18px rgb(43 34 51 / 0.08);
+  --sombra-alta: 0 2px 4px rgb(43 34 51 / 0.08), 0 14px 34px rgb(43 34 51 / 0.14);
+  --radio: 20px;
+  --radio-chico: 14px;
+  --toque: 52px; /* smallest tap target */
+  --espacio: clamp(12px, 2.2vmin, 20px);
+  --rapido: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --suave: 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#raiz {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--papel);
+  color: var(--tinta);
+  font-family: "Nunito Variable", system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.4;
+  overflow: hidden;
+  overscroll-behavior: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+canvas.pixel {
+  image-rendering: pixelated;
+  display: block;
+}
+
+/* Full-screen page with safe areas (notches, home bars). */
+.pantalla {
+  position: fixed;
+  inset: 0;
+  padding: max(var(--espacio), env(safe-area-inset-top)) max(var(--espacio), env(safe-area-inset-right)) max(var(--espacio), env(safe-area-inset-bottom)) max(var(--espacio), env(safe-area-inset-left));
+  display: flex;
+  flex-direction: column;
+  animation: aparecer var(--suave) both;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* ---- Buttons */
+
+.boton {
+  min-height: var(--toque);
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--tarjeta);
+  box-shadow: var(--sombra);
+  font-weight: 750;
+  font-size: 18px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: transform var(--rapido), box-shadow var(--rapido), background var(--rapido);
+}
+
+.boton:active {
+  transform: scale(0.97);
+}
+
+.boton.principal {
+  background: var(--terracota);
+  color: #fff;
+  box-shadow: 0 6px 0 var(--terracota-oscuro), var(--sombra);
+}
+
+.boton.principal:active {
+  transform: translateY(3px);
+  box-shadow: 0 3px 0 var(--terracota-oscuro), var(--sombra);
+}
+
+.boton.secundario {
+  background: transparent;
+  box-shadow: inset 0 0 0 2px var(--linea);
+  color: var(--tinta-suave);
+}
+
+.boton:disabled {
+  opacity: 0.45;
+}
+
+/* Round icon button (speaker, close). */
+.redondo {
+  width: var(--toque);
+  height: var(--toque);
+  padding: 0;
+  flex: none;
+}
+
+.redondo svg {
+  width: 26px;
+  height: 26px;
+}
+
+.bocina.sonando svg {
+  animation: latido 700ms ease-in-out infinite;
+}
+
+@keyframes latido {
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+/* ---- Cards and choices */
+
+.panel {
+  background: var(--tarjeta);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra-alta);
+}
+
+.opcion {
+  position: relative;
+  border: 0;
+  padding: 8px;
+  border-radius: var(--radio-chico);
+  background: var(--tarjeta);
+  box-shadow: var(--sombra);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: var(--toque);
+  min-height: var(--toque);
+  transition: transform var(--rapido), box-shadow var(--rapido);
+}
+
+.opcion:active {
+  transform: scale(0.95);
+}
+
+.opcion[aria-pressed="true"] {
+  box-shadow: 0 0 0 4px var(--girasol), var(--sombra-alta);
+  transform: translateY(-2px);
+}
+
+.opcion .pie {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tinta-suave);
+}
+
+/* Color swatch: the color is the whole choice, no text. */
+.muestra {
+  width: var(--toque);
+  height: var(--toque);
+  border-radius: 50%;
+  padding: 0;
+  border: 4px solid #fff;
+  box-shadow: var(--sombra);
+  cursor: pointer;
+  transition: transform var(--rapido), box-shadow var(--rapido);
+}
+
+.muestra[aria-pressed="true"] {
+  box-shadow: 0 0 0 4px var(--girasol), var(--sombra-alta);
+  transform: scale(1.08);
+}
+
+.chip {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--tarjeta);
+  box-shadow: var(--sombra);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--girasol);
+  box-shadow: var(--sombra-alta);
+}
+
+.campo {
+  min-height: var(--toque);
+  border-radius: 999px;
+  border: 2px solid var(--linea);
+  background: var(--tarjeta);
+  padding: 0 20px;
+  font-size: 18px;
+  font-weight: 700;
+  outline: none;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.campo:focus {
+  border-color: var(--girasol);
+}
+
+.vacilar {
+  animation: vacilar 360ms;
+}
+
+@keyframes vacilar {
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.boton svg {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}

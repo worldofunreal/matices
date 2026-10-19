@@ -160,14 +160,20 @@ Pixel art en vista de tres cuartos, paleta cálida, llena la pantalla en horizon
 | Tableta | Tocar el suelo para caminar ahí | Tocar el objeto o persona | Tocar la tarjeta |
 | Computadora | Flechas o WASD, o clic en el suelo | Clic o barra espaciadora | Clic o números 1 a 6 |
 
-Ningún paso exige leer: toda tarjeta tiene voz al tocarla una vez y se confirma con un segundo toque.
+Reglas de experiencia:
+
+- **Un toque elige.** Lo elegido se ilumina un momento y el juego sigue solo; no hay segundo toque para confirmar ni flecha de "siguiente".
+- **La voz, solo cuando el niño la pide.** Cada pregunta y cada tarjeta tienen un botón de bocina. Las grabaciones reales pueden sonar solas; la voz sintética nunca suena sola.
+- **Dibujos en lugar de texto.** Colores como muestras, peinados y ropa como dibujos, personas como retratos. Hay texto solo donde es parte del cuento (la narración y las opciones).
+- **Vertical y horizontal, cada uno diseñado.** En vertical el libro sube desde abajo y los botones quedan al alcance del pulgar; en horizontal el libro va a un lado.
+- **Para dedos de niño.** Botones de al menos 48 píxeles de pantalla, separación generosa, nada que parpadee.
 
 ## 13. Interfaz
 
 - Esquina superior izquierda: Mi libro.
 - Esquina superior derecha: "Quiero hablar con alguien" (icono de dos globos de diálogo con el mismo estilo que los demás botones).
 - Esquina inferior derecha: opciones (volumen de voz, música, efectos, velocidad de texto, efectos de ambiente on/off, lectura sencilla).
-- En sucesos: libro abajo, tarjetas en abanico, botón "Ahora no" a la izquierda, "Volver a escuchar" a la derecha.
+- En sucesos: libro abajo en vertical o a un lado en horizontal, tarjetas en rejilla, "Ahora no" siempre visible, bocina en la pregunta y en cada tarjeta.
 - Sin barras de progreso, contadores ni puntajes.
 
 ## 14. Audio

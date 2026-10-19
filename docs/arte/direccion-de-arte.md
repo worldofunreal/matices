@@ -39,12 +39,11 @@ Estilo: pixel art en vista de tres cuartos, ambientado en una colonia urbana de 
 
 | Elemento | Medida |
 | --- | --- |
-| Pantalla | Llena la pantalla en cualquier orientación; el lado corto muestra unos 360 píxeles del juego, cada uno ampliado a un número entero de píxeles de pantalla (una computadora de 1920 × 1080 ve 640 × 360) |
+| Pantalla | El mundo llena la pantalla en cualquier orientación, en pixel art ampliado en enteros. Menús, libro, tarjetas y botones son interfaz en HTML y CSS, no pixel art: marcos, tarjetas y botones no se dibujan |
 | Tile | 32 × 32 |
 | Sprite de personaje | 32 × 48; 4 direcciones; quieto (1 cuadro) y caminata (4 cuadros) por dirección |
 | Capas de sprite | cuerpo/piel, ropa inferior, ropa superior, calzado, cabello, extras; mismo lienzo y misma posición |
 | Retrato | 96 × 96; expresiones: contento, neutral, triste, enojado, asustado |
-| Tarjeta de opción | 128 × 160; ilustración arriba, icono de forma de responder abajo |
 | Paleta | Un máximo de 48 colores para todo el juego, definidos en `paleta.png` (pendiente) |
 | Noche | Capa multiplicada azul + luces cálidas en ventanas; nunca negro total |
 | Exportación | PNG sin compresión con pérdida; hojas de sprites con rejilla fija |

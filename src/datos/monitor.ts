@@ -1,8 +1,15 @@
 // Product events for the team (PRD F16): device, sessions, screens, errors, performance.
-import type Phaser from "phaser";
 import { registrar } from "./eventos";
 
-export function vigilar(juego: Phaser.Game, sesion: number) {
+let anterior: string | null = null;
+
+// Every screen the child opens, with the one before it (funnels and drop-off).
+export function pantalla(nombre: string) {
+  registrar("pantalla", { pantalla: nombre, anterior });
+  anterior = nombre;
+}
+
+export function vigilar(sesion: number) {
   registrar("aparato", {
     sistema: navigator.platform,
     navegador: navigator.userAgent,
@@ -12,24 +19,21 @@ export function vigilar(juego: Phaser.Game, sesion: number) {
     tactil: navigator.maxTouchPoints > 0,
   });
   registrar("sesion", { que: sesion === 1 ? "inicio" : "regreso" });
-
   document.addEventListener("visibilitychange", () => registrar("sesion", { que: document.hidden ? "pausa" : "regreso" }));
   addEventListener("pagehide", () => registrar("sesion", { que: "cierre" }));
   addEventListener("error", (e) => registrar("error", { mensaje: e.message, donde: `${e.filename}:${e.lineno}` }));
   addEventListener("unhandledrejection", (e) => registrar("error", { mensaje: String(e.reason) }));
 
+  // Frames per second from the browser's own drawing loop, reported every minute.
+  let cuadros = 0;
+  const contar = () => {
+    cuadros++;
+    requestAnimationFrame(contar);
+  };
+  requestAnimationFrame(contar);
   setInterval(() => {
     const memoria = (performance as unknown as { memory?: { usedJSHeapSize: number } }).memory;
-    registrar("rendimiento", { fps: Math.round(juego.loop.actualFps), memoria_mb: memoria ? Math.round(memoria.usedJSHeapSize / 2 ** 20) : null });
+    registrar("rendimiento", { fps: Math.round(cuadros / 60), memoria_mb: memoria ? Math.round(memoria.usedJSHeapSize / 2 ** 20) : null });
+    cuadros = 0;
   }, 60_000);
-
-  // Scenes exist only once the game has booted.
-  juego.events.once("ready", () => {
-    let anterior: string | null = null;
-    for (const escena of juego.scene.getScenes(false))
-      escena.events.on("create", () => {
-        registrar("pantalla", { pantalla: escena.scene.key, anterior });
-        anterior = escena.scene.key;
-      });
-  });
 }

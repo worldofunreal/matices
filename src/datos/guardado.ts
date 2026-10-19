@@ -1,8 +1,7 @@
 // Saved game: where the child is and how their character looks. Saved every few seconds and when
 // the app goes to the background, so closing it at any point resumes there.
 import { leer, guardar } from "./almacen";
-import { APARIENCIA_INICIAL, type Apariencia } from "../personaje/Protagonista";
-import type { Direccion } from "../arte";
+import { APARIENCIA_INICIAL, type Apariencia, type Direccion } from "../personaje/apariencia";
 
 export interface Estado {
   lugar: string;

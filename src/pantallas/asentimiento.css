@@ -1,0 +1,41 @@
+.asentimiento {
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(120% 90% at 50% 0%, #fff 0%, var(--papel) 55%, var(--papel-2) 100%);
+}
+
+.asentimiento .panel {
+  width: min(560px, 100%);
+  padding: clamp(20px, 4vmin, 36px);
+}
+
+.asentimiento .encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.asentimiento h1 {
+  margin: 0;
+  font-size: clamp(26px, 5vmin, 34px);
+  font-weight: 850;
+  color: var(--terracota);
+  letter-spacing: -0.01em;
+}
+
+.asentimiento p {
+  font-size: clamp(18px, 2.6vmin, 21px);
+  line-height: 1.5;
+  margin: 16px 0 26px;
+}
+
+.asentimiento .acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.asentimiento .acciones .boton {
+  flex: 1 1 200px;
+}

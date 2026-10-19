@@ -305,22 +305,7 @@ grupos:
       mesa_lectura: {que: Mesa de lectura, medida: [96, 48]}
       sillon_cuentera: {que: Sillón de La Cuentera, medida: [48, 48]}
 
-  # Interfaz. Los marcos se estiran sin deformarse: esquinas de 16 × 16 que no cambian.
-  - carpeta: interfaz
-    tipo: marco
-    medida: [48, 48]
-    piezas:
-      marco_libro: Libro de La Cuentera (marco de los sucesos)
-      marco_panel: Panel de diálogo y de opciones
-      marco_pagina: Página de Mi libro
-
-  - carpeta: interfaz
-    tipo: tarjeta
-    medida: [128, 160]
-    piezas:
-      tarjeta: Tarjeta de opción vacía; el juego pone la ilustración, el icono y el texto
-      tarjeta_elegida: Brillo encima de la tarjeta elegida
-
+  # Interfaz: los marcos, paneles y tarjetas los hace el juego en CSS; aquí solo van iconos.
   - carpeta: interfaz
     tipo: boton
     medida: [32, 32]

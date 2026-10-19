@@ -7,7 +7,7 @@ asentimiento:
   texto: "Este juego tiene cuentos. {psicologo} va a ver lo que elijas para conocerte mejor. Tus maestros y tus compañeros no lo ven. Si algo nos preocupa de tu seguridad, {psicologo} buscará a adultos que te puedan cuidar. Puedes dejar de jugar cuando quieras."
   si: "Sí quiero jugar"
   no: "Ahora no"
-  psicologo_prueba: "La persona que te acompaña"
+  psicologo_prueba: "la persona que te acompaña"
 
 creacion:
   inicio: "Vamos a hacer a tu personaje."

@@ -4,10 +4,10 @@
 // route: in the morning the house ones first (the day starts at home), in the afternoon the house
 // ones last (the afternoon ends at home). Stories in the same place are shuffled per child with the
 // saved seed. A day opens and closes with a low-intensity story when there is one to swap in.
-import Phaser from "phaser";
 import contenido, { type TipoActividad } from "virtual:contenido";
 import { estado, cambiarEstado, type Hora } from "./guardado";
 import { semilla } from "./eventos";
+import { azar } from "./azar";
 
 const HORAS: Hora[] = ["manana", "tarde", "noche"];
 const PAUSA_TRAS_MEDIO = 60_000; // at least a minute of free exploration after a medium story
@@ -32,7 +32,7 @@ export const sitio = (id: string) => contenido.sitios[id];
 function orden(dia: number): string[] {
   const guardado = estado().cuentos.orden[dia];
   if (guardado) return guardado;
-  const rng = new Phaser.Math.RandomDataGenerator([`${semilla()}-dia-${dia}`]);
+  const rng = azar(`${semilla()}-dia-${dia}`);
   const delDia = MOMENTOS.filter((c) => c.dia === dia);
   const ids: string[] = [];
   for (const hora of HORAS) {
@@ -41,7 +41,7 @@ function orden(dia: number): string[] {
     const fuera = deHora.filter((c) => sitio(c.id).mapa !== "casa");
     const porLugar = (lista: Momento[]) => {
       const mapas = [...new Set(lista.map((c) => sitio(c.id).mapa))];
-      return mapas.flatMap((m) => rng.shuffle(lista.filter((c) => sitio(c.id).mapa === m)));
+      return mapas.flatMap((m) => rng.barajar(lista.filter((c) => sitio(c.id).mapa === m)));
     };
     const grupo = hora === "manana" ? [...porLugar(enCasa), ...porLugar(fuera)] : [...porLugar(fuera), ...porLugar(enCasa)];
     ids.push(...grupo.map((c) => c.id));

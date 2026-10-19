@@ -20,7 +20,8 @@ Por qué así: no sabemos todavía si habrá grupo, red, internet ni cuántas se
 
 | Componente | Tecnología | Por qué |
 | --- | --- | --- |
-| Juego | TypeScript + Phaser 3 + Vite | Bueno para pixel art 2D, ligero en tabletas baratas, un solo código para todos los aparatos |
+| Interfaz | React + TypeScript + CSS, con Vite | Letras nítidas, botones de verdad, animaciones suaves y acomodo propio para vertical y horizontal |
+| Mundo | TypeScript puro sobre un lienzo (canvas) | Dibuja fondo, objetos y personajes en pixel art ampliado en enteros; los botones del mundo van encima en HTML |
 | Empaque | Web: aplicación instalable desde el navegador. Android e iOS: Capacitor. Windows, macOS y Linux: Tauri | El mismo juego en las seis plataformas; se instala una vez y luego no necesita red. iOS y macOS se compilan en una Mac con Xcode y cuenta de Apple |
 | Contenido | Archivos YAML en `contenido/`, validados con un esquema al compilar | Los psicólogos pueden revisar texto legible; una opción sin código rompe la compilación |
 | Guardado en el aparato | Base de datos del navegador, cifrada | Sobrevive a cerrar la app y a quedarse sin batería |
@@ -51,7 +52,7 @@ Esquema en `docs/clinico/codigos-y-eventos.md`. Cada evento lleva la versión de
 
 | Carpeta | Qué hay |
 | --- | --- |
-| `src/` | El juego: `main.ts` (llena la pantalla en cualquier orientación, pixel art escalado en enteros) y `escenas/` |
+| `src/` | El juego: `pantallas/` (cada pantalla en React), `ui/` (piezas de interfaz y estilos), `lienzo/` (pixel art: capas, colores y el mapa) |
 | `herramientas/contenido.ts` | Lee `contenido/`, lo revisa contra los códigos de `docs/clinico/codigos-y-eventos.md` y las áreas de `docs/clinico/marco-clinico.md`, y detiene la compilación si algo no cuadra |
 | `public/mapas/` | Mapas en formato Tiled: `muros` (choques) y `objetos` (puntos); el dibujo del lugar es su fondo en `public/assets/lugares/` |
 | `public/assets/` | Todo el arte; `manifiesto.yaml` lista cada pieza con su medida. La compilación se detiene si falta una o no cuadra su medida |
@@ -64,5 +65,5 @@ Cada cambio en `main` se publica solo en https://matices.online (`.github/workfl
 
 ## Pendientes técnicos
 
-- Probar Phaser en la tableta de referencia (2 GB de RAM) antes de fijar efectos de ambiente.
+- Probar el juego en la tableta de referencia (2 GB de RAM) antes de fijar efectos de ambiente.
 - Cómo se entrega el archivo cifrado en el modo A (cable, memoria USB o código QR) según los aparatos que haya.
