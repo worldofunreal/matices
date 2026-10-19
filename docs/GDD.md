@@ -13,7 +13,7 @@ El juego **recoge**, el psicólogo **interpreta**. El juego nunca diagnostica, p
 
 | Pilar | Qué significa en el diseño |
 | --- | --- |
-| Mi colonia, mi casa | El mundo se parece al del niño: teja, tinacos, bugambilias, papel picado, la tiendita, la primaria. La casa y quién vive en ella las pone él. |
+| Mi colonia, mi casa | El mundo se parece al del niño: calles, tinacos en las azoteas, la tiendita de la esquina, la primaria, el parque. La casa y quién vive en ella las pone él. |
 | Ningún final es el correcto | No hay puntos, insignias, finales buenos ni malos. La Cuentera agradece todos los finales igual. |
 | Siempre puedo parar | "Ahora no" en todo momento sensible; "Quiero hablar con alguien" siempre visible. |
 | Calma | Ritmo lento, música suave, sin temporizadores, sin castigos, sin sustos. |
@@ -94,16 +94,16 @@ Esas figuras son los adultos y hermanos de todos los sucesos. Si la casa queda s
 
 ## 8. El mundo
 
-Una colonia de una ciudad mediana del centro de México, sin nombre de estado ni de colonia.
+Una colonia urbana de una ciudad mexicana, sin nombre de estado ni de colonia.
 
 | Zona | Lugares | Sucesos que ocurren ahí | Personajes fijos |
 | --- | --- | --- | --- |
 | Casa | Cuartos del paso 7, espejo, refrigerador, mesa, cama, tinaco | E00, E01, E02, E04, E07, E08, E12, E13 (llegada), E14 | Los que el niño puso |
-| Calle y río | Camino con bardas de piedra, puente de madera, buzón, casas vecinas | Transiciones, exploración | Vecinos que saludan |
-| Primaria | Entrada, patio con asta, cancha, aulas 1 y 2, dirección, biblioteca escolar, aula de cómputo, enfermería, baños, jardín, bodega | E05, E06, E09, E10, E11 | Lucía (maestra), Nico (compañero), compañeros genéricos, conserje |
-| Parque | Juegos, árbol grande, bancas | E03 | Niños jugando |
+| Calle | Banquetas, cruce peatonal, casas y edificios vecinos, árboles, postes | Transiciones, exploración | Vecinos que saludan |
+| Primaria | Entrada, explanada con asta, dirección, aulas, gimnasio con cancha, baños; planta alta con aulas y sala de cómputo | E05, E06, E09, E10, E11 | Lucía (maestra), Nico (compañero), compañeros genéricos, conserje |
+| Parque | Entrada, plaza con fuente, lago con muelle, mirador, área infantil, área de ejercicio, bancas | E03 | Niños jugando |
 | Tiendita | Mostrador, refrigerador de refrescos | Exploración | Don Chuy (tendero) |
-| Biblioteca de la colonia | Mesas, estantes, mural | Escena para describir; casa de La Cuentera | Clara (bibliotecaria), La Cuentera |
+| Biblioteca de la colonia | Planta baja con estantes y mostrador, planta alta con mesas de lectura | Escena para describir; casa de La Cuentera | Clara (bibliotecaria), La Cuentera |
 
 Reglas de los personajes fijos: Lucía, Nico, Clara, Don Chuy y los vecinos **solo saludan y comentan cosas neutras** ("Qué calor hoy"). No preguntan "¿estás bien?" ni ofrecen ayuda por su cuenta: dentro de un suceso, solo hacen lo que el niño elija para ellos. Así ninguno empuja una respuesta.
 

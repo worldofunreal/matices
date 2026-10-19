@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import { Arranque } from "./escenas/Arranque";
 import { Mundo } from "./escenas/Mundo";
+import { iniciarRegistro } from "./datos/eventos";
+import { vigilar } from "./datos/monitor";
 
 const debug = new URLSearchParams(location.search).has("debug");
 
@@ -15,6 +17,8 @@ const medida = () => {
   return { ancho: Math.ceil(w / z), alto: Math.ceil(h / z), zoom: z / dpr };
 };
 
+const partida = await iniciarRegistro();
+
 const juego = new Phaser.Game({
   type: Phaser.AUTO,
   width: medida().ancho,
@@ -26,6 +30,8 @@ const juego = new Phaser.Game({
   physics: { default: "arcade", arcade: { debug } },
   scene: [Arranque, Mundo],
 });
+
+vigilar(juego, partida.sesion);
 
 addEventListener("resize", () => {
   const m = medida();

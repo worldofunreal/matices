@@ -32,7 +32,8 @@ La pantalla del paso 3 no promete secreto absoluto: decir la verdad sobre los l�
 - **Código en lugar de nombre.** Aparatos y servidor solo conocen un código. La lista código–nombre vive cifrada en la computadora del psicólogo, nunca en el aparato del niño.
 - **Cifrado** en el aparato, en la entrega y en la computadora del psicólogo. Al confirmarse el envío, el aparato borra su copia.
 - **Acceso mínimo.** Solo los psicólogos asignados a cada niño. Bitácora de cada acceso.
-- **Sin terceros.** Sin publicidad, analítica externa, venta ni cesión. El proveedor del servidor firma como encargado.
+- **Analítica del equipo.** El equipo mide uso y técnica (PRD F16, F17) con el código del niño, nunca con su nombre. El consentimiento debe decirlo.
+- **Sin venta ni cesión.** Sin publicidad. Todo proveedor que reciba datos (servidor, analítica) firma como encargado.
 - **Plazo.** Borrado automático al vencer el plazo que fijen la institución y el abogado.
 
 ## Quién ve qué

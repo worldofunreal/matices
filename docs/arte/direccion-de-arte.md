@@ -1,21 +1,24 @@
 # Dirección de arte
 
-Estilo propuesto por Dayana: pixel art cálido en vista de tres cuartos, ambientado en una colonia de una ciudad mexicana. Este documento fija el estilo, revisa las referencias, lista lo que falta producir y dice cómo entregarlo.
+Estilo: pixel art en vista de tres cuartos, ambientado en una colonia urbana de una ciudad mexicana, a partir del concept art de Dayana y Omar. Este documento fija el estilo, revisa las referencias, lista lo que falta producir y dice cómo entregarlo.
 
 ## Referencias
 
 | Archivo | Qué muestra | Se usa para |
 | --- | --- | --- |
-| [escuela-plano.jpg](referencias/escuela-plano.jpg) | Plano de la primaria: entrada, patio, cancha, aulas 1 y 2, dirección, biblioteca, aula de cómputo, enfermería, baños, jardín, bodega | Distribución del mapa de la escuela |
-| [escuela-exterior.jpg](referencias/escuela-exterior.jpg) | Fachada y patio de la primaria con asta, árbol y portón | Estilo de exteriores, paleta, nivel de detalle |
-| [colonia.jpg](referencias/colonia.jpg) | Casas con teja, tinacos, papel picado, bugambilias, bardas de piedra, río y puente | Estilo de la colonia y la calle |
+| [escuela-exterior.jpg](referencias/escuela-exterior.jpg) | Escuela de dos pisos con explanada, jardineras, cancha techada al lado, portón y banqueta | Estilo de exteriores, paleta, nivel de detalle |
+| [escuela-planos.jpg](referencias/escuela-planos.jpg) | Planta baja (entrada, dirección, aulas, gimnasio con cancha) y planta alta (aulas, sala de cómputo) | Distribución del mapa de la escuela |
+| [parque-exterior.jpg](referencias/parque-exterior.jpg) | Parque con lago, isla, muelle, kiosko, fuente, juegos y andadores | Estilo del parque |
+| [parque-plano.jpg](referencias/parque-plano.jpg) | Entrada principal, plaza central con fuente, lago, mirador, área infantil, área de ejercicio | Distribución del mapa del parque |
+| [biblioteca-exterior.jpg](referencias/biblioteca-exterior.jpg) | Biblioteca moderna de ladrillo y vidrio, explanada con bancas, bicicletero | Estilo de la biblioteca |
+| [biblioteca-planos.jpg](referencias/biblioteca-planos.jpg) | Planta baja (estantes, mostrador, mesas, baños) y planta alta (mesas de lectura, salas) | Distribución del mapa de la biblioteca |
+| [conjunto-urbano.jpg](referencias/conjunto-urbano.jpg) | Escuela, parque y biblioteca juntos, con sus planos | Escala relativa entre lugares |
 | [personaje-nino.jpg](referencias/personaje-nino.jpg) | Ilustración, retrato y sprites (4 direcciones, caminata) de un niño | Formato de la hoja de personaje |
 | [personaje-nina.jpg](referencias/personaje-nina.jpg) | Lo mismo para una niña | Formato de la hoja de personaje |
 
 ## Lo que funciona y se mantiene
 
-- Paleta cálida de tierra, teja, verde y rosa de bugambilia. Se siente segura y mexicana sin caer en estereotipo.
-- Detalles cotidianos reconocibles: tinacos, papel picado, macetas, bardas de piedra, buzón, asta con bandera.
+- Ciudad ordenada y tranquila: banquetas, árboles, bancas, luz de día suave. Se siente segura.
 - Formato de hoja de personaje: ilustración completa, retrato y sprites de 4 direcciones con caminata. Es exactamente lo que el motor necesita.
 - Escala de los sprites frente a los edificios.
 
@@ -26,6 +29,7 @@ Estilo propuesto por Dayana: pixel art cálido en vista de tres cuartos, ambient
 | **Personajes más jóvenes.** Las referencias se ven de 13 a 16 años (proporciones largas, rasgos de adolescente). El jugador tiene 8 a 12. Bajar a 3 o 4 cabezas de alto en la ilustración, cara más redonda. | El niño tiene que reconocerse en su personaje |
 | **Uniforme mexicano genérico.** El suéter con cuello, mocasines y falda corta plisada se leen como uniforme japonés o inglés. Usar suéter liso (color a elegir), playera blanca tipo polo, pantalón o falda a la rodilla con short, tenis. | Identificación y ropa adecuada para la edad |
 | **Personaje por capas.** Las referencias son personajes cerrados. La creación de personaje (GDD §6) necesita sprites armados por capas: cuerpo, tono de piel, cabello, ropa, extras. | Sin capas no hay creación de personaje |
+| **Detalles mexicanos en lo urbano.** Las referencias urbanas se ven de cualquier país. Agregar: tinacos en las azoteas, asta con bandera en el patio de la escuela, tiendita en la esquina, letreros en español, puestos en la banqueta. | El niño tiene que reconocer su ciudad |
 | **8 tonos de piel.** Ambas referencias son de piel clara. | La mayoría de los niños mexicanos no se verían representados |
 | **Composición para cualquier pantalla.** El juego llena la pantalla en horizontal y en vertical; un lugar no puede depender de verse completo en un solo encuadre. | Se juega en teléfonos, tabletas y computadoras, en cualquier orientación |
 | **Piezas separadas, no una pintura cerrada.** Las referencias son imágenes completas. El juego necesita el lugar vacío (piso y muros) y cada mueble u objeto aparte (ver "Cómo entregarlo"). | El personaje pasa detrás de los muebles y los choques salen de cada pieza |
@@ -47,56 +51,34 @@ Estilo propuesto por Dayana: pixel art cálido en vista de tres cuartos, ambient
 
 ## Lo que falta producir
 
-### Mapas
-- [ ] Interior de la casa en corte: sala-comedor, cocina, 2 recámaras, baño, patio con tinaco y lavadero. **Es el lugar más importante del juego** y no tiene referencia.
-- [ ] Parque con juegos, árbol grande y bancas.
-- [ ] Tiendita (exterior e interior).
-- [ ] Biblioteca de la colonia (casa de La Cuentera).
-- [ ] Interiores de la escuela en tiles: aula, biblioteca escolar, patio, cancha.
-- [ ] Versiones de noche de la casa y la calle.
-
-### Personajes (hoja completa: ilustración, retrato con 5 expresiones, sprites)
-- [ ] Protagonista por capas (cuerpo niña, niño y neutro; 8 tonos; 10 peinados; ropa).
-- [ ] Familia para "armar la casa": abuela, abuelo, mamá, papá, tía, tío, madrastra, padrastro, hermano/a mayor, hermano/a menor, bebé, primo/a, otra persona adulta, perro, gato. Cada adulto en al menos 3 tonos de piel.
-- [ ] La Cuentera.
-- [ ] Gemelos Tito y Tita (dos gatitos idénticos salvo el color del moño).
-- [ ] Lucía, Nico, Clara, Don Chuy, compañeros genéricos (4), vecinos genéricos (4).
-
-### Interfaz
-- [ ] Libro de La Cuentera (marco de los sucesos).
-- [ ] Tarjetas de opción y los 7 iconos de forma de responder (cuida, no hace nada, regaña, lastima, se va, lo resuelve solo, otra cosa). El icono de "lastima" no muestra violencia: una nube oscura.
-- [ ] Cinco caritas.
-- [ ] Iconos del panel cuerpo / pensamiento / entorno (unos 12 por grupo).
-- [ ] Botones: Mi libro, Quiero hablar con alguien, Ahora no, Volver a escuchar, opciones.
-- [ ] Escena para describir: ilustración de una niña o niño en la ventana, de noche, con dos platos servidos en la mesa.
+Toda pieza del juego está en `public/assets/manifiesto.yaml`, con su archivo, su medida y qué es. Hoy cada una tiene un provisional. El lugar más importante es el interior de la casa (`lugares/casa/fondo.png`).
 
 ## Orden de entrega
 
-Cada bloque desbloquea un hito de `../MVP.md`. Mientras no llega, el juego usa cuadros de colores en su lugar.
+Cualquier pieza se puede entregar en cualquier momento: el juego ya funciona con provisionales. Este orden sigue los hitos de `../MVP.md`.
 
 | # | Qué | Hito |
 | --- | --- | --- |
 | 1 | Paleta (`paleta.png`, cuadritos de 8 × 8) y hoja de escala: piso, puerta, mesa y el niño parado, juntos | Antes de todo |
-| 2 | Cuerpo base del protagonista caminando en 4 direcciones | M1 |
-| 3 | Interior de la casa | M1 |
-| 4 | Calle y escuela por fuera | M1 |
-| 5 | Capas del protagonista: tonos, peinados, ropa, calzado | M2 |
-| 6 | Figuras para armar la casa | M2 |
-| 7 | La Cuentera, libro, tarjetas, iconos, caritas, botones | M3 |
-| 8 | Parque y versiones de noche | M5 |
-| 9 | Lo demás de "Lo que falta producir" | Días 2 y 3 |
+| 2 | Protagonista: cuerpos, cabellos, ropa, extras y sus retratos (carpeta `personaje/`) | H2 |
+| 3 | Interior de la casa y sus muebles; figuras para armar la casa (`lugares/casa/`, `figuras/`) | H3 |
+| 4 | Calle, escuela, parque, tiendita, biblioteca y sus objetos; vecinos y personajes fijos | H4 |
+| 5 | La Cuentera, marcos, tarjetas, botones, iconos de códigos, caritas, panel | H5 |
+| 6 | Tito y Tita, escena para describir, vela | H6 |
 
 ## Cómo entregarlo
 
-Solo imágenes PNG con fondo transparente; recortes, hojas de sprites, mapas y zonas por donde no se camina los arma el desarrollo.
-
-- **Lugares:** una imagen del cuarto o la calle vacíos (piso y muros) y, aparte, cada mueble u objeto en su propio PNG. Así el personaje puede pasar detrás de una mesa o un árbol.
-- **Personajes:** cada cuadro de la caminata en su propio PNG, o todos en una sola imagen en fila; mismo tamaño de lienzo y los pies a la misma altura en todos.
-- **Capas del protagonista:** cada pieza (cuerpo, cabello, ropa, calzado) en su PNG, dibujada sobre el mismo lienzo y en la misma posición que el cuerpo base.
-- **Retratos:** un PNG por expresión.
-- **Tarjetas:** solo la ilustración; el texto y el icono los pone el juego.
-- **Nombres:** minúsculas, sin acentos ni espacios: `casa_cocina.png`, `mesa_comedor.png`, `cuentera_triste.png`.
-- Si el arte sale de otra herramienta o de una IA a otro tamaño, se entrega así; el desarrollo lo ajusta a la rejilla y la paleta, y avisa si algo se pierde al ajustarlo.
+- **Se reemplaza el archivo provisional** en `public/assets/` por el arte final, con el mismo nombre y la misma medida. No se cambia nada más. Si la medida no cuadra, el juego no compila y dice cuál.
+- PNG con fondo transparente. Recortes, mapas y zonas por donde no se camina los arma el desarrollo.
+- **Lugares:** el fondo es el lugar vacío (piso y muros); cada mueble u objeto va en su propio PNG. Así el personaje puede pasar detrás de una mesa o un árbol.
+- **Hojas de personaje:** 5 columnas (quieto, paso 1 a 4) por 4 filas (abajo, izquierda, derecha, arriba), cuadros de 32 × 48, pies a la misma altura en todos.
+- **Capas del protagonista:** cada pieza (cuerpo, cabello, ropa, calzado, extras) en su hoja, dibujada en la misma posición que el cuerpo base.
+- **Piel y cabello:** se dibujan con los tres colores clave de `manifiesto.yaml` (claro, medio, sombra). El juego los cambia por los 8 tonos de piel y los 6 colores de cabello; no se dibuja una versión por tono.
+- **Retratos:** un PNG por expresión cuando la pieza las tiene (`_contento`, `_neutral`, `_triste`, `_enojado`, `_asustado`).
+- **Marcos:** 48 × 48 con esquinas de 16 × 16; el juego estira el centro y los bordes.
+- **Tarjetas:** solo el marco; el juego pone la ilustración, el icono y el texto.
+- **Voz:** una grabación `public/assets/voz/<línea>.mp3` reemplaza a la voz del navegador para esa línea.
+- Si el arte sale de otra herramienta o de una IA a otro tamaño, se entrega así y el desarrollo lo ajusta a la medida y la paleta, avisando si algo se pierde.
 
 ## Qué se revisa en cada entrega
 

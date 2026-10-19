@@ -1,0 +1,362 @@
+# Lista de todo el arte del juego. Cada pieza es un PNG en esta carpeta con el nombre y la medida
+# que dice aquí. Para poner el arte final, se reemplaza el archivo provisional por otro con el
+# mismo nombre y la misma medida; el juego no compila si una medida no cuadra.
+# Reglas de dibujo y entrega: docs/arte/direccion-de-arte.md.
+#
+# Hojas de personaje: 5 columnas (quieto, paso 1 a 4) × 4 filas (abajo, izquierda, derecha, arriba),
+# cuadros de 32 × 48, pies en la misma fila de píxeles en todos los cuadros.
+
+# Piel y cabello se dibujan con los colores "clave" (claro, medio, sombra). El juego cambia esos
+# tres colores por los del tono o color elegido. Los colores clave son los del tono 1 y el color 1.
+colores:
+  piel:
+    clave: ["#f6d7bd", "#e2b896", "#c4936f"]
+    variantes:
+      - ["#f6d7bd", "#e2b896", "#c4936f"]
+      - ["#efc6a2", "#d9a87f", "#b9845c"]
+      - ["#e2b088", "#c9946b", "#a6714b"]
+      - ["#d19c6e", "#b78055", "#93603b"]
+      - ["#bd8458", "#a06a42", "#7d4f2d"]
+      - ["#a26b42", "#865532", "#663d21"]
+      - ["#81512f", "#683f23", "#4c2c17"]
+      - ["#5e3a22", "#4b2c19", "#341d10"]
+  cabello:
+    clave: ["#4a3426", "#33231a", "#21160f"]
+    variantes:
+      - ["#4a3426", "#33231a", "#21160f"]
+      - ["#2a2422", "#1b1716", "#100d0c"]
+      - ["#6b4a33", "#503524", "#362317"]
+      - ["#9a6d46", "#7a5233", "#583a23"]
+      - ["#d1a868", "#b08547", "#87622f"]
+      - ["#a5532f", "#83401f", "#5e2c14"]
+
+grupos:
+  - carpeta: personaje
+    tipo: hoja
+    medida: [160, 192]
+    colores: [piel, cabello]
+    piezas:
+      cuerpo_nina: Cuerpo base de niña, 8 a 12 años, ropa interior lisa; piel con los colores clave
+      cuerpo_nino: Cuerpo base de niño, igual que el de niña
+      cuerpo_neutro: Cuerpo base neutro para "prefiero no elegir"
+      cabello_01: Largo lacio
+      cabello_02: Largo chino
+      cabello_03: Trenzas
+      cabello_04: Dos coletas
+      cabello_05: Cola de caballo
+      cabello_06: Corto lacio
+      cabello_07: Corto chino
+      cabello_08: Rapado
+      cabello_09: Afro
+      cabello_10: Con fleco
+      ropa_uniforme_arriba: Suéter liso con playera blanca tipo polo
+      ropa_uniforme_pantalon: Pantalón del uniforme
+      ropa_uniforme_falda: Falda a la rodilla con short
+      ropa_casa_arriba: Playera de casa
+      ropa_casa_abajo: Pants de casa
+      calzado_tenis: Tenis
+      extra_lentes: Lentes
+      extra_aretes: Aretes pequeños
+      extra_gorra: Gorra
+      extra_mochila: Mochila
+
+  - carpeta: personaje
+    tipo: retrato
+    medida: [96, 96]
+    colores: [piel, cabello]
+    expresiones: [contento, neutral, triste, enojado, asustado]
+    piezas:
+      retrato_cara_nina: Cara y hombros de la niña
+      retrato_cara_nino: Cara y hombros del niño
+      retrato_cara_neutro: Cara y hombros del cuerpo neutro
+
+  - carpeta: personaje
+    tipo: retrato
+    medida: [96, 96]
+    colores: [cabello]
+    piezas:
+      retrato_cabello_01: Largo lacio
+      retrato_cabello_02: Largo chino
+      retrato_cabello_03: Trenzas
+      retrato_cabello_04: Dos coletas
+      retrato_cabello_05: Cola de caballo
+      retrato_cabello_06: Corto lacio
+      retrato_cabello_07: Corto chino
+      retrato_cabello_08: Rapado
+      retrato_cabello_09: Afro
+      retrato_cabello_10: Con fleco
+      retrato_ropa_uniforme: Cuello del suéter y la playera del uniforme
+      retrato_ropa_casa: Cuello de la playera de casa
+      retrato_extra_lentes: Lentes
+      retrato_extra_aretes: Aretes
+      retrato_extra_gorra: Gorra
+
+  - carpeta: figuras
+    tipo: hoja
+    medida: [160, 192]
+    colores: [piel, cabello]
+    piezas:
+      abuela: Abuela
+      abuelo: Abuelo
+      mama: Mamá
+      papa: Papá
+      tia: Tía
+      tio: Tío
+      madrastra: Madrastra
+      padrastro: Padrastro
+      hermano_mayor: Hermano mayor (adolescente)
+      hermana_mayor: Hermana mayor (adolescente)
+      hermano_menor: Hermano menor
+      hermana_menor: Hermana menor
+      bebe: Bebé
+      primo: Primo
+      prima: Prima
+      otra_persona: Otra persona adulta
+      perro: Perro
+      gato: Gato
+
+  - carpeta: figuras
+    tipo: retrato
+    medida: [96, 96]
+    colores: [piel, cabello]
+    piezas:
+      retrato_abuela: Abuela
+      retrato_abuelo: Abuelo
+      retrato_mama: Mamá
+      retrato_papa: Papá
+      retrato_tia: Tía
+      retrato_tio: Tío
+      retrato_madrastra: Madrastra
+      retrato_padrastro: Padrastro
+      retrato_hermano_mayor: Hermano mayor
+      retrato_hermana_mayor: Hermana mayor
+      retrato_hermano_menor: Hermano menor
+      retrato_hermana_menor: Hermana menor
+      retrato_bebe: Bebé
+      retrato_primo: Primo
+      retrato_prima: Prima
+      retrato_otra_persona: Otra persona adulta
+      retrato_perro: Perro
+      retrato_gato: Gato
+      retrato_vecino: Un vecino o vecina (tarjeta de "¿Quién llega?")
+      retrato_maestra: La maestra (tarjeta de "¿Quién llega?" en la escuela)
+      retrato_companero: Un compañero (tarjeta de "¿Quién llega?" en la escuela)
+      retrato_conserje: El conserje (tarjeta de "¿Quién llega?" en la escuela)
+      retrato_directora: La directora (tarjeta de "¿Quién llega?" en la escuela)
+
+  - carpeta: personajes
+    tipo: hoja
+    medida: [160, 192]
+    piezas:
+      cuentera: La Cuentera. Señora mayor, rebozo, lentes, un libro grande
+      tito: Tito, gatito con moño azul
+      tita: Tita, la misma gatita con moño amarillo
+      lucia: Lucía, la maestra
+      nico: Nico, compañero
+      clara: Clara, la bibliotecaria
+      don_chuy: Don Chuy, el de la tiendita
+      conserje: El conserje de la escuela
+      companero_1: Compañero genérico
+      companero_2: Compañera genérica
+      companero_3: Compañero genérico
+      companero_4: Compañera genérica
+      vecino_1: Vecino genérico
+      vecino_2: Vecina genérica
+      vecino_3: Vecino genérico
+      vecino_4: Vecina genérica
+
+  - carpeta: personajes
+    tipo: retrato
+    medida: [96, 96]
+    expresiones: [contento, neutral, triste, enojado, asustado]
+    piezas:
+      retrato_cuentera: La Cuentera
+      retrato_tito: Tito
+      retrato_tita: Tita
+      retrato_lucia: Lucía
+      retrato_nico: Nico
+      retrato_clara: Clara
+      retrato_don_chuy: Don Chuy
+
+  # Lugares: el fondo es el lugar vacío (piso y muros); cada mueble va aparte en objetos.
+  - carpeta: lugares/casa
+    tipo: fondo
+    piezas:
+      fondo:
+        que: Casa en corte, sin techo. Sala-comedor, cocina, 2 recámaras, baño, patio con tinaco y lavadero. Es el lugar más importante del juego
+        medida: [960, 544]
+
+  - carpeta: lugares/casa
+    tipo: objeto
+    piezas:
+      mesa: {que: Mesa del comedor, medida: [64, 48]}
+      silla: {que: Silla, medida: [32, 32]}
+      sillon: {que: Sillón de la sala, medida: [64, 32]}
+      television: {que: Televisión con mueble, medida: [64, 48]}
+      refrigerador: {que: Refrigerador, medida: [32, 64]}
+      estufa: {que: Estufa, medida: [32, 48]}
+      fregadero: {que: Fregadero, medida: [64, 48]}
+      cama: {que: Cama, medida: [48, 64]}
+      ropero: {que: Ropero, medida: [48, 64]}
+      espejo: {que: Espejo de pie (para cambiar al personaje), medida: [32, 64]}
+      wc: {que: Taza del baño, medida: [32, 32]}
+      lavabo: {que: Lavabo, medida: [32, 48]}
+      regadera: {que: Regadera, medida: [32, 64]}
+      tinaco: {que: Tinaco, medida: [48, 64]}
+      lavadero: {que: Lavadero, medida: [64, 48]}
+      maceta: {que: Maceta, medida: [32, 32]}
+      foto_escuela: {que: Foto de la escuela en la pared, medida: [32, 32]}
+
+  - carpeta: lugares/calle
+    tipo: fondo
+    piezas:
+      fondo: {que: Calle de la colonia con banquetas, cruce peatonal y entradas a la casa, la tiendita, la escuela, el parque y la biblioteca, medida: [1920, 544]}
+
+  - carpeta: lugares/calle
+    tipo: objeto
+    piezas:
+      fachada_casa: {que: Fachada de la casa del personaje, con tinaco en la azotea, medida: [160, 160]}
+      fachada_tiendita: {que: Fachada de la tiendita de la esquina, medida: [128, 128]}
+      fachada_biblioteca: {que: Fachada de la biblioteca moderna, medida: [256, 160]}
+      entrada_escuela: {que: Portón de la escuela, medida: [128, 96]}
+      entrada_parque: {que: Reja de entrada del parque, medida: [128, 96]}
+      arbol: {que: Árbol de banqueta, medida: [64, 96]}
+      poste: {que: Poste de luz, medida: [16, 96]}
+      banca: {que: Banca, medida: [64, 32]}
+      puesto: {que: Puesto de la banqueta, medida: [64, 64]}
+
+  - carpeta: lugares/escuela_patio
+    tipo: fondo
+    piezas:
+      fondo: {que: Explanada de la escuela con jardineras, cancha techada al lado y la entrada al edificio, medida: [1280, 800]}
+
+  - carpeta: lugares/escuela_patio
+    tipo: objeto
+    piezas:
+      asta: {que: Asta con bandera, medida: [32, 128]}
+      jardinera: {que: Jardinera con árbol, medida: [96, 96]}
+      aro_basquet: {que: Aro de básquet, medida: [32, 96]}
+
+  - carpeta: lugares/escuela_planta_baja
+    tipo: fondo
+    piezas:
+      fondo: {que: Planta baja. Entrada, dirección, aulas, baños, escalera, medida: [1280, 544]}
+
+  - carpeta: lugares/escuela_planta_alta
+    tipo: fondo
+    piezas:
+      fondo: {que: Planta alta. Aulas, sala de cómputo, escalera, medida: [1280, 544]}
+
+  - carpeta: lugares/escuela_interior
+    tipo: objeto
+    piezas:
+      pupitre: {que: Pupitre, medida: [32, 32]}
+      pizarron: {que: Pizarrón, medida: [96, 48]}
+      escritorio: {que: Escritorio, medida: [64, 48]}
+      computadora: {que: Mesa con computadora, medida: [32, 48]}
+
+  - carpeta: lugares/parque
+    tipo: fondo
+    piezas:
+      fondo: {que: Parque. Entrada, plaza con fuente, lago con isla y muelle, mirador, área infantil, área de ejercicio, andadores, medida: [1600, 1280]}
+
+  - carpeta: lugares/parque
+    tipo: objeto
+    piezas:
+      fuente: {que: Fuente de la plaza, medida: [96, 96]}
+      kiosko: {que: Kiosko o mirador, medida: [128, 128]}
+      columpio: {que: Columpios, medida: [96, 64]}
+      resbaladilla: {que: Resbaladilla, medida: [64, 64]}
+      arbol_grande: {que: Árbol grande, medida: [96, 128]}
+
+  - carpeta: lugares/tiendita
+    tipo: fondo
+    piezas:
+      fondo: {que: Interior de la tiendita, medida: [480, 320]}
+
+  - carpeta: lugares/tiendita
+    tipo: objeto
+    piezas:
+      mostrador: {que: Mostrador, medida: [96, 48]}
+      refrigerador_refrescos: {que: Refrigerador de refrescos, medida: [48, 64]}
+      estante: {que: Estante con productos, medida: [64, 64]}
+
+  - carpeta: lugares/biblioteca_planta_baja
+    tipo: fondo
+    piezas:
+      fondo: {que: Planta baja. Estantes, mostrador, mesas, baños, escalera, medida: [960, 640]}
+
+  - carpeta: lugares/biblioteca_planta_alta
+    tipo: fondo
+    piezas:
+      fondo: {que: Planta alta. Mesas de lectura y el rincón de La Cuentera, medida: [960, 640]}
+
+  - carpeta: lugares/biblioteca_interior
+    tipo: objeto
+    piezas:
+      librero: {que: Librero, medida: [64, 64]}
+      mesa_lectura: {que: Mesa de lectura, medida: [96, 48]}
+      sillon_cuentera: {que: Sillón de La Cuentera, medida: [48, 48]}
+
+  # Interfaz. Los marcos se estiran sin deformarse: esquinas de 16 × 16 que no cambian.
+  - carpeta: interfaz
+    tipo: marco
+    medida: [48, 48]
+    piezas:
+      marco_libro: Libro de La Cuentera (marco de los sucesos)
+      marco_panel: Panel de diálogo y de opciones
+      marco_pagina: Página de Mi libro
+
+  - carpeta: interfaz
+    tipo: tarjeta
+    medida: [128, 160]
+    piezas:
+      tarjeta: Tarjeta de opción vacía; el juego pone la ilustración, el icono y el texto
+      tarjeta_elegida: Brillo encima de la tarjeta elegida
+
+  - carpeta: interfaz
+    tipo: boton
+    medida: [32, 32]
+    piezas:
+      boton_mi_libro: Mi libro
+      boton_quiero_hablar: Quiero hablar con alguien (dos globos de diálogo)
+      boton_ahora_no: Ahora no
+      boton_volver_a_escuchar: Volver a escuchar
+      boton_opciones: Opciones
+      boton_listo: Listo
+      boton_flecha_izq: Anterior
+      boton_flecha_der: Siguiente
+      boton_borrar: Goma del dibujo
+      boton_deshacer: Deshacer del dibujo
+
+  - carpeta: interfaz
+    tipo: icono
+    medida: [32, 32]
+    piezas:
+      carita_1: Muy mal
+      carita_2: Mal
+      carita_3: Más o menos
+      carita_4: Bien
+      carita_5: Muy bien
+      vela: Vela de la calma
+      persona_nadie: Tarjeta "Nadie"
+      persona_solo: Tarjeta "lo resuelve solo"
+      no_se: Tarjeta "No sé"
+
+  # Un icono por cada código de docs/clinico/codigos-y-eventos.md. "Lastima" y "regaña" con
+  # símbolos (nube oscura, rayo pequeño), nunca con la acción.
+  - carpeta: iconos
+    tipo: icono
+    medida: [24, 24]
+    desde: codigos
+
+  # Un icono por cada opción de contenido/panel-cpe.yaml.
+  - carpeta: panel
+    tipo: icono
+    medida: [24, 24]
+    desde: panel-cpe
+
+  - carpeta: ilustraciones
+    tipo: ilustracion
+    piezas:
+      escena_d01: {que: Escena para describir; lo que muestra está en contenido/escena-para-describir.yaml, medida: [320, 240]}

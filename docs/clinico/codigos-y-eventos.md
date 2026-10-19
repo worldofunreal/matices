@@ -101,6 +101,20 @@ Todos llevan: código del niño, sesión, versión del contenido, semilla de ord
 
 El tiempo para decidir empieza cuando termina la voz. Incluye leer y pensar; solo se compara contra el propio niño (decisiones más lentas que su mediana), nunca contra otros.
 
+## Eventos de producto
+
+Para el equipo (PRD F16): dónde se atoran, abandonan o fallan. Llevan los mismos datos comunes que los clínicos.
+
+| Evento | Datos | Para qué |
+| --- | --- | --- |
+| `pantalla` | Pantalla que se abre y la anterior | Embudos y abandono |
+| `sesion` | Inicio, pausa, regreso, cierre y por qué (cerró la app, se quedó sin batería, terminó) | Dónde se va el niño |
+| `toque_sin_efecto` | Pantalla y lugar del toque | Botones que no se entienden |
+| `carga` | Qué se cargó y cuánto tardó | Tiempos de espera |
+| `rendimiento` | Cuadros por segundo y memoria, cada minuto | Aparatos lentos |
+| `error` | Mensaje y pantalla | Fallas |
+| `aparato` | Sistema, navegador, tamaño de pantalla, versión del juego | Cruzar fallas con aparatos |
+
 ## Lo que no se registra
 
-Nombre (se queda en el aparato), foto, cámara, micrófono, ubicación, texto libre ni identificadores del aparato. El único contenido libre es el dibujo.
+Nombre (se queda en el aparato), foto, cámara, micrófono, ubicación, texto libre ni identificadores únicos del aparato (el evento `aparato` solo dice el tipo). El único contenido libre es el dibujo.

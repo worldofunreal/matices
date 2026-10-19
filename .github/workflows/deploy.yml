@@ -97,10 +97,12 @@ jobs:
           check() { code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 "$1")"; echo "$1 -> $code"; [ "$code" = "$2" ]; }
           check "$base/" 200
           check "$base/mapas/casa.json" 200
+          check "$base/assets/manifiesto.yaml" 200
+          check "$base/assets/lugares/casa/fondo.png" 200
           check "$base/esta-ruta-no-existe" 404
           page="$(curl -s --max-time 30 "$base/")"
           echo "$page" | grep -q "<title>Matices</title>"
-          js="$(echo "$page" | grep -o 'assets/index-[^"]*\.js' | head -1)"
+          js="$(echo "$page" | grep -o 'js/index-[^"]*\.js' | head -1)"
           [ -f "dist/$js" ] || { echo "LIVE PAGE IS NOT THIS BUILD ($js)"; exit 1; }
           check "$base/$js" 200
           www="$(curl -s -o /dev/null -w '%{redirect_url}' --max-time 30 https://www.matices.online/)"

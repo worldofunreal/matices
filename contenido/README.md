@@ -7,6 +7,7 @@ Texto de los sucesos y de las actividades. El juego lee estos archivos tal cual;
 | `cuentos/E00.yaml` … `cuentos/E14.yaml` | Los 15 sucesos para completar |
 | `sobre-mi.yaml` | Las 24 frases de los gemelos Tito y Tita |
 | `escena-para-describir.yaml` | La escena ambigua del día 2 |
+| `panel-cpe.yaml` | Opciones del panel cuerpo / pensamiento / entorno |
 
 ## Forma de un suceso
 

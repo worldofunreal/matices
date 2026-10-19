@@ -4,6 +4,9 @@ Registro de cambios de dirección, con su razón. La más reciente arriba.
 
 | Fecha | Decisión | Por qué | Quién |
 | --- | --- | --- | --- |
+| 2026-10-19 | Mundo urbano moderno (escuela de dos pisos, parque con lago, biblioteca moderna) en lugar del rústico, con detalles mexicanos agregados (`arte/direccion-de-arte.md`) | Concept art nuevo de Dayana y Omar | Omar |
+| 2026-10-19 | Analítica completa: el juego mide uso y técnica para el equipo, además de lo clínico; los datos llegan a un servidor propio, no a un servicio externo (PRD F16, F17) | Encontrar abandono, errores y puntos de dolor | Omar |
+| 2026-10-19 | matices.online la juegan solo el equipo y adultos de prueba hasta que haya consentimientos firmados; sus datos se marcan como prueba | Ningún niño entra sin consentimiento | Omar |
 | 2026-10-19 | Motor: Phaser 3 con TypeScript, para web, Android, iOS, Windows, macOS y Linux (`tecnico/arquitectura.md`). Unity queda descartado | Claude puede hacer y revisar todo solo (recortes, atlas, mapas, choques) y cada cambio se ve en segundos; Omar revisa jugando un link | Omar |
 | 2026-10-19 | Nombre oficial: **Matices**. Se quita toda mención de "barrio"; el lugar del juego es una colonia | En México "barrio" se usa para marginar a personas de pocos recursos | Omar |
 | 2026-10-19 | Dónde, cuándo, cuántas sesiones, en grupo o no, y quién revisa **no está confirmado**. El desarrollo no se basa en eso; el juego funciona igual en cualquier caso (`PRD.md`, contexto de uso) | Depende de la llamada con la directora y de cada institución | Omar |

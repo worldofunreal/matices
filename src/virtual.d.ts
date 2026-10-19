@@ -1,3 +1,5 @@
+declare const __VERSION_JUEGO__: string;
+
 declare module "virtual:contenido" {
   type Opcion = [string, string];
   interface Paso {
@@ -27,4 +29,21 @@ declare module "virtual:contenido" {
     escena: Record<string, unknown>;
   };
   export default contenido;
+}
+
+declare module "virtual:arte" {
+  type Rampa = "piel" | "cabello";
+  interface Pieza {
+    id: string;
+    archivo: string;
+    tipo: "hoja" | "retrato" | "fondo" | "objeto" | "marco" | "tarjeta" | "boton" | "icono" | "ilustracion";
+    medida: [number, number];
+    que: string;
+    colores: Rampa[];
+  }
+  const arte: {
+    colores: Record<Rampa, { clave: string[]; variantes: string[][] }>;
+    piezas: Pieza[];
+  };
+  export default arte;
 }

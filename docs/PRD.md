@@ -63,6 +63,10 @@ Sugerencias para la llamada, válidas solo si la institución las aprueba: tres 
 - F13. Editor de reglas de revisión firmadas y versionadas.
 - F14. Bitácora de accesos y de avisos.
 
+### Analítica del juego
+- F16. Todo se mide: además de los eventos clínicos, el juego registra eventos técnicos y de uso (`clinico/codigos-y-eventos.md`, sección "Eventos de producto") para que el equipo encuentre dónde se atoran, se aburren o abandonan los niños, errores y problemas de rendimiento.
+- F17. Los datos llegan a un servidor propio (no a un servicio externo). Tablero del equipo con embudos por pantalla, abandono, tiempos, errores y rendimiento por aparato. Separado de la consola del psicólogo: el equipo ve uso y técnica, no reportes clínicos por niño.
+
 ### Contenido
 - F15. Sucesos y frases como archivos de datos; cada opción con código obligatorio. El contenido sin código no compila.
 
@@ -74,7 +78,8 @@ Sugerencias para la llamada, válidas solo si la institución las aprueba: tres 
 | Rendimiento | 60 cuadros por segundo en la tableta de referencia; abre en menos de 20 s |
 | Sin red | El juego funciona completo en el aparato, sin red ni internet; la salida de datos es aparte (`tecnico/arquitectura.md`) |
 | Sesiones | Pausa y regreso en cualquier punto; ninguna duración ni número de sesiones fijo |
-| Privacidad | Código en lugar de nombre; cifrado en reposo y en tránsito; sin analítica de terceros |
+| Privacidad | Código en lugar de nombre; cifrado en reposo y en tránsito |
+| Analítica | Todo se mide (F16, F17); los eventos esperan en el aparato y se envían cuando hay red |
 | Idioma | Español de México con voz grabada |
 | Accesibilidad | Ver GDD §15 |
 

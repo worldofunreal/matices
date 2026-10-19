@@ -32,6 +32,7 @@ Lo que bloquea el piloto, por quién lo decide.
 ## Abogado
 
 - [ ] Qué ley de datos aplica en cada institución y quién es responsable de los datos.
+- [ ] Confirmar que el equipo puede medir uso y técnica con el código del niño (PRD F16) y qué debe decir el consentimiento.
 - [ ] Qué hacer si un tutor pide el reporte por su derecho de acceso y entregarlo puede poner en riesgo al niño.
 - [ ] Plazo de conservación de datos.
 - [ ] Si el reporte forma parte de un expediente clínico y qué norma aplica.
@@ -51,4 +52,3 @@ Lo que bloquea el piloto, por quién lo decide.
 ## Técnico (Claude)
 
 - [ ] Tableta de referencia (2 GB de RAM) para medir rendimiento.
-- [ ] Esquema de validación del contenido.

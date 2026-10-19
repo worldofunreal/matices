@@ -1,13 +1,17 @@
 import Phaser from "phaser";
+import { Protagonista } from "../personaje/Protagonista";
+import { cambiarEstado, type Estado } from "../datos/guardado";
 
 const VELOCIDAD = 90;
 const TILE = 32;
 
 type Celda = { x: number; y: number };
 
-// One explorable place, loaded from a Tiled map with layers `piso`, `muros` and `objetos`.
+// One explorable place: the art is lugares/<lugar>/fondo.png; walls and points come from the
+// Tiled map public/mapas/<lugar>.json (layers `muros` and `objetos`).
 export class Mundo extends Phaser.Scene {
-  private prota!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+  private prota!: Protagonista;
+  private cuerpo!: Phaser.Physics.Arcade.Body;
   private muros!: Phaser.Tilemaps.TilemapLayer;
   private teclas!: Record<"arriba" | "abajo" | "izq" | "der", Phaser.Input.Keyboard.Key[]>;
   private ruta: Phaser.Math.Vector2[] = [];
@@ -16,17 +20,20 @@ export class Mundo extends Phaser.Scene {
     super("Mundo");
   }
 
-  create(datos: { mapa: string }) {
-    const mapa = this.make.tilemap({ key: datos.mapa });
-    const tiles = mapa.addTilesetImage("provisional", "provisional")!;
-    mapa.createLayer("piso", tiles)!;
-    this.muros = mapa.createLayer("muros", tiles)!;
+  create(estado: Estado) {
+    const mapa = this.make.tilemap({ key: estado.lugar });
+    this.add.image(0, 0, `lugares/${estado.lugar}/fondo`).setOrigin(0).setDepth(-1);
+    const rejilla = mapa.addTilesetImage("provisional", "rejilla")!;
+    this.muros = mapa.createLayer("muros", rejilla)!.setVisible(this.physics.world.drawDebug);
     this.muros.setCollisionByExclusion([-1]);
 
     const inicio = mapa.findObject("objetos", (o) => o.name === "inicio")!;
-    this.prota = this.physics.add.sprite(inicio.x!, inicio.y!, "prota").setOrigin(0.5, 1);
-    this.prota.body.setSize(20, 12).setOffset(6, 36);
-    this.prota.setCollideWorldBounds(true);
+    this.prota = new Protagonista(this, estado.x ?? inicio.x!, estado.y ?? inicio.y!, estado.apariencia);
+    this.prota.direccion = estado.direccion;
+    this.physics.add.existing(this.prota);
+    this.cuerpo = this.prota.body as Phaser.Physics.Arcade.Body;
+    this.cuerpo.setSize(20, 12).setOffset(-10, -12);
+    this.cuerpo.setCollideWorldBounds(true);
     this.physics.world.setBounds(0, 0, mapa.widthInPixels, mapa.heightInPixels);
     this.physics.add.collider(this.prota, this.muros);
 
@@ -69,23 +76,25 @@ export class Mundo extends Phaser.Scene {
     );
     if (v.lengthSq() > 0) {
       this.ruta = [];
-      this.prota.body.setVelocity(v.x, v.y).velocity.normalize().scale(VELOCIDAD);
+      this.cuerpo.setVelocity(v.x, v.y).velocity.normalize().scale(VELOCIDAD);
     } else {
       this.seguirRuta();
     }
+    this.prota.mover(this.cuerpo.velocity.x, this.cuerpo.velocity.y);
     this.prota.setDepth(this.prota.y);
+    cambiarEstado({ x: Math.round(this.prota.x), y: Math.round(this.prota.y), direccion: this.prota.direccion });
   }
 
   // Tap the floor: walk there around walls (shortest route over the tile grid).
   private caminarA(x: number, y: number) {
     const destino = this.muros.worldToTileXY(x, y)!;
-    const origen = this.muros.worldToTileXY(this.prota.body.center.x, this.prota.body.center.y)!;
+    const origen = this.muros.worldToTileXY(this.cuerpo.center.x, this.cuerpo.center.y)!;
     const celdas = this.buscarRuta(origen, destino);
     this.ruta = celdas.slice(1).map((c) => new Phaser.Math.Vector2(c.x * TILE + TILE / 2, c.y * TILE + TILE / 2));
   }
 
   private seguirRuta() {
-    const body = this.prota.body;
+    const body = this.cuerpo;
     while (this.ruta[0] && Phaser.Math.Distance.BetweenPoints(body.center, this.ruta[0]) < 3) this.ruta.shift();
     const siguiente = this.ruta[0];
     if (!siguiente) {

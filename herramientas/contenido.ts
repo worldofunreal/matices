@@ -1,32 +1,26 @@
-// Loads contenido/*.yaml, validates it against the clinical docs and exposes it as
-// `virtual:contenido`. Any error stops the build: content without a valid code never ships.
+// Loads contenido/*.yaml and public/assets/manifiesto.yaml, validates them and exposes them as
+// `virtual:contenido` and `virtual:arte`. Any error stops the build: content without a valid code
+// and art with a missing file or a wrong size never ship.
 // Sources of truth: codes in docs/clinico/codigos-y-eventos.md, area ids in
-// docs/clinico/marco-clinico.md, version in contenido/README.md.
+// docs/clinico/marco-clinico.md, version in contenido/README.md, art in public/assets/manifiesto.yaml.
 import { readFileSync, readdirSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { join } from "node:path";
 import { parse } from "yaml";
 import type { Plugin } from "vite";
+import { ROOT, MANIFIESTO, DOC_CODIGOS, PANEL_CPE, codigosValidos, panelCpe, leerManifiesto, medidaPng } from "./arte.ts";
 
-const ROOT = resolve(import.meta.dirname, "..");
 const DIR = join(ROOT, "contenido");
 const CUENTOS = join(DIR, "cuentos");
-const DOC_CODIGOS = join(ROOT, "docs/clinico/codigos-y-eventos.md");
 const DOC_AREAS = join(ROOT, "docs/clinico/marco-clinico.md");
 const README = join(DIR, "README.md");
 
-const ID = "virtual:contenido";
-const RESUELTO = "\0" + ID;
+const MODULOS: Record<string, () => unknown> = { "virtual:contenido": validar, "virtual:arte": validarArte };
 
 const PERSONAS = new Set(["casa", "casa_adultos", "escuela", "vecino", "nadie", "solo"]);
 const AUTOMATICOS = new Set(["OTRA", "NO_SE"]);
 const MARCAS = new Set(["{nombre}", "{quien}"]);
 
 type Opcion = [string, string];
-
-function codigosValidos(): Set<string> {
-  const doc = readFileSync(DOC_CODIGOS, "utf8");
-  return new Set([...doc.matchAll(/`([A-Z][A-Z_]+)`/g)].map((m) => m[1]));
-}
 
 function areasValidas(): Set<string> {
   const doc = readFileSync(DOC_AREAS, "utf8");
@@ -116,20 +110,45 @@ function validar() {
   const escena = parse(readFileSync(join(DIR, "escena-para-describir.yaml"), "utf8"));
   opciones(`escena ${escena.id} titulos`, escena.titulos as Opcion[], false);
 
+  const panel = panelCpe();
+  for (const [grupo, ops] of Object.entries(panel)) {
+    if (!["cuerpo", "pensamiento", "entorno"].includes(grupo)) err("panel-cpe", `grupo desconocido ${grupo}`);
+    for (const o of ops) {
+      if (!Array.isArray(o) || !/^[a-z_]+$/.test(o[0])) err(`panel-cpe ${grupo}`, `id inválido ${String(o?.[0])}`);
+      texto(`panel-cpe ${grupo} ${o?.[0]}`, o?.[1], false);
+    }
+  }
+
   if (errores.length) throw new Error(`Contenido inválido:\n- ${errores.join("\n- ")}`);
-  return { version: version(), cuentos, sobreMi, escena };
+  return { version: version(), cuentos, sobreMi, escena, panel };
+}
+
+function validarArte() {
+  const m = leerManifiesto();
+  const errores: string[] = [];
+  for (const p of m.piezas) {
+    const real = medidaPng(p.archivo);
+    if (!real) errores.push(`${p.archivo}: falta el archivo (npm run provisionales lo crea)`);
+    else if (real[0] !== p.medida[0] || real[1] !== p.medida[1])
+      errores.push(`${p.archivo}: mide ${real[0]} × ${real[1]}, debe medir ${p.medida[0]} × ${p.medida[1]}`);
+  }
+  for (const [nombre, r] of Object.entries(m.colores))
+    if (r.variantes.some((v) => v.length !== r.clave.length)) errores.push(`colores ${nombre}: cada variante lleva ${r.clave.length} colores`);
+  if (errores.length) throw new Error(`Arte inválido:\n- ${errores.join("\n- ")}`);
+  return m;
 }
 
 export function contenido(): Plugin {
   return {
     name: "matices-contenido",
-    resolveId: (id) => (id === ID ? RESUELTO : undefined),
+    resolveId: (id) => (id in MODULOS ? "\0" + id : undefined),
     load(id) {
-      if (id !== RESUELTO) return;
-      for (const f of [DOC_CODIGOS, DOC_AREAS, README, join(DIR, "sobre-mi.yaml"), join(DIR, "escena-para-describir.yaml")])
-        this.addWatchFile(f);
+      const nombre = id.slice(1);
+      if (!id.startsWith("\0") || !(nombre in MODULOS)) return;
+      const vigilar = [DOC_CODIGOS, DOC_AREAS, README, PANEL_CPE, MANIFIESTO, join(DIR, "sobre-mi.yaml"), join(DIR, "escena-para-describir.yaml")];
+      for (const f of vigilar) this.addWatchFile(f);
       for (const f of readdirSync(CUENTOS)) this.addWatchFile(join(CUENTOS, f));
-      return `export default ${JSON.stringify(validar())};`;
+      return `export default ${JSON.stringify(MODULOS[nombre]())};`;
     },
   };
 }

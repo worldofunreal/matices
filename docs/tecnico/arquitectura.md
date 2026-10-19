@@ -34,6 +34,7 @@ Por qué así: no sabemos todavía si habrá grupo, red, internet ni cuántas se
 2. El juego guarda cada evento cifrado en el aparato. Se puede pausar y retomar en cualquier momento.
 3. Al terminar, los datos salen por el modo que use la institución (A, B o C). Al confirmarse la entrega, el aparato borra su copia.
 4. El programa del psicólogo abre los datos, arma el reporte y aplica las reglas de revisión.
+5. Analítica del equipo (PRD F16): los eventos técnicos y de uso esperan en el aparato y se envían solos cuando hay internet.
 
 ## Eventos
 
@@ -44,7 +45,7 @@ Esquema en `docs/clinico/codigos-y-eventos.md`. Cada evento lleva la versión de
 - La lista código–nombre nunca está en el aparato del niño; la guarda el psicólogo, cifrada.
 - Los aparatos borran nombres de figuras y dibujos al entregar los datos.
 - Bitácora de accesos en el programa del psicólogo.
-- Sin bibliotecas de analítica, publicidad ni rastreo.
+- Sin publicidad.
 
 ## Código
 
@@ -52,7 +53,10 @@ Esquema en `docs/clinico/codigos-y-eventos.md`. Cada evento lleva la versión de
 | --- | --- |
 | `src/` | El juego: `main.ts` (llena la pantalla en cualquier orientación, pixel art escalado en enteros) y `escenas/` |
 | `herramientas/contenido.ts` | Lee `contenido/`, lo revisa contra los códigos de `docs/clinico/codigos-y-eventos.md` y las áreas de `docs/clinico/marco-clinico.md`, y detiene la compilación si algo no cuadra |
-| `public/mapas/` | Mapas en formato Tiled (capas `piso`, `muros`, `objetos`) |
+| `public/mapas/` | Mapas en formato Tiled: `muros` (choques) y `objetos` (puntos); el dibujo del lugar es su fondo en `public/assets/lugares/` |
+| `public/assets/` | Todo el arte; `manifiesto.yaml` lista cada pieza con su medida. La compilación se detiene si falta una o no cuadra su medida |
+| `herramientas/provisionales.ts` | Crea un provisional por cada pieza sin archivo (`npm run provisionales`); nunca toca el arte final |
+| `src/datos/` | Guardado de la partida, registro de eventos cifrado y eventos de producto |
 
 ## Publicación de prueba
 

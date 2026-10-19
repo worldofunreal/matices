@@ -13,7 +13,7 @@ npm install
 npm run dev
 ```
 
-Abre la dirección que aparece. Con `?debug` al final se ven los choques y los objetos del mapa. `npm run build` deja el juego listo en `dist/` y se detiene si algún contenido no es válido.
+Abre la dirección que aparece. Si se agrega una pieza a `public/assets/manifiesto.yaml`, `npm run provisionales` le crea su provisional. Con `?debug` al final se ven los choques y los objetos del mapa. `npm run build` deja el juego listo en `dist/` y se detiene si algún contenido no es válido.
 
 ## Cómo se juega, en corto
 
@@ -25,7 +25,7 @@ El niño crea a su personaje, arma su casa con las personas que quiera y recorre
 | --- | --- |
 | [docs/GDD.md](docs/GDD.md) | Diseño del juego: mundo, personajes, mecánicas, interfaz, audio |
 | [docs/PRD.md](docs/PRD.md) | Requisitos del producto: usuarios, contexto de uso por confirmar, objetivos, requisitos, riesgos |
-| [docs/MVP.md](docs/MVP.md) | Alcance del primer prototipo (Día 1) y criterios para probarlo |
+| [docs/MVP.md](docs/MVP.md) | Hitos para tener el juego completo con arte provisional y criterios para probarlo |
 | [docs/arte/direccion-de-arte.md](docs/arte/direccion-de-arte.md) | Estilo visual, ajustes, especificaciones, lista de arte, orden y forma de entrega |
 | [docs/tecnico/arquitectura.md](docs/tecnico/arquitectura.md) | Cómo funciona por dentro: juego que funciona solo en el aparato, salida de datos opcional |
 | [docs/clinico/marco-clinico.md](docs/clinico/marco-clinico.md) | Áreas que observa y de qué herramienta clínica sale cada mecánica |
