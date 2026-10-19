@@ -4,6 +4,7 @@ Registro de cambios de dirección, con su razón. La más reciente arriba.
 
 | Fecha | Decisión | Por qué | Quién |
 | --- | --- | --- | --- |
+| 2026-10-19 | Motor: Phaser 3 con TypeScript, para web, Android, iOS, Windows, macOS y Linux (`tecnico/arquitectura.md`). Unity queda descartado | Claude puede hacer y revisar todo solo (recortes, atlas, mapas, choques) y cada cambio se ve en segundos; Omar revisa jugando un link | Omar |
 | 2026-10-19 | Nombre oficial: **Matices**. Se quita toda mención de "barrio"; el lugar del juego es una colonia | En México "barrio" se usa para marginar a personas de pocos recursos | Omar |
 | 2026-10-19 | Dónde, cuándo, cuántas sesiones, en grupo o no, y quién revisa **no está confirmado**. El desarrollo no se basa en eso; el juego funciona igual en cualquier caso (`PRD.md`, contexto de uso) | Depende de la llamada con la directora y de cada institución | Omar |
 | 2026-10-19 | Arquitectura: el juego funciona completo en el aparato, sin red; la salida de datos (archivo, estación en red local o servidor) es aparte y opcional. Reemplaza la estación en red como requisito | No se sabe si habrá red, grupo ni internet | Claude |

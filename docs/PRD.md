@@ -70,7 +70,7 @@ Sugerencias para la llamada, válidas solo si la institución las aprueba: tres 
 
 | Tema | Requisito |
 | --- | --- |
-| Aparatos | Tabletas Android de gama baja (2 GB de RAM), Chromebooks, PCs con navegador moderno |
+| Aparatos | Web, Android, iOS, Windows, macOS y Linux; la referencia de rendimiento es una tableta Android de gama baja (2 GB de RAM) |
 | Rendimiento | 60 cuadros por segundo en la tableta de referencia; abre en menos de 20 s |
 | Sin red | El juego funciona completo en el aparato, sin red ni internet; la salida de datos es aparte (`tecnico/arquitectura.md`) |
 | Sesiones | Pausa y regreso en cualquier punto; ninguna duración ni número de sesiones fijo |

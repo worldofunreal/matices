@@ -21,7 +21,7 @@ Por qué así: no sabemos todavía si habrá grupo, red, internet ni cuántas se
 | Componente | Tecnología | Por qué |
 | --- | --- | --- |
 | Juego | TypeScript + Phaser 3 + Vite | Bueno para pixel art 2D, ligero en tabletas baratas, un solo código para todos los aparatos |
-| Empaque | Aplicación instalable desde el navegador (funciona sin conexión); Capacitor para un instalable de Android si se necesita | Se instala una vez y luego no necesita red |
+| Empaque | Web: aplicación instalable desde el navegador. Android e iOS: Capacitor. Windows, macOS y Linux: Tauri | El mismo juego en las seis plataformas; se instala una vez y luego no necesita red. iOS y macOS se compilan en una Mac con Xcode y cuenta de Apple |
 | Contenido | Archivos YAML en `contenido/`, validados con un esquema al compilar | Los psicólogos pueden revisar texto legible; una opción sin código rompe la compilación |
 | Guardado en el aparato | Base de datos del navegador, cifrada | Sobrevive a cerrar la app y a quedarse sin batería |
 | Mapas | Tiled, armados por el desarrollo a partir de las imágenes de arte | El arte llega como PNG sueltos (`../arte/direccion-de-arte.md`); recortes, mapas y choques no los hace el equipo de arte |
