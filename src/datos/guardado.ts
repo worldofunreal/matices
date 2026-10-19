@@ -19,6 +19,21 @@ export interface Estado {
   hora: Hora;
   llegada: string | null; // arrival point after crossing a door
   visitas: Record<string, number>;
+  cuentos: {
+    orden: Record<number, string[]>; // each day's stories, in the order they happen
+    hechos: Record<string, "terminado" | "ahora_no">;
+    finMedio: number | null; // when the last medium-intensity story ended (ms since epoch)
+    finUltimo?: number | null; // when the last story of any kind ended
+  };
+  libro: Pagina[]; // "Mi libro": one page per finished story
+}
+
+export interface Pagina {
+  cuento: string;
+  titulo: string;
+  lineas: string[];
+  carita: number | null;
+  dibujos: string[]; // drawings made in this story ("Otra cosa"), as images
 }
 
 export type Hora = "manana" | "tarde" | "noche";
@@ -33,7 +48,7 @@ export interface FiguraPuesta {
   piel: number;
 }
 
-const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "", casa: [], casaLista: false, protaCasa: null, dia: 1, hora: "manana", llegada: null, visitas: {} };
+const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "", casa: [], casaLista: false, protaCasa: null, dia: 1, hora: "manana", llegada: null, visitas: {}, cuentos: { orden: {}, hechos: {}, finMedio: null }, libro: [] };
 
 let actual: Estado = NUEVO;
 let leido = false; // never write before the saved game was read, or it would be overwritten

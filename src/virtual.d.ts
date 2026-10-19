@@ -1,8 +1,8 @@
 declare const __VERSION_JUEGO__: string;
 
 declare module "virtual:contenido" {
-  type Opcion = [string, string];
-  interface Paso {
+  export type Opcion = [string, string];
+  export interface Paso {
     id: string;
     pregunta?: string;
     personas?: string[];
@@ -10,7 +10,7 @@ declare module "virtual:contenido" {
     opciones_solo?: Opcion[];
     solo_si?: string[];
   }
-  interface Cuento {
+  export interface Cuento {
     id: string;
     titulo: string;
     dia: 1 | 2 | 3;
@@ -31,6 +31,7 @@ declare module "virtual:contenido" {
     textos: Textos;
     figuras: { id: string; tipo: "adulto" | "menor" | "mascota"; nombre: string }[];
     lugares: string[];
+    sitios: Record<string, { mapa: string; zona: { x: number; y: number; w: number; h: number } | null }>;
   };
   interface Textos {
     asentimiento: { texto: string; si: string; no: string; psicologo_prueba: string };
@@ -69,6 +70,30 @@ declare module "virtual:contenido" {
       fin: string;
       saludos: Record<string, string[]>;
       objetos: Record<string, Record<string, string>>;
+      salida: string;
+      sin_sueno: string;
+    };
+    cuento: {
+      inicio: string;
+      pregunta: string;
+      cierre: string;
+      ahora_no: string;
+      boton_ahora_no: string;
+      otra: string;
+      no_se: string;
+      nadie: string;
+      solo: string;
+      vecino: string;
+      escuela: Record<"maestra" | "companero" | "conserje" | "directora", string>;
+      otra_vez: string;
+      carita: string;
+      caritas: string[];
+      contar_mas: string;
+      panel: Record<"cuerpo" | "pensamiento" | "entorno", string>;
+      estado: string;
+      estados: Record<"tranquilo" | "inquieto" | "alerta" | "saturado", string>;
+      listo: string;
+      dibujar: string;
     };
   }
   export default contenido;

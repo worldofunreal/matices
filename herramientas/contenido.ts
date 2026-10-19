@@ -181,8 +181,69 @@ function validar() {
     }
   }
 
+  // Everything in a map must be reachable on foot from where the child arrives: doors, zones,
+  // objects and people (a walled-in court once made a story impossible to reach).
+  for (const [lugar, mapa] of Object.entries(mapas)) {
+    if (!mapa) continue;
+    const muros = mapa.layers.find((l) => l.name === "muros") as unknown as { data: number[] } | undefined;
+    if (!muros) continue;
+    const W = mapa.width;
+    const H = mapa.height;
+    const libre = (x: number, y: number) => x >= 0 && y >= 0 && x < W && y < H && !muros.data[y * W + x];
+    const llegadas = objetosDe(mapa).filter((o) => o.type === "llegada" || o.name === "inicio") as (ObjetoMapa & { x: number; y: number })[];
+    const visto = new Set<number>();
+    const cola = llegadas.map((o) => [Math.floor(o.x / 32), Math.floor((o.y - 1) / 32)]).filter(([x, y]) => libre(x, y));
+    for (const [x, y] of cola) visto.add(y * W + x);
+    while (cola.length) {
+      const [x, y] = cola.shift()!;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const nx = x + dx;
+        const ny = y + dy;
+        if (libre(nx, ny) && !visto.has(ny * W + nx)) {
+          visto.add(ny * W + nx);
+          cola.push([nx, ny]);
+        }
+      }
+    }
+    const alcanza = (x0: number, y0: number, w: number, h: number) => {
+      for (let y = Math.floor(y0 / 32) - 1; y <= Math.floor((y0 + Math.max(h, 1) - 1) / 32) + 1; y++)
+        for (let x = Math.floor(x0 / 32) - 1; x <= Math.floor((x0 + Math.max(w, 1) - 1) / 32) + 1; x++) if (visto.has(y * W + x)) return true;
+      return false;
+    };
+    const capas = mapa.layers.filter((l) => ["objetos", "zonas", "cuartos"].includes(l.name)).flatMap((l) => l.objects ?? []) as (ObjetoMapa & { x: number; y: number; width: number; height: number })[];
+    for (const o of capas) {
+      const y = o.width ? o.y : o.y - 1;
+      if (!alcanza(o.x, y, o.width, o.height)) err(`mapas/${lugar}.json ${o.name}`, "no se puede llegar caminando");
+    }
+  }
+
+  // Where each story happens: "<lugar>.<zona>" or "<lugar>". The place is a map, or a group of maps
+  // sharing a prefix (escuela → escuela_patio, escuela_planta_baja…); the zone is a room or zone in it.
+  const sitios: Record<string, { mapa: string; zona: { x: number; y: number; w: number; h: number } | null }> = {};
+  for (const c of cuentos) {
+    const [lugar, zona] = String(c.lugar).split(".");
+    const candidatos = Object.keys(mapas).filter((m) => m === lugar || m.startsWith(`${lugar}_`));
+    let sitio = null;
+    for (const m of candidatos) {
+      if (!zona) {
+        sitio = { mapa: m, zona: null };
+        break;
+      }
+      const z = mapas[m]!.layers.filter((l) => l.name === "cuartos" || l.name === "zonas").flatMap((l) => l.objects ?? []).find((o) => o.name === zona) as (ObjetoMapa & { x: number; y: number; width: number; height: number }) | undefined;
+      if (z) {
+        sitio = { mapa: m, zona: { x: z.x, y: z.y, w: z.width, h: z.height } };
+        break;
+      }
+    }
+    if (!sitio) err(`cuentos/${c.id}.yaml`, `el lugar ${c.lugar} no existe en los mapas`);
+    else sitios[c.id] = sitio;
+  }
+  for (const k of ["inicio", "pregunta", "cierre", "ahora_no", "otra", "no_se", "nadie", "solo", "vecino", "carita", "listo", "dibujar"])
+    if (!textos.cuento?.[k]) err("textos cuento", `falta ${k}`);
+  if (textos.cuento?.caritas?.length !== 5) err("textos cuento.caritas", "deben ser 5");
+
   if (errores.length) throw new Error(`Contenido inválido:\n- ${errores.join("\n- ")}`);
-  return { version: version(), cuentos, sobreMi, escena, panel, textos, figuras, lugares };
+  return { version: version(), cuentos, sobreMi, escena, panel, textos, figuras, lugares, sitios };
 }
 
 type ObjetoMapa = { name: string; type: string; properties?: { name: string; value: string }[] };

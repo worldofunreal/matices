@@ -3,7 +3,9 @@ import contenido from "virtual:contenido";
 import { Protagonista } from "../personaje/Protagonista";
 import { variante } from "../arte";
 import { estado, cambiarEstado, type Estado } from "../datos/guardado";
-import { alCruzar, puertaAbierta, dormir } from "../datos/dia";
+import { bloqueo, revisarHora, puedeDormir, dormir } from "../datos/dia";
+import { tocaAqui, siguiente, sitio } from "../datos/cuentos";
+import type { DatosEscena, EstadoCuerpo } from "./Cuento";
 import { registrar } from "../datos/eventos";
 import type { Interfaz } from "./Interfaz";
 
@@ -18,6 +20,14 @@ const LUZ = { manana: null, tarde: 0xffe6c4, noche: 0x6f7fb8 } as const;
 type Celda = { x: number; y: number };
 type Puerta = { nombre: string; rect: Phaser.Geom.Rectangle; destino: string; llegada: string; horas?: string };
 type ObjetoMapa = Phaser.Types.Tilemaps.TiledObject;
+
+// How the surroundings look for a few seconds after a story, only if the child chose it (GDD §9).
+const AMBIENTE: Record<EstadoCuerpo, { color: number; alfa: number; zoom: number }> = {
+  tranquilo: { color: 0x9fd7b0, alfa: 0.25, zoom: 1 },
+  inquieto: { color: 0xf2d36b, alfa: 0.3, zoom: 1 },
+  alerta: { color: 0xf29b4b, alfa: 0.35, zoom: 1.04 },
+  saturado: { color: 0x8c5a7a, alfa: 0.4, zoom: 1.06 },
+};
 
 const prop = (o: ObjetoMapa, nombre: string): string | undefined =>
   (o.properties as { name: string; value: string }[] | undefined)?.find((p) => p.name === nombre)?.value;
@@ -36,6 +46,7 @@ export class Mundo extends Phaser.Scene {
   private enPuerta: string | null = null; // the door the character is standing in, so it fires once
   private cambiando = false;
   private t0 = 0;
+  private guia: Phaser.GameObjects.Arc | null = null;
 
   constructor() {
     super("Mundo");
@@ -118,6 +129,8 @@ export class Mundo extends Phaser.Scene {
     cambiarEstado({ visitas });
     this.events.once("shutdown", () => registrar("explora", { lugar: this.lugar, ms: Math.round(performance.now() - this.t0), visitas: visitas[this.lugar] }));
 
+    this.guiar(objetos);
+
     if (this.physics.world.drawDebug) {
       this.muros.renderDebug(this.add.graphics().setAlpha(0.5).setDepth(1e5 + 1), { tileColor: null });
       for (const o of objetos) this.add.text(o.x!, o.y!, o.name, { fontSize: "8px", color: "#000" }).setOrigin(0.5).setDepth(1e6);
@@ -156,7 +169,10 @@ export class Mundo extends Phaser.Scene {
   private usar(objeto: string) {
     registrar("explora", { lugar: this.lugar, objeto });
     if (objeto === "espejo") return this.scene.start("Creacion", { modo: "espejo" });
-    if (objeto === "cama" && estado().hora === "noche") return this.terminarDia();
+    if (objeto === "cama" && estado().hora === "noche") {
+      if (puedeDormir()) return this.terminarDia();
+      return this.interfaz.decir("mundo.sin_sueno", M.sin_sueno);
+    }
     const frase = M.objetos[this.lugar]?.[objeto] ?? M.objetos.comun[objeto];
     this.interfaz.decir(`mundo.objetos.${this.lugar}.${objeto}`, frase);
   }
@@ -193,13 +209,11 @@ export class Mundo extends Phaser.Scene {
     }
     if (this.enPuerta === p.nombre) return;
     this.enPuerta = p.nombre;
-    if (!puertaAbierta(p.horas, this.lugar)) {
-      this.interfaz.decir(estado().hora === "noche" ? "mundo.noche" : "mundo.cerrado", estado().hora === "noche" ? M.noche : M.cerrado);
-      return;
-    }
+    const no = bloqueo(this.lugar, p.destino, p.horas);
+    if (no) return this.interfaz.decir(`mundo.${no}`, M[no]);
     this.cambiando = true;
-    alCruzar(this.lugar, p.destino);
     cambiarEstado({ lugar: p.destino, llegada: p.llegada, x: null, y: null }, true);
+    revisarHora(p.destino, this.lugar);
     this.cameras.main.fadeOut(200);
     this.cameras.main.once("camerafadeoutcomplete", () => this.scene.restart(estado()));
   }
@@ -234,6 +248,97 @@ export class Mundo extends Phaser.Scene {
     this.prota.setDepth(this.prota.y);
     cambiarEstado({ x: Math.round(this.prota.x), y: Math.round(this.prota.y), direccion: this.prota.direccion });
     this.revisarPuertas();
+    const c = !this.cambiando && tocaAqui(this.lugar, this.cuerpo.center.x, this.cuerpo.center.y);
+    if (c) this.abrirCuento(c.id);
+  }
+
+  // The world freezes and the story opens over it (GDD §9).
+  private abrirCuento(id: string) {
+    this.cambiando = true;
+    this.ruta = [];
+    this.alLlegar = null;
+    this.prota.mover(0, 0);
+    const datos: DatosEscena = { id, alTerminar: (e) => this.alVolverDelCuento(e) };
+    this.scene.launch("Cuento", datos);
+    this.scene.bringToTop("Cuento");
+    this.scene.pause();
+  }
+
+  private alVolverDelCuento(e: EstadoCuerpo | null) {
+    this.scene.resume();
+    this.cambiando = false;
+    if (e) this.ambiente(e);
+    // Finishing the afternoon's last story at home brings the night.
+    if (revisarHora(this.lugar)) {
+      this.cambiando = true;
+      this.time.delayedCall(e ? 3000 : 300, () => this.scene.restart(estado()));
+      return;
+    }
+    this.guiar(this.make.tilemap({ key: this.lugar }).getObjectLayer("objetos")!.objects);
+  }
+
+  private ambiente(e: EstadoCuerpo) {
+    const a = AMBIENTE[e];
+    const { width: w, height: h } = this.scale;
+    const capa = this.add.rectangle(0, 0, w, h, a.color, 0).setOrigin(0).setScrollFactor(0).setDepth(1e5 + 2);
+    this.tweens.add({ targets: capa, fillAlpha: a.alfa, duration: 600, yoyo: true, hold: 1800, onComplete: () => capa.destroy() });
+    if (a.zoom !== 1) this.cameras.main.zoomTo(a.zoom, 600, "Sine.easeInOut", false, (_c, t) => t === 1 && this.time.delayedCall(1800, () => this.cameras.main.zoomTo(1, 600)));
+  }
+
+  // A soft ring shows where to go next: the next story's place, or the door that leads toward it.
+  // With no story left for this part of the day, it shows what moves the day on.
+  private guiar(objetos: ObjetoMapa[]) {
+    this.guia?.destroy();
+    this.guia = null;
+    const { hora } = estado();
+    const c = siguiente();
+    let meta: string;
+    let zona: { x: number; y: number } | null = null;
+    if (c && c.hora === hora) {
+      const s = sitio(c.id);
+      meta = s.mapa;
+      if (s.zona) zona = { x: s.zona.x + s.zona.w / 2, y: s.zona.y + s.zona.h / 2 };
+    } else if (hora === "manana") meta = "calle";
+    else meta = "casa";
+    if (meta === this.lugar) {
+      if (!zona && hora === "noche" && (!c || c.hora !== hora)) {
+        const cama = objetos.find((o) => o.name === "cama");
+        if (cama) zona = { x: cama.x!, y: cama.y! - 16 };
+      }
+      if (!zona) return;
+    } else {
+      const puerta = this.puertaHacia(meta);
+      if (!puerta) return;
+      zona = { x: puerta.rect.centerX, y: puerta.rect.centerY };
+    }
+    this.guia = this.add.circle(zona.x, zona.y, 14).setStrokeStyle(3, 0xf2c14e).setDepth(1e5 - 1);
+    this.tweens.add({ targets: this.guia, scale: 1.4, alpha: 0.4, duration: 900, yoyo: true, repeat: -1 });
+  }
+
+  // First door on the shortest way from this place to another, over the doors of all maps.
+  private puertaHacia(meta: string): Puerta | null {
+    const puertasDe = (lugar: string): string[] =>
+      ((this.cache.tilemap.get(lugar)?.data?.layers ?? []) as { name: string; objects?: ObjetoMapa[] }[])
+        .find((l) => l.name === "objetos")
+        ?.objects?.filter((o) => o.type === "puerta")
+        .map((o) => prop(o, "destino")!) ?? [];
+    const previo = new Map<string, string>();
+    const cola = [this.lugar];
+    const vistos = new Set(cola);
+    while (cola.length) {
+      const l = cola.shift()!;
+      if (l === meta) break;
+      for (const d of puertasDe(l))
+        if (!vistos.has(d)) {
+          vistos.add(d);
+          previo.set(d, l);
+          cola.push(d);
+        }
+    }
+    if (!vistos.has(meta)) return null;
+    let paso = meta;
+    while (previo.get(paso) !== this.lugar) paso = previo.get(paso)!;
+    return this.puertas.find((p) => p.destino === paso) ?? null;
   }
 
   // Tap the floor: walk there around walls (shortest route over the tile grid). If the spot is

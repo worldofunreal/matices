@@ -1,26 +1,29 @@
 // Days and times of day (GDD §4, §5). Time never moves by itself: it moves when the child reaches
-// the place that closes each part of the day.
+// the place that closes each part of the day, once that part's stories have happened.
 //   morning → afternoon: leaving the school for the street
-//   afternoon → night: coming home
+//   afternoon → night: being at home
 //   night → next day: going to bed
-// H5 adds the stories of each part of the day before it can move on.
 import { estado, cambiarEstado, type Hora } from "./guardado";
 import { registrar } from "./eventos";
+import { pendientes } from "./cuentos";
 
 export const DIAS = 3;
 
-export function alCruzar(desde: string, hacia: string): Hora | null {
+// Why a door can't be crossed now, or null. Texts in contenido/textos.yaml, section mundo.
+export function bloqueo(desde: string, hacia: string, horas: string | undefined): "noche" | "cerrado" | "salida" | null {
   const { hora } = estado();
-  if (hora === "manana" && desde === "escuela_patio" && hacia === "calle") return pasarA("tarde");
-  if (hora === "tarde" && hacia === "casa") return pasarA("noche");
+  if (hora === "noche" && desde === "casa") return "noche";
+  if (horas && !horas.split(",").includes(hora)) return "cerrado";
+  if (hora === "manana" && desde === "escuela_patio" && hacia === "calle" && pendientes("manana") > 0) return "salida";
   return null;
 }
 
-// Doors open by time of day; at night nobody leaves the house.
-export function puertaAbierta(horas: string | undefined, desde: string): boolean {
+// After crossing a door or finishing a story: moves on to the next part of the day if it is time.
+export function revisarHora(lugar: string, desde?: string): Hora | null {
   const { hora } = estado();
-  if (hora === "noche" && desde === "casa") return false;
-  return !horas || horas.split(",").includes(hora);
+  if (hora === "manana" && desde === "escuela_patio" && lugar === "calle") return pasarA("tarde");
+  if (hora === "tarde" && lugar === "casa" && pendientes("tarde") === 0) return pasarA("noche");
+  return null;
 }
 
 function pasarA(hora: Hora): Hora {
@@ -28,6 +31,8 @@ function pasarA(hora: Hora): Hora {
   registrar("tramo", { dia: estado().dia, hora });
   return hora;
 }
+
+export const puedeDormir = () => estado().hora === "noche" && pendientes("noche") === 0;
 
 // Going to bed at night ends the day. Returns the new day, or null after the last one.
 export function dormir(): number | null {

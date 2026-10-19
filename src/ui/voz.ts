@@ -11,18 +11,30 @@ export function callar() {
   if ("speechSynthesis" in window) speechSynthesis.cancel();
 }
 
-export function hablar(clave: string, texto: string) {
+// Resolves when the line has been said (or right away if there is no voice), so the game can
+// measure decision time from the end of the question.
+export function hablar(clave: string, texto: string): Promise<void> {
   callar();
-  if (grabadas.has(clave)) {
-    audio = new Audio(`assets/voz/${clave}.mp3`);
-    void audio.play();
-    return;
-  }
-  if (!("speechSynthesis" in window)) return;
-  const frase = new SpeechSynthesisUtterance(texto);
-  frase.lang = "es-MX";
-  frase.rate = 0.95;
-  const voz = vozDelNavegador();
-  if (voz) frase.voice = voz;
-  speechSynthesis.speak(frase);
+  return new Promise((listo) => {
+    // Some browsers never fire the end event; never wait longer than the line could take.
+    const tope = setTimeout(listo, 1500 + texto.length * 90);
+    const fin = () => {
+      clearTimeout(tope);
+      listo();
+    };
+    if (grabadas.has(clave)) {
+      audio = new Audio(`assets/voz/${clave}.mp3`);
+      audio.onended = audio.onerror = fin;
+      void audio.play().catch(fin);
+      return;
+    }
+    if (!("speechSynthesis" in window)) return fin();
+    const frase = new SpeechSynthesisUtterance(texto);
+    frase.lang = "es-MX";
+    frase.rate = 0.95;
+    const voz = vozDelNavegador();
+    if (voz) frase.voice = voz;
+    frase.onend = frase.onerror = fin;
+    speechSynthesis.speak(frase);
+  });
 }

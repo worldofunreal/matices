@@ -5,8 +5,12 @@ import { Asentimiento } from "./escenas/Asentimiento";
 import { Creacion } from "./escenas/Creacion";
 import { ArmarCasa } from "./escenas/ArmarCasa";
 import { Interfaz } from "./escenas/Interfaz";
+import { Cuento } from "./escenas/Cuento";
+import { Dibujo } from "./escenas/Dibujo";
 import { iniciarRegistro } from "./datos/eventos";
 import { vigilar } from "./datos/monitor";
+import * as guardado from "./datos/guardado";
+import * as cuentos from "./datos/cuentos";
 
 const debug = new URLSearchParams(location.search).has("debug");
 
@@ -33,7 +37,7 @@ const juego = new Phaser.Game({
   backgroundColor: "#1d1a24",
   scale: { mode: Phaser.Scale.NONE, zoom: medida().zoom },
   physics: { default: "arcade", arcade: { debug } },
-  scene: [Arranque, Asentimiento, Creacion, ArmarCasa, Mundo, Interfaz],
+  scene: [Arranque, Asentimiento, Creacion, ArmarCasa, Mundo, Interfaz, Cuento, Dibujo],
 });
 
 vigilar(juego, partida.sesion);
@@ -44,5 +48,5 @@ addEventListener("resize", () => {
   juego.scale.setZoom(m.zoom);
 });
 
-// Debug mode exposes the game so automated checks can read positions.
-if (debug) Object.assign(window, { juego });
+// Debug mode exposes the game and its saved state so automated checks read the live ones.
+if (debug) Object.assign(window, { juego, matices: { guardado, cuentos } });

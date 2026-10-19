@@ -101,3 +101,39 @@ export class Boton extends Phaser.GameObjects.Container {
     return this;
   }
 }
+
+export interface OpcionesTarjeta {
+  ancho: number;
+  alto: number;
+  etiqueta: string;
+  imagen?: string; // icon or portrait texture key
+}
+
+// Option card for stories (GDD §9, §12): the first tap speaks it and marks it, the second confirms.
+export class Tarjeta extends Phaser.GameObjects.Container {
+  private brillo: Phaser.GameObjects.Image;
+
+  constructor(escena: Phaser.Scene, x: number, y: number, o: OpcionesTarjeta, alTocar: () => void) {
+    super(escena, x, y);
+    this.add(escena.add.image(0, 0, "interfaz/tarjeta").setDisplaySize(o.ancho, o.alto));
+    const lado = Math.min(o.ancho - 12, o.alto * 0.5);
+    if (o.imagen) {
+      const img = escena.add.image(0, -o.alto / 2 + 6 + lado / 2, o.imagen);
+      img.setScale(lado / Math.max(img.width, img.height));
+      this.add(img);
+    }
+    const t = texto(escena, 0, o.imagen ? lado / 2 + 6 - o.alto * 0.0 : 0, o.etiqueta, o.alto < 90 ? 9 : 10, o.ancho - 10);
+    t.setY(o.imagen ? -o.alto / 2 + 10 + lado + (o.alto - lado - 14) / 2 : 0);
+    this.add(t);
+    this.brillo = escena.add.image(0, 0, "interfaz/tarjeta_elegida").setDisplaySize(o.ancho, o.alto).setVisible(false);
+    this.add(this.brillo);
+    this.setSize(o.ancho, o.alto).setInteractive({ useHandCursor: true });
+    this.on("pointerup", alTocar);
+    escena.add.existing(this);
+  }
+
+  marcar(si: boolean) {
+    this.brillo.setVisible(si);
+    return this;
+  }
+}

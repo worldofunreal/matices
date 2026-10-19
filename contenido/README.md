@@ -43,5 +43,8 @@ pasos:
 - `{nombre}` es el nombre del personaje; `{quien}` es la persona elegida en el paso anterior.
 - `personas`: `casa` (figuras que el niño puso), `casa_adultos` (solo adultos de la casa), `escuela`, `vecino`, `nadie`, `solo`.
 - `solo_si`: el paso solo aparece si en el paso anterior se eligió uno de esos códigos.
+- Si en "¿Quién llega?" se eligió "Nadie" o "lo resuelve solo", el paso siguiente usa `opciones_solo`; si no las tiene y su pregunta habla de `{quien}`, se salta. Con "No sé" también se salta todo paso que pregunte por `{quien}`.
+- Si la casa no tiene a nadie que pueda llegar (o, con `casa_adultos`, ningún adulto), las tarjetas de la casa se cambian por "un vecino o vecina" y "nadie".
+- `lugar`: `<lugar>.<zona>` o solo `<lugar>`. El lugar es un mapa de `public/mapas/` (o un grupo de mapas, como `escuela`) y la zona, un cuarto o una zona de ese mapa. La compilación revisa que exista.
 - Textos a nivel de 3.º de primaria, en español de México, sin violencia explícita.
 - Cambiar un texto sube la versión del contenido; los reportes guardan la versión que vio cada niño.

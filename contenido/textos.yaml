@@ -128,3 +128,39 @@ mundo:
       estante: "Dulces y papitas."
     biblioteca_planta_alta:
       sillon_cuentera: "El sillón de La Cuentera."
+  salida: "Todavía no es la salida."
+  sin_sueno: "Todavía no tengo sueño."
+
+# Modo cuento (GDD §9). Las frases de La Cuentera son fijas: nunca opina sobre un final.
+cuento:
+  inicio: "Aquí empieza un cuento que perdió su final…"
+  pregunta: "¿Y qué pasó después?"
+  cierre: "Así queda el cuento. Gracias."
+  ahora_no: "Está bien. Lo dejamos aquí."
+  boton_ahora_no: "Ahora no"
+  otra: "Otra cosa"
+  no_se: "No sé"
+  nadie: "Nadie"
+  solo: "{nombre} lo resuelve solo"
+  vecino: "Un vecino o vecina"
+  escuela:
+    maestra: "La maestra"
+    companero: "Un compañero"
+    conserje: "El conserje"
+    directora: "La directora"
+  otra_vez: "Toca otra vez para elegir."
+  carita: "¿Cómo se siente {nombre}?"
+  caritas: ["Muy mal", "Mal", "Más o menos", "Bien", "Muy bien"]
+  contar_mas: "Contar más"
+  panel:
+    cuerpo: "En el cuerpo"
+    pensamiento: "En la cabeza"
+    entorno: "Alrededor"
+  estado: "¿Cómo se siente todo alrededor?"
+  estados:
+    tranquilo: "Tranquilo"
+    inquieto: "Inquieto"
+    alerta: "Alerta"
+    saturado: "Demasiado"
+  listo: "Listo"
+  dibujar: "Dibuja lo que pasa."

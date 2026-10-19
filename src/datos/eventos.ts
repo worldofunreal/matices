@@ -46,6 +46,7 @@ export async function iniciarRegistro(): Promise<Partida> {
 }
 
 export const preguntado = () => partida.registro !== null;
+export const semilla = () => partida.semilla;
 
 export async function fijarRegistro(si: boolean) {
   partida = { ...partida, registro: si };

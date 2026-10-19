@@ -50,7 +50,7 @@ Día = Calma de entrada → Mañana (casa → camino → escuela) → Tarde (col
 | 2 | Escena para describir en la biblioteca | E06, E02, E04, E13, E14, E10 |
 | 3 | "Sobre mí" con los gemelos al final del día | E11, E01, E08, E12, E05 |
 
-Reglas de orden: cada día abre y cierra sus sucesos con uno de intensidad baja; los de en medio se barajan por niño con una semilla guardada; tras cada suceso de intensidad media hay al menos un minuto de exploración libre. La hora del día en que ocurre cada suceso está fija por su contenido (la fiebre, de noche; el recreo, en la escuela).
+Reglas de orden: cada día abre y cierra sus sucesos con uno de intensidad baja; los de en medio se barajan por niño con una semilla guardada; tras cada suceso de intensidad media hay al menos un minuto de exploración libre, y tras cualquier suceso, al menos diez segundos, para que dos nunca vayan seguidos. La hora del día en que ocurre cada suceso está fija por su contenido (la fiebre, de noche; el recreo, en la escuela).
 
 ## 5. Bucle de juego
 
@@ -109,12 +109,7 @@ Reglas de los personajes fijos: Lucía, Nico, Clara, Don Chuy y los vecinos **so
 
 ### La Cuentera
 
-Narradora y anfitriona. Vive en la biblioteca de la colonia. Señora mayor, rebozo, lentes, un libro grande con páginas en blanco. Tono cálido y parejo. Nunca opina sobre un final, nunca pregunta por la vida real del niño (eso lo hacen solo los gemelos, avisando antes). Sus frases fijas:
-
-- Inicio de suceso: "Aquí empieza un cuento que perdió su final…"
-- Pregunta: "¿Y qué pasó después?"
-- Cierre: "Así queda el cuento. Gracias."
-- "Ahora no": "Está bien. Lo dejamos aquí."
+Narradora y anfitriona. Vive en la biblioteca de la colonia. Señora mayor, rebozo, lentes, un libro grande con páginas en blanco. Tono cálido y parejo. Nunca opina sobre un final, nunca pregunta por la vida real del niño (eso lo hacen solo los gemelos, avisando antes). Sus frases fijas (inicio, pregunta, cierre y "Ahora no") están en `contenido/textos.yaml`, sección `cuento`.
 
 ### Los gemelos Tito y Tita
 

@@ -65,7 +65,8 @@ Todos llevan: código del niño, sesión, versión del contenido, semilla de ord
 | --- | --- | --- |
 | `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
 | `casa_figura` | Qué hizo (`poner`, `mover`, `quitar`, `renombrar`, `piel`), figura, si es adulto, menor o mascota, cuarto, distancia al personaje en cuadros, orden. Al terminar, `casa_lista` con todas las figuras y el tiempo | Quién forma el mundo del niño |
-| `cuento_paso` | Suceso, paso, opciones en el orden mostrado, opción y código, toques previos, ms para decidir | El dato central |
+| `cuento` | Suceso y si empezó, terminó o se dejó con "Ahora no" | Cuántos cuentos se completan |
+| `cuento_paso` | Suceso, paso, opciones en el orden mostrado, opción y código, toques previos, ms para decidir desde que terminó la voz y si eligió antes de que terminara | El dato central |
 | `carita` | Suceso, valor 1 a 5 | Cómo se siente el protagonista |
 | `panel_cpe` | Suceso, íconos de cuerpo, pensamiento y entorno | Cuántas emociones distingue |
 | `estado_cuerpo` | Suceso, estado elegido | Intensidad que el niño le da |
@@ -73,7 +74,7 @@ Todos llevan: código del niño, sesión, versión del contenido, semilla de ord
 | `tramo` | Día y parte del día que empieza (`manana`, `tarde`, `noche`, `fin`) | Ritmo de la partida |
 | `describe` | Escena, título, emoción por personaje | Lectura de una escena ambigua |
 | `sobre_mi` | Frase, respuesta (`A`, `B`, `AMBOS`, `AHORA_NO`), ms | Lo que dice de su vida |
-| `dibujo` | Trazos con color y orden, borrados, tiempo, imagen final | El dibujo y su proceso |
+| `dibujo` | De dónde salió (suceso y paso de "Otra cosa", o dibujo libre), trazos con color, grosor, goma y tiempo de cada punto, cuántos deshizo, tiempo, imagen final | El dibujo y su proceso |
 | `ahora_no` | Suceso y paso | Dónde no quiso entrar |
 | `quiero_hablar` | Pantalla y hora | Dispara el aviso |
 | `repetir_voz` | Pantalla | Separar duda de dificultad para leer |
