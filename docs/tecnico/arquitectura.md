@@ -2,7 +2,7 @@
 
 ## Decisión
 
-El juego es una aplicación que funciona completa dentro de cada aparato, sin red. Guarda los eventos cifrados en el propio aparato. Cómo salen los datos hacia el psicólogo se elige después, según lo que apruebe cada institución (`../CONTEXTO-DE-USO.md`); el juego no cambia.
+El juego es una aplicación que funciona completa dentro de cada aparato, sin red. Guarda los eventos cifrados en el propio aparato. Cómo salen los datos hacia el psicólogo se elige después, según lo que apruebe cada institución (`../PRD.md`, contexto de uso); el juego no cambia.
 
 ```
  Juego en el aparato (tableta Android, Chromebook o PC)
@@ -24,7 +24,7 @@ Por qué así: no sabemos todavía si habrá grupo, red, internet ni cuántas se
 | Empaque | Aplicación instalable desde el navegador (funciona sin conexión); Capacitor para un instalable de Android si se necesita | Se instala una vez y luego no necesita red |
 | Contenido | Archivos YAML en `contenido/`, validados con un esquema al compilar | Los psicólogos pueden revisar texto legible; una opción sin código rompe la compilación |
 | Guardado en el aparato | Base de datos del navegador, cifrada | Sobrevive a cerrar la app y a quedarse sin batería |
-| Mapas | Tiled | Dayana y Omar arman y editan los mapas sin tocar código |
+| Mapas | Tiled, armados por el desarrollo a partir de las imágenes de arte | El arte llega como PNG sueltos (`../arte/direccion-de-arte.md`); recortes, mapas y choques no los hace el equipo de arte |
 | Estación (opcional, modo B) | Un ejecutable en Rust (axum + SQLite cifrado con SQLCipher) | Se instala copiando un archivo |
 | Servidor (opcional, modo C) | El mismo ejecutable en modo servidor | Una sola base de código |
 

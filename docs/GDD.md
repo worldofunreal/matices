@@ -37,7 +37,7 @@ El juego **recoge**, el psicólogo **interpreta**. El juego nunca diagnostica, p
 
 ## 4. Estructura de una partida
 
-Tres **días** en la colonia. Cada día tiene mañana, tarde y noche. Un día dura unos 33 minutos, pero no está atado a una sesión: el juego se pausa en cualquier momento y retoma donde se quedó (ver `CONTEXTO-DE-USO.md`).
+Tres **días** en la colonia. Cada día tiene mañana, tarde y noche. Un día dura unos 33 minutos, pero no está atado a una sesión: el juego se pausa en cualquier momento y retoma donde se quedó (ver `PRD.md`, contexto de uso).
 
 ```
 Día = Calma de entrada → Mañana (casa → camino → escuela) → Tarde (colonia) → Noche (casa) → Aterrizaje
@@ -153,13 +153,7 @@ En el paso 6, si el niño abre el panel y elige sensaciones intensas, el ambient
 
 ## 11. Dirección visual
 
-Detalle completo en `docs/arte/direccion-de-arte.md`. Resumen:
-
-- Pixel art en vista de tres cuartos desde arriba, paleta cálida (tierra, teja, verde, bugambilia), como las referencias de Dayana.
-- Resolución base 640 × 360 escalada en enteros; tiles de 32 × 32; sprites de 32 × 48 con 4 direcciones y caminata de 4 cuadros.
-- Retratos de 96 × 96 para diálogos y tarjetas, con 5 expresiones.
-- Pantalla horizontal (16:9 y 16:10). Las referencias verticales se usan como guía de estilo, no de composición.
-- Noche: misma escena con capa de color azul y luces cálidas en ventanas; nunca oscuridad total.
+Pixel art en vista de tres cuartos, paleta cálida, pantalla horizontal. Estilo, medidas y lista de arte en `docs/arte/direccion-de-arte.md`.
 
 ## 12. Controles
 

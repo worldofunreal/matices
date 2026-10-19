@@ -1,6 +1,6 @@
 # Dirección de arte
 
-Estilo propuesto por Dayana: pixel art cálido en vista de tres cuartos, ambientado en una colonia de una ciudad mexicana. Este documento fija el estilo, revisa las referencias y lista lo que falta producir.
+Estilo propuesto por Dayana: pixel art cálido en vista de tres cuartos, ambientado en una colonia de una ciudad mexicana. Este documento fija el estilo, revisa las referencias, lista lo que falta producir y dice cómo entregarlo.
 
 ## Referencias
 
@@ -69,6 +69,41 @@ Estilo propuesto por Dayana: pixel art cálido en vista de tres cuartos, ambient
 - [ ] Iconos del panel cuerpo / pensamiento / entorno (unos 12 por grupo).
 - [ ] Botones: Mi libro, Quiero hablar con alguien, Ahora no, Volver a escuchar, opciones.
 - [ ] Escena para describir: ilustración de una niña o niño en la ventana, de noche, con dos platos servidos en la mesa.
+
+## Orden de entrega
+
+Cada bloque desbloquea un hito de `../MVP.md`. Mientras no llega, el juego usa cuadros de colores en su lugar.
+
+| # | Qué | Hito |
+| --- | --- | --- |
+| 1 | Paleta (`paleta.png`, cuadritos de 8 × 8) y hoja de escala: piso, puerta, mesa y el niño parado, juntos | Antes de todo |
+| 2 | Cuerpo base del protagonista caminando en 4 direcciones | M1 |
+| 3 | Interior de la casa | M1 |
+| 4 | Calle y escuela por fuera | M1 |
+| 5 | Capas del protagonista: tonos, peinados, ropa, calzado | M2 |
+| 6 | Figuras para armar la casa | M2 |
+| 7 | La Cuentera, libro, tarjetas, iconos, caritas, botones | M3 |
+| 8 | Parque y versiones de noche | M5 |
+| 9 | Lo demás de "Lo que falta producir" | Días 2 y 3 |
+
+## Cómo entregarlo
+
+Solo imágenes PNG con fondo transparente; recortes, hojas de sprites, mapas y zonas por donde no se camina los arma el desarrollo.
+
+- **Lugares:** una imagen del cuarto o la calle vacíos (piso y muros) y, aparte, cada mueble u objeto en su propio PNG. Así el personaje puede pasar detrás de una mesa o un árbol.
+- **Personajes:** cada cuadro de la caminata en su propio PNG, o todos en una sola imagen en fila; mismo tamaño de lienzo y los pies a la misma altura en todos.
+- **Capas del protagonista:** cada pieza (cuerpo, cabello, ropa, calzado) en su PNG, dibujada sobre el mismo lienzo y en la misma posición que el cuerpo base.
+- **Retratos:** un PNG por expresión.
+- **Tarjetas:** solo la ilustración; el texto y el icono los pone el juego.
+- **Nombres:** minúsculas, sin acentos ni espacios: `casa_cocina.png`, `mesa_comedor.png`, `cuentera_triste.png`.
+- Si el arte sale de otra herramienta o de una IA a otro tamaño, se entrega así; el desarrollo lo ajusta a la rejilla y la paleta, y avisa si algo se pierde al ajustarlo.
+
+## Qué se revisa en cada entrega
+
+- Solo colores de la paleta.
+- El niño se ve de 8 a 12 años y el uniforme se lee mexicano.
+- Ningún tono de piel, casa o familia se ve más cuidado o descuidado que otro.
+- Las reglas de contenido visual de abajo y las palabras de `../LENGUAJE.md` en letreros y nombres.
 
 ## Reglas de contenido visual
 

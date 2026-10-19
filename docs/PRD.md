@@ -21,6 +21,21 @@ El juego recoge. El psicólogo interpreta. El juego no diagnostica.
 | Institución (por confirmar: escuela, DIF u otra) | Consentimientos, control de datos, protocolo de aviso | Acceder a datos de niños fuera del psicólogo asignado |
 | Tutor | Saber qué se hace, aceptar o rechazar, ejercer sus derechos | Recibir datos que pongan en riesgo al niño (pendiente legal) |
 
+### Contexto de uso: por confirmar
+
+Qué institución lo usa (escuela, DIF u otra), quién revisa los reportes y cuándo, cuántas sesiones hay y de cuánto tiempo, si se juega en grupo o uno a uno, si hay audífonos, red o internet: nada está confirmado. Depende de la llamada con la directora (preguntas en `PENDIENTES.md`). El desarrollo no se basa en ninguna de estas suposiciones; el juego funciona igual en cualquier caso:
+
+| Lo que no sabemos | Cómo lo cubre el juego |
+| --- | --- |
+| Número y duración de sesiones | Se pausa en cualquier momento y retoma donde se quedó; los días del juego son capítulos, no sesiones |
+| En grupo o uno a uno | Nada depende de que haya otros niños ni de que el adulto mire la pantalla |
+| Con o sin audífonos | Todo lo hablado aparece también escrito |
+| Con o sin red o internet | Funciona completo en el aparato; la salida de datos es aparte (`tecnico/arquitectura.md`) |
+| Quién lee los datos y cuándo | Archivo cifrado que solo abre el psicólogo asignado, el mismo día o después |
+| Institución | Ningún texto del juego la nombra |
+
+Sugerencias para la llamada, válidas solo si la institución las aprueba: tres sesiones de unos 33 minutos, una por día del juego; grupo completo con audífonos; laptop del psicólogo con avisos en vivo por la red del salón.
+
 ## 4. Objetivos
 
 1. Que un psicólogo pueda observar a muchos niños sin una sesión individual larga por niño, en el formato que apruebe la institución.
