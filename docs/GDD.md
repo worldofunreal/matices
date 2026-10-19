@@ -37,18 +37,18 @@ El juego **recoge**, el psicólogo **interpreta**. El juego nunca diagnostica, p
 
 ## 4. Estructura de una partida
 
-Tres **días** en la colonia, uno por sesión de clase (unos 33 minutos cada uno). Cada día tiene mañana, tarde y noche.
+Tres **días** en la colonia. Cada día tiene mañana, tarde y noche. Un día dura unos 33 minutos, pero no está atado a una sesión: el juego se pausa en cualquier momento y retoma donde se quedó (ver `CONTEXTO-DE-USO.md`).
 
 ```
 Día = Calma de entrada → Mañana (casa → camino → escuela) → Tarde (colonia) → Noche (casa) → Aterrizaje
          ↑ en cada tramo se dispara 1 o 2 sucesos sin final, según el plan del día
 ```
 
-| Día | Sesión | Qué pasa además de explorar | Sucesos (ver `contenido/cuentos`) |
-| --- | --- | --- | --- |
-| 1 | 1 | Crear personaje, armar la casa, conocer a La Cuentera, primer dibujo | E00, E03, E07, E09 |
-| 2 | 2 | Escena para describir en la biblioteca | E06, E02, E04, E13, E14, E10 |
-| 3 | 3 | "Sobre mí" con los gemelos al final del día | E11, E01, E08, E12, E05 |
+| Día | Qué pasa además de explorar | Sucesos (ver `contenido/cuentos`) |
+| --- | --- | --- |
+| 1 | Crear personaje, armar la casa, conocer a La Cuentera, primer dibujo | E00, E03, E07, E09 |
+| 2 | Escena para describir en la biblioteca | E06, E02, E04, E13, E14, E10 |
+| 3 | "Sobre mí" con los gemelos al final del día | E11, E01, E08, E12, E05 |
 
 Reglas de orden: cada día abre y cierra sus sucesos con uno de intensidad baja; los de en medio se barajan por niño con una semilla guardada; tras cada suceso de intensidad media hay al menos un minuto de exploración libre. La hora del día en que ocurre cada suceso está fija por su contenido (la fiebre, de noche; el recreo, en la escuela).
 

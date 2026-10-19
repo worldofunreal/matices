@@ -15,12 +15,19 @@ Lo que bloquea el piloto, por quién lo decide.
 - [ ] En cuánto tiempo se lee un reporte marcado "revisar pronto".
 - [ ] Criterio de éxito del piloto, antes de empezarlo.
 
-## Instituciones (escuela, DIF)
+## Contexto de uso (llamada con la directora)
+
+- [ ] Qué institución lo usa: escuela, DIF u otra.
+- [ ] Quién revisa los reportes y en cuánto tiempo.
+- [ ] Cuántas sesiones hay y de cuánto tiempo.
+- [ ] En grupo o uno a uno; si hay audífonos.
+- [ ] Qué aparatos hay y si hay red o internet.
+- [ ] Cómo salen los datos hacia el psicólogo (archivo, red local o servidor).
+
+## Instituciones
 
 - [ ] Protocolo para avisar a la Procuraduría de Protección: quién, en cuánto tiempo, con qué formato.
 - [ ] Qué se ofrece a niños sin firma del tutor; los de más riesgo suelen ser los de familias que no firman.
-- [ ] Si las escuelas pueden dar 3 sesiones por grupo o hay que condensar.
-- [ ] Qué aparatos y red hay en cada escuela.
 
 ## Abogado
 
@@ -44,5 +51,4 @@ Lo que bloquea el piloto, por quién lo decide.
 ## Técnico (Claude)
 
 - [ ] Tableta de referencia (2 GB de RAM) para medir rendimiento.
-- [ ] Punto de acceso de referencia para la red del salón.
 - [ ] Esquema de validación del contenido.

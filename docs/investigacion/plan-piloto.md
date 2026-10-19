@@ -5,9 +5,9 @@ El juego no se usa con grupos completos hasta que un piloto muestre qué tanto c
 | Fase | Qué se hace | Con quién | Para pasar a la siguiente |
 | --- | --- | --- | --- |
 | 0. Revisión experta | Psicólogos revisan áreas, códigos, textos y consentimiento; abogado revisa lo legal; comité de ética aprueba el estudio | Conglomerado, abogado, comité | `docs/PENDIENTES.md` resuelto y aprobación del comité |
-| 1. Prueba de uso (MVP) | Un grupo juega el Día 1; se mide comprensión, duración y malestar; datos sin uso clínico | Un grupo con consentimiento y su psicólogo | Entienden sin ayuda y ninguna escena causa malestar fuera de lo aceptable para el psicólogo |
-| 2. Validación | Juego completo; tutores y maestros llenan el SDQ en papel; un psicólogo que no vio el reporte evalúa; se compara | Varias escuelas y un centro del DIF | Criterio de éxito fijado antes de empezar |
-| 3. Uso amplio | Escuelas y DIF con el protocolo de aviso | Instituciones con convenio | Revisión anual |
+| 1. Prueba de uso (MVP) | Niños juegan el Día 1, en el formato que apruebe la institución; se mide comprensión, duración y malestar; datos sin uso clínico | Niños con consentimiento y su psicólogo | Entienden sin ayuda y ninguna escena causa malestar fuera de lo aceptable para el psicólogo |
+| 2. Validación | Juego completo; tutores y maestros llenan el SDQ en papel; un psicólogo que no vio el reporte evalúa; se compara | Por definir con la institución | Criterio de éxito fijado antes de empezar |
+| 3. Uso amplio | Instituciones con el protocolo de aviso | Instituciones con convenio | Revisión anual |
 
 ## Qué se mide en la fase 2
 

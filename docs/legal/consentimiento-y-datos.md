@@ -29,9 +29,9 @@ La pantalla del paso 3 no promete secreto absoluto: decir la verdad sobre los l�
 
 ## Cómo se cuidan los datos
 
-- **Código en lugar de nombre.** Aparatos y servidor solo conocen un código. La lista código–nombre vive cifrada en la estación del psicólogo.
-- **Cifrado** en el aparato, en el envío y en la estación. Al confirmarse el envío, el aparato borra su copia.
-- **Acceso mínimo.** Solo los psicólogos asignados al grupo. Bitácora de cada acceso.
+- **Código en lugar de nombre.** Aparatos y servidor solo conocen un código. La lista código–nombre vive cifrada en la computadora del psicólogo, nunca en el aparato del niño.
+- **Cifrado** en el aparato, en la entrega y en la computadora del psicólogo. Al confirmarse el envío, el aparato borra su copia.
+- **Acceso mínimo.** Solo los psicólogos asignados a cada niño. Bitácora de cada acceso.
 - **Sin terceros.** Sin publicidad, analítica externa, venta ni cesión. El proveedor del servidor firma como encargado.
 - **Plazo.** Borrado automático al vencer el plazo que fijen la institución y el abogado.
 
