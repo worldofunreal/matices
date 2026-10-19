@@ -12,7 +12,7 @@ export const DOC_CODIGOS = join(ROOT, "docs/clinico/codigos-y-eventos.md");
 export const PANEL_CPE = join(ROOT, "contenido/panel-cpe.yaml");
 
 export type Tipo = "hoja" | "retrato" | "fondo" | "objeto" | "marco" | "tarjeta" | "boton" | "icono" | "ilustracion";
-export type Rampa = "piel" | "cabello";
+export type Rampa = "piel" | "cabello" | "mochila";
 
 export interface Pieza {
   id: string; // texture key: carpeta/nombre, e.g. "personaje/cuerpo_nina"
@@ -35,7 +35,7 @@ type Grupo = {
   colores?: Rampa[];
   expresiones?: string[];
   desde?: "codigos" | "panel-cpe";
-  piezas?: Record<string, string | { que: string; medida: [number, number] }>;
+  piezas?: Record<string, string | { que: string; medida?: [number, number]; colores?: Rampa[] }>;
 };
 
 export function codigosValidos(): Set<string> {
@@ -51,14 +51,15 @@ export function leerManifiesto(): Manifiesto {
   const m = parse(readFileSync(MANIFIESTO, "utf8"));
   const piezas: Pieza[] = [];
   for (const g of m.grupos as Grupo[]) {
-    let entradas: [string, string | { que: string; medida: [number, number] }][] = Object.entries(g.piezas ?? {});
+    let entradas: [string, string | { que: string; medida?: [number, number]; colores?: Rampa[] }][] = Object.entries(g.piezas ?? {});
     if (g.desde === "codigos")
       entradas = [...codigosValidos()].sort().map((c) => [c.toLowerCase(), `Código ${c}`]);
     if (g.desde === "panel-cpe")
       entradas = Object.entries(panelCpe()).flatMap(([grupo, ops]) => ops.map(([id, t]) => [id, `${grupo}: ${t}`]));
     for (const [nombre, v] of entradas) {
       const que = typeof v === "string" ? v : v.que;
-      const medida = typeof v === "string" ? g.medida : v.medida;
+      const medida = (typeof v === "string" ? undefined : v.medida) ?? g.medida;
+      const colores = (typeof v === "string" ? undefined : v.colores) ?? g.colores ?? [];
       if (!medida) throw new Error(`manifiesto: ${g.carpeta}/${nombre} no tiene medida`);
       for (const sufijo of g.expresiones ?? [""]) {
         const n = sufijo ? `${nombre}_${sufijo}` : nombre;
@@ -68,7 +69,7 @@ export function leerManifiesto(): Manifiesto {
           tipo: g.tipo,
           medida,
           que: sufijo ? `${que} (${sufijo})` : que,
-          colores: g.colores ?? [],
+          colores,
         });
       }
     }

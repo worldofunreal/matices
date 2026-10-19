@@ -4,6 +4,7 @@ Registro de cambios de dirección, con su razón. La más reciente arriba.
 
 | Fecha | Decisión | Por qué | Quién |
 | --- | --- | --- | --- |
+| 2026-10-19 | Con "Ahora no" en el sí del niño se juega el mismo juego sin guardar ningún evento, en lugar de una actividad aparte (`legal/consentimiento-y-datos.md`) | Se ve igual y nadie nota la diferencia; no hay que mantener otra actividad | Claude |
 | 2026-10-19 | Mundo urbano moderno (escuela de dos pisos, parque con lago, biblioteca moderna) en lugar del rústico, con detalles mexicanos agregados (`arte/direccion-de-arte.md`) | Concept art nuevo de Dayana y Omar | Omar |
 | 2026-10-19 | Analítica completa: el juego mide uso y técnica para el equipo, además de lo clínico; los datos llegan a un servidor propio, no a un servicio externo (PRD F16, F17) | Encontrar abandono, errores y puntos de dolor | Omar |
 | 2026-10-19 | matices.online la juegan solo el equipo y adultos de prueba hasta que haya consentimientos firmados; sus datos se marcan como prueba | Ningún niño entra sin consentimiento | Omar |

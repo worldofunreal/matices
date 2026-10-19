@@ -17,13 +17,10 @@ Ningún niño juega con registro sin la firma de su tutor y su propio sí dentro
 
 1. **Aviso de privacidad para el tutor**, en lenguaje sencillo: qué se registra, para qué, quién lo ve, cuánto tiempo se guarda, y cómo pedir acceso, corrección, borrado u oposición.
 2. **Firma del tutor**, expresa y por escrito. El uso de datos para el estudio del piloto se firma aparte.
-3. **El sí del niño**, en la primera pantalla, con voz:
-   > "Este juego tiene cuentos. [Nombre del psicólogo] va a ver lo que elijas para conocerte mejor. Tus maestros y tus compañeros no lo ven. Si algo nos preocupa de tu seguridad, [nombre] buscará a adultos que te puedan cuidar. Puedes dejar de jugar cuando quieras."
-   >
-   > Botones: "Sí quiero jugar" · "Ahora no"
+3. **El sí del niño**, en la primera pantalla, con voz. El texto y los botones ("Sí quiero jugar" · "Ahora no") están en `contenido/textos.yaml`, clave `asentimiento`. Dice quién va a ver lo que elija, que maestros y compañeros no lo ven, que si algo preocupa de su seguridad se buscará a adultos que lo cuiden, y que puede dejar de jugar cuando quiera.
 4. **Salir en cualquier momento.** El niño puede dejar de jugar sin dar razones; el tutor puede retirar el permiso y pedir borrado, salvo lo que la institución deba conservar por un aviso de protección en curso.
 
-El niño que dice "Ahora no" o no tiene firma recibe una actividad de dibujo y cuentos sin registro, con la misma apariencia, para que nadie note la diferencia.
+El niño que dice "Ahora no" o no tiene firma juega el mismo juego sin registro: no se guarda ningún evento, ni clínico ni de uso, y se ve igual para que nadie note la diferencia.
 
 La pantalla del paso 3 no promete secreto absoluto: decir la verdad sobre los límites de la confidencialidad evita que el niño se sienta traicionado si hay que avisar.
 
@@ -45,4 +42,4 @@ La pantalla del paso 3 no promete secreto absoluto: decir la verdad sobre los l�
 | Maestros y directivos | Solo si el niño jugó o no |
 | Tutor | Lo que la ley le dé por su derecho de acceso (pendiente legal) |
 | Psicólogo asignado | Reporte completo, datos crudos, avisos |
-| Equipo del juego | Datos sin código ni nombre, solo para corregir fallas y con permiso de la institución |
+| Equipo del juego | Eventos de uso y técnica con el código, nunca el nombre ni reportes clínicos por niño (PRD F16, F17) |

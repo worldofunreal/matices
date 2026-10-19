@@ -77,6 +77,7 @@ function figura(ctx: Ctx, ox: number, oy: number, dir: number, paso: number, cap
     r(10, 43 + pierna, 6, 4, "#3b3b4f");
     r(17, 43 - pierna, 6, 4, "#3b3b4f");
   }
+  if (capa === "mochila") r(dir === 0 ? 6 : 8, 19, dir === 0 ? 3 : 16, 12, m.colores.mochila.clave[1]);
   if (capa === "extra") r(dir === 3 ? 8 : 11, dir === 3 ? 20 : 9, dir === 3 ? 16 : 10, dir === 3 ? 10 : 3, tono(nombre, 40));
 }
 
@@ -90,6 +91,7 @@ function capaDe(p: Pieza) {
   if (n.endsWith("_arriba")) return "arriba";
   if (n.endsWith("_pantalon") || n.endsWith("_abajo")) return "abajo";
   if (n.startsWith("calzado_")) return "calzado";
+  if (n === "extra_mochila") return "mochila";
   if (n.startsWith("extra_")) return "extra";
   return "figura";
 }

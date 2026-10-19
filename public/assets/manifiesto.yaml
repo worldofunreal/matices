@@ -6,8 +6,8 @@
 # Hojas de personaje: 5 columnas (quieto, paso 1 a 4) × 4 filas (abajo, izquierda, derecha, arriba),
 # cuadros de 32 × 48, pies en la misma fila de píxeles en todos los cuadros.
 
-# Piel y cabello se dibujan con los colores "clave" (claro, medio, sombra). El juego cambia esos
-# tres colores por los del tono o color elegido. Los colores clave son los del tono 1 y el color 1.
+# Piel, cabello y mochila se dibujan con los colores "clave" (claro, medio, sombra). El juego cambia
+# esos tres colores por los del tono o color elegido. Los colores clave son los de la variante 1.
 colores:
   piel:
     clave: ["#f6d7bd", "#e2b896", "#c4936f"]
@@ -29,6 +29,13 @@ colores:
       - ["#9a6d46", "#7a5233", "#583a23"]
       - ["#d1a868", "#b08547", "#87622f"]
       - ["#a5532f", "#83401f", "#5e2c14"]
+  mochila:
+    clave: ["#5b8fd6", "#3f6fb3", "#2b4f85"]
+    variantes:
+      - ["#5b8fd6", "#3f6fb3", "#2b4f85"]
+      - ["#e0605a", "#bf4540", "#8f2f2b"]
+      - ["#6cbf6a", "#4c9a4a", "#356f34"]
+      - ["#f2c14e", "#d19e2f", "#9c741d"]
 
 grupos:
   - carpeta: personaje
@@ -58,7 +65,7 @@ grupos:
       extra_lentes: Lentes
       extra_aretes: Aretes pequeños
       extra_gorra: Gorra
-      extra_mochila: Mochila
+      extra_mochila: {que: Mochila, colores: [mochila]}
 
   - carpeta: personaje
     tipo: retrato

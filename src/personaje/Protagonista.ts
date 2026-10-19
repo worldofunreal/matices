@@ -9,6 +9,7 @@ export interface Apariencia {
   ropa: "uniforme" | "casa";
   abajo: "pantalon" | "falda"; // only for the uniform
   extras: ("lentes" | "aretes" | "gorra" | "mochila")[];
+  colorMochila: number; // index into colores.mochila.variantes
 }
 
 export const APARIENCIA_INICIAL: Apariencia = {
@@ -19,6 +20,7 @@ export const APARIENCIA_INICIAL: Apariencia = {
   ropa: "uniforme",
   abajo: "pantalon",
   extras: [],
+  colorMochila: 0,
 };
 
 // Sheets stacked bottom to top. Every layer shares the same frame, so they always line up.
@@ -42,7 +44,7 @@ export class Protagonista extends Phaser.GameObjects.Container {
   vestir(a: Apariencia) {
     this.removeAll(true);
     this.hojas = capas(a).map((id) => {
-      const clave = variante(this.scene, id, { piel: a.piel, cabello: a.colorCabello });
+      const clave = variante(this.scene, id, { piel: a.piel, cabello: a.colorCabello, mochila: a.colorMochila });
       animar(this.scene, clave);
       return this.scene.add.sprite(0, 0, clave, 0).setOrigin(0.5, 1);
     });

@@ -15,6 +15,7 @@ export class Mundo extends Phaser.Scene {
   private muros!: Phaser.Tilemaps.TilemapLayer;
   private teclas!: Record<"arriba" | "abajo" | "izq" | "der", Phaser.Input.Keyboard.Key[]>;
   private ruta: Phaser.Math.Vector2[] = [];
+  private alLlegar: (() => void) | null = null;
 
   constructor() {
     super("Mundo");
@@ -38,7 +39,9 @@ export class Mundo extends Phaser.Scene {
     this.physics.add.collider(this.prota, this.muros);
 
     this.encuadrar(mapa);
-    this.scale.on("resize", () => this.encuadrar(mapa));
+    const encuadrar = () => this.encuadrar(mapa);
+    this.scale.on("resize", encuadrar);
+    this.events.once("shutdown", () => this.scale.off("resize", encuadrar));
     this.cameras.main.startFollow(this.prota, true);
 
     const k = this.input.keyboard!;
@@ -50,13 +53,43 @@ export class Mundo extends Phaser.Scene {
       der: [k.addKey(K.RIGHT), k.addKey(K.D)],
     };
 
-    this.input.on("pointerdown", (p: Phaser.Input.Pointer) => this.caminarA(p.worldX, p.worldY));
+    this.colocarObjetos(mapa, estado.lugar);
+    this.input.on("pointerdown", (p: Phaser.Input.Pointer, encima: Phaser.GameObjects.GameObject[]) => {
+      if (encima.length) return; // tapped an object; it handles itself
+      this.alLlegar = null;
+      this.caminarA(p.worldX, p.worldY);
+    });
 
     if (this.physics.world.drawDebug) {
       this.muros.renderDebug(this.add.graphics().setAlpha(0.5), { tileColor: null });
       for (const o of mapa.getObjectLayer("objetos")!.objects)
         this.add.text(o.x!, o.y!, o.name, { fontSize: "8px", color: "#000" }).setOrigin(0.5).setDepth(1e6);
     }
+  }
+
+  // Points of type "objeto" with art in lugares/<lugar>/<name>.png are drawn there, feet on the point.
+  // Tapping one walks next to it and then acts.
+  private colocarObjetos(mapa: Phaser.Tilemaps.Tilemap, lugar: string) {
+    for (const o of mapa.getObjectLayer("objetos")!.objects) {
+      const clave = `lugares/${lugar}/${o.name}`;
+      if (o.type !== "objeto" || !this.textures.exists(clave)) continue;
+      const img = this.add.image(o.x!, o.y!, clave).setOrigin(0.5, 1).setDepth(o.y!).setInteractive({ useHandCursor: true });
+      img.on("pointerdown", () => {
+        this.alLlegar = () => this.usar(o.name);
+        this.caminarA(o.x!, o.y! + TILE / 2);
+        if (!this.ruta.length) this.llegar();
+      });
+    }
+  }
+
+  private usar(objeto: string) {
+    if (objeto === "espejo") this.scene.start("Creacion", { modo: "espejo" });
+  }
+
+  private llegar() {
+    const accion = this.alLlegar;
+    this.alLlegar = null;
+    accion?.();
   }
 
   // The camera follows inside the map; on an axis where the map is smaller than the screen, it is centered.
@@ -99,6 +132,7 @@ export class Mundo extends Phaser.Scene {
     const siguiente = this.ruta[0];
     if (!siguiente) {
       body.setVelocity(0, 0);
+      if (this.alLlegar) this.llegar();
       return;
     }
     const dir = siguiente.clone().subtract(body.center).normalize().scale(VELOCIDAD);

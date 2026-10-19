@@ -1,0 +1,41 @@
+# Textos fijos del juego (no los de los sucesos). Cada texto tiene voz; una grabación en
+# public/assets/voz/<clave>.mp3 reemplaza a la voz del navegador (ej. voz/asentimiento.texto.mp3).
+# {psicologo}: quien acompaña al niño (lo fija la institución). {nombre}: nombre del personaje.
+
+asentimiento:
+  texto: "Este juego tiene cuentos. {psicologo} va a ver lo que elijas para conocerte mejor. Tus maestros y tus compañeros no lo ven. Si algo nos preocupa de tu seguridad, {psicologo} buscará a adultos que te puedan cuidar. Puedes dejar de jugar cuando quieras."
+  si: "Sí quiero jugar"
+  no: "Ahora no"
+  psicologo_prueba: "La persona que te acompaña"
+
+creacion:
+  inicio: "Vamos a hacer a tu personaje."
+  espejo: "Aquí puedes cambiar a tu personaje."
+  listo: "Listo"
+  pasos:
+    cuerpo: "¿Cómo es tu personaje?"
+    piel: "¿De qué color es su piel?"
+    cabello: "¿Cómo es su cabello?"
+    color_cabello: "¿De qué color es su cabello?"
+    ropa: "¿Qué ropa trae?"
+    extras: "¿Algo más? Puedes elegir varios o ninguno."
+    color_mochila: "¿De qué color es su mochila?"
+    nombre: "¿Cómo se llama?"
+  cuerpo:
+    nina: "Niña"
+    nino: "Niño"
+    neutro: "Prefiero no elegir"
+  ropa:
+    uniforme_pantalon: "Uniforme con pantalón"
+    uniforme_falda: "Uniforme con falda"
+    casa: "Ropa de casa"
+  extras:
+    lentes: "Lentes"
+    aretes: "Aretes"
+    gorra: "Gorra"
+    mochila: "Mochila"
+  piel: "Color de piel {n}"
+  color_cabello: "Color de cabello {n}"
+  color_mochila: "Mochila de color {n}"
+  escribir_nombre: "Escribir otro nombre"
+  nombres: [Ana, Sofía, Valeria, Camila, Ximena, Regina, Fernanda, Daniela, Mariana, Lupita, Itzel, Renata, Paola, Andrea, Jimena, Naomi, Alma, Citlali, Abril, Luz, Diego, Santiago, Mateo, Emiliano, Leonardo, Juan, José, Luis, Ángel, Miguel, Iker, Tadeo, Gael, Kevin, Brayan, Alexis, Sam, Alex, Dani, Cris]

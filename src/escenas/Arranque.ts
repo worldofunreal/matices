@@ -1,9 +1,10 @@
 import Phaser from "phaser";
 import { cargarArte, totalPiezas } from "../arte";
 import { cargarEstado } from "../datos/guardado";
-import { registrar } from "../datos/eventos";
+import { registrar, preguntado } from "../datos/eventos";
 
-// Loads every piece of art from the manifest and the saved game, then resumes where the child was.
+// Loads every piece of art from the manifest and the saved game, then goes to the child's yes,
+// to character creation, or back to where the child was.
 export class Arranque extends Phaser.Scene {
   private t0 = 0;
 
@@ -28,6 +29,8 @@ export class Arranque extends Phaser.Scene {
     rejilla.context.fillRect(0, 0, 32 * 5, 32);
     rejilla.refresh();
     const estado = await cargarEstado();
-    this.scene.start("Mundo", estado);
+    if (!preguntado()) this.scene.start("Asentimiento");
+    else if (!estado.creado) this.scene.start("Creacion", { modo: "inicio" });
+    else this.scene.start("Mundo", estado);
   }
 }

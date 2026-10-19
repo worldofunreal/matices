@@ -14,7 +14,7 @@ export function cargarArte(escena: Phaser.Scene) {
   }
 }
 
-export type Colores = { piel?: number; cabello?: number };
+export type Colores = { piel?: number; cabello?: number; mochila?: number };
 
 const hex = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
 

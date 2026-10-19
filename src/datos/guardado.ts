@@ -10,12 +10,15 @@ export interface Estado {
   y: number | null;
   direccion: Direccion;
   apariencia: Apariencia;
+  creado: boolean; // finished character creation
+  nombre: string; // stays on the device; never goes into an event
 }
 
-const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL };
+const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "" };
 
 let actual: Estado = NUEVO;
 let leido = false; // never write before the saved game was read, or it would be overwritten
+const escribir = () => leido && void guardar("estado", actual);
 
 export async function cargarEstado(): Promise<Estado> {
   actual = { ...NUEVO, ...(await leer<Estado>("estado")) };
@@ -27,11 +30,11 @@ export function estado() {
   return actual;
 }
 
-export function cambiarEstado(cambios: Partial<Estado>) {
+export function cambiarEstado(cambios: Partial<Estado>, ahora = false) {
   actual = { ...actual, ...cambios };
+  if (ahora) escribir();
 }
 
-const escribir = () => leido && void guardar("estado", actual);
 setInterval(escribir, 5000);
 document.addEventListener("visibilitychange", () => document.hidden && escribir());
 addEventListener("pagehide", escribir);

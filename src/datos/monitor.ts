@@ -23,6 +23,13 @@ export function vigilar(juego: Phaser.Game, sesion: number) {
     registrar("rendimiento", { fps: Math.round(juego.loop.actualFps), memoria_mb: memoria ? Math.round(memoria.usedJSHeapSize / 2 ** 20) : null });
   }, 60_000);
 
-  for (const escena of juego.scene.getScenes(false))
-    escena.events.on("create", () => registrar("pantalla", { pantalla: escena.scene.key }));
+  // Scenes exist only once the game has booted.
+  juego.events.once("ready", () => {
+    let anterior: string | null = null;
+    for (const escena of juego.scene.getScenes(false))
+      escena.events.on("create", () => {
+        registrar("pantalla", { pantalla: escena.scene.key, anterior });
+        anterior = escena.scene.key;
+      });
+  });
 }

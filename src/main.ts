@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import { Arranque } from "./escenas/Arranque";
 import { Mundo } from "./escenas/Mundo";
+import { Asentimiento } from "./escenas/Asentimiento";
+import { Creacion } from "./escenas/Creacion";
 import { iniciarRegistro } from "./datos/eventos";
 import { vigilar } from "./datos/monitor";
 
@@ -11,8 +13,9 @@ const debug = new URLSearchParams(location.search).has("debug");
 const LADO_CORTO = 360;
 const medida = () => {
   const dpr = devicePixelRatio || 1;
-  const w = innerWidth * dpr;
-  const h = innerHeight * dpr;
+  // A hidden or not yet laid out window can report 0 for its size.
+  const w = (innerWidth || LADO_CORTO) * dpr;
+  const h = (innerHeight || LADO_CORTO) * dpr;
   const z = Math.max(1, Math.floor(Math.min(w, h) / LADO_CORTO));
   return { ancho: Math.ceil(w / z), alto: Math.ceil(h / z), zoom: z / dpr };
 };
@@ -28,7 +31,7 @@ const juego = new Phaser.Game({
   backgroundColor: "#1d1a24",
   scale: { mode: Phaser.Scale.NONE, zoom: medida().zoom },
   physics: { default: "arcade", arcade: { debug } },
-  scene: [Arranque, Mundo],
+  scene: [Arranque, Asentimiento, Creacion, Mundo],
 });
 
 vigilar(juego, partida.sesion);

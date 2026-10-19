@@ -3,7 +3,7 @@
 // and art with a missing file or a wrong size never ship.
 // Sources of truth: codes in docs/clinico/codigos-y-eventos.md, area ids in
 // docs/clinico/marco-clinico.md, version in contenido/README.md, art in public/assets/manifiesto.yaml.
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { parse } from "yaml";
 import type { Plugin } from "vite";
@@ -119,8 +119,23 @@ function validar() {
     }
   }
 
+  const textos = parse(readFileSync(join(DIR, "textos.yaml"), "utf8"));
+  const marcasTextos = new Set(["{psicologo}", "{nombre}", "{n}"]);
+  const recorrer = (v: unknown, donde: string): void => {
+    if (typeof v === "string") {
+      if (!v.trim()) err(donde, "texto vacío");
+      for (const m of v.match(/\{[^}]*\}/g) ?? []) if (!marcasTextos.has(m)) err(donde, `marca desconocida ${m}`);
+    } else if (Array.isArray(v)) v.forEach((x, i) => recorrer(x, `${donde}[${i}]`));
+    else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) recorrer(x, `${donde}.${k}`);
+  };
+  recorrer(textos, "textos");
+  const nombres: string[] = textos.creacion?.nombres ?? [];
+  if (nombres.length !== 40 || new Set(nombres).size !== 40) err("textos creacion.nombres", "deben ser 40 nombres distintos");
+  for (const k of ["cuerpo", "piel", "cabello", "color_cabello", "ropa", "extras", "color_mochila", "nombre"])
+    if (!textos.creacion?.pasos?.[k]) err("textos creacion.pasos", `falta ${k}`);
+
   if (errores.length) throw new Error(`Contenido inválido:\n- ${errores.join("\n- ")}`);
-  return { version: version(), cuentos, sobreMi, escena, panel };
+  return { version: version(), cuentos, sobreMi, escena, panel, textos };
 }
 
 function validarArte() {
@@ -135,7 +150,10 @@ function validarArte() {
   for (const [nombre, r] of Object.entries(m.colores))
     if (r.variantes.some((v) => v.length !== r.clave.length)) errores.push(`colores ${nombre}: cada variante lleva ${r.clave.length} colores`);
   if (errores.length) throw new Error(`Arte inválido:\n- ${errores.join("\n- ")}`);
-  return m;
+  // Recorded voice lines present in public/assets/voz/; any other line uses the browser voice.
+  const carpetaVoz = join(ROOT, "public/assets/voz");
+  const voces = existsSync(carpetaVoz) ? readdirSync(carpetaVoz).filter((f) => f.endsWith(".mp3")).map((f) => f.slice(0, -4)) : [];
+  return { ...m, voces };
 }
 
 export function contenido(): Plugin {
@@ -145,7 +163,7 @@ export function contenido(): Plugin {
     load(id) {
       const nombre = id.slice(1);
       if (!id.startsWith("\0") || !(nombre in MODULOS)) return;
-      const vigilar = [DOC_CODIGOS, DOC_AREAS, README, PANEL_CPE, MANIFIESTO, join(DIR, "sobre-mi.yaml"), join(DIR, "escena-para-describir.yaml")];
+      const vigilar = [DOC_CODIGOS, DOC_AREAS, README, PANEL_CPE, MANIFIESTO, join(DIR, "textos.yaml"), join(DIR, "sobre-mi.yaml"), join(DIR, "escena-para-describir.yaml")];
       for (const f of vigilar) this.addWatchFile(f);
       for (const f of readdirSync(CUENTOS)) this.addWatchFile(join(CUENTOS, f));
       return `export default ${JSON.stringify(MODULOS[nombre]())};`;

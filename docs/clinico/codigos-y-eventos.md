@@ -63,7 +63,7 @@ Todos llevan: código del niño, sesión, versión del contenido, semilla de ord
 
 | Evento | Datos | Para qué |
 | --- | --- | --- |
-| `personaje` | Cuerpo, tono, cabello, ropa, extras; cambios posteriores | Contexto; no se interpreta solo |
+| `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
 | `casa_figura` | Figura, cuarto, distancia al personaje, si la quitó | Quién forma el mundo del niño |
 | `cuento_paso` | Suceso, paso, opciones en el orden mostrado, opción y código, toques previos, ms para decidir | El dato central |
 | `carita` | Suceso, valor 1 a 5 | Cómo se siente el protagonista |

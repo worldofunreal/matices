@@ -27,12 +27,31 @@ declare module "virtual:contenido" {
     cuentos: Cuento[];
     sobreMi: { aviso: string; frases: { id: string; area: string; a: string; b: string }[] };
     escena: Record<string, unknown>;
+    panel: Record<"cuerpo" | "pensamiento" | "entorno", Opcion[]>;
+    textos: Textos;
   };
+  interface Textos {
+    asentimiento: { texto: string; si: string; no: string; psicologo_prueba: string };
+    creacion: {
+      inicio: string;
+      espejo: string;
+      listo: string;
+      pasos: Record<"cuerpo" | "piel" | "cabello" | "color_cabello" | "ropa" | "extras" | "color_mochila" | "nombre", string>;
+      cuerpo: Record<"nina" | "nino" | "neutro", string>;
+      ropa: Record<"uniforme_pantalon" | "uniforme_falda" | "casa", string>;
+      extras: Record<"lentes" | "aretes" | "gorra" | "mochila", string>;
+      piel: string;
+      color_cabello: string;
+      color_mochila: string;
+      escribir_nombre: string;
+      nombres: string[];
+    };
+  }
   export default contenido;
 }
 
 declare module "virtual:arte" {
-  type Rampa = "piel" | "cabello";
+  type Rampa = "piel" | "cabello" | "mochila";
   interface Pieza {
     id: string;
     archivo: string;
@@ -44,6 +63,7 @@ declare module "virtual:arte" {
   const arte: {
     colores: Record<Rampa, { clave: string[]; variantes: string[][] }>;
     piezas: Pieza[];
+    voces: string[];
   };
   export default arte;
 }
