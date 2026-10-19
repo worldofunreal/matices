@@ -18,7 +18,7 @@ El juego corre en el navegador de cada aparato y lo sirve la **estación del psi
  Servidor de la institución (datos cifrados, respaldo, reportes)
 ```
 
-Por qué así: las escuelas públicas suelen tener internet malo o nulo; el aviso de "Quiero hablar con alguien" tiene que llegar en segundos; y los datos no deben quedarse en aparatos compartidos.
+Por qué así: muchas escuelas no tienen internet confiable; el aviso de "Quiero hablar con alguien" tiene que llegar en segundos; y los datos no deben quedarse en aparatos compartidos.
 
 ## Componentes
 

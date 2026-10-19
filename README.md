@@ -1,14 +1,14 @@
-# Cuentos del Barrio
+# Matices
 
 Videojuego de pixel art para niñas y niños de 8 a 12 años, jugado en escuelas y en el DIF de México, que registra sus elecciones en situaciones cotidianas para que un psicólogo las lea.
 
 **El juego recoge. El psicólogo interpreta. El juego no diagnostica.**
 
-> Título de trabajo. Estado: diseño, antes de prototipo. Repositorio privado.
+> Estado: diseño, antes de prototipo. Repositorio privado.
 
 ## Cómo se juega, en corto
 
-El niño crea a su personaje, arma su casa con las personas que quiera y recorre el barrio, la escuela y el parque durante tres días (tres sesiones de clase). A lo largo del día pasan cosas que se quedan sin final: se raspa la rodilla, no hay comida, un adulto no llega. La Cuentera abre su libro y le pregunta "¿Y qué pasó después?". El niño decide quién llega, qué hace y cómo termina. Ningún final es el correcto.
+El niño crea a su personaje, arma su casa con las personas que quiera y recorre su colonia, la escuela y el parque durante tres días (tres sesiones de clase). A lo largo del día pasan cosas que se quedan sin final: se raspa la rodilla, no hay comida, un adulto no llega. La Cuentera abre su libro y le pregunta "¿Y qué pasó después?". El niño decide quién llega, qué hace y cómo termina. Ningún final es el correcto.
 
 ## Documentos
 
@@ -25,6 +25,7 @@ El niño crea a su personaje, arma su casa con las personas que quiera y recorre
 | [docs/legal/consentimiento-y-datos.md](docs/legal/consentimiento-y-datos.md) | Consentimiento, privacidad y ley mexicana |
 | [docs/legal/protocolo-de-aviso.md](docs/legal/protocolo-de-aviso.md) | Qué pasa cuando algo preocupa |
 | [docs/investigacion/plan-piloto.md](docs/investigacion/plan-piloto.md) | Fases del piloto y qué se mide |
+| [docs/LENGUAJE.md](docs/LENGUAJE.md) | Palabras que se usan y palabras que no, en el juego y en los documentos |
 | [docs/DECISIONES.md](docs/DECISIONES.md) | Cambios frente al GDD original y por qué |
 | [docs/PENDIENTES.md](docs/PENDIENTES.md) | Lo que falta decidir: clínico, legal, creativo |
 | [docs/REFERENCIAS.md](docs/REFERENCIAS.md) | Fuentes consultadas |

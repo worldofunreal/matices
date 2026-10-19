@@ -34,8 +34,7 @@ Lo que bloquea el piloto, por quién lo decide.
 
 ## Creativo (Omar y Dayana)
 
-- [ ] Título definitivo (hoy: "Cuentos del Barrio").
-- [ ] Interior de la casa, parque, tiendita y biblioteca del barrio (sin referencia aún).
+- [ ] Interior de la casa, parque, tiendita y biblioteca de la colonia (sin referencia aún).
 - [ ] Diseño de La Cuentera y de los gemelos Tito y Tita.
 - [ ] Familia para armar la casa (15 figuras, adultos en al menos 3 tonos de piel).
 - [ ] Aprobar los ajustes de `arte/direccion-de-arte.md` (edad, uniforme, tonos, capas).

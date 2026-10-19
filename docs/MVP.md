@@ -6,7 +6,7 @@
 
 | Área | Incluye | No incluye |
 | --- | --- | --- |
-| Juego | Consentimiento del niño, creación de personaje (niña, niño, neutro; 8 tonos; 4 peinados; uniforme y ropa de casa), armar la casa, Día 1 completo (casa, calle, escuela, parque), sucesos E00, E03, E07, E09, dibujo libre, calma y aterrizaje, Mi libro, Ahora no, Quiero hablar con alguien | Días 2 y 3, tiendita, biblioteca del barrio, Sobre mí, escena para describir, estados del cuerpo |
+| Juego | Consentimiento del niño, creación de personaje (niña, niño, neutro; 8 tonos; 4 peinados; uniforme y ropa de casa), armar la casa, Día 1 completo (casa, calle, escuela, parque), sucesos E00, E03, E07, E09, dibujo libre, calma y aterrizaje, Mi libro, Ahora no, Quiero hablar con alguien | Días 2 y 3, tiendita, biblioteca de la colonia, Sobre mí, escena para describir, estados del cuerpo |
 | Voz | La Cuentera y todas las tarjetas del Día 1 | Resto |
 | Estación | Abrir sesión, asignar códigos, avisos en vivo, pausa por aparato, guardar eventos cifrados, descargar JSON | Reportes, reglas de revisión, sincronización al servidor |
 | Contenido | YAML con esquema validado para los 4 sucesos | Resto de sucesos (ya escritos, sin integrar) |

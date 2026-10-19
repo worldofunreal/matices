@@ -1,4 +1,4 @@
-# PRD · Cuentos del Barrio
+# PRD · Matices
 
 > Documento de requisitos del producto. Versión 0.1 · 2026-10-19.
 

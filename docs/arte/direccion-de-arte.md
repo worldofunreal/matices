@@ -1,6 +1,6 @@
 # Dirección de arte
 
-Estilo propuesto por Dayana: pixel art cálido en vista de tres cuartos, ambientado en un pueblo mexicano. Este documento fija el estilo, revisa las referencias y lista lo que falta producir.
+Estilo propuesto por Dayana: pixel art cálido en vista de tres cuartos, ambientado en una colonia de una ciudad mexicana. Este documento fija el estilo, revisa las referencias y lista lo que falta producir.
 
 ## Referencias
 
@@ -8,7 +8,7 @@ Estilo propuesto por Dayana: pixel art cálido en vista de tres cuartos, ambient
 | --- | --- | --- |
 | [escuela-plano.jpg](referencias/escuela-plano.jpg) | Plano de la primaria: entrada, patio, cancha, aulas 1 y 2, dirección, biblioteca, aula de cómputo, enfermería, baños, jardín, bodega | Distribución del mapa de la escuela |
 | [escuela-exterior.jpg](referencias/escuela-exterior.jpg) | Fachada y patio de la primaria con asta, árbol y portón | Estilo de exteriores, paleta, nivel de detalle |
-| [barrio.jpg](referencias/barrio.jpg) | Casas con teja, tinacos, papel picado, bugambilias, bardas de piedra, río y puente | Estilo del barrio y la calle |
+| [colonia.jpg](referencias/colonia.jpg) | Casas con teja, tinacos, papel picado, bugambilias, bardas de piedra, río y puente | Estilo de la colonia y la calle |
 | [personaje-nino.jpg](referencias/personaje-nino.jpg) | Ilustración, retrato y sprites (4 direcciones, caminata) de un niño | Formato de la hoja de personaje |
 | [personaje-nina.jpg](referencias/personaje-nina.jpg) | Lo mismo para una niña | Formato de la hoja de personaje |
 
@@ -51,7 +51,7 @@ Estilo propuesto por Dayana: pixel art cálido en vista de tres cuartos, ambient
 - [ ] Interior de la casa en corte: sala-comedor, cocina, 2 recámaras, baño, patio con tinaco y lavadero. **Es el lugar más importante del juego** y no tiene referencia.
 - [ ] Parque con juegos, árbol grande y bancas.
 - [ ] Tiendita (exterior e interior).
-- [ ] Biblioteca del barrio (casa de La Cuentera).
+- [ ] Biblioteca de la colonia (casa de La Cuentera).
 - [ ] Interiores de la escuela en tiles: aula, biblioteca escolar, patio, cancha.
 - [ ] Versiones de noche de la casa y la calle.
 

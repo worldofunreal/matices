@@ -1,11 +1,11 @@
-# GDD · Cuentos del Barrio
+# GDD · Matices
 
-> Título de trabajo. Documento de diseño del juego. Versión 0.1 · 2026-10-19.
+> Documento de diseño del juego. Versión 0.1 · 2026-10-19.
 > Lo clínico, lo legal y la investigación viven en `docs/clinico`, `docs/legal` e `docs/investigacion`; este documento solo los resume donde tocan el diseño.
 
 ## 1. En una frase
 
-Un RPG de pixel art ambientado en un barrio mexicano donde el niño crea a su personaje, arma su casa y recorre la escuela y el barrio; a lo largo del día ocurren pequeños sucesos sin final, y el niño decide cómo terminan, incluido lo que hacen los adultos de su casa. Lo que elige queda registrado para que un psicólogo lo lea.
+Un RPG de pixel art ambientado en una colonia de una ciudad mexicana donde el niño crea a su personaje, arma su casa y recorre la escuela y la colonia; a lo largo del día ocurren pequeños sucesos sin final, y el niño decide cómo terminan, incluido lo que hacen los adultos de su casa. Lo que elige queda registrado para que un psicólogo lo lea.
 
 El juego **recoge**, el psicólogo **interpreta**. El juego nunca diagnostica, puntúa ni muestra resultados al niño.
 
@@ -13,7 +13,7 @@ El juego **recoge**, el psicólogo **interpreta**. El juego nunca diagnostica, p
 
 | Pilar | Qué significa en el diseño |
 | --- | --- |
-| Mi barrio, mi casa | El mundo se parece al del niño: teja, tinacos, bugambilias, papel picado, la tiendita, la primaria. La casa y quién vive en ella las pone él. |
+| Mi colonia, mi casa | El mundo se parece al del niño: teja, tinacos, bugambilias, papel picado, la tiendita, la primaria. La casa y quién vive en ella las pone él. |
 | Ningún final es el correcto | No hay puntos, insignias, finales buenos ni malos. La Cuentera agradece todos los finales igual. |
 | Siempre puedo parar | "Ahora no" en todo momento sensible; "Quiero hablar con alguien" siempre visible. |
 | Calma | Ritmo lento, música suave, sin temporizadores, sin castigos, sin sustos. |
@@ -23,7 +23,7 @@ El juego **recoge**, el psicólogo **interpreta**. El juego nunca diagnostica, p
 | Idea original | Ahora | Por qué |
 | --- | --- | --- |
 | RPG con personaje elegido niño o niña | **Se conserva y se amplía**: creación de personaje con tono de piel, cabello, ropa y nombre | El niño necesita verse en el personaje |
-| Casa, escuela, parque/barrio, biblioteca | **Se conserva**: los mismos lugares, explorables | Contraste entre espacios y vida cotidiana |
+| Casa, escuela, parque, biblioteca | **Se conserva**: los mismos lugares, explorables | Contraste entre espacios y vida cotidiana |
 | Lucía (maestra), Nico (compañero), Clara (bibliotecaria) | **Se conservan** como vecinos y personajes de la escuela | Continuidad con el trabajo creativo original |
 | Elena (tía) como apoyo garantizado | **Pasa a ser una opción** de la casa: el niño puede ponerla o no | Si la red de apoyo ya está escrita, no vemos si el niño la trae |
 | Historia lineal de 5 capítulos con un cuidador negligente escrito en el guion | **Cambia** a 15 sucesos cortos e independientes dentro de 3 días de juego | La negligencia escrita no dice nada de la casa real del niño |
@@ -37,10 +37,10 @@ El juego **recoge**, el psicólogo **interpreta**. El juego nunca diagnostica, p
 
 ## 4. Estructura de una partida
 
-Tres **días** en el barrio, uno por sesión de clase (unos 33 minutos cada uno). Cada día tiene mañana, tarde y noche.
+Tres **días** en la colonia, uno por sesión de clase (unos 33 minutos cada uno). Cada día tiene mañana, tarde y noche.
 
 ```
-Día = Calma de entrada → Mañana (casa → camino → escuela) → Tarde (barrio) → Noche (casa) → Aterrizaje
+Día = Calma de entrada → Mañana (casa → camino → escuela) → Tarde (colonia) → Noche (casa) → Aterrizaje
          ↑ en cada tramo se dispara 1 o 2 sucesos sin final, según el plan del día
 ```
 
@@ -94,7 +94,7 @@ Esas figuras son los adultos y hermanos de todos los sucesos. Si la casa queda s
 
 ## 8. El mundo
 
-Un barrio de pueblo o ciudad mediana del centro de México, sin nombre de estado.
+Una colonia de una ciudad mediana del centro de México, sin nombre de estado ni de colonia.
 
 | Zona | Lugares | Sucesos que ocurren ahí | Personajes fijos |
 | --- | --- | --- | --- |
@@ -103,13 +103,13 @@ Un barrio de pueblo o ciudad mediana del centro de México, sin nombre de estado
 | Primaria | Entrada, patio con asta, cancha, aulas 1 y 2, dirección, biblioteca escolar, aula de cómputo, enfermería, baños, jardín, bodega | E05, E06, E09, E10, E11 | Lucía (maestra), Nico (compañero), compañeros genéricos, conserje |
 | Parque | Juegos, árbol grande, bancas | E03 | Niños jugando |
 | Tiendita | Mostrador, refrigerador de refrescos | Exploración | Don Chuy (tendero) |
-| Biblioteca del barrio | Mesas, estantes, mural | Escena para describir; casa de La Cuentera | Clara (bibliotecaria), La Cuentera |
+| Biblioteca de la colonia | Mesas, estantes, mural | Escena para describir; casa de La Cuentera | Clara (bibliotecaria), La Cuentera |
 
 Reglas de los personajes fijos: Lucía, Nico, Clara, Don Chuy y los vecinos **solo saludan y comentan cosas neutras** ("Qué calor hoy"). No preguntan "¿estás bien?" ni ofrecen ayuda por su cuenta: dentro de un suceso, solo hacen lo que el niño elija para ellos. Así ninguno empuja una respuesta.
 
 ### La Cuentera
 
-Narradora y anfitriona. Vive en la biblioteca del barrio. Señora mayor, rebozo, lentes, un libro grande con páginas en blanco. Tono cálido y parejo. Nunca opina sobre un final, nunca pregunta por la vida real del niño (eso lo hacen solo los gemelos, avisando antes). Sus frases fijas:
+Narradora y anfitriona. Vive en la biblioteca de la colonia. Señora mayor, rebozo, lentes, un libro grande con páginas en blanco. Tono cálido y parejo. Nunca opina sobre un final, nunca pregunta por la vida real del niño (eso lo hacen solo los gemelos, avisando antes). Sus frases fijas:
 
 - Inicio de suceso: "Aquí empieza un cuento que perdió su final…"
 - Pregunta: "¿Y qué pasó después?"
