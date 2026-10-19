@@ -30,6 +30,7 @@ declare module "virtual:contenido" {
     panel: Record<"cuerpo" | "pensamiento" | "entorno", Opcion[]>;
     textos: Textos;
     figuras: { id: string; tipo: "adulto" | "menor" | "mascota"; nombre: string }[];
+    lugares: string[];
   };
   interface Textos {
     asentimiento: { texto: string; si: string; no: string; psicologo_prueba: string };
@@ -59,6 +60,15 @@ declare module "virtual:contenido" {
       cerrar: string;
       listo: string;
       cuartos: Record<string, string>;
+    };
+    mundo: {
+      cerrado: string;
+      noche: string;
+      dormir: string;
+      dia: string;
+      fin: string;
+      saludos: Record<string, string[]>;
+      objetos: Record<string, Record<string, string>>;
     };
   }
   export default contenido;

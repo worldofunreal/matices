@@ -69,7 +69,8 @@ Todos llevan: código del niño, sesión, versión del contenido, semilla de ord
 | `carita` | Suceso, valor 1 a 5 | Cómo se siente el protagonista |
 | `panel_cpe` | Suceso, íconos de cuerpo, pensamiento y entorno | Cuántas emociones distingue |
 | `estado_cuerpo` | Suceso, estado elegido | Intensidad que el niño le da |
-| `explora` | Objeto o lugar, ms de permanencia, visitas | Qué busca, evita, repite |
+| `explora` | Al tocar un objeto o a una persona fija (lugar y cuál), y al salir de un lugar (lugar, ms de permanencia, visitas) | Qué busca, evita, repite |
+| `tramo` | Día y parte del día que empieza (`manana`, `tarde`, `noche`, `fin`) | Ritmo de la partida |
 | `describe` | Escena, título, emoción por personaje | Lectura de una escena ambigua |
 | `sobre_mi` | Frase, respuesta (`A`, `B`, `AMBOS`, `AHORA_NO`), ms | Lo que dice de su vida |
 | `dibujo` | Trazos con color y orden, borrados, tiempo, imagen final | El dibujo y su proceso |

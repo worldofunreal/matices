@@ -15,7 +15,13 @@ export interface Estado {
   casa: FiguraPuesta[]; // who the child put in the house (GDD §7)
   casaLista: boolean;
   protaCasa: { x: number; y: number } | null; // where the child put their own character
+  dia: number; // 1 to 3
+  hora: Hora;
+  llegada: string | null; // arrival point after crossing a door
+  visitas: Record<string, number>;
 }
+
+export type Hora = "manana" | "tarde" | "noche";
 
 export interface FiguraPuesta {
   inst: string; // figure id, or id#2, id#3 when placed more than once
@@ -27,7 +33,7 @@ export interface FiguraPuesta {
   piel: number;
 }
 
-const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "", casa: [], casaLista: false, protaCasa: null };
+const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "", casa: [], casaLista: false, protaCasa: null, dia: 1, hora: "manana", llegada: null, visitas: {} };
 
 let actual: Estado = NUEVO;
 let leido = false; // never write before the saved game was read, or it would be overwritten

@@ -148,9 +148,53 @@ function validar() {
   for (const c of Object.keys(textos.casa?.cuartos ?? {})) if (!cuartosMapa.has(c)) err("textos casa.cuartos", `${c} no está en mapas/casa.json`);
   for (const c of cuartosMapa) if (!textos.casa?.cuartos?.[c]) err("textos casa.cuartos", `falta el nombre del cuarto ${c}`);
 
+  // Maps: one per place with art (lugares/<lugar>/fondo); doors lead to a place and an arrival point
+  // that exist; every person and object has its art and its phrase.
+  const lugares = [...piezas].filter((id) => /^lugares\/[^/]+\/fondo$/.test(id)).map((id) => id.split("/")[1]);
+  const mapas = Object.fromEntries(lugares.map((l) => [l, leerMapa(l)]));
+  const HORAS = new Set(["manana", "tarde", "noche"]);
+  const mundo = textos.mundo ?? {};
+  for (const [lugar, mapa] of Object.entries(mapas)) {
+    if (!mapa) {
+      err(`mapas/${lugar}.json`, "falta el mapa");
+      continue;
+    }
+    const d = `mapas/${lugar}.json`;
+    if (mapa.width * 32 !== medidaDe(`lugares/${lugar}/fondo`)[0] || mapa.height * 32 !== medidaDe(`lugares/${lugar}/fondo`)[1]) err(d, "no mide lo mismo que su fondo");
+    for (const o of objetosDe(mapa)) {
+      const p = propiedades(o);
+      for (const h of (p.horas ?? "").split(",").filter(Boolean)) if (!HORAS.has(h)) err(`${d} ${o.name}`, `hora inválida ${h}`);
+      if (o.type === "puerta") {
+        const destino = mapas[p.destino];
+        if (!destino) err(`${d} ${o.name}`, `lleva a un lugar que no existe: ${p.destino}`);
+        else if (!objetosDe(destino).some((x) => x.type === "llegada" && x.name === p.llegada)) err(`${d} ${o.name}`, `no hay llegada ${p.llegada} en ${p.destino}`);
+      }
+      if (o.type === "npc") {
+        if (!piezas.has(`personajes/${o.name}`)) err(`${d} ${o.name}`, "no hay arte de este personaje");
+        if (!mundo.saludos?.[o.name]?.length) err(`${d} ${o.name}`, "no tiene saludos en textos.yaml");
+      }
+      if (o.type === "objeto") {
+        const arte = p.arte ?? `lugares/${lugar}/${o.name}`;
+        if (!piezas.has(arte)) err(`${d} ${o.name}`, `no existe el arte ${arte}`);
+        if (!mundo.objetos?.[lugar]?.[o.name] && !mundo.objetos?.comun?.[o.name]) err(`${d} ${o.name}`, "no tiene frase en textos.yaml");
+      }
+    }
+  }
+
   if (errores.length) throw new Error(`Contenido inválido:\n- ${errores.join("\n- ")}`);
-  return { version: version(), cuentos, sobreMi, escena, panel, textos, figuras };
+  return { version: version(), cuentos, sobreMi, escena, panel, textos, figuras, lugares };
 }
+
+type ObjetoMapa = { name: string; type: string; properties?: { name: string; value: string }[] };
+type Mapa = { width: number; height: number; layers: { name: string; objects?: ObjetoMapa[] }[] };
+
+function leerMapa(lugar: string): Mapa | null {
+  const ruta = join(ROOT, "public/mapas", `${lugar}.json`);
+  return existsSync(ruta) ? JSON.parse(readFileSync(ruta, "utf8")) : null;
+}
+const objetosDe = (m: Mapa) => m.layers.find((l) => l.name === "objetos")?.objects ?? [];
+const propiedades = (o: ObjetoMapa) => Object.fromEntries((o.properties ?? []).map((p) => [p.name, p.value])) as Record<string, string>;
+const medidaDe = (id: string) => leerManifiesto().piezas.find((p) => p.id === id)!.medida;
 
 function validarArte() {
   const m = leerManifiesto();
@@ -177,7 +221,7 @@ export function contenido(): Plugin {
     load(id) {
       const nombre = id.slice(1);
       if (!id.startsWith("\0") || !(nombre in MODULOS)) return;
-      const vigilar = [DOC_CODIGOS, DOC_AREAS, README, PANEL_CPE, MANIFIESTO, join(DIR, "textos.yaml"), join(DIR, "figuras.yaml"), join(ROOT, "public/mapas/casa.json"), join(DIR, "sobre-mi.yaml"), join(DIR, "escena-para-describir.yaml")];
+      const vigilar = [DOC_CODIGOS, DOC_AREAS, README, PANEL_CPE, MANIFIESTO, join(DIR, "textos.yaml"), join(DIR, "figuras.yaml"), ...readdirSync(join(ROOT, "public/mapas")).map((f) => join(ROOT, "public/mapas", f)), join(DIR, "sobre-mi.yaml"), join(DIR, "escena-para-describir.yaml")];
       for (const f of vigilar) this.addWatchFile(f);
       for (const f of readdirSync(CUENTOS)) this.addWatchFile(join(CUENTOS, f));
       return `export default ${JSON.stringify(MODULOS[nombre]())};`;

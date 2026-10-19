@@ -63,7 +63,7 @@ Explorar (caminar, tocar objetos, hablar con vecinos)
                → el mundo vuelve a moverse
 ```
 
-El tiempo no avanza solo: avanza cuando el niño llega a la puerta o lugar que marca el siguiente tramo. Nadie pierde por lento.
+El tiempo no avanza solo: avanza cuando el niño llega a la puerta o lugar que marca el siguiente tramo. La mañana termina al salir de la escuela, la tarde al llegar a casa y la noche al ir a la cama. La escuela abre en la mañana; la biblioteca, en la tarde; la tiendita y el parque, mañana y tarde. De noche nadie sale de casa. Nadie pierde por lento.
 
 ## 6. Creación del personaje
 

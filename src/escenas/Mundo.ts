@@ -1,43 +1,83 @@
 import Phaser from "phaser";
+import contenido from "virtual:contenido";
 import { Protagonista } from "../personaje/Protagonista";
 import { variante } from "../arte";
-import { cambiarEstado, type Estado } from "../datos/guardado";
+import { estado, cambiarEstado, type Estado } from "../datos/guardado";
+import { alCruzar, puertaAbierta, dormir } from "../datos/dia";
+import { registrar } from "../datos/eventos";
+import type { Interfaz } from "./Interfaz";
 
 const VELOCIDAD = 90;
 const TILE = 32;
+const M = contenido.textos.mundo;
+
+// Night and afternoon light over the place (docs/arte/direccion-de-arte.md: a multiplied layer,
+// never full darkness). Morning has none.
+const LUZ = { manana: null, tarde: 0xffe6c4, noche: 0x6f7fb8 } as const;
 
 type Celda = { x: number; y: number };
+type Puerta = { nombre: string; rect: Phaser.Geom.Rectangle; destino: string; llegada: string; horas?: string };
+type ObjetoMapa = Phaser.Types.Tilemaps.TiledObject;
 
-// One explorable place: the art is lugares/<lugar>/fondo.png; walls and points come from the
-// Tiled map public/mapas/<lugar>.json (layers `muros` and `objetos`).
+const prop = (o: ObjetoMapa, nombre: string): string | undefined =>
+  (o.properties as { name: string; value: string }[] | undefined)?.find((p) => p.name === nombre)?.value;
+
+// One explorable place: the art is lugares/<lugar>/fondo.png; walls, doors, arrival points,
+// objects and people come from the Tiled map public/mapas/<lugar>.json.
 export class Mundo extends Phaser.Scene {
+  private lugar = "casa";
   private prota!: Protagonista;
   private cuerpo!: Phaser.Physics.Arcade.Body;
   private muros!: Phaser.Tilemaps.TilemapLayer;
   private teclas!: Record<"arriba" | "abajo" | "izq" | "der", Phaser.Input.Keyboard.Key[]>;
   private ruta: Phaser.Math.Vector2[] = [];
   private alLlegar: (() => void) | null = null;
+  private puertas: Puerta[] = [];
+  private enPuerta: string | null = null; // the door the character is standing in, so it fires once
+  private cambiando = false;
+  private t0 = 0;
 
   constructor() {
     super("Mundo");
   }
 
-  create(estado: Estado) {
-    const mapa = this.make.tilemap({ key: estado.lugar });
-    this.add.image(0, 0, `lugares/${estado.lugar}/fondo`).setOrigin(0).setDepth(-1);
+  private get interfaz() {
+    return this.scene.get("Interfaz") as Interfaz;
+  }
+
+  create(e: Estado) {
+    this.lugar = e.lugar;
+    this.cambiando = false;
+    this.enPuerta = null;
+    this.ruta = [];
+    this.alLlegar = null;
+    this.t0 = performance.now();
+    if (!this.scene.isActive("Interfaz")) this.scene.launch("Interfaz");
+    this.scene.bringToTop("Interfaz");
+
+    const mapa = this.make.tilemap({ key: e.lugar });
+    this.add.image(0, 0, `lugares/${e.lugar}/fondo`).setOrigin(0).setDepth(-1);
     const rejilla = mapa.addTilesetImage("provisional", "rejilla")!;
     this.muros = mapa.createLayer("muros", rejilla)!.setVisible(this.physics.world.drawDebug);
     this.muros.setCollisionByExclusion([-1]);
+    const objetos = mapa.getObjectLayer("objetos")!.objects;
 
-    const inicio = mapa.findObject("objetos", (o) => o.name === "inicio")!;
-    this.prota = new Protagonista(this, estado.x ?? inicio.x!, estado.y ?? inicio.y!, estado.apariencia);
-    this.prota.direccion = estado.direccion;
+    const inicio = objetos.find((o) => o.type === "llegada" && o.name === e.llegada) ?? objetos.find((o) => o.name === "inicio") ?? objetos.find((o) => o.type === "llegada")!;
+    this.prota = new Protagonista(this, e.x ?? inicio.x!, e.y ?? inicio.y!, e.apariencia);
+    this.prota.direccion = e.direccion;
     this.physics.add.existing(this.prota);
     this.cuerpo = this.prota.body as Phaser.Physics.Arcade.Body;
     this.cuerpo.setSize(20, 12).setOffset(-10, -12);
     this.cuerpo.setCollideWorldBounds(true);
     this.physics.world.setBounds(0, 0, mapa.widthInPixels, mapa.heightInPixels);
     this.physics.add.collider(this.prota, this.muros);
+    cambiarEstado({ llegada: null, x: Math.round(this.prota.x), y: Math.round(this.prota.y) });
+
+    this.puertas = objetos
+      .filter((o) => o.type === "puerta")
+      .map((o) => ({ nombre: o.name, rect: new Phaser.Geom.Rectangle(o.x!, o.y!, o.width!, o.height!), destino: prop(o, "destino")!, llegada: prop(o, "llegada")!, horas: prop(o, "horas") }));
+    // The character may arrive standing on a door (e.g. a saved spot); it must step off first.
+    this.enPuerta = this.puertas.find((p) => p.rect.contains(this.cuerpo.center.x, this.cuerpo.center.y))?.nombre ?? null;
 
     this.encuadrar(mapa);
     const encuadrar = () => this.encuadrar(mapa);
@@ -54,46 +94,114 @@ export class Mundo extends Phaser.Scene {
       der: [k.addKey(K.RIGHT), k.addKey(K.D)],
     };
 
-    this.colocarObjetos(mapa, estado.lugar);
+    for (const o of objetos) {
+      if (o.type === "objeto") this.colocarObjeto(o);
+      if (o.type === "npc") this.colocarPersona(o);
+    }
     // The people the child put in the house stand where they were placed.
-    if (estado.lugar === "casa")
-      for (const f of estado.casa) this.add.sprite(f.x, f.y, variante(this, `figuras/${f.figura}`, { piel: f.piel }), 0).setOrigin(0.5, 1).setDepth(f.y);
+    if (e.lugar === "casa")
+      for (const f of e.casa) this.add.sprite(f.x, f.y, variante(this, `figuras/${f.figura}`, { piel: f.piel }), 0).setOrigin(0.5, 1).setDepth(f.y);
+
+    const luz = LUZ[e.hora];
+    if (luz) {
+      const capa = this.add.rectangle(0, 0, mapa.widthInPixels, mapa.heightInPixels, luz).setOrigin(0).setDepth(1e5);
+      capa.setBlendMode(Phaser.BlendModes.MULTIPLY);
+    }
+
     this.input.on("pointerdown", (p: Phaser.Input.Pointer, encima: Phaser.GameObjects.GameObject[]) => {
-      if (encima.length) return; // tapped an object; it handles itself
+      if (encima.length) return; // tapped an object or a person; it handles itself
       this.alLlegar = null;
       this.caminarA(p.worldX, p.worldY);
     });
 
+    const visitas = { ...e.visitas, [e.lugar]: (e.visitas[e.lugar] ?? 0) + 1 };
+    cambiarEstado({ visitas });
+    this.events.once("shutdown", () => registrar("explora", { lugar: this.lugar, ms: Math.round(performance.now() - this.t0), visitas: visitas[this.lugar] }));
+
     if (this.physics.world.drawDebug) {
-      this.muros.renderDebug(this.add.graphics().setAlpha(0.5), { tileColor: null });
-      for (const o of mapa.getObjectLayer("objetos")!.objects)
-        this.add.text(o.x!, o.y!, o.name, { fontSize: "8px", color: "#000" }).setOrigin(0.5).setDepth(1e6);
+      this.muros.renderDebug(this.add.graphics().setAlpha(0.5).setDepth(1e5 + 1), { tileColor: null });
+      for (const o of objetos) this.add.text(o.x!, o.y!, o.name, { fontSize: "8px", color: "#000" }).setOrigin(0.5).setDepth(1e6);
+      for (const p of this.puertas) this.add.rectangle(p.rect.x, p.rect.y, p.rect.width, p.rect.height).setOrigin(0).setStrokeStyle(1, 0x00aa00).setDepth(1e6);
     }
   }
 
-  // Points of type "objeto" with art in lugares/<lugar>/<name>.png are drawn there, feet on the point.
-  // Tapping one walks next to it and then acts.
-  private colocarObjetos(mapa: Phaser.Tilemaps.Tilemap, lugar: string) {
-    for (const o of mapa.getObjectLayer("objetos")!.objects) {
-      const clave = `lugares/${lugar}/${o.name}`;
-      if (o.type !== "objeto" || !this.textures.exists(clave)) continue;
-      const img = this.add.image(o.x!, o.y!, clave).setOrigin(0.5, 1).setDepth(o.y!).setInteractive({ useHandCursor: true });
-      img.on("pointerdown", () => {
-        this.alLlegar = () => this.usar(o.name);
-        this.caminarA(o.x!, o.y! + TILE / 2);
-        if (!this.ruta.length) this.llegar();
-      });
+  // Objects with something to look at glow softly; tapping one walks next to it and the character
+  // says a neutral line about it (GDD §10).
+  private colocarObjeto(o: ObjetoMapa) {
+    const img = this.add.image(o.x!, o.y!, prop(o, "arte") ?? `lugares/${this.lugar}/${o.name}`).setOrigin(0.5, 1).setDepth(o.y!);
+    img.setInteractive({ useHandCursor: true });
+    this.tweens.add({ targets: img, alpha: 0.82, duration: 1400, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+    img.on("pointerdown", () => this.irA(o, () => this.usar(o.name)));
+  }
+
+  // Fixed people only greet with neutral lines; they never ask how the child is (GDD §8).
+  private colocarPersona(o: ObjetoMapa) {
+    const horas = prop(o, "horas");
+    if (horas && !horas.split(",").includes(estado().hora)) {
+      this.muros.removeTileAt(this.muros.worldToTileX(o.x!)!, this.muros.worldToTileY(o.y! - 1)!);
+      return;
     }
+    const s = this.add.sprite(o.x!, o.y!, `personajes/${o.name}`, 0).setOrigin(0.5, 1).setDepth(o.y!);
+    s.setInteractive({ useHandCursor: true });
+    s.on("pointerdown", () =>
+      this.irA(o, () => {
+        const saludos = M.saludos[o.name];
+        const i = (estado().visitas[this.lugar] ?? 0) % saludos.length;
+        registrar("explora", { lugar: this.lugar, persona: o.name });
+        this.interfaz.decir(`mundo.saludos.${o.name}.${i}`, saludos[i]);
+      }),
+    );
   }
 
   private usar(objeto: string) {
-    if (objeto === "espejo") this.scene.start("Creacion", { modo: "espejo" });
+    registrar("explora", { lugar: this.lugar, objeto });
+    if (objeto === "espejo") return this.scene.start("Creacion", { modo: "espejo" });
+    if (objeto === "cama" && estado().hora === "noche") return this.terminarDia();
+    const frase = M.objetos[this.lugar]?.[objeto] ?? M.objetos.comun[objeto];
+    this.interfaz.decir(`mundo.objetos.${this.lugar}.${objeto}`, frase);
+  }
+
+  private terminarDia() {
+    this.cambiando = true;
+    this.interfaz.decir("mundo.dormir", M.dormir);
+    const dia = dormir();
+    this.time.delayedCall(1200, () => {
+      // After the third day H6 adds "Sobre mí" and the landing; until then the closing card stays.
+      if (dia === null) return this.interfaz.cartel(M.fin, null);
+      this.interfaz.cartel(M.dia.replace("{n}", String(dia)), 2500, () => this.scene.restart(estado()));
+    });
+  }
+
+  private irA(o: ObjetoMapa, accion: () => void) {
+    this.alLlegar = accion;
+    this.caminarA(o.x!, o.y! + TILE / 2);
+    if (!this.ruta.length) this.llegar();
   }
 
   private llegar() {
     const accion = this.alLlegar;
     this.alLlegar = null;
     accion?.();
+  }
+
+  private revisarPuertas() {
+    const c = this.cuerpo.center;
+    const p = this.puertas.find((d) => d.rect.contains(c.x, c.y));
+    if (!p) {
+      this.enPuerta = null;
+      return;
+    }
+    if (this.enPuerta === p.nombre) return;
+    this.enPuerta = p.nombre;
+    if (!puertaAbierta(p.horas, this.lugar)) {
+      this.interfaz.decir(estado().hora === "noche" ? "mundo.noche" : "mundo.cerrado", estado().hora === "noche" ? M.noche : M.cerrado);
+      return;
+    }
+    this.cambiando = true;
+    alCruzar(this.lugar, p.destino);
+    cambiarEstado({ lugar: p.destino, llegada: p.llegada, x: null, y: null }, true);
+    this.cameras.main.fadeOut(200);
+    this.cameras.main.once("camerafadeoutcomplete", () => this.scene.restart(estado()));
   }
 
   // The camera follows inside the map; on an axis where the map is smaller than the screen, it is centered.
@@ -107,12 +215,17 @@ export class Mundo extends Phaser.Scene {
   }
 
   update() {
+    if (this.cambiando) {
+      this.cuerpo.setVelocity(0, 0);
+      return;
+    }
     const v = new Phaser.Math.Vector2(
       Number(this.teclas.der.some((t) => t.isDown)) - Number(this.teclas.izq.some((t) => t.isDown)),
       Number(this.teclas.abajo.some((t) => t.isDown)) - Number(this.teclas.arriba.some((t) => t.isDown)),
     );
     if (v.lengthSq() > 0) {
       this.ruta = [];
+      this.alLlegar = null;
       this.cuerpo.setVelocity(v.x, v.y).velocity.normalize().scale(VELOCIDAD);
     } else {
       this.seguirRuta();
@@ -120,14 +233,31 @@ export class Mundo extends Phaser.Scene {
     this.prota.mover(this.cuerpo.velocity.x, this.cuerpo.velocity.y);
     this.prota.setDepth(this.prota.y);
     cambiarEstado({ x: Math.round(this.prota.x), y: Math.round(this.prota.y), direccion: this.prota.direccion });
+    this.revisarPuertas();
   }
 
-  // Tap the floor: walk there around walls (shortest route over the tile grid).
+  // Tap the floor: walk there around walls (shortest route over the tile grid). If the spot is
+  // blocked (a wall, a piece of furniture), walk to the nearest free spot instead.
   private caminarA(x: number, y: number) {
-    const destino = this.muros.worldToTileXY(x, y)!;
+    const destino = this.libreCerca(this.muros.worldToTileXY(x, y)!);
     const origen = this.muros.worldToTileXY(this.cuerpo.center.x, this.cuerpo.center.y)!;
+    if (!destino) {
+      this.ruta = [];
+      return;
+    }
     const celdas = this.buscarRuta(origen, destino);
     this.ruta = celdas.slice(1).map((c) => new Phaser.Math.Vector2(c.x * TILE + TILE / 2, c.y * TILE + TILE / 2));
+  }
+
+  private libreCerca(c: Celda): Celda | null {
+    for (let r = 0; r <= 3; r++)
+      for (let dy = -r; dy <= r; dy++)
+        for (let dx = -r; dx <= r; dx++) {
+          if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
+          const n = { x: c.x + dx, y: c.y + dy };
+          if (this.libre(n)) return n;
+        }
+    return null;
   }
 
   private seguirRuta() {

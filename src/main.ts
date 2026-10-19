@@ -4,6 +4,7 @@ import { Mundo } from "./escenas/Mundo";
 import { Asentimiento } from "./escenas/Asentimiento";
 import { Creacion } from "./escenas/Creacion";
 import { ArmarCasa } from "./escenas/ArmarCasa";
+import { Interfaz } from "./escenas/Interfaz";
 import { iniciarRegistro } from "./datos/eventos";
 import { vigilar } from "./datos/monitor";
 
@@ -32,7 +33,7 @@ const juego = new Phaser.Game({
   backgroundColor: "#1d1a24",
   scale: { mode: Phaser.Scale.NONE, zoom: medida().zoom },
   physics: { default: "arcade", arcade: { debug } },
-  scene: [Arranque, Asentimiento, Creacion, ArmarCasa, Mundo],
+  scene: [Arranque, Asentimiento, Creacion, ArmarCasa, Mundo, Interfaz],
 });
 
 vigilar(juego, partida.sesion);

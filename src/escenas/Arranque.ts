@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import contenido from "virtual:contenido";
 import { cargarArte, totalPiezas } from "../arte";
 import { cargarEstado } from "../datos/guardado";
 import { registrar, preguntado } from "../datos/eventos";
@@ -17,7 +18,7 @@ export class Arranque extends Phaser.Scene {
     const barra = this.add.rectangle(this.scale.width / 2 - 100, this.scale.height / 2, 0, 6, 0xf2c14e).setOrigin(0, 0.5);
     this.load.on("progress", (v: number) => (barra.width = 200 * v));
     this.load.on("loaderror", (f: Phaser.Loader.File) => registrar("error", { mensaje: `no cargó ${f.src}` }));
-    this.load.tilemapTiledJSON("casa", "mapas/casa.json");
+    for (const lugar of contenido.lugares) this.load.tilemapTiledJSON(lugar, `mapas/${lugar}.json`);
     cargarArte(this);
   }
 

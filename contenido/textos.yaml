@@ -59,3 +59,72 @@ casa:
     recamara_adulto: "la otra recámara"
     bano: "el baño"
     patio: "el patio"
+
+# Mundo (GDD §8, §10). Los personajes fijos solo saludan y dicen cosas neutras: nunca preguntan
+# "¿estás bien?" ni ofrecen ayuda. Los objetos: una frase neutra del personaje al tocarlos.
+mundo:
+  cerrado: "Está cerrado."
+  noche: "Ya es de noche. Me quedo en casa."
+  dormir: "A dormir."
+  dia: "Día {n}"
+  fin: "Aquí terminan los tres días."
+  saludos:
+    vecino_1: ["Buenos días.", "Qué calor hace hoy."]
+    vecino_2: ["Hola.", "Ya pasó el camión de la basura."]
+    vecino_3: ["Buenas tardes.", "Hoy está nublado."]
+    vecino_4: ["Buenos días.", "Ahí va el camión del gas."]
+    lucia: ["Buenos días.", "Hoy toca matemáticas."]
+    nico: ["¡Hola!", "¿Viste el partido de ayer?"]
+    conserje: ["Buenos días.", "Cuidado, está mojado el piso."]
+    companero_1: ["Hola.", "Ya va a ser el recreo."]
+    companero_2: ["Hola.", "Me gusta tu mochila."]
+    companero_3: ["Hola.", "¿Juegas fut?"]
+    companero_4: ["Hola.", "Ya casi es la salida."]
+    don_chuy: ["Buenas.", "Llegaron paletas nuevas."]
+    clara: ["Bienvenido a la biblioteca.", "Los libros de cuentos están arriba."]
+    cuentera: ["Hola. Aquí guardo mi libro de cuentos.", "Qué gusto verte."]
+  objetos:
+    comun:
+      arbol: "Un árbol."
+      poste: "Un poste de luz."
+      banca: "Una banca."
+      puesto: "Un puesto de elotes."
+      pupitre: "Un pupitre."
+      pizarron: "El pizarrón."
+      escritorio: "Un escritorio."
+      computadora: "Una computadora."
+      librero: "Muchos libros."
+      mesa_lectura: "Una mesa para leer."
+      mostrador: "El mostrador."
+    casa:
+      foto_escuela: "La foto de la escuela."
+      tinaco: "El tinaco."
+      lavadero: "El lavadero."
+      espejo: "El espejo."
+      cama: "La cama."
+      ropero: "El ropero."
+      wc: "El baño."
+      lavabo: "El lavabo."
+      regadera: "La regadera."
+      mesa: "La mesa."
+      sillon: "El sillón."
+      television: "La tele."
+      refrigerador: "El refri."
+      estufa: "La estufa."
+      fregadero: "El fregadero."
+      maceta: "Una maceta."
+    escuela_patio:
+      asta: "La bandera."
+      jardinera: "Una jardinera."
+      aro_basquet: "La canasta de básquet."
+    parque:
+      fuente: "La fuente."
+      kiosko: "El kiosko."
+      columpio: "Los columpios."
+      resbaladilla: "La resbaladilla."
+      arbol_grande: "Un árbol grande."
+    tiendita:
+      refrigerador_refrescos: "El refri de los refrescos."
+      estante: "Dulces y papitas."
+    biblioteca_planta_alta:
+      sillon_cuentera: "El sillón de La Cuentera."
