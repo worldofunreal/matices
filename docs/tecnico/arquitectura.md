@@ -54,6 +54,10 @@ Esquema en `docs/clinico/codigos-y-eventos.md`. Cada evento lleva la versión de
 | `herramientas/contenido.ts` | Lee `contenido/`, lo revisa contra los códigos de `docs/clinico/codigos-y-eventos.md` y las áreas de `docs/clinico/marco-clinico.md`, y detiene la compilación si algo no cuadra |
 | `public/mapas/` | Mapas en formato Tiled (capas `piso`, `muros`, `objetos`) |
 
+## Publicación de prueba
+
+Cada cambio en `main` se publica solo en https://matices.online (`.github/workflows/deploy.yml`): GitHub compila el juego, lo sube al servidor de IONOS en una carpeta nueva, cambia el sitio a esa carpeta de golpe, conserva las 5 versiones anteriores y revisa el sitio en vivo. La configuración del servidor está en `infra/nginx/matices.online.conf`. Cloudflare va enfrente.
+
 ## Pendientes técnicos
 
 - Probar Phaser en la tableta de referencia (2 GB de RAM) antes de fijar efectos de ambiente.

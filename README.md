@@ -4,7 +4,7 @@ Videojuego de pixel art para niñas y niños de 8 a 12 años, pensado para Méxi
 
 **El juego recoge. El psicólogo interpreta. El juego no diagnostica.**
 
-> Estado: esqueleto del juego (casa provisional caminable, sin arte). Repositorio privado.
+> Estado: esqueleto del juego (casa provisional caminable, sin arte). Repositorio privado. Versión en línea: https://matices.online
 
 ## Correr el juego
 

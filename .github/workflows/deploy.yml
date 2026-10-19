@@ -1,0 +1,108 @@
+name: Deploy Matices to matices.online
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Same pattern as cosmicrafts.com:
+# 1. CI builds the game; the build stops if any content is invalid.
+# 2. The bundle goes to a NEW immutable dir: releases/<sha>-<run>.
+# 3. /var/www/matices.online/current is a symlink flipped atomically.
+# 4. Only the 5 newest releases are kept (rollback = flip the symlink back).
+# 5. The nginx vhost lives in infra/nginx and is synced with backup + test.
+# 6. Checks hit the real site; any failure fails the job.
+# Needs the secrets SSH_PRIVATE_KEY, SSH_HOST and SSH_USER.
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Build (validates content)
+        run: npm run build
+
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add Server to Known Hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H -T 10 ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
+      - name: Stage Immutable Release
+        run: |
+          REL="releases/${{ github.sha }}-${{ github.run_number }}"
+          rsync -az -e "ssh -o StrictHostKeyChecking=no" dist/ "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/matices.online/$REL/"
+          echo "staged $REL"
+
+      - name: Activate Release (atomic symlink + retain 5)
+        run: |
+          # Quoted heredoc: nothing expands locally ($link, $$ stay for the server shell).
+          REL="releases/${{ github.sha }}-${{ github.run_number }}"
+          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" "WANT='$REL' bash -s" <<'REMOTE'
+          set -eu
+          link="/var/www/matices.online/.current.$$"
+          ln -sfn "$WANT" "$link"
+          mv -hf "$link" /var/www/matices.online/current
+          got="$(readlink /var/www/matices.online/current)"
+          test "$got" = "$WANT" || { echo "FLIP FAILED: current=$got want=$WANT"; exit 1; }
+          echo "live now: $got"
+          cd /var/www/matices.online/releases
+          old="$(ls -t | tail -n +6 || true)"
+          if [ -n "$old" ]; then echo "$old" | xargs -I{} rm -rf "{}"; fi
+          REMOTE
+
+      - name: Sync nginx conf (versioned in infra/nginx)
+        run: |
+          scp -o StrictHostKeyChecking=no infra/nginx/matices.online.conf \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/matices-nginx.conf"
+          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" <<'REMOTE'
+          set -eu
+          live=/usr/local/etc/nginx/conf.d/matices.online.conf
+          if ! cmp -s /tmp/matices-nginx.conf "$live"; then
+            backup=""
+            if [ -f "$live" ]; then backup="$live.bak_$(date +%s)"; sudo -n cp -p "$live" "$backup"; fi
+            sudo -n install -o root -g wheel -m 0644 /tmp/matices-nginx.conf "$live"
+            if ! sudo -n nginx -t; then
+              if [ -n "$backup" ]; then sudo -n cp -p "$backup" "$live"; else sudo -n rm -f "$live"; fi
+              echo "NGINX TEST FAILED; previous conf restored"; exit 1
+            fi
+            sudo -n service nginx reload
+            echo "nginx conf updated + reloaded"
+          else
+            echo "nginx conf unchanged"
+          fi
+          rm -f /tmp/matices-nginx.conf
+          ls -t "$live".bak_* 2>/dev/null | tail -n +6 | while read -r old; do sudo -n rm -f "$old"; done
+          REMOTE
+
+      - name: Verify Live Site
+        run: |
+          set -e
+          base="https://matices.online"
+          check() { code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 "$1")"; echo "$1 -> $code"; [ "$code" = "$2" ]; }
+          check "$base/" 200
+          check "$base/mapas/casa.json" 200
+          check "$base/esta-ruta-no-existe" 404
+          page="$(curl -s --max-time 30 "$base/")"
+          echo "$page" | grep -q "<title>Matices</title>"
+          js="$(echo "$page" | grep -o 'assets/index-[^"]*\.js' | head -1)"
+          [ -f "dist/$js" ] || { echo "LIVE PAGE IS NOT THIS BUILD ($js)"; exit 1; }
+          check "$base/$js" 200
+          www="$(curl -s -o /dev/null -w '%{redirect_url}' --max-time 30 https://www.matices.online/)"
+          echo "www -> $www"; [ "$www" = "$base/" ]
+          echo "ALL LIVE CHECKS PASSED"
