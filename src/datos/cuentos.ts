@@ -1,10 +1,11 @@
-// Which story comes next, where and when (GDD §4, §9).
+// Which story or activity comes next, where and when (GDD §4, §9, §10). Activities
+// (contenido/actividades.yaml) go in the day's order like one more story.
 // Each day's stories go by time of day (morning, afternoon, night). Within a time of day they go by
 // route: in the morning the house ones first (the day starts at home), in the afternoon the house
 // ones last (the afternoon ends at home). Stories in the same place are shuffled per child with the
 // saved seed. A day opens and closes with a low-intensity story when there is one to swap in.
 import Phaser from "phaser";
-import contenido, { type Cuento } from "virtual:contenido";
+import contenido, { type TipoActividad } from "virtual:contenido";
 import { estado, cambiarEstado, type Hora } from "./guardado";
 import { semilla } from "./eventos";
 
@@ -12,20 +13,33 @@ const HORAS: Hora[] = ["manana", "tarde", "noche"];
 const PAUSA_TRAS_MEDIO = 60_000; // at least a minute of free exploration after a medium story
 const PAUSA_ENTRE = 10_000; // and a breath after any story, so two never chain back to back
 
-export const cuento = (id: string) => contenido.cuentos.find((c) => c.id === id)!;
+export interface Momento {
+  id: string;
+  tipo: "cuento" | TipoActividad;
+  dia: number;
+  hora: Hora;
+  intensidad: "baja" | "media";
+}
+
+const MOMENTOS: Momento[] = [
+  ...contenido.cuentos.map((c) => ({ id: c.id, tipo: "cuento" as const, dia: c.dia, hora: c.hora, intensidad: c.intensidad })),
+  ...contenido.actividades.map((a) => ({ id: a.id, tipo: a.tipo, dia: a.dia, hora: a.hora, intensidad: "baja" as const })),
+];
+
+export const cuento = (id: string) => MOMENTOS.find((c) => c.id === id)!;
 export const sitio = (id: string) => contenido.sitios[id];
 
 function orden(dia: number): string[] {
   const guardado = estado().cuentos.orden[dia];
   if (guardado) return guardado;
   const rng = new Phaser.Math.RandomDataGenerator([`${semilla()}-dia-${dia}`]);
-  const delDia = contenido.cuentos.filter((c) => c.dia === dia);
+  const delDia = MOMENTOS.filter((c) => c.dia === dia);
   const ids: string[] = [];
   for (const hora of HORAS) {
     const deHora = delDia.filter((c) => c.hora === hora);
     const enCasa = deHora.filter((c) => sitio(c.id).mapa === "casa");
     const fuera = deHora.filter((c) => sitio(c.id).mapa !== "casa");
-    const porLugar = (lista: Cuento[]) => {
+    const porLugar = (lista: Momento[]) => {
       const mapas = [...new Set(lista.map((c) => sitio(c.id).mapa))];
       return mapas.flatMap((m) => rng.shuffle(lista.filter((c) => sitio(c.id).mapa === m)));
     };
@@ -36,7 +50,7 @@ function orden(dia: number): string[] {
   const bajar = (i: number) => {
     const c = cuento(ids[i]);
     if (c.intensidad === "baja") return;
-    const j = ids.findIndex((id) => cuento(id).intensidad === "baja" && cuento(id).hora === c.hora && sitio(id).mapa === sitio(c.id).mapa);
+    const j = ids.findIndex((id) => cuento(id).tipo === "cuento" && cuento(id).intensidad === "baja" && cuento(id).hora === c.hora && sitio(id).mapa === sitio(c.id).mapa);
     if (j >= 0) [ids[i], ids[j]] = [ids[j], ids[i]];
   };
   if (ids.length) {
@@ -48,7 +62,7 @@ function orden(dia: number): string[] {
 }
 
 // The next story of today that has not happened yet.
-export function siguiente(): Cuento | null {
+export function siguiente(): Momento | null {
   const { dia, cuentos } = estado();
   const id = orden(dia).find((x) => !cuentos.hechos[x]);
   return id ? cuento(id) : null;
@@ -61,7 +75,7 @@ export function pendientes(hora: Hora = estado().hora): number {
 }
 
 // The next story starts when the child is in its place, at its time of day, after the pause.
-export function tocaAqui(lugar: string, x: number, y: number): Cuento | null {
+export function tocaAqui(lugar: string, x: number, y: number): Momento | null {
   const c = siguiente();
   if (!c || c.hora !== estado().hora) return null;
   const s = sitio(c.id);

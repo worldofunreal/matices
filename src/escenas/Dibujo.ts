@@ -14,6 +14,7 @@ export interface DatosDibujo {
   origen: string; // story and step, or "libre"
   consigna: string;
   alTerminar: (imagen: string | null) => void;
+  ahoraNo?: () => void; // free drawing can be left; "Otra cosa" inside a story returns to it
 }
 
 // Drawing canvas (GDD §10): 12 colors, 3 sizes, eraser and undo. Used for "Otra cosa" in stories
@@ -109,6 +110,13 @@ export class Dibujo extends Phaser.Scene {
     });
     const T = contenido.textos.cuento;
     new Boton(this, w - 60, h - 24, { ancho: 100, alto: 32, etiqueta: T.listo, voz: { clave: "cuento.listo", texto: T.listo } }, () => this.terminar());
+    if (this.d.ahoraNo)
+      new Boton(this, 66, h - 24, { ancho: 110, alto: 32, etiqueta: T.boton_ahora_no, imagen: "interfaz/boton_ahora_no" }, () => {
+        registrar("ahora_no", { actividad: this.d.origen });
+        void hablar("cuento.ahora_no", T.ahora_no);
+        this.scene.stop();
+        this.d.ahoraNo!();
+      });
     this.pintar();
   }
 

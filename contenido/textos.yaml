@@ -164,3 +164,33 @@ cuento:
     saturado: "Demasiado"
   listo: "Listo"
   dibujar: "Dibuja lo que pasa."
+
+# Actividades (GDD §10). La consigna del dibujo está pendiente de revisión clínica y la puede
+# cambiar el psicólogo (docs/PENDIENTES.md).
+actividades:
+  cuentera:
+    - "Hola, {nombre}. Yo soy La Cuentera."
+    - "En mi libro hay cuentos que perdieron su final."
+    - "Cuando pase algo en tu día, el libro se va a abrir y tú decides qué pasó después."
+    - "Ningún final es el correcto. Y si no quieres seguir, tocas «Ahora no»."
+  dibujo_libre: "Dibuja a todas las personas de tu casa haciendo algo."
+  describir:
+    inicio: "Mira este dibujo con calma."
+    emociones:
+      contento: "Contento"
+      tranquilo: "Tranquilo"
+      triste: "Triste"
+      enojado: "Enojado"
+      asustado: "Asustado"
+      no_se: "No sé"
+  sobre_mi:
+    los_dos: "Los dos"
+    ahora_no: "Ahora no"
+    fin: "Gracias por contarme."
+  calma:
+    texto: "Antes de empezar el día, respira con la vela. Sube… y baja."
+    seguir: "Seguir"
+  aterrizaje:
+    texto: "Antes de dormir, riega las plantas del patio."
+    adios: "Hasta mañana, {nombre}."
+    adios_final: "Gracias por estos tres días, {nombre}."

@@ -48,7 +48,9 @@ Día = Calma de entrada → Mañana (casa → camino → escuela) → Tarde (col
 | --- | --- | --- |
 | 1 | Crear personaje, armar la casa, conocer a La Cuentera, primer dibujo | E00, E03, E07, E09 |
 | 2 | Escena para describir en la biblioteca | E06, E02, E04, E13, E14, E10 |
-| 3 | "Sobre mí" con los gemelos al final del día | E11, E01, E08, E12, E05 |
+| 3 | "Sobre mí" con los gemelos | E11, E01, E08, E12, E05 |
+
+El día, la hora y el lugar de cada actividad están en `contenido/actividades.yaml`; los de cada suceso, en su archivo.
 
 Reglas de orden: cada día abre y cierra sus sucesos con uno de intensidad baja; los de en medio se barajan por niño con una semilla guardada; tras cada suceso de intensidad media hay al menos un minuto de exploración libre, y tras cualquier suceso, al menos diez segundos, para que dos nunca vayan seguidos. La hora del día en que ocurre cada suceso está fija por su contenido (la fiebre, de noche; el recreo, en la escuela).
 
@@ -139,12 +141,13 @@ En el paso 6, si el niño abre el panel y elige sensaciones intensas, el ambient
 | --- | --- | --- |
 | Explorar y tocar objetos | Todo el mapa | Los objetos con algo que mirar brillan suave. Al tocarlos, el personaje dice una frase neutra ("La foto de la escuela"). |
 | Mi libro | Botón fijo | Las páginas de los finales y los dibujos. Solo lectura. |
-| Dibujo libre | Día 1, en la recámara | Lienzo con 12 colores, 3 grosores, goma y deshacer. Consigna configurable por el psicólogo. |
+| Dibujo libre | Día 1, en la recámara | Lienzo con 12 colores, 3 grosores, goma y deshacer. Consigna en `contenido/textos.yaml`, configurable por el psicólogo. Entra a Mi libro. |
 | Escena para describir | Día 2, biblioteca | Ilustración fija ambigua; elegir qué pasa y qué siente cada personaje. |
 | Sobre mí | Día 3, biblioteca | Los gemelos Tito y Tita. Unas 24 frases (ver `contenido/sobre-mi.yaml`). |
 | Ahora no | En todo suceso | Cierra el suceso con la frase de La Cuentera. Se registra. |
 | Quiero hablar con alguien | Siempre visible | Avisa en silencio al psicólogo. Ver `docs/legal/protocolo-de-aviso.md`. |
-| Calma y aterrizaje | Inicio y fin de cada día | Calma: respiración con una vela que sube y baja (opcional). Aterrizaje: regar las plantas del patio y despedirse de La Cuentera. |
+| Conocer a La Cuentera | Día 1, biblioteca | Se presenta, explica su libro y "Ahora no". |
+| Calma y aterrizaje | Inicio y fin de cada día | Calma: respiración con una vela que sube y baja; se puede seguir sin hacerla. Aterrizaje: al irse a la cama, regar las plantas del patio y despedirse de La Cuentera. |
 
 ## 11. Dirección visual
 

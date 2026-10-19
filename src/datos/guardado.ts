@@ -26,6 +26,7 @@ export interface Estado {
     finUltimo?: number | null; // when the last story of any kind ended
   };
   libro: Pagina[]; // "Mi libro": one page per finished story
+  calma: number; // last day whose calm was offered
 }
 
 export interface Pagina {
@@ -48,7 +49,7 @@ export interface FiguraPuesta {
   piel: number;
 }
 
-const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "", casa: [], casaLista: false, protaCasa: null, dia: 1, hora: "manana", llegada: null, visitas: {}, cuentos: { orden: {}, hechos: {}, finMedio: null }, libro: [] };
+const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "", casa: [], casaLista: false, protaCasa: null, dia: 1, hora: "manana", llegada: null, visitas: {}, cuentos: { orden: {}, hechos: {}, finMedio: null }, libro: [], calma: 0 };
 
 let actual: Estado = NUEVO;
 let leido = false; // never write before the saved game was read, or it would be overwritten

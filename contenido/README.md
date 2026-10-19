@@ -9,6 +9,7 @@ Texto de los sucesos y de las actividades. El juego lee estos archivos tal cual;
 | `escena-para-describir.yaml` | La escena ambigua del día 2 |
 | `panel-cpe.yaml` | Opciones del panel cuerpo / pensamiento / entorno |
 | `figuras.yaml` | Las figuras para armar la casa y si son adultos, menores o mascotas |
+| `actividades.yaml` | Cuándo y dónde pasan el dibujo libre, la escena para describir, Sobre mí y conocer a La Cuentera |
 | `textos.yaml` | Textos fijos: el sí del niño, la creación de personaje, los 40 nombres |
 
 ## Forma de un suceso

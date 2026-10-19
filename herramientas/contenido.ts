@@ -219,8 +219,14 @@ function validar() {
 
   // Where each story happens: "<lugar>.<zona>" or "<lugar>". The place is a map, or a group of maps
   // sharing a prefix (escuela → escuela_patio, escuela_planta_baja…); the zone is a room or zone in it.
+  const { actividades } = parse(readFileSync(join(DIR, "actividades.yaml"), "utf8")) as { actividades: { id: string; tipo: string; dia: number; hora: string; lugar: string }[] };
+  for (const a of actividades) {
+    if (!["cuentera", "dibujo", "describir", "sobre_mi"].includes(a.tipo)) err(`actividades ${a.id}`, `tipo inválido ${a.tipo}`);
+    if (![1, 2, 3].includes(a.dia)) err(`actividades ${a.id}`, "dia debe ser 1, 2 o 3");
+    if (!HORAS.has(a.hora)) err(`actividades ${a.id}`, `hora inválida ${a.hora}`);
+  }
   const sitios: Record<string, { mapa: string; zona: { x: number; y: number; w: number; h: number } | null }> = {};
-  for (const c of cuentos) {
+  for (const c of [...cuentos, ...actividades]) {
     const [lugar, zona] = String(c.lugar).split(".");
     const candidatos = Object.keys(mapas).filter((m) => m === lugar || m.startsWith(`${lugar}_`));
     let sitio = null;
@@ -235,7 +241,7 @@ function validar() {
         break;
       }
     }
-    if (!sitio) err(`cuentos/${c.id}.yaml`, `el lugar ${c.lugar} no existe en los mapas`);
+    if (!sitio) err(c.id, `el lugar ${c.lugar} no existe en los mapas`);
     else sitios[c.id] = sitio;
   }
   for (const k of ["inicio", "pregunta", "cierre", "ahora_no", "otra", "no_se", "nadie", "solo", "vecino", "carita", "listo", "dibujar"])
@@ -243,7 +249,7 @@ function validar() {
   if (textos.cuento?.caritas?.length !== 5) err("textos cuento.caritas", "deben ser 5");
 
   if (errores.length) throw new Error(`Contenido inválido:\n- ${errores.join("\n- ")}`);
-  return { version: version(), cuentos, sobreMi, escena, panel, textos, figuras, lugares, sitios };
+  return { version: version(), cuentos, sobreMi, escena, panel, textos, figuras, lugares, sitios, actividades };
 }
 
 type ObjetoMapa = { name: string; type: string; properties?: { name: string; value: string }[] };
@@ -282,7 +288,7 @@ export function contenido(): Plugin {
     load(id) {
       const nombre = id.slice(1);
       if (!id.startsWith("\0") || !(nombre in MODULOS)) return;
-      const vigilar = [DOC_CODIGOS, DOC_AREAS, README, PANEL_CPE, MANIFIESTO, join(DIR, "textos.yaml"), join(DIR, "figuras.yaml"), ...readdirSync(join(ROOT, "public/mapas")).map((f) => join(ROOT, "public/mapas", f)), join(DIR, "sobre-mi.yaml"), join(DIR, "escena-para-describir.yaml")];
+      const vigilar = [DOC_CODIGOS, DOC_AREAS, README, PANEL_CPE, MANIFIESTO, join(DIR, "textos.yaml"), join(DIR, "figuras.yaml"), join(DIR, "actividades.yaml"), ...readdirSync(join(ROOT, "public/mapas")).map((f) => join(ROOT, "public/mapas", f)), join(DIR, "sobre-mi.yaml"), join(DIR, "escena-para-describir.yaml")];
       for (const f of vigilar) this.addWatchFile(f);
       for (const f of readdirSync(CUENTOS)) this.addWatchFile(join(CUENTOS, f));
       return `export default ${JSON.stringify(MODULOS[nombre]())};`;

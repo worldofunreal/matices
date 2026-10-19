@@ -26,13 +26,24 @@ declare module "virtual:contenido" {
     version: string;
     cuentos: Cuento[];
     sobreMi: { aviso: string; frases: { id: string; area: string; a: string; b: string }[] };
-    escena: Record<string, unknown>;
+    escena: {
+      id: string;
+      imagen: string;
+      pregunta_titulo: string;
+      titulos: Opcion[];
+      pregunta_emocion: string;
+      emociones: string[];
+      pregunta_platos: string;
+      platos: string[];
+    };
     panel: Record<"cuerpo" | "pensamiento" | "entorno", Opcion[]>;
     textos: Textos;
     figuras: { id: string; tipo: "adulto" | "menor" | "mascota"; nombre: string }[];
     lugares: string[];
     sitios: Record<string, { mapa: string; zona: { x: number; y: number; w: number; h: number } | null }>;
+    actividades: { id: string; tipo: TipoActividad; dia: 1 | 2 | 3; hora: "manana" | "tarde" | "noche"; lugar: string }[];
   };
+  export type TipoActividad = "cuentera" | "dibujo" | "describir" | "sobre_mi";
   interface Textos {
     asentimiento: { texto: string; si: string; no: string; psicologo_prueba: string };
     creacion: {
@@ -94,6 +105,14 @@ declare module "virtual:contenido" {
       estados: Record<"tranquilo" | "inquieto" | "alerta" | "saturado", string>;
       listo: string;
       dibujar: string;
+    };
+    actividades: {
+      cuentera: string[];
+      dibujo_libre: string;
+      describir: { inicio: string; emociones: Record<string, string> };
+      sobre_mi: { los_dos: string; ahora_no: string; fin: string };
+      calma: { texto: string; seguir: string };
+      aterrizaje: { texto: string; adios: string; adios_final: string };
     };
   }
   export default contenido;

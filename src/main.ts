@@ -7,6 +7,10 @@ import { ArmarCasa } from "./escenas/ArmarCasa";
 import { Interfaz } from "./escenas/Interfaz";
 import { Cuento } from "./escenas/Cuento";
 import { Dibujo } from "./escenas/Dibujo";
+import { ConocerCuentera } from "./escenas/actividades/ConocerCuentera";
+import { Describir } from "./escenas/actividades/Describir";
+import { SobreMi } from "./escenas/actividades/SobreMi";
+import { Calma } from "./escenas/actividades/Calma";
 import { iniciarRegistro } from "./datos/eventos";
 import { vigilar } from "./datos/monitor";
 import * as guardado from "./datos/guardado";
@@ -37,7 +41,7 @@ const juego = new Phaser.Game({
   backgroundColor: "#1d1a24",
   scale: { mode: Phaser.Scale.NONE, zoom: medida().zoom },
   physics: { default: "arcade", arcade: { debug } },
-  scene: [Arranque, Asentimiento, Creacion, ArmarCasa, Mundo, Interfaz, Cuento, Dibujo],
+  scene: [Arranque, Asentimiento, Creacion, ArmarCasa, Mundo, Interfaz, Cuento, Dibujo, ConocerCuentera, Describir, SobreMi, Calma],
 });
 
 vigilar(juego, partida.sesion);

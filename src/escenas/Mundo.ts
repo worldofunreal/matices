@@ -4,7 +4,9 @@ import { Protagonista } from "../personaje/Protagonista";
 import { variante } from "../arte";
 import { estado, cambiarEstado, type Estado } from "../datos/guardado";
 import { bloqueo, revisarHora, puedeDormir, dormir } from "../datos/dia";
-import { tocaAqui, siguiente, sitio } from "../datos/cuentos";
+import { tocaAqui, siguiente, sitio, terminar, type Momento } from "../datos/cuentos";
+import type { DatosDibujo } from "./Dibujo";
+import type { DatosCalma } from "./actividades/Calma";
 import type { DatosEscena, EstadoCuerpo } from "./Cuento";
 import { registrar } from "../datos/eventos";
 import type { Interfaz } from "./Interfaz";
@@ -130,6 +132,11 @@ export class Mundo extends Phaser.Scene {
     this.events.once("shutdown", () => registrar("explora", { lugar: this.lugar, ms: Math.round(performance.now() - this.t0), visitas: visitas[this.lugar] }));
 
     this.guiar(objetos);
+    // Each day starts with the calm, once (GDD §4).
+    if (e.lugar === "casa" && e.hora === "manana" && e.calma < e.dia) {
+      cambiarEstado({ calma: e.dia }, true);
+      this.abrir("Calma", { modo: "calma", final: false, alTerminar: () => this.volver() } satisfies DatosCalma);
+    }
 
     if (this.physics.world.drawDebug) {
       this.muros.renderDebug(this.add.graphics().setAlpha(0.5).setDepth(1e5 + 1), { tileColor: null });
@@ -177,7 +184,12 @@ export class Mundo extends Phaser.Scene {
     this.interfaz.decir(`mundo.objetos.${this.lugar}.${objeto}`, frase);
   }
 
+  // Going to bed: first the landing (watering the plants, La Cuentera's goodbye), then the night.
   private terminarDia() {
+    this.abrir("Calma", { modo: "aterrizaje", final: estado().dia >= 3, alTerminar: () => (this.volver(), this.dormirse()) } satisfies DatosCalma);
+  }
+
+  private dormirse() {
     this.cambiando = true;
     this.interfaz.decir("mundo.dormir", M.dormir);
     const dia = dormir();
@@ -249,24 +261,50 @@ export class Mundo extends Phaser.Scene {
     cambiarEstado({ x: Math.round(this.prota.x), y: Math.round(this.prota.y), direccion: this.prota.direccion });
     this.revisarPuertas();
     const c = !this.cambiando && tocaAqui(this.lugar, this.cuerpo.center.x, this.cuerpo.center.y);
-    if (c) this.abrirCuento(c.id);
+    if (c) this.abrirMomento(c);
   }
 
-  // The world freezes and the story opens over it (GDD §9).
-  private abrirCuento(id: string) {
+  // The world freezes and a scene opens over it.
+  private abrir(escena: string, datos: object) {
     this.cambiando = true;
     this.ruta = [];
     this.alLlegar = null;
     this.prota.mover(0, 0);
-    const datos: DatosEscena = { id, alTerminar: (e) => this.alVolverDelCuento(e) };
-    this.scene.launch("Cuento", datos);
-    this.scene.bringToTop("Cuento");
+    this.scene.launch(escena, datos);
+    this.scene.bringToTop(escena);
     this.scene.pause();
   }
 
-  private alVolverDelCuento(e: EstadoCuerpo | null) {
+  private volver() {
     this.scene.resume();
     this.cambiando = false;
+  }
+
+  // A story (GDD §9) or an activity (GDD §10) that starts here.
+  private abrirMomento(m: Momento) {
+    const fin = () => this.alVolverDelCuento(null);
+    if (m.tipo === "cuento") return this.abrir("Cuento", { id: m.id, alTerminar: (e) => this.alVolverDelCuento(e) } satisfies DatosEscena);
+    if (m.tipo === "cuentera") return this.abrir("ConocerCuentera", { id: m.id, alTerminar: fin });
+    if (m.tipo === "describir") return this.abrir("Describir", { id: m.id, alTerminar: fin });
+    if (m.tipo === "sobre_mi") return this.abrir("SobreMi", { id: m.id, alTerminar: fin });
+    const consigna = contenido.textos.actividades.dibujo_libre;
+    this.abrir("Dibujo", {
+      origen: "libre",
+      consigna,
+      alTerminar: (imagen) => {
+        terminar(m.id, "terminado");
+        cambiarEstado({ libro: [...estado().libro, { cuento: m.id, titulo: consigna, lineas: [], carita: null, dibujos: imagen ? [imagen] : [] }] }, true);
+        fin();
+      },
+      ahoraNo: () => {
+        terminar(m.id, "ahora_no");
+        fin();
+      },
+    } satisfies DatosDibujo);
+  }
+
+  private alVolverDelCuento(e: EstadoCuerpo | null) {
+    this.volver();
     if (e) this.ambiente(e);
     // Finishing the afternoon's last story at home brings the night.
     if (revisarHora(this.lugar)) {
