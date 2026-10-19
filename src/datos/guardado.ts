@@ -12,9 +12,22 @@ export interface Estado {
   apariencia: Apariencia;
   creado: boolean; // finished character creation
   nombre: string; // stays on the device; never goes into an event
+  casa: FiguraPuesta[]; // who the child put in the house (GDD §7)
+  casaLista: boolean;
+  protaCasa: { x: number; y: number } | null; // where the child put their own character
 }
 
-const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "" };
+export interface FiguraPuesta {
+  inst: string; // figure id, or id#2, id#3 when placed more than once
+  figura: string; // id in contenido/figuras.yaml
+  cuarto: string;
+  x: number;
+  y: number;
+  nombre: string | null; // the child's own name for it; stays on the device
+  piel: number;
+}
+
+const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "", casa: [], casaLista: false, protaCasa: null };
 
 let actual: Estado = NUEVO;
 let leido = false; // never write before the saved game was read, or it would be overwritten

@@ -244,6 +244,7 @@ export class Creacion extends Phaser.Scene {
       ms: Math.round(performance.now() - this.t0),
     });
     cambiarEstado({ apariencia: this.a, nombre: this.nombre, creado: true }, true);
-    this.scene.start("Mundo", estado());
+    if (!estado().casaLista) this.scene.start("ArmarCasa");
+    else this.scene.start("Mundo", estado());
   }
 }

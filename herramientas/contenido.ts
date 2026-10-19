@@ -120,7 +120,7 @@ function validar() {
   }
 
   const textos = parse(readFileSync(join(DIR, "textos.yaml"), "utf8"));
-  const marcasTextos = new Set(["{psicologo}", "{nombre}", "{n}"]);
+  const marcasTextos = new Set(["{psicologo}", "{nombre}", "{n}", "{figura}", "{cuarto}"]);
   const recorrer = (v: unknown, donde: string): void => {
     if (typeof v === "string") {
       if (!v.trim()) err(donde, "texto vacío");
@@ -134,8 +134,22 @@ function validar() {
   for (const k of ["cuerpo", "piel", "cabello", "color_cabello", "ropa", "extras", "color_mochila", "nombre"])
     if (!textos.creacion?.pasos?.[k]) err("textos creacion.pasos", `falta ${k}`);
 
+  // Figures: each one needs its sheet and portrait; rooms named in the texts must exist in the house map.
+  const { figuras: listaFiguras } = parse(readFileSync(join(DIR, "figuras.yaml"), "utf8")) as { figuras: [string, string, string][] };
+  const piezas = new Set(leerManifiesto().piezas.map((p) => p.id));
+  const figuras = listaFiguras.map(([id, tipo, nombre]) => {
+    if (!["adulto", "menor", "mascota"].includes(tipo)) err(`figuras ${id}`, `tipo inválido ${tipo}`);
+    for (const pieza of [`figuras/${id}`, `figuras/retrato_${id}`]) if (!piezas.has(pieza)) err(`figuras ${id}`, `falta ${pieza} en el manifiesto`);
+    texto(`figuras ${id}`, nombre, false);
+    return { id, tipo, nombre };
+  });
+  const mapaCasa = JSON.parse(readFileSync(join(ROOT, "public/mapas/casa.json"), "utf8"));
+  const cuartosMapa = new Set<string>(mapaCasa.layers.find((l: { name: string }) => l.name === "cuartos")?.objects.map((o: { name: string }) => o.name) ?? []);
+  for (const c of Object.keys(textos.casa?.cuartos ?? {})) if (!cuartosMapa.has(c)) err("textos casa.cuartos", `${c} no está en mapas/casa.json`);
+  for (const c of cuartosMapa) if (!textos.casa?.cuartos?.[c]) err("textos casa.cuartos", `falta el nombre del cuarto ${c}`);
+
   if (errores.length) throw new Error(`Contenido inválido:\n- ${errores.join("\n- ")}`);
-  return { version: version(), cuentos, sobreMi, escena, panel, textos };
+  return { version: version(), cuentos, sobreMi, escena, panel, textos, figuras };
 }
 
 function validarArte() {
@@ -163,7 +177,7 @@ export function contenido(): Plugin {
     load(id) {
       const nombre = id.slice(1);
       if (!id.startsWith("\0") || !(nombre in MODULOS)) return;
-      const vigilar = [DOC_CODIGOS, DOC_AREAS, README, PANEL_CPE, MANIFIESTO, join(DIR, "textos.yaml"), join(DIR, "sobre-mi.yaml"), join(DIR, "escena-para-describir.yaml")];
+      const vigilar = [DOC_CODIGOS, DOC_AREAS, README, PANEL_CPE, MANIFIESTO, join(DIR, "textos.yaml"), join(DIR, "figuras.yaml"), join(ROOT, "public/mapas/casa.json"), join(DIR, "sobre-mi.yaml"), join(DIR, "escena-para-describir.yaml")];
       for (const f of vigilar) this.addWatchFile(f);
       for (const f of readdirSync(CUENTOS)) this.addWatchFile(join(CUENTOS, f));
       return `export default ${JSON.stringify(MODULOS[nombre]())};`;

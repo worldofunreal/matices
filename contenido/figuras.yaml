@@ -1,0 +1,23 @@
+# Figuras para armar la casa (GDD §7). El id es el de su arte (public/assets/figuras/<id>.png y
+# retrato_<id>.png) y el de su código en los sucesos (FIGURA:<id>).
+# tipo: adulto | menor | mascota. "casa_adultos" en los sucesos usa solo los adultos; las mascotas
+# viven en la casa pero no llegan en "¿Quién llega?".
+figuras:
+  - [abuela, adulto, "Abuela"]
+  - [abuelo, adulto, "Abuelo"]
+  - [mama, adulto, "Mamá"]
+  - [papa, adulto, "Papá"]
+  - [tia, adulto, "Tía"]
+  - [tio, adulto, "Tío"]
+  - [madrastra, adulto, "Madrastra"]
+  - [padrastro, adulto, "Padrastro"]
+  - [otra_persona, adulto, "Otra persona adulta"]
+  - [hermano_mayor, menor, "Hermano mayor"]
+  - [hermana_mayor, menor, "Hermana mayor"]
+  - [hermano_menor, menor, "Hermano menor"]
+  - [hermana_menor, menor, "Hermana menor"]
+  - [bebe, menor, "Bebé"]
+  - [primo, menor, "Primo"]
+  - [prima, menor, "Prima"]
+  - [perro, mascota, "Perro"]
+  - [gato, mascota, "Gato"]

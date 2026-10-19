@@ -85,10 +85,10 @@ Todo se puede cambiar después desde el espejo de la casa (se registra el cambio
 Unos 5 minutos, después del personaje. Es a la vez mecánica de juego y de observación.
 
 - Vista de la casa en corte (sin techo): sala-comedor, cocina, 2 recámaras, baño, patio con tinaco y lavadero.
-- Repisa de figuras: abuela, abuelo, mamá, papá, tía (Elena), tío, madrastra, padrastro, hermano o hermana mayor, hermano o hermana menor, bebé, primo o prima, otra persona adulta, perro, gato.
-- El niño arrastra figuras a los cuartos. Puede poner una, varias o ninguna. Cada figura puede renombrarse ("Mi abue").
+- Repisa de figuras: la lista está en `contenido/figuras.yaml` (abuelos, padres, tíos, madrastra, padrastro, hermanos mayores y menores, bebé, primos, otra persona adulta, perro, gato). La tía puede llamarse Elena si el niño la renombra.
+- El niño toca una figura y luego un cuarto. Puede poner una, varias, la misma más de una vez (dos hermanos menores) o ninguna. Cada figura puede renombrarse ("Mi abue"), cambiar de color de piel, moverse o quitarse. El personaje también está en la casa y se puede mover.
 - La Cuentera solo dice: "Esta es tu casa en el cuento".
-- Se registra: quién, en qué orden, en qué cuarto, qué tan cerca del personaje, cambios.
+- Se registra: quién, en qué orden, en qué cuarto, qué tan cerca del personaje, cambios (`clinico/codigos-y-eventos.md`, `casa_figura`). Si renombró una figura se registra que la renombró, nunca el nombre que escribió.
 
 Esas figuras son los adultos y hermanos de todos los sucesos. Si la casa queda sin adultos, los sucesos de casa ofrecen "un vecino o vecina" y "nadie".
 

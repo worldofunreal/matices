@@ -61,7 +61,9 @@ function guardarEvento(evento: object & { tipo?: unknown }) {
 
 export function registrar(tipo: string, datos: Record<string, unknown> = {}) {
   if (partida.registro === false) return;
+  // Common fields go last so an event's own data can never overwrite them.
   const evento = {
+    ...datos,
     nino: partida.nino,
     sesion: partida.sesion,
     contenido: contenido.version,
@@ -70,7 +72,6 @@ export function registrar(tipo: string, datos: Record<string, unknown> = {}) {
     semilla: partida.semilla,
     t_ms: Math.round(performance.now() - inicio),
     tipo,
-    ...datos,
   };
   if (partida.registro === null) pendientes.push(evento);
   else guardarEvento(evento);

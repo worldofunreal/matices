@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { Protagonista } from "../personaje/Protagonista";
+import { variante } from "../arte";
 import { cambiarEstado, type Estado } from "../datos/guardado";
 
 const VELOCIDAD = 90;
@@ -54,6 +55,9 @@ export class Mundo extends Phaser.Scene {
     };
 
     this.colocarObjetos(mapa, estado.lugar);
+    // The people the child put in the house stand where they were placed.
+    if (estado.lugar === "casa")
+      for (const f of estado.casa) this.add.sprite(f.x, f.y, variante(this, `figuras/${f.figura}`, { piel: f.piel }), 0).setOrigin(0.5, 1).setDepth(f.y);
     this.input.on("pointerdown", (p: Phaser.Input.Pointer, encima: Phaser.GameObjects.GameObject[]) => {
       if (encima.length) return; // tapped an object; it handles itself
       this.alLlegar = null;

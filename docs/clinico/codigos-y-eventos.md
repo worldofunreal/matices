@@ -36,7 +36,7 @@ También usan `BUSCA_AYUDA`, `AUTOSUFICIENTE` y `CUIDA_A_OTRO`.
 
 | Código | Significado |
 | --- | --- |
-| `FIGURA:<id>` | Una figura de la casa, por su id (ej. `FIGURA:abuela`) |
+| `FIGURA:<id>` | Una figura de la casa, por su id de `contenido/figuras.yaml` (ej. `FIGURA:abuela`). Si la puso más de una vez, la segunda es `FIGURA:hermano_menor#2` |
 | `ESCUELA:<id>` | Una persona de la escuela (`maestra`, `companero`, `conserje`, `directora`) |
 | `VECINO` | Un vecino o vecina |
 | `NADIE` | No llega nadie (se suma a `AUSENTE`) |
@@ -64,7 +64,7 @@ Todos llevan: código del niño, sesión, versión del contenido, semilla de ord
 | Evento | Datos | Para qué |
 | --- | --- | --- |
 | `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
-| `casa_figura` | Figura, cuarto, distancia al personaje, si la quitó | Quién forma el mundo del niño |
+| `casa_figura` | Qué hizo (`poner`, `mover`, `quitar`, `renombrar`, `piel`), figura, si es adulto, menor o mascota, cuarto, distancia al personaje en cuadros, orden. Al terminar, `casa_lista` con todas las figuras y el tiempo | Quién forma el mundo del niño |
 | `cuento_paso` | Suceso, paso, opciones en el orden mostrado, opción y código, toques previos, ms para decidir | El dato central |
 | `carita` | Suceso, valor 1 a 5 | Cómo se siente el protagonista |
 | `panel_cpe` | Suceso, íconos de cuerpo, pensamiento y entorno | Cuántas emociones distingue |

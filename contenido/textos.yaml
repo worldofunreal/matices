@@ -1,6 +1,7 @@
 # Textos fijos del juego (no los de los sucesos). Cada texto tiene voz; una grabación en
 # public/assets/voz/<clave>.mp3 reemplaza a la voz del navegador (ej. voz/asentimiento.texto.mp3).
 # {psicologo}: quien acompaña al niño (lo fija la institución). {nombre}: nombre del personaje.
+# {figura}: nombre de una figura de la casa. {cuarto}: nombre de un cuarto.
 
 asentimiento:
   texto: "Este juego tiene cuentos. {psicologo} va a ver lo que elijas para conocerte mejor. Tus maestros y tus compañeros no lo ven. Si algo nos preocupa de tu seguridad, {psicologo} buscará a adultos que te puedan cuidar. Puedes dejar de jugar cuando quieras."
@@ -39,3 +40,22 @@ creacion:
   color_mochila: "Mochila de color {n}"
   escribir_nombre: "Escribir otro nombre"
   nombres: [Ana, Sofía, Valeria, Camila, Ximena, Regina, Fernanda, Daniela, Mariana, Lupita, Itzel, Renata, Paola, Andrea, Jimena, Naomi, Alma, Citlali, Abril, Luz, Diego, Santiago, Mateo, Emiliano, Leonardo, Juan, José, Luis, Ángel, Miguel, Iker, Tadeo, Gael, Kevin, Brayan, Alexis, Sam, Alex, Dani, Cris]
+
+casa:
+  inicio: "Esta es tu casa en el cuento."
+  instruccion: "Toca a alguien de la repisa y luego toca un cuarto. Puedes poner a varias personas, o a nadie."
+  elegida: "{figura}. Ahora toca un cuarto."
+  puesta: "{figura} en {cuarto}."
+  quitar: "Quitar"
+  renombrar: "Cambiar nombre"
+  piel: "Color de piel"
+  mover: "Mover"
+  cerrar: "Cerrar"
+  listo: "Listo"
+  cuartos:
+    sala: "la sala y el comedor"
+    cocina: "la cocina"
+    recamara: "la recámara"
+    recamara_adulto: "la otra recámara"
+    bano: "el baño"
+    patio: "el patio"

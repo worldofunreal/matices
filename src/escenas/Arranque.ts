@@ -31,6 +31,7 @@ export class Arranque extends Phaser.Scene {
     const estado = await cargarEstado();
     if (!preguntado()) this.scene.start("Asentimiento");
     else if (!estado.creado) this.scene.start("Creacion", { modo: "inicio" });
+    else if (!estado.casaLista) this.scene.start("ArmarCasa");
     else this.scene.start("Mundo", estado);
   }
 }
