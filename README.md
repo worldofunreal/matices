@@ -4,7 +4,16 @@ Videojuego de pixel art para niñas y niños de 8 a 12 años, pensado para Méxi
 
 **El juego recoge. El psicólogo interpreta. El juego no diagnostica.**
 
-> Estado: diseño, antes de prototipo. Repositorio privado.
+> Estado: esqueleto del juego (casa provisional caminable, sin arte). Repositorio privado.
+
+## Correr el juego
+
+```bash
+npm install
+npm run dev
+```
+
+Abre la dirección que aparece. Con `?debug` al final se ven los choques y los objetos del mapa. `npm run build` deja el juego listo en `dist/` y se detiene si algún contenido no es válido.
 
 ## Cómo se juega, en corto
 

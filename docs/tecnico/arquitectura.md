@@ -46,6 +46,14 @@ Esquema en `docs/clinico/codigos-y-eventos.md`. Cada evento lleva la versión de
 - Bitácora de accesos en el programa del psicólogo.
 - Sin bibliotecas de analítica, publicidad ni rastreo.
 
+## Código
+
+| Carpeta | Qué hay |
+| --- | --- |
+| `src/` | El juego: `main.ts` (pantalla de 640 × 360 escalada en enteros) y `escenas/` |
+| `herramientas/contenido.ts` | Lee `contenido/`, lo revisa contra los códigos de `docs/clinico/codigos-y-eventos.md` y las áreas de `docs/clinico/marco-clinico.md`, y detiene la compilación si algo no cuadra |
+| `public/mapas/` | Mapas en formato Tiled (capas `piso`, `muros`, `objetos`) |
+
 ## Pendientes técnicos
 
 - Probar Phaser en la tableta de referencia (2 GB de RAM) antes de fijar efectos de ambiente.

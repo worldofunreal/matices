@@ -47,6 +47,16 @@ También usan `BUSCA_AYUDA`, `AUTOSUFICIENTE` y `CUIDA_A_OTRO`.
 
 `SE_CULPA`, `CULPA_A_OTRO`, `MINIMIZA`, `NO_LO_NOMBRA`.
 
+## Códigos de la escena para describir (D01)
+
+| Código | Título que elige el niño |
+| --- | --- |
+| `ESPERA_A_ALGUIEN_QUE_LLEGA` | Espera a alguien que ya viene |
+| `ESPERA_A_ALGUIEN_QUE_NO_LLEGA` | Espera a alguien que no va a llegar |
+| `CASTIGO` | Lo castigaron y no puede salir |
+| `MIRA_ALGO_BONITO` | Está viendo algo bonito afuera |
+| `TIENE_MIEDO` | Tiene miedo de algo de afuera |
+
 ## Eventos
 
 Todos llevan: código del niño, sesión, versión del contenido, semilla de orden y milisegundos desde el inicio de la sesión.

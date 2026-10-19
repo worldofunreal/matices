@@ -4,21 +4,21 @@ El juego observa 13 áreas agrupadas en tres familias, alineadas con instrumento
 
 ## Áreas que observa
 
-| Familia | Área | Qué se observa en el juego | Referencia |
-| --- | --- | --- | --- |
-| Negligencia | Necesidades físicas | En sucesos de hambre, frío, enfermedad o cansancio: si un adulto atiende, si nadie lo hace, si el protagonista lo resuelve solo | MNBS-CR; escala de Dubowitz |
-| Negligencia | Apoyo emocional | En sucesos de miedo, tristeza o logro: si alguien consuela, celebra o no se entera | MNBS-CR; escala de Dubowitz |
-| Negligencia | Supervisión | Quién sabe dónde está el niño, quién está en casa de noche, quién cuida a los hermanos | MNBS-CR; escala de Dubowitz |
-| Negligencia | Escuela y aprendizaje | Tareas, juntas, permisos, útiles: quién se ocupa | MNBS-CR (área cognitiva) |
-| SDQ | Síntomas emocionales | Miedo, preocupación, tristeza y malestar en el cuerpo, con el panel cuerpo / pensamiento / entorno | SDQ, CBCL (internalizante) |
-| SDQ | Conducta | Qué hace el personaje ante la frustración: enojarse, romper, culpar, irse | SDQ, CBCL (externalizante) |
-| SDQ | Compañeros | Sucesos de ser excluido, invitado o molestado | SDQ |
-| SDQ | Prosocial | Si el personaje ayuda, comparte o consuela | SDQ |
-| SDQ | Atención durante el juego | Solo para saber cuánto pesan las demás respuestas. No es un indicador clínico | SDQ (hiperactividad), sin uso diagnóstico |
-| Vínculo | Representación de los adultos | Si los adultos del cuento protegen, ignoran, rechazan o dañan | SSAP: seguridad, inseguridad, evitación defensiva, desorganización |
-| Vínculo | Pedir ayuda | Cuántas veces y a quién busca el protagonista | SSAP; observación en juego terapéutico |
-| Vínculo | Cuidar de más | Si el protagonista cuida a un adulto o a hermanos más allá de su edad | Parentificación (entrevista clínica) |
-| Vínculo | A quién culpa | Cuando un adulto falla: se culpa, culpa al adulto, minimiza o no lo nombra | Atribución de culpa (entrevista clínica) |
+| Familia | Área | Id en el contenido | Qué se observa en el juego | Referencia |
+| --- | --- | --- | --- | --- |
+| Negligencia | Necesidades físicas | `necesidades_fisicas` | En sucesos de hambre, frío, enfermedad o cansancio: si un adulto atiende, si nadie lo hace, si el protagonista lo resuelve solo | MNBS-CR; escala de Dubowitz |
+| Negligencia | Apoyo emocional | `apoyo_emocional` | En sucesos de miedo, tristeza o logro: si alguien consuela, celebra o no se entera | MNBS-CR; escala de Dubowitz |
+| Negligencia | Supervisión | `supervision` | Quién sabe dónde está el niño, quién está en casa de noche, quién cuida a los hermanos | MNBS-CR; escala de Dubowitz |
+| Negligencia | Escuela y aprendizaje | `escuela_aprendizaje` | Tareas, juntas, permisos, útiles: quién se ocupa | MNBS-CR (área cognitiva) |
+| SDQ | Síntomas emocionales | `sintomas_emocionales` | Miedo, preocupación, tristeza y malestar en el cuerpo, con el panel cuerpo / pensamiento / entorno | SDQ, CBCL (internalizante) |
+| SDQ | Conducta | `conducta` | Qué hace el personaje ante la frustración: enojarse, romper, culpar, irse | SDQ, CBCL (externalizante) |
+| SDQ | Compañeros | `companeros` | Sucesos de ser excluido, invitado o molestado | SDQ |
+| SDQ | Prosocial | `prosocial` | Si el personaje ayuda, comparte o consuela | SDQ |
+| SDQ | Atención durante el juego | `atencion` | Solo para saber cuánto pesan las demás respuestas. No es un indicador clínico | SDQ (hiperactividad), sin uso diagnóstico |
+| Vínculo | Representación de los adultos | `representacion_adultos` | Si los adultos del cuento protegen, ignoran, rechazan o dañan | SSAP: seguridad, inseguridad, evitación defensiva, desorganización |
+| Vínculo | Pedir ayuda | `pedir_ayuda` | Cuántas veces y a quién busca el protagonista | SSAP; observación en juego terapéutico |
+| Vínculo | Cuidar de más | `cuidar_de_mas` | Si el protagonista cuida a un adulto o a hermanos más allá de su edad | Parentificación (entrevista clínica) |
+| Vínculo | A quién culpa | `a_quien_culpa` | Cuando un adulto falla: se culpa, culpa al adulto, minimiza o no lo nombra | Atribución de culpa (entrevista clínica) |
 
 ## De dónde sale cada mecánica
 
