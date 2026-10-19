@@ -1,0 +1,25 @@
+id: E05
+titulo: La junta
+dia: 3
+intensidad: baja
+lugar: escuela.direccion
+hora: manana
+area_principal: escuela_aprendizaje
+areas: [supervision]
+inicio: "La maestra Lucía dice que mañana hay junta y que debe ir un adulto de la casa de cada niño."
+pasos:
+  - id: quien_va
+    pregunta: "¿Quién va a la junta?"
+    personas: [casa, nadie, solo]
+  - id: que_hace
+    pregunta: "¿Qué hace {quien} en la junta?"
+    opciones:
+      - [PROTEGE, "Llega a tiempo y escucha a la maestra"]
+      - [NOTA_SIN_ACTUAR, "Va pero no pone atención"]
+      - [RECHAZA, "Se queja de que lo hicieron venir"]
+      - [AUSENTE, "Dice que va a ir y no llega"]
+    opciones_solo:
+      - [AUTOSUFICIENTE, "{nombre} va solo y dice que nadie pudo"]
+      - [BUSCA_AYUDA, "{nombre} le pide a otro adulto que vaya"]
+      - [SE_QUEDA_QUIETO, "{nombre} no entrega el aviso"]
+  - id: carita

@@ -1,0 +1,34 @@
+id: E00
+titulo: El cumpleaños
+dia: 1
+intensidad: baja
+lugar: casa.sala
+hora: tarde
+area_principal: representacion_adultos
+areas: [apoyo_emocional]
+nota: Suceso de práctica. Sirve de punto de partida para comparar con los demás.
+inicio: "Hoy es el cumpleaños de {nombre}. En la mesa hay un pastel pequeño con velitas."
+pasos:
+  - id: quien_llega
+    pregunta: "¿Quién llega?"
+    personas: [casa, nadie, solo]
+  - id: que_hace
+    pregunta: "¿Qué hace {quien}?"
+    opciones:
+      - [PROTEGE, "Le canta las mañanitas y le da un abrazo"]
+      - [NOTA_SIN_ACTUAR, "Dice «felicidades» y sigue viendo su teléfono"]
+      - [RECHAZA, "Dice «¿y ahora qué celebras?» de mal modo"]
+      - [DANA, "Avienta el pastel a un lado y se va enojado"]
+      - [AUSENTE, "Dice que no se puede quedar y se va"]
+    opciones_solo:
+      - [AUTOSUFICIENTE, "{nombre} prende las velitas solo"]
+      - [BUSCA_AYUDA, "{nombre} va a buscar a alguien para celebrar"]
+      - [SE_QUEDA_QUIETO, "{nombre} se queda mirando el pastel"]
+  - id: luego
+    pregunta: "¿Y luego?"
+    opciones:
+      - [PROTEGE, "Parten el pastel juntos"]
+      - [AUTOSUFICIENTE, "{nombre} apaga las velitas solo"]
+      - [AUSENTE, "El pastel se queda en la mesa y nadie lo come"]
+      - [BUSCA_AYUDA, "{nombre} llama a alguien para contarle"]
+  - id: carita

@@ -1,0 +1,14 @@
+# Escena para describir (día 2, biblioteca del barrio). Imagen ambigua, al estilo de las láminas TAT/CAT, ilustración propia.
+id: D01
+imagen: "Una niña o un niño (con el aspecto del personaje del jugador) mira por la ventana de su casa. Afuera está oscuro. En la mesa hay dos platos servidos."
+pregunta_titulo: "¿Qué está pasando?"
+titulos:
+  - [ESPERA_A_ALGUIEN_QUE_LLEGA, "Espera a alguien que ya viene"]
+  - [ESPERA_A_ALGUIEN_QUE_NO_LLEGA, "Espera a alguien que no va a llegar"]
+  - [CASTIGO, "Lo castigaron y no puede salir"]
+  - [MIRA_ALGO_BONITO, "Está viendo algo bonito afuera"]
+  - [TIENE_MIEDO, "Tiene miedo de algo de afuera"]
+pregunta_emocion: "¿Cómo se siente?"
+emociones: [contento, tranquilo, triste, enojado, asustado, no_se]
+pregunta_platos: "¿Para quién es el otro plato?"
+platos: [casa, nadie, no_se]

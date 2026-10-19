@@ -1,0 +1,33 @@
+id: E03
+titulo: La rodilla raspada
+dia: 1
+intensidad: baja
+lugar: parque
+hora: tarde
+area_principal: necesidades_fisicas
+areas: [pedir_ayuda]
+inicio: "{nombre} corre en el parque, se tropieza y se raspa la rodilla. Le arde."
+pasos:
+  - id: quien_llega
+    pregunta: "¿Quién llega?"
+    personas: [casa, vecino, nadie, solo]
+  - id: que_hace
+    pregunta: "¿Qué hace {quien}?"
+    opciones:
+      - [PROTEGE, "Le limpia la herida y le pone una curita"]
+      - [NOTA_SIN_ACTUAR, "Le dice «no es nada, levántate»"]
+      - [RECHAZA, "Lo regaña por andar corriendo"]
+      - [DANA, "Lo jala del brazo de mal modo para que camine"]
+      - [AUSENTE, "Lo ve de lejos y se va"]
+    opciones_solo:
+      - [AUTOSUFICIENTE, "{nombre} se sacude y sigue jugando aunque le duela"]
+      - [BUSCA_AYUDA, "{nombre} va cojeando a buscar a alguien"]
+      - [SE_QUEDA_QUIETO, "{nombre} se queda sentado en el suelo"]
+  - id: luego
+    pregunta: "¿Y luego?"
+    opciones:
+      - [PROTEGE, "Regresan juntos a casa"]
+      - [AUTOSUFICIENTE, "{nombre} se cura solo en el baño de su casa"]
+      - [AUSENTE, "Nadie le vuelve a preguntar por su rodilla"]
+      - [BUSCA_AYUDA, "{nombre} le enseña la rodilla a alguien de su casa"]
+  - id: carita

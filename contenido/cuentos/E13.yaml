@@ -1,0 +1,32 @@
+id: E13
+titulo: El festival
+dia: 2
+intensidad: media
+lugar: escuela.patio
+hora: manana
+area_principal: a_quien_culpa
+areas: [apoyo_emocional, escuela_aprendizaje]
+inicio: "Hoy es el festival de la escuela. Alguien de la casa de {nombre} prometió venir. Ya empezó."
+pasos:
+  - id: quien_prometio
+    pregunta: "¿Quién prometió venir?"
+    personas: [casa]
+  - id: que_pasa
+    pregunta: "¿Qué pasa?"
+    opciones:
+      - [PROTEGE, "Llega a tiempo y aplaude"]
+      - [NOTA_SIN_ACTUAR, "Manda un mensaje: «no pude»"]
+      - [RECHAZA, "Llega tarde y dice que los festivales son pérdida de tiempo"]
+      - [AUSENTE, "No llega y no avisa"]
+  - id: culpa
+    pregunta: "¿Qué piensa {nombre}?"
+    solo_si: [NOTA_SIN_ACTUAR, RECHAZA, AUSENTE]
+    opciones:
+      - [SE_CULPA, "«Seguro hice algo mal»"]
+      - [CULPA_A_OTRO, "«No cumplió lo que dijo»"]
+      - [MINIMIZA, "«No importa, ni quería que viniera»"]
+      - [NO_LO_NOMBRA, "No quiere pensar en eso"]
+  - id: quien_llega
+    pregunta: "Después del festival, ¿quién se acerca a {nombre}?"
+    personas: [escuela, casa, nadie]
+  - id: carita

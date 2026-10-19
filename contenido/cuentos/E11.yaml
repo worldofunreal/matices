@@ -1,0 +1,22 @@
+id: E11
+titulo: El diez
+dia: 3
+intensidad: baja
+lugar: casa.sala
+hora: tarde
+area_principal: apoyo_emocional
+areas: [escuela_aprendizaje]
+inicio: "{nombre} saca la mejor calificación del salón: un diez con estrellita. Llega a casa con el examen."
+pasos:
+  - id: quien_llega
+    pregunta: "¿A quién se lo enseña?"
+    personas: [casa, nadie]
+  - id: que_hace
+    pregunta: "¿Qué hace {quien}?"
+    opciones:
+      - [PROTEGE, "Lo felicita y pega el examen en el refri"]
+      - [NOTA_SIN_ACTUAR, "Dice «qué bien» sin voltear"]
+      - [RECHAZA, "Dice que es lo mínimo que tiene que hacer"]
+      - [DANA, "Avienta el examen al piso"]
+      - [AUSENTE, "No hay nadie en casa para enseñárselo"]
+  - id: carita

@@ -1,0 +1,30 @@
+# Sobre mí · los gemelos Tito y Tita (día 3)
+# Cada frase tiene su versión A y B opuestas. El lado (Tito o Tita) se baraja por niño.
+# Respuestas posibles: A, B, AMBOS, AHORA_NO.
+# Redacción propia del equipo; no son reactivos de la BPI ni de la MNBS-CR. Pendiente de revisión clínica.
+aviso: "Ahora no es un cuento. Es sobre ti. Escucha a Tito y a Tita y toca al que se parece más a ti."
+frases:
+  - {id: S01, area: necesidades_fisicas, a: "Yo casi siempre desayuno antes de ir a la escuela", b: "Yo casi nunca desayuno antes de ir a la escuela"}
+  - {id: S02, area: necesidades_fisicas, a: "En mi casa casi siempre ceno con alguien", b: "En mi casa casi siempre ceno solo"}
+  - {id: S03, area: necesidades_fisicas, a: "Cuando me enfermo me llevan al doctor", b: "Cuando me enfermo nadie me lleva al doctor"}
+  - {id: S04, area: necesidades_fisicas, a: "Casi siempre tengo ropa limpia para la escuela", b: "Muchas veces no tengo ropa limpia para la escuela"}
+  - {id: S05, area: apoyo_emocional, a: "Cuando estoy triste alguien de mi casa se da cuenta", b: "Cuando estoy triste nadie de mi casa se da cuenta"}
+  - {id: S06, area: apoyo_emocional, a: "Alguien de mi casa me abraza seguido", b: "Casi nadie en mi casa me abraza"}
+  - {id: S07, area: apoyo_emocional, a: "Cuando hago algo bien, en mi casa me lo dicen", b: "Cuando hago algo bien, en mi casa no me dicen nada"}
+  - {id: S08, area: supervision, a: "Después de la escuela alguien sabe dónde estoy", b: "Después de la escuela nadie sabe dónde estoy"}
+  - {id: S09, area: supervision, a: "Casi nunca me quedo solo en casa de noche", b: "Muchas veces me quedo solo en casa de noche"}
+  - {id: S10, area: escuela_aprendizaje, a: "Alguien de mi casa revisa mi tarea", b: "Nadie de mi casa revisa mi tarea"}
+  - {id: S11, area: escuela_aprendizaje, a: "Alguien de mi casa va a las juntas de la escuela", b: "Nadie de mi casa va a las juntas de la escuela"}
+  - {id: S12, area: cuidar_de_mas, a: "Yo no tengo que cuidar a nadie de mi casa", b: "Yo cuido mucho a alguien de mi casa"}
+  - {id: S13, area: cuidar_de_mas, a: "Los adultos de mi casa hacen la comida", b: "Yo hago la comida en mi casa muchas veces"}
+  - {id: S14, area: sintomas_emocionales, a: "Casi nunca me preocupo", b: "Me preocupo mucho"}
+  - {id: S15, area: sintomas_emocionales, a: "Casi nunca me duele la panza o la cabeza", b: "Me duele seguido la panza o la cabeza"}
+  - {id: S16, area: sintomas_emocionales, a: "Duermo bien en las noches", b: "Me cuesta mucho dormir en las noches"}
+  - {id: S17, area: conducta, a: "Casi nunca me enojo fuerte", b: "Me enojo fuerte muchas veces"}
+  - {id: S18, area: companeros, a: "Tengo amigos en la escuela", b: "No tengo amigos en la escuela"}
+  - {id: S19, area: companeros, a: "En la escuela casi nadie me molesta", b: "En la escuela me molestan mucho"}
+  - {id: S20, area: prosocial, a: "Me gusta ayudar a los demás", b: "No me gusta mucho ayudar a los demás"}
+  - {id: S21, area: pedir_ayuda, a: "Cuando algo me pasa se lo cuento a alguien", b: "Cuando algo me pasa no se lo cuento a nadie"}
+  - {id: S22, area: pedir_ayuda, a: "Hay un adulto al que le puedo pedir ayuda", b: "No hay ningún adulto al que le pueda pedir ayuda"}
+  - {id: S23, area: a_quien_culpa, a: "Cuando algo sale mal en mi casa, sé que no es mi culpa", b: "Cuando algo sale mal en mi casa, pienso que es mi culpa"}
+  - {id: S24, area: representacion_adultos, a: "Los adultos de mi casa casi siempre cumplen lo que prometen", b: "Los adultos de mi casa casi nunca cumplen lo que prometen"}
