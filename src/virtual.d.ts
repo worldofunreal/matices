@@ -43,6 +43,8 @@ declare module "virtual:contenido" {
     conexiones: Record<string, string[]>;
     sitios: Record<string, { mapa: string; zona: { x: number; y: number; w: number; h: number } | null }>;
     actividades: { id: string; tipo: TipoActividad; dia: 1 | 2 | 3; hora: "manana" | "tarde" | "noche"; lugar: string }[];
+    areas: { id: string; nombre: string; familia: string }[];
+    objetos: Record<string, string[]>;
   };
   export type TipoActividad = "cuentera" | "dibujo" | "describir" | "sobre_mi";
   interface Textos {

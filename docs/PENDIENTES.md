@@ -1,6 +1,6 @@
 # Pendientes
 
-Lo que bloquea el piloto, por quién lo decide.
+Lo que falta, por quién lo decide. Nada de esto detiene el desarrollo.
 
 ## Psicólogos
 
@@ -9,8 +9,7 @@ Lo que bloquea el piloto, por quién lo decide.
 - [ ] Revisar las 24 frases de Sobre mí (`contenido/sobre-mi.yaml`).
 - [ ] Elegir la consigna del dibujo y el método para leerlo.
 - [ ] Revisar que los sucesos encajen con familias mexicanas (familia extensa, abuelos que crían, hermanos que cuidan) y con palabras de cada región.
-- [ ] Decir qué pruebas aplican hoy (SDQ, CBCL u otras).
-- [ ] Escribir las reglas de revisión y quién las firma.
+- [ ] Escribir las reglas de revisión.
 - [ ] Cuántos niños atiende un psicólogo por sesión.
 - [ ] En cuánto tiempo se lee un reporte marcado "revisar pronto".
 - [ ] Criterio de éxito del piloto, antes de empezarlo.
@@ -22,23 +21,6 @@ Lo que bloquea el piloto, por quién lo decide.
 - [ ] Cuántas sesiones hay y de cuánto tiempo.
 - [ ] En grupo o uno a uno; si hay audífonos.
 - [ ] Qué aparatos hay y si hay red o internet.
-- [ ] Cómo salen los datos hacia el psicólogo (archivo, red local o servidor).
-
-## Instituciones
-
-- [ ] Protocolo para avisar a la Procuraduría de Protección: quién, en cuánto tiempo, con qué formato.
-- [ ] Qué se ofrece a niños sin firma del tutor; los de más riesgo suelen ser los de familias que no firman.
-
-## Abogado
-
-- [ ] Qué ley de datos aplica en cada institución y quién es responsable de los datos.
-- [ ] Confirmar que el equipo puede medir uso y técnica con el código del niño (PRD F16) y qué debe decir el consentimiento.
-- [ ] Qué hacer si un tutor pide el reporte por su derecho de acceso y entregarlo puede poner en riesgo al niño.
-- [ ] Plazo de conservación de datos.
-- [ ] Si el reporte forma parte de un expediente clínico y qué norma aplica.
-- [ ] Si el piloto cae en el Reglamento de la Ley General de Salud en materia de investigación.
-- [ ] Texto vigente del art. 12 de la LGDNNA (reformado el 15-01-2026).
-- [ ] Permiso de Youthinmind si el SDQ se usa en digital.
 
 ## Creativo (Omar y Dayana)
 

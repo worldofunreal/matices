@@ -14,19 +14,15 @@
 | M4. Modo cuento | Los 15 sucesos con un toque por decisión, bocina, "Ahora no", "Otra cosa" con dibujo, caritas, panel, estados del cuerpo, Mi libro | Cada suceso se juega de punta a punta y cada paso deja su evento |
 | M5. Actividades | Dibujo libre, escena para describir, Sobre mí, conocer a La Cuentera y aterrizaje | Los tres días se juegan completos |
 | H7. Siempre a la mano | "Quiero hablar con alguien", Mi libro, opciones (GDD §13, §15) | Se alcanzan desde cualquier pantalla con una mano |
-| H8. Datos | Archivo cifrado para el psicólogo (modo A); servidor propio de analítica y tablero del equipo (PRD F16, F17) | Un psicólogo abre el archivo de una partida; el tablero muestra abandono, tiempos y errores de las partidas de prueba |
+| H8. Datos | El juego envía sus eventos a un servidor propio en IONOS; tablero con cuenta de admin: perfil de cada participante y vista de todos (PRD F9 a F17) | Una partida jugada en matices.online aparece en el tablero; el perfil muestra cada parte de `clinico/reporte.md` |
+| P1. Prueba de la experiencia | Vueltas de jugar, juzgar con los tres pilares (intuitivo, fácil, simple), corregir y volver a jugar; con niños cuando jueguen (`investigacion/plan-piloto.md`, fase 1) | Una vuelta completa no encuentra nada importante en ningún pilar |
 | H9. Plataformas | Android e iOS (Capacitor), Windows, macOS y Linux (Tauri) | El juego se instala y juega sin red en cada una |
 
 La voz suena solo cuando el niño toca la bocina; una grabación en `public/assets/voz/` reemplaza a la voz del navegador para esa línea.
 
-Mientras no haya consentimientos firmados, matices.online la juegan solo el equipo y adultos de prueba, y sus datos se marcan como prueba.
-
-## Criterios para probarlo con niños
+## Criterios del producto
 
 - [ ] Ninguna pantalla muestra puntos, resultados ni "bien hecho".
 - [ ] "Quiero hablar con alguien" visible en todas las pantallas y probado sin red.
 - [ ] Todas las opciones tienen voz y código.
 - [ ] Ningún dato sale del aparato con nombre.
-- [ ] Consentimiento del tutor y del niño aprobado por el abogado y el comité de ética.
-- [ ] Los psicólogos aprobaron textos, tarjetas y códigos (`PENDIENTES.md`).
-- [ ] El psicólogo que lo use recibió una práctica con el juego y con la salida de datos.

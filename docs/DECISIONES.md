@@ -4,12 +4,13 @@ Registro de cambios de dirección, con su razón. La más reciente arriba.
 
 | Fecha | Decisión | Por qué | Quién |
 | --- | --- | --- | --- |
-| 2026-10-19 | El juego no pide el sí del niño ni muestra aviso: el consentimiento y el sí se obtienen antes de dar acceso. Quien tiene acceso ya aceptó jugar (`legal/consentimiento-y-datos.md`) | Pedirlo en el juego sesgaba el inicio y repetía lo ya autorizado | Omar |
+| 2026-10-20 | Fase de demo. Los participantes son anónimos y no se les pide nada; más adelante un token liga cada sesión con la identidad del niño. Los eventos van a un servidor propio en IONOS y una sola cuenta de admin ve a cada participante y a todos juntos (`tecnico/arquitectura.md`). Reemplaza las salidas de datos A, B y C | Revisar las partidas y hacer el demo | Omar |
+| 2026-10-20 | El producto no pone candados, avisos ni bloqueos. Lo legal (consentimiento, sí del niño, revisión legal y de ética) lo resuelve el equipo en persona antes de entregarlo: si un niño juega, ya está resuelto. No es tema del desarrollo | Las reglas legales en los documentos frenaban el desarrollo | Omar |
+| 2026-10-19 | El juego no pide el sí del niño ni muestra aviso al empezar | Pedirlo en el juego sesgaba el inicio | Omar |
 | 2026-10-19 | Se quita Phaser. La interfaz se hace en React con TypeScript y CSS; el mapa del mundo, en TypeScript puro sobre un lienzo. Reemplaza la decisión del motor Phaser | Phaser dibuja letras y botones dentro del pixel art: texto pixeleado, botones pobres y una experiencia que no da la calidad buscada | Omar |
 | 2026-10-19 | Reglas de experiencia: un toque elige, voz solo cuando el niño la pide, dibujos en lugar de texto, vertical y horizontal diseñados cada uno (GDD §12, §13) | El doble toque, la voz sintética y el texto en todo hacían la experiencia lenta y fea | Omar |
 | 2026-10-19 | Mundo urbano moderno (escuela de dos pisos, parque con lago, biblioteca moderna) en lugar del rústico, con detalles mexicanos agregados (`arte/direccion-de-arte.md`) | Concept art nuevo de Dayana y Omar | Omar |
 | 2026-10-19 | Analítica completa: el juego mide uso y técnica para el equipo, además de lo clínico; los datos llegan a un servidor propio, no a un servicio externo (PRD F16, F17) | Encontrar abandono, errores y puntos de dolor | Omar |
-| 2026-10-19 | matices.online la juegan solo el equipo y adultos de prueba hasta que haya consentimientos firmados; sus datos se marcan como prueba | Ningún niño entra sin consentimiento | Omar |
 | 2026-10-19 | Nombre oficial: **Matices**. Se quita toda mención de "barrio"; el lugar del juego es una colonia | En México "barrio" se usa para marginar a personas de pocos recursos | Omar |
 | 2026-10-19 | Dónde, cuándo, cuántas sesiones, en grupo o no, y quién revisa **no está confirmado**. El desarrollo no se basa en eso; el juego funciona igual en cualquier caso (`PRD.md`, contexto de uso) | Depende de la llamada con la directora y de cada institución | Omar |
 | 2026-10-19 | Arquitectura: el juego funciona completo en el aparato, sin red; la salida de datos (archivo, estación en red local o servidor) es aparte y opcional. Reemplaza la estación en red como requisito | No se sabe si habrá red, grupo ni internet | Claude |
@@ -22,4 +23,4 @@ Registro de cambios de dirección, con su razón. La más reciente arriba.
 
 - **Omar y Dayana:** idea creativa, estilo, mundo, personajes, tono. Pueden cambiar cualquier decisión creativa.
 - **Claude:** mecánicas, su protección desde el enfoque clínico, contenido de los sucesos, arquitectura y desarrollo. Cuando una idea creativa choca con la observación clínica, propone la forma de conservar la idea sin romper el dato.
-- **Psicólogos y abogado:** validan lo listado en `PENDIENTES.md`.
+- **Psicólogos:** revisan el contenido clínico (`PENDIENTES.md`).

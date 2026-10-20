@@ -147,7 +147,7 @@ En el paso 6, si el niño abre el panel y elige sensaciones intensas, el ambient
 | Escena para describir | Día 2, biblioteca | Ilustración fija ambigua; elegir qué pasa y qué siente cada personaje. |
 | Sobre mí | Día 3, biblioteca | Los gemelos Tito y Tita. Unas 24 frases (ver `contenido/sobre-mi.yaml`). |
 | Ahora no | En todo suceso | Cierra el suceso con la frase de La Cuentera. Se registra. |
-| Quiero hablar con alguien | Siempre visible | Avisa en silencio al psicólogo. Ver `docs/legal/protocolo-de-aviso.md`. |
+| Quiero hablar con alguien | Siempre visible | Avisa en silencio al adulto a cargo. Funciona sin red: el aparato muestra una señal discreta en una esquina y el aviso queda guardado con su hora; llega al tablero cuando hay red. Al niño solo se le muestra la frase fija "Ya le avisamos a [nombre]. Puedes seguir jugando o esperar aquí." |
 | Conocer a La Cuentera | Día 1, biblioteca | Se presenta, explica su libro y "Ahora no". |
 | Aterrizaje | Fin de cada día | Al irse a la cama, regar las plantas del patio y despedirse de La Cuentera. |
 

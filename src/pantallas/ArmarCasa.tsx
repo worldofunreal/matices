@@ -302,7 +302,7 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
                 {Icono.encuadrar}
               </button>
             </div>
-            <div className="desliza" ref={vista} onPointerDown={bajar} onPointerMove={moverDedo} onPointerUp={subirDedo} onPointerCancel={subirDedo} onWheel={rueda}>
+            <div className="desliza" data-toque ref={vista} onPointerDown={bajar} onPointerMove={moverDedo} onPointerUp={subirDedo} onPointerCancel={subirDedo} onWheel={rueda}>
               <div className={`casa${elegida ? " eligiendo" : ""}`} ref={lienzo} style={{ width: mapa.ancho * s, height: mapa.alto * s, transform: `translate(${cam.x}px, ${cam.y}px)` }}>
                 <img className="pixel" src="assets/lugares/casa/fondo.png" alt="" draggable={false} style={{ width: mapa.ancho * s, height: mapa.alto * s }} />
                 {elegida && mapa.cuartos.map((c) => <div key={c.nombre} className="cuarto" style={{ left: c.x * s, top: c.y * s, width: c.w * s, height: c.h * s }} />)}
@@ -315,6 +315,7 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
                     return (
                     <div
                       key={f.inst}
+                      data-toque
                       className={`puesta${menu === f.inst ? " abierta" : ""}${llevando ? " llevando" : ""}`}
                       style={{ left: p.x * s, top: p.y * s }}
                       onPointerDown={empezar({ inst: f.inst })}
@@ -331,7 +332,7 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
         )}
 
         {menu && (
-          <div className="menu panel" onPointerUp={(e) => e.stopPropagation()}>
+          <div className="menu panel" data-toque onPointerUp={(e) => e.stopPropagation()}>
             <strong>{enMenu ? nombreDe(enMenu) : estado().nombre}</strong>
             {renombrando && enMenu ? (
               <input className="campo" autoFocus maxLength={16} defaultValue={enMenu.nombre ?? ""} placeholder={nombreDe(enMenu)} onBlur={(e) => renombrar(enMenu.inst, e.target.value)} onKeyDown={(e) => e.key === "Enter" && (e.target as HTMLInputElement).blur()} />

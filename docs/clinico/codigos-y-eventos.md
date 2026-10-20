@@ -59,7 +59,7 @@ También usan `BUSCA_AYUDA`, `AUTOSUFICIENTE` y `CUIDA_A_OTRO`.
 
 ## Eventos
 
-Todos llevan: código del niño, sesión, versión del contenido, semilla de orden y milisegundos desde el inicio de la sesión.
+Todos llevan: código del participante, sesión, versión del contenido y del juego, semilla de orden, milisegundos desde el inicio de la sesión (`t_ms`), hora (`cuando`) y su número en el aparato (`id`).
 
 | Evento | Datos | Para qué |
 | --- | --- | --- |
@@ -80,8 +80,8 @@ Todos llevan: código del niño, sesión, versión del contenido, semilla de ord
 | `dibujo` | De dónde salió (suceso y paso de "Otra cosa", o dibujo libre), trazos con color, grosor, goma y tiempo de cada punto, cuántos deshizo, tiempo, imagen final | El dibujo y su proceso |
 | `ahora_no` | Suceso y paso | Dónde no quiso entrar |
 | `quiero_hablar` | Pantalla y hora | Dispara el aviso |
-| `repetir_voz` | Pantalla | Separar duda de dificultad para leer |
-| `inactividad` | Pantalla, duración | Pausas largas |
+| `repetir_voz` | Pantalla y línea que pidió oír | Separar duda de dificultad para leer |
+| `inactividad` | Pantalla, duración (pausas de 30 s o más) | Pausas largas |
 
 ## Ejemplo
 

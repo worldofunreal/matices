@@ -1,12 +1,21 @@
 # Reporte para el psicólogo
 
-Por cada niño, el psicólogo recibe un reporte escrito con conteos que describe lo que pasó en el juego, más todos los datos crudos. El reporte cuenta y describe; interpretar le toca al psicólogo.
+Por cada participante, el tablero muestra un perfil con conteos que describen lo que pasó en el juego, más todos los datos crudos. El perfil cuenta y describe; interpretar le toca al psicólogo.
+
+Tiene la forma de un examen de laboratorio, sin inventar rangos. Cada área es una fila con tres columnas:
+
+| Área | Resultado | De dónde sale | Referencia |
+| --- | --- | --- | --- |
+| Necesidades físicas | `AUSENTE`: 2 de 4 | E01, E02 | Todos (N = 37): del medio 1, de 0 a 3 |
+
+La referencia es el mismo conteo entre todos los participantes: cuántos son, el del medio, el más bajo y el más alto. Un rango de laboratorio sale de un grupo de referencia medido antes (al menos 120 personas por grupo); hasta tener esa muestra por grupo de edad, la referencia solo describe y no lleva colores de "alto" o "bajo". Con la muestra, se agregan franjas como las del SDQ (cerca del promedio, un poco elevado, alto, muy alto).
 
 ## Partes
 
+0. **"Quiero hablar con alguien"**, arriba, con hora y pantalla, si lo tocó.
 1. **Calidad de los datos.** Sesiones completas, minutos de inactividad, veces que repitió la voz, respuestas dadas antes de que terminara la narración. Si la calidad es baja, el reporte lo dice primero.
 2. **Su personaje y su casa.** Imagen del personaje y de la casa, quiénes viven ahí y dónde los puso.
-3. **Por área.** Para cada una de las 13 áreas, una o dos frases con conteos y enlace a los sucesos de donde salen.
+3. **Por área.** Las 13 áreas en la tabla de arriba, con los sucesos de donde sale cada conteo.
 4. **Patrones que cruzan áreas.** Cuántas veces buscó ayuda y a quién, dónde usó "Ahora no", en qué sucesos dudó más o cambió de opinión.
 5. **Sobre mí.** Respuestas a los gemelos, agrupadas por área.
 6. **Dibujo.** Imagen final y reproductor trazo por trazo.
@@ -31,18 +40,18 @@ Usó "Ahora no" una vez, en E13 (promesa incumplida).
 
 - Solo verbos de lo que pasó: "eligió", "en su historia", "tocó", "no abrió".
 - Ninguna etiqueta clínica; nada de "presenta", "sugiere" ni "indica".
-- Ningún puntaje de riesgo ni comparación con otros niños hasta que el piloto lo valide.
+- Ningún puntaje de riesgo. La comparación con los demás solo describe (N, del medio, mínimo y máximo).
+- Tablas y conteos con su fuente, no párrafos que interpreten: un texto escrito por computadora suena convincente aunque sea genérico.
 - Cada frase enlaza a los eventos que la generan.
 
 ## Marcas de revisión
 
-Las escribe el equipo clínico en la consola; el juego solo las aplica.
+Las escribe el equipo clínico; el tablero solo las aplica.
 
 - Forma: una condición sobre conteos y una marca ("revisar pronto" o "revisar"). Ejemplo: si en 3 o más sucesos de necesidades físicas el código es `AUSENTE`, marcar "revisar pronto".
-- Cada regla queda firmada con nombre y fecha, con historial de cambios.
 - El juego se entrega **sin reglas activas**; las de este documento son ejemplos.
 - "Quiero hablar con alguien" no depende de ninguna regla.
 
-## Consola del psicólogo
+## Tablero
 
-Lista de niños por código con el estado de sus sesiones, avisos en vivo, pausa por aparato, marcas de revisión, reporte y descarga. Solo entran cuentas de psicólogo con contraseña y segundo factor.
+En `matices.online/admin`, con una cuenta de admin. **Todos:** participantes con su avance, dónde se quedan, uso por pantalla, errores y conteos por área. **Un participante:** este perfil y la descarga de sus datos.

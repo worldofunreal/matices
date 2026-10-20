@@ -1,0 +1,19 @@
+#!/bin/sh
+# PROVIDE: matices
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+# Matices event server (servidor/servidor.ts), installed by .github/workflows/deploy.yml.
+# Its settings and secrets live only on the server, in /usr/local/etc/matices.env.
+. /etc/rc.subr
+name="matices"
+rcvar="matices_enable"
+load_rc_config $name
+: ${matices_enable:="NO"}
+if [ -f /usr/local/etc/matices.env ]; then
+  . /usr/local/etc/matices.env
+  export MATICES_PUERTO MATICES_BASE MATICES_CLAVE_HASH MATICES_SECRETO
+fi
+pidfile="/var/run/${name}.pid"
+command="/usr/sbin/daemon"
+command_args="-f -P ${pidfile} -r -u matices -o /var/log/matices.log -t matices /usr/local/bin/node /usr/local/lib/matices/servidor.ts"
+run_rc_command "$1"

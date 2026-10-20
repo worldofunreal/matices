@@ -1,14 +1,11 @@
 // Event log (docs/clinico/codigos-y-eventos.md). Every event is encrypted on the device with a key
-// that never leaves it. Clinical and product events go to the same log; the product ones are
-// also queued for the team's analytics server (PRD F16), which is sent in H8.
+// that never leaves it, and sent to the server (docs/tecnico/arquitectura.md) when there is a network.
 import contenido from "virtual:contenido";
-import { leer, guardar, agregarEvento } from "./almacen";
+import { leer, guardar, agregarEvento, eventosDesde } from "./almacen";
 
-// Until signed consents exist, only the team plays and all data is marked as a test (DECISIONES.md).
-const ENTORNO = "prueba";
+// Demo phase (DECISIONES.md): anonymous participants.
+const ENTORNO = "demo";
 const VERSION_JUEGO = __VERSION_JUEGO__;
-
-const PRODUCTO = new Set(["pantalla", "sesion", "toque_sin_efecto", "carga", "rendimiento", "error", "aparato"]);
 
 interface Partida {
   nino: string;
@@ -34,7 +31,7 @@ export async function iniciarRegistro(): Promise<Partida> {
   const previa = await leer<Partida>("partida");
   partida = previa
     ? { ...previa, sesion: previa.sesion + 1 }
-    : { nino: `PRUEBA-${crypto.getRandomValues(new Uint16Array(1))[0].toString(16).padStart(4, "0")}`, semilla: crypto.getRandomValues(new Uint32Array(1))[0], sesion: 1 };
+    : { nino: crypto.randomUUID().slice(0, 8), semilla: crypto.getRandomValues(new Uint32Array(1))[0], sesion: 1 };
   await guardar("partida", partida);
   inicio = performance.now();
   return partida;
@@ -42,8 +39,8 @@ export async function iniciarRegistro(): Promise<Partida> {
 
 export const semilla = () => partida.semilla;
 
-function guardarEvento(evento: object & { tipo?: unknown }) {
-  void cifrar(evento).then((cifrado) => agregarEvento({ ...cifrado, enviar: PRODUCTO.has(String(evento.tipo)) }));
+function guardarEvento(evento: object) {
+  void cifrar(evento).then(agregarEvento);
 }
 
 export function registrar(tipo: string, datos: Record<string, unknown> = {}) {
@@ -57,6 +54,7 @@ export function registrar(tipo: string, datos: Record<string, unknown> = {}) {
     entorno: ENTORNO,
     semilla: partida.semilla,
     t_ms: Math.round(performance.now() - inicio),
+    cuando: Date.now(),
     tipo,
   };
   guardarEvento(evento);
@@ -69,7 +67,36 @@ async function cifrar(evento: object) {
   return { iv, datos };
 }
 
-export async function descifrar(e: { iv: Uint8Array<ArrayBuffer>; datos: ArrayBuffer }) {
+type Cifrado = { iv: Uint8Array<ArrayBuffer>; datos: ArrayBuffer };
+
+export async function descifrar(e: Cifrado) {
   const plano = await crypto.subtle.decrypt({ name: "AES-GCM", iv: e.iv }, llave, e.datos);
   return JSON.parse(new TextDecoder().decode(plano));
 }
+
+// Sends what the server has not confirmed, in batches, oldest first. Without a network the events wait
+// on the device; the server keeps one copy of each (nino, id), so a batch sent twice is harmless.
+const TANDA = 200;
+let enviando = false;
+async function enviar() {
+  if (enviando || !navigator.onLine) return;
+  enviando = true;
+  try {
+    for (;;) {
+      const desde = (await leer<number>("enviadoHasta")) ?? 0;
+      const { claves, valores } = await eventosDesde(desde, TANDA);
+      if (!claves.length) return;
+      const lote = await Promise.all(valores.map(async (v, i) => ({ ...(await descifrar(v as Cifrado)), id: claves[i] })));
+      const r = await fetch("api/eventos", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(lote), signal: AbortSignal.timeout(30_000) });
+      if (!r.ok) return;
+      await guardar("enviadoHasta", claves[claves.length - 1]);
+    }
+  } catch {
+    // no network or the server is down: the next round tries again
+  } finally {
+    enviando = false;
+  }
+}
+setInterval(enviar, 10_000);
+addEventListener("online", enviar);
+document.addEventListener("visibilitychange", () => document.hidden && void enviar());

@@ -132,10 +132,17 @@
 .fila-colores {
   flex-basis: 100%;
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 10px;
+  gap: 6px;
   padding-bottom: 4px;
+}
+
+/* One row of colors, so the hair and backpack choices below start on screen. */
+.fila-colores .muestra {
+  flex: 0 1 var(--toque);
+  min-width: 0;
+  height: auto;
+  aspect-ratio: 1;
 }
 
 .opciones.piel {

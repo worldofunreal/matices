@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { hablar } from "./voz";
 import { Icono } from "./iconos";
+import { registrar } from "../datos/eventos";
+import { dondeEsta } from "../datos/monitor";
 
 // The voice only plays when the child asks for it (GDD §12).
 export function Bocina({ clave, texto, etiqueta = "Escuchar" }: { clave: string; texto: string; etiqueta?: string }) {
@@ -11,6 +13,7 @@ export function Bocina({ clave, texto, etiqueta = "Escuchar" }: { clave: string;
       aria-label={etiqueta}
       onClick={(e) => {
         e.stopPropagation();
+        registrar("repetir_voz", { pantalla: dondeEsta(), clave });
         setSonando(true);
         void hablar(clave, texto).then(() => setSonando(false));
       }}

@@ -4,10 +4,12 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node --watch servidor/servidor.ts --dev & vite",
+    "test": "node --test src/",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "provisionales": "node herramientas/provisionales.ts"
+    "provisionales": "node herramientas/provisionales.ts",
+    "simular": "node herramientas/simular.ts"
   },
   "dependencies": {
     "@fontsource-variable/nunito": "^5.3.0",

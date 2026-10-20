@@ -17,9 +17,7 @@ El juego recoge. El psicólogo interpreta. El juego no diagnostica.
 | Usuario | Necesita | No debe |
 | --- | --- | --- |
 | Niño de 8 a 12 años | Un juego que entienda sin leer bien, que no lo juzgue, que pueda parar y pedir ayuda | Ver resultados, sentirse evaluado, ser identificado por sus compañeros |
-| Psicólogo de la institución o del conglomerado | Reportes claros, datos crudos, avisos en vivo, reglas de revisión propias | Recibir etiquetas o puntajes de riesgo no validados |
-| Institución (por confirmar: escuela, DIF u otra) | Consentimientos, control de datos, protocolo de aviso | Acceder a datos de niños fuera del psicólogo asignado |
-| Tutor | Saber qué se hace, aceptar o rechazar, ejercer sus derechos | Recibir datos que pongan en riesgo al niño (pendiente legal) |
+| Psicólogo y equipo (cuenta de admin en el demo) | Perfil de cada participante, vista de todos, datos crudos | Recibir etiquetas o puntajes de riesgo no validados |
 
 ### Contexto de uso: por confirmar
 
@@ -31,7 +29,7 @@ Qué institución lo usa (escuela, DIF u otra), quién revisa los reportes y cu�
 | En grupo o uno a uno | Nada depende de que haya otros niños ni de que el adulto mire la pantalla |
 | Con o sin audífonos | Todo lo hablado aparece también escrito |
 | Con o sin red o internet | Funciona completo en el aparato; la salida de datos es aparte (`tecnico/arquitectura.md`) |
-| Quién lee los datos y cuándo | Archivo cifrado que solo abre el psicólogo asignado, el mismo día o después |
+| Quién lee los datos y cuándo | El tablero los muestra en cuanto el aparato tiene red |
 | Institución | Ningún texto del juego la nombra |
 
 Sugerencias para la llamada, válidas solo si la institución las aprueba: tres sesiones de unos 33 minutos, una por día del juego; grupo completo con audífonos; laptop del psicólogo con avisos en vivo por la red del salón.
@@ -46,7 +44,7 @@ Sugerencias para la llamada, válidas solo si la institución las aprueba: tres 
 ## 5. Requisitos funcionales
 
 ### Juego (niño)
-- F1. El consentimiento del tutor y el sí del niño se obtienen antes de dar acceso, fuera del juego (`legal/consentimiento-y-datos.md`); el juego no los pide.
+- F1. El juego no pide datos ni permisos y no pone candados ni avisos: lo legal se resuelve fuera del producto antes de entregarlo. Cada participante es anónimo; más adelante un token liga la sesión con la identidad del niño.
 - F2. Creación de personaje y armar la casa (GDD §6 y §7).
 - F3. Mundo explorable: casa, calle, escuela, parque, tiendita, biblioteca.
 - F4. 15 sucesos según `contenido/cuentos`, con orden barajado por semilla y reglas de intensidad.
@@ -55,17 +53,17 @@ Sugerencias para la llamada, válidas solo si la institución las aprueba: tres 
 - F7. Voz en toda línea y tarjeta; opciones de accesibilidad.
 - F8. Funciona completo sin red ni internet; se pausa y se retoma en cualquier punto.
 
-### Programa del psicólogo
-- F9. Códigos de niño; lista código–nombre cifrada y separada.
-- F10. Abrir los datos cifrados de cada aparato (archivo; red local o servidor si la institución los usa).
-- F11. "Quiero hablar con alguien": señal en el aparato siempre; aviso en vivo solo si hay estación en red.
-- F12. Reporte por niño (`docs/clinico/reporte.md`) y descarga CSV/JSON.
-- F13. Editor de reglas de revisión firmadas y versionadas.
-- F14. Bitácora de accesos y de avisos.
+### Tablero (cuenta de admin)
+- F9. Una cuenta de admin en el demo.
+- F10. El juego envía sus eventos al servidor propio cuando hay red; sin red esperan en el aparato.
+- F11. "Quiero hablar con alguien": señal en el aparato siempre; en el tablero cuando llega.
+- F12. Perfil por participante (`docs/clinico/reporte.md`) y descarga CSV/JSON.
+- F13. Vista de todos los participantes: avance, abandono, uso por pantalla, errores y conteos por área.
+- F14. Reglas de revisión de los psicólogos, cuando las escriban.
 
 ### Analítica del juego
 - F16. Todo se mide: además de los eventos clínicos, el juego registra eventos técnicos y de uso (`clinico/codigos-y-eventos.md`, sección "Eventos de producto") para que el equipo encuentre dónde se atoran, se aburren o abandonan los niños, errores y problemas de rendimiento.
-- F17. Los datos llegan a un servidor propio (no a un servicio externo). Tablero del equipo con embudos por pantalla, abandono, tiempos, errores y rendimiento por aparato. Separado de la consola del psicólogo: el equipo ve uso y técnica, no reportes clínicos por niño.
+- F17. Los datos llegan a un servidor propio en IONOS (no a un servicio externo). El tablero (F13) muestra embudos por pantalla, abandono, tiempos, errores y rendimiento por aparato.
 
 ### Contenido
 - F15. Sucesos y frases como archivos de datos; cada opción con código obligatorio. El contenido sin código no compila.
@@ -78,7 +76,7 @@ Sugerencias para la llamada, válidas solo si la institución las aprueba: tres 
 | Rendimiento | 60 cuadros por segundo en la tableta de referencia; abre en menos de 20 s |
 | Sin red | El juego funciona completo en el aparato, sin red ni internet; la salida de datos es aparte (`tecnico/arquitectura.md`) |
 | Sesiones | Pausa y regreso en cualquier punto; ninguna duración ni número de sesiones fijo |
-| Privacidad | Código en lugar de nombre; cifrado en reposo y en tránsito |
+| Privacidad | Participantes anónimos con un código; el nombre nunca sale del aparato; HTTPS |
 | Analítica | Todo se mide (F16, F17); los eventos esperan en el aparato y se envían cuando hay red |
 | Idioma | Español de México con voz grabada |
 | Accesibilidad | Ver GDD §15 |
@@ -94,7 +92,7 @@ Sugerencias para la llamada, válidas solo si la institución las aprueba: tres 
 
 ## 8. Fuera de alcance
 
-- Diagnóstico, puntajes de riesgo o comparaciones con normas.
+- Diagnóstico y puntajes de riesgo.
 - Uso en casa o en tiendas de aplicaciones.
 - Reproducir reactivos del SDQ, CBCL, BPI, MNBS-CR o láminas del TAT/CAT.
 - Contactar a familias o autoridades desde el juego.
@@ -107,6 +105,4 @@ Sugerencias para la llamada, válidas solo si la institución las aprueba: tres 
 | Falsas alarmas que dañen a familias | Sin marcas por defecto; reglas solo del equipo clínico; piloto antes de uso amplio |
 | Niños que contestan "lo correcto" | Sin respuestas correctas, sin premios, personajes neutros |
 | Si se juega en grupo: compañeros que se copian o se ven | Orden barajado; audífonos y acomodo, si la institución los tiene |
-| Un tutor pide el reporte y eso pone en riesgo al niño | Pendiente legal (`docs/PENDIENTES.md`) |
-| Niños sin firma (los de más riesgo) | Pendiente institucional |
 | Validez de técnicas para 4–8 años llevadas a 8–12 | Piloto fase 2 |

@@ -13,7 +13,25 @@ const PAPEL = "#faf6ee";
 const ANCHO = 800;
 const ALTO = 600;
 
-type Trazo = { color: string; grosor: number; goma: boolean; puntos: [number, number, number][] };
+export type Trazo = { color: string; grosor: number; goma: boolean; puntos: [number, number, number][] };
+export const HOJA = { ancho: ANCHO, alto: ALTO };
+
+// Paints the strokes on a sheet; with `hasta`, only the points drawn before that many ms (the dashboard's replay).
+export function pintarHoja(ctx: CanvasRenderingContext2D, trazos: Trazo[], hasta = Infinity) {
+  ctx.fillStyle = PAPEL;
+  ctx.fillRect(0, 0, ANCHO, ALTO);
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  for (const t of trazos) {
+    const puntos = t.puntos.filter((p) => p[2] <= hasta);
+    if (!puntos.length) continue;
+    ctx.strokeStyle = t.goma ? PAPEL : t.color;
+    ctx.lineWidth = t.goma ? t.grosor * 2 : t.grosor;
+    ctx.beginPath();
+    puntos.forEach(([x, y], i) => (i ? ctx.lineTo(x * ANCHO, y * ALTO) : ctx.moveTo(x * ANCHO, y * ALTO)));
+    ctx.stroke();
+  }
+}
 
 export function Dibujo({ origen, consigna, alTerminar, ahoraNo }: { origen: string; consigna: string; alTerminar: (imagen: string | null) => void; ahoraNo?: () => void }) {
   const hoja = useRef<HTMLCanvasElement>(null);
@@ -32,20 +50,7 @@ export function Dibujo({ origen, consigna, alTerminar, ahoraNo }: { origen: stri
     return [+((e.clientX - r.left) / r.width).toFixed(4), +((e.clientY - r.top) / r.height).toFixed(4), Math.round(performance.now() - t0.current)];
   };
 
-  const pintar = () => {
-    const ctx = hoja.current!.getContext("2d")!;
-    ctx.fillStyle = PAPEL;
-    ctx.fillRect(0, 0, ANCHO, ALTO);
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-    for (const t of trazos.current) {
-      ctx.strokeStyle = t.goma ? PAPEL : t.color;
-      ctx.lineWidth = t.goma ? t.grosor * 2 : t.grosor;
-      ctx.beginPath();
-      t.puntos.forEach(([x, y], i) => (i ? ctx.lineTo(x * ANCHO, y * ALTO) : ctx.moveTo(x * ANCHO, y * ALTO)));
-      ctx.stroke();
-    }
-  };
+  const pintar = () => pintarHoja(hoja.current!.getContext("2d")!, trazos.current);
 
   // The sheet is sized and painted once it is on the screen.
   useEffect(() => {

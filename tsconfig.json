@@ -24,6 +24,7 @@
   "include": [
     "src",
     "herramientas",
+    "servidor",
     "vite.config.ts"
   ]
 }

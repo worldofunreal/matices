@@ -22,10 +22,12 @@ const MARCAS = new Set(["{nombre}", "{quien}"]);
 
 type Opcion = [string, string];
 
-function areasValidas(): Set<string> {
+// The 13 areas, from the table in docs/clinico/marco-clinico.md (the only place they are written).
+function areasDelMarco(): { id: string; nombre: string; familia: string }[] {
   const doc = readFileSync(DOC_AREAS, "utf8");
-  return new Set([...doc.matchAll(/^\|[^|]+\|[^|]+\| `([a-z_]+)` \|/gm)].map((m) => m[1]));
+  return [...doc.matchAll(/^\| ([^|]+?) \| ([^|]+?) \| `([a-z_]+)` \|/gm)].map((m) => ({ familia: m[1], nombre: m[2], id: m[3] }));
 }
+const areasValidas = () => new Set(areasDelMarco().map((a) => a.id));
 
 function version(): string {
   const m = readFileSync(README, "utf8").match(/Versión del contenido: `([0-9.]+)`/);
@@ -33,7 +35,7 @@ function version(): string {
   return m[1];
 }
 
-function validar() {
+export function validar() {
   const codigos = codigosValidos();
   const areas = areasValidas();
   const errores: string[] = [];
@@ -251,7 +253,9 @@ function validar() {
   if (errores.length) throw new Error(`Contenido inválido:\n- ${errores.join("\n- ")}`);
   // Doors: the places each place leads to. The world's guide walks this graph toward the next story.
   const conexiones = Object.fromEntries(Object.entries(mapas).map(([l, m]) => [l, m ? objetosDe(m).filter((o) => o.type === "puerta").map((o) => propiedades(o).destino) : []]));
-  return { version: version(), cuentos, sobreMi, escena, panel, textos, figuras, lugares, sitios, actividades, conexiones };
+  // What can be touched in each place (the dashboard's "never touched").
+  const objetos = Object.fromEntries(Object.entries(mapas).map(([l, m]) => [l, m ? objetosDe(m).filter((o) => o.type === "objeto").map((o) => o.name) : []]));
+  return { version: version(), cuentos, sobreMi, escena, panel, textos, figuras, lugares, sitios, actividades, conexiones, objetos, areas: areasDelMarco() };
 }
 
 type ObjetoMapa = { name: string; type: string; properties?: { name: string; value: string }[] };

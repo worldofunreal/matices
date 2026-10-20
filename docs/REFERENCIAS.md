@@ -1,6 +1,6 @@
 # Referencias
 
-Consultadas el 2026-10-19.
+Consultadas el 2026-10-19 y el 2026-10-20.
 
 ## Proyecto
 
@@ -18,11 +18,20 @@ Consultadas el 2026-10-19.
 - [SDQ, Youthinmind](https://www.sdqinfo.org/). Papel sin costo para individuos y organizaciones sin fines de lucro; versiones electrónicas y traducciones requieren permiso; no se puede modificar.
 - Mencionadas sin consulta directa: MacArthur Story Stem Battery; CBCL (ASEBA); TAT y CAT; figura humana de Koppitz; dibujo de la familia de Corman; dibujo kinético de la familia.
 
-## Legales (México)
+## Reporte y tablero (2026-10-20)
 
-- [LGDNNA, artículo 12](https://mley.mx/LGDNNA/articulo/12/). Deber de toda persona de avisar a las autoridades; reformado el 15-01-2026 (verificar texto vigente en el DOF).
-- [Ley General de Protección de Datos Personales en Posesión de Sujetos Obligados](https://datos-personales.scjn.gob.mx/sites/default/files/normativa-materia/LGPDPPSO-DOF-20Mar2025.pdf), DOF 20-03-2025.
-- [Nueva LFPDPPP 2025, análisis de IAPP](https://iapp.org/news/a/entendiendo-la-ley-federal-de-protecci-n-de-datos-personales-en-posesi-n-de-los-particulares-en-mexico). Sin reglas específicas para menores.
+- CLSI EP28-A3c: rangos de referencia con al menos 120 personas por grupo. Resumen en [analyse-it](https://analyse-it.com/learn/choosing-a-reference-interval-method).
+- Franjas del SDQ (cerca del promedio, un poco elevado, alto, muy alto): [NHIS/IPUMS](https://nhis.ipums.org/nhis-action/variables/SDQTOT).
+- Revisión de herramientas de detección de maltrato, muchas falsas alarmas: [BMC Pediatrics 2020](https://link.springer.com/10.1186/s12887-020-2015-4).
+- Lilienfeld, Wood y Garb (2000). [The Scientific Status of Projective Techniques](https://www3.nd.edu/~ghaeffel/Lilienfeld(2000).pdf). Poca validez para interpretar dibujos.
+- Minnis y otros (2006). [Computerized MacArthur Story Stem Battery](https://eprints.gla.ac.uk/20546): buen acuerdo entre calificadores.
+- Butcher, Perry y Atlis (2000). Validity and utility of computer-based test interpretation. Psychological Assessment, 12, 6–18.
+
+## Experiencia con niños
+
+- Anthony y otros (2012, 2019). [Toques de niños en pantallas](https://init.cise.ufl.edu/wp-content/uploads/sites/378/2019/03/anthony-et-al-IJHCS2019-MTAGIC-final-preprint.pdf): fallan más los blancos chicos, sobre todo de 7 a 10 años.
+- Read y MacFarlane (2006). [Fun Toolkit](https://experience.aalto.fi/fun-toolkit/): los niños califican casi todo muy alto.
+- Donker y Markopoulos (2002). Pensar en voz alta con niños de 8 a 14 años encuentra más problemas que cuestionarios y entrevistas.
 
 ## Arte
 

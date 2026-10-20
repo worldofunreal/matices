@@ -37,8 +37,8 @@ creacion:
   nombres: [Ana, Sofía, Valeria, Camila, Ximena, Regina, Fernanda, Daniela, Mariana, Lupita, Itzel, Renata, Paola, Andrea, Jimena, Naomi, Alma, Citlali, Abril, Luz, Diego, Santiago, Mateo, Emiliano, Leonardo, Juan, José, Luis, Ángel, Miguel, Iker, Tadeo, Gael, Kevin, Brayan, Alexis, Sam, Alex, Dani, Cris]
 
 casa:
-  inicio: "Esta es tu casa en el cuento."
-  instruccion: "Arrastra a alguien de la repisa a un cuarto, o tócalo y luego toca el cuarto. Puedes poner a varias personas, o a nadie."
+  inicio: "Esta es tu casa en el cuento. Toca a alguien de abajo y luego un cuarto."
+  instruccion: "Puedes poner a varias personas, o a nadie. También puedes arrastrarlas."
   elegida: "{figura}. Ahora toca un cuarto."
   puesta: "{figura} en {cuarto}."
   quitar: "Quitar"
@@ -188,7 +188,7 @@ actividades:
     adios_final: "Gracias por estos tres días, {nombre}."
 
 # Siempre a la mano (GDD §13): los botones de todas las pantallas. Lo que dice la frase es fijo
-# (docs/legal/protocolo-de-aviso.md).
+# (GDD §10).
 siempre:
   mi_libro: "Mi libro"
   quiero_hablar: "Quiero hablar con alguien"

@@ -30,7 +30,7 @@
   bottom: max(var(--barra-margen), env(safe-area-inset-bottom));
 }
 
-/* The mark for the adult: small, with no words, in the bottom-left corner (docs/legal/protocolo-de-aviso.md). */
+/* The mark for the adult: small, with no words, in the bottom-left corner (GDD §10). */
 .siempre-senal {
   position: fixed;
   z-index: 55;

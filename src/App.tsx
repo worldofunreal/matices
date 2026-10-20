@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Creacion } from "./pantallas/Creacion";
 import { ArmarCasa } from "./pantallas/ArmarCasa";
 import { Mundo } from "./pantallas/Mundo";
@@ -8,8 +8,7 @@ import { pantalla } from "./datos/monitor";
 
 type Pantalla = { nombre: "creacion"; modo: "inicio" | "espejo" } | { nombre: "casa" } | { nombre: "mundo" };
 
-// Where the child picks up: their character first, then their house, then the world. Consent and the child's yes
-// happen before they get access (docs/legal/consentimiento-y-datos.md).
+// Where the child picks up: their character first, then their house, then the world.
 function primera(): Pantalla {
   if (!estado().creado) return { nombre: "creacion", modo: "inicio" };
   if (!estado().casaLista) return { nombre: "casa" };
@@ -18,10 +17,9 @@ function primera(): Pantalla {
 
 export function App() {
   const [p, setP] = useState<Pantalla>(primera);
-  const ir = (siguiente: Pantalla) => {
-    pantalla(siguiente.nombre);
-    setP(siguiente);
-  };
+  // Every screen shown is recorded, the first one included (funnels and drop-off).
+  useEffect(() => pantalla(p.nombre), [p]);
+  const ir = setP;
   // Siempre a la mano (GDD §13) sits over every screen, so it wraps whichever one is shown.
   const visible =
     p.nombre === "creacion" ? (

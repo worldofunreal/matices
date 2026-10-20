@@ -15,7 +15,8 @@ concurrency:
 # 3. /var/www/matices.online/current is a symlink flipped atomically.
 # 4. Only the 5 newest releases are kept (rollback = flip the symlink back).
 # 5. The nginx vhost lives in infra/nginx and is synced with backup + test.
-# 6. Checks hit the real site; any failure fails the job.
+# 6. The event server (servidor/servidor.ts) and its service are installed the same way and restarted only if changed.
+# 7. Checks hit the real site; any failure fails the job.
 # Needs the secrets SSH_PRIVATE_KEY, SSH_HOST and SSH_USER.
 jobs:
   deploy:
@@ -90,6 +91,27 @@ jobs:
           ls -t "$live".bak_* 2>/dev/null | tail -n +6 | while read -r old; do sudo -n rm -f "$old"; done
           REMOTE
 
+      - name: Sync event server (servidor/ + infra/rc.d, backup + restart only if changed)
+        run: |
+          scp -o StrictHostKeyChecking=no servidor/servidor.ts infra/rc.d/matices \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/tmp/"
+          ssh -o StrictHostKeyChecking=no "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" <<'REMOTE'
+          set -eu
+          changed=0
+          for f in "servidor.ts /usr/local/lib/matices/servidor.ts 0644" "matices /usr/local/etc/rc.d/matices 0555"; do
+            set -- $f
+            if ! cmp -s "/tmp/$1" "$2"; then
+              if [ -f "$2" ]; then sudo -n cp -p "$2" "$2.bak_$(date +%s)"; fi
+              sudo -n install -o root -g wheel -m "$3" "/tmp/$1" "$2"
+              changed=1
+            fi
+            rm -f "/tmp/$1"
+            ls -t "$2".bak_* 2>/dev/null | tail -n +6 | while read -r old; do sudo -n rm -f "$old"; done
+          done
+          if [ "$changed" = 1 ]; then sudo -n service matices restart; echo "event server updated + restarted"; else echo "event server unchanged"; fi
+          sudo -n service matices status
+          REMOTE
+
       - name: Verify Live Site
         run: |
           set -e
@@ -100,6 +122,9 @@ jobs:
           check "$base/assets/manifiesto.yaml" 200
           check "$base/assets/lugares/casa/fondo.png" 200
           check "$base/esta-ruta-no-existe" 404
+          check "$base/admin" 200
+          code="$(curl -s -o /dev/null -w '%{http_code}' --retry 5 --retry-delay 2 --max-time 30 "$base/api/salud")"; echo "$base/api/salud -> $code"; [ "$code" = 200 ]
+          check "$base/api/admin/eventos" 401
           page="$(curl -s --max-time 30 "$base/")"
           echo "$page" | grep -q "<title>Matices</title>"
           js="$(echo "$page" | grep -o 'js/index-[^"]*\.js' | head -1)"
