@@ -125,7 +125,7 @@ Cuando el niño llega al punto de un suceso:
 
 1. El mundo baja de volumen, la cámara encuadra la escena y aparece el libro en el borde inferior.
 2. La Cuentera narra el inicio (voz + texto). Animación corta con los sprites del personaje y su familia.
-3. **¿Quién llega?** Tarjetas con el retrato de cada figura de la casa (o de la escuela, si es ahí) + "Nadie" + "[Nombre] lo resuelve solo" + "No sé". Orden aleatorio.
+3. **¿Quién llega?** Tarjetas con el retrato de cada figura de la casa (o de la escuela, si es ahí) + "Nadie" + "[Nombre] lo resuelve sin ayuda" + "No sé". Orden aleatorio.
 4. **¿Qué hace?** Tarjetas ilustradas con icono y voz. Siempre las mismas formas de responder (cuida, se da cuenta pero no hace nada, regaña, lastima, se va) escritas para cada suceso, más "Otra cosa" (abre el lienzo para dibujarla).
 5. **¿Y luego?** Un paso más.
 6. **¿Cómo se siente [nombre]?** Cinco caritas en pixel art + panel opcional cuerpo / pensamiento / entorno.
@@ -147,7 +147,7 @@ En el paso 6, si el niño abre el panel y elige sensaciones intensas, el ambient
 | Escena para describir | Día 2, biblioteca | Ilustración fija ambigua; elegir qué pasa y qué siente cada personaje. |
 | Sobre mí | Día 3, biblioteca | Los gemelos Tito y Tita. Unas 24 frases (ver `contenido/sobre-mi.yaml`). |
 | Ahora no | En todo suceso | Cierra el suceso con la frase de La Cuentera. Se registra. |
-| Quiero hablar con alguien | Siempre visible | Avisa en silencio al adulto a cargo. Funciona sin red: el aparato muestra una señal discreta en una esquina y el aviso queda guardado con su hora; llega al tablero cuando hay red. Al niño solo se le muestra la frase fija "Ya le avisamos a [nombre]. Puedes seguir jugando o esperar aquí." |
+| Quiero hablar con alguien | Siempre visible | Avisa en silencio al adulto a cargo. Funciona sin red: el aparato muestra una señal discreta en una esquina y el aviso queda guardado con su hora; llega al tablero cuando hay red. Al niño solo se le muestra la frase fija "Ya le avisamos al adulto que te acompaña. Puedes seguir jugando o esperar aquí." |
 | Conocer a La Cuentera | Día 1, biblioteca | Se presenta, explica su libro y "Ahora no". |
 | Aterrizaje | Fin de cada día | Al irse a la cama, regar las plantas del patio y despedirse de La Cuentera. |
 

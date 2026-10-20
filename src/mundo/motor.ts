@@ -377,6 +377,41 @@ export class Motor {
       ctx.fillRect(0, 0, m.ancho, m.alto);
       ctx.restore();
     }
+
+    if (this.guia) this.flechaGuia(this.guia);
+  }
+
+  // When the ring is off screen, an arrow on the edge of the screen points at it, so the child always knows where to go.
+  private flechaGuia(g: { x: number; y: number }) {
+    const { canvas: c } = this.o;
+    const ctx = this.ctx;
+    const px = (g.x - this.cam.x) * this.z;
+    const py = (g.y - this.cam.y) * this.z;
+    if (px >= 0 && px <= c.width && py >= 0 && py <= c.height) return;
+    const dpr = c.width / (c.clientWidth || c.width);
+    const borde = { x: 36 * dpr, y: 96 * dpr }; // clear of the round buttons in the corners
+    const cx = c.width / 2;
+    const cy = c.height / 2;
+    const dx = px - cx;
+    const dy = py - cy;
+    const t = Math.min((cx - borde.x) / Math.abs(dx || 1e-6), (cy - borde.y) / Math.abs(dy || 1e-6));
+    const k = 0.5 + 0.5 * Math.sin(this.tiempo / 300);
+    const lado = (16 + 3 * k) * dpr;
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, cx + dx * t, cy + dy * t);
+    ctx.rotate(Math.atan2(dy, dx));
+    ctx.beginPath();
+    ctx.moveTo(lado, 0);
+    ctx.lineTo(-lado * 0.7, -lado * 0.8);
+    ctx.lineTo(-lado * 0.7, lado * 0.8);
+    ctx.closePath();
+    ctx.fillStyle = "#f2c14e";
+    ctx.strokeStyle = "#1d1a24";
+    ctx.lineWidth = 2.5 * dpr;
+    ctx.lineJoin = "round";
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
   }
 
   // One frame of a 5 × 4 character sheet (32 × 48), standing with its feet on (x, y).

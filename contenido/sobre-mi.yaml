@@ -5,14 +5,14 @@
 aviso: "Ahora no es un cuento. Es sobre ti. Escucha a Tito y a Tita y toca al que se parece más a ti."
 frases:
   - {id: S01, area: necesidades_fisicas, a: "Yo casi siempre desayuno antes de ir a la escuela", b: "Yo casi nunca desayuno antes de ir a la escuela"}
-  - {id: S02, area: necesidades_fisicas, a: "En mi casa casi siempre ceno con alguien", b: "En mi casa casi siempre ceno solo"}
+  - {id: S02, area: necesidades_fisicas, a: "En mi casa casi siempre ceno con alguien", b: "En mi casa casi siempre ceno sin nadie"}
   - {id: S03, area: necesidades_fisicas, a: "Cuando me enfermo me llevan al doctor", b: "Cuando me enfermo nadie me lleva al doctor"}
   - {id: S04, area: necesidades_fisicas, a: "Casi siempre tengo ropa limpia para la escuela", b: "Muchas veces no tengo ropa limpia para la escuela"}
   - {id: S05, area: apoyo_emocional, a: "Cuando estoy triste alguien de mi casa se da cuenta", b: "Cuando estoy triste nadie de mi casa se da cuenta"}
   - {id: S06, area: apoyo_emocional, a: "Alguien de mi casa me abraza seguido", b: "Casi nadie en mi casa me abraza"}
   - {id: S07, area: apoyo_emocional, a: "Cuando hago algo bien, en mi casa me lo dicen", b: "Cuando hago algo bien, en mi casa no me dicen nada"}
   - {id: S08, area: supervision, a: "Después de la escuela alguien sabe dónde estoy", b: "Después de la escuela nadie sabe dónde estoy"}
-  - {id: S09, area: supervision, a: "Casi nunca me quedo solo en casa de noche", b: "Muchas veces me quedo solo en casa de noche"}
+  - {id: S09, area: supervision, a: "Casi nunca me quedo en casa sin nadie de noche", b: "Muchas veces me quedo en casa sin nadie de noche"}
   - {id: S10, area: escuela_aprendizaje, a: "Alguien de mi casa revisa mi tarea", b: "Nadie de mi casa revisa mi tarea"}
   - {id: S11, area: escuela_aprendizaje, a: "Alguien de mi casa va a las juntas de la escuela", b: "Nadie de mi casa va a las juntas de la escuela"}
   - {id: S12, area: cuidar_de_mas, a: "Yo no tengo que cuidar a nadie de mi casa", b: "Yo cuido mucho a alguien de mi casa"}

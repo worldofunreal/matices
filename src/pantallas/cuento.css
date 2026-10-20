@@ -80,6 +80,13 @@
   transition: transform var(--rapido), box-shadow var(--rapido);
 }
 
+/* The face shrinks with its card, so the five always fit in one row on a narrow phone. */
+.carita canvas {
+  max-width: 100%;
+  height: auto !important;
+  aspect-ratio: 1;
+}
+
 .carita.elegida {
   box-shadow: 0 0 0 5px var(--girasol), var(--sombra-alta);
   transform: translateY(-2px);

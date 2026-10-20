@@ -12,7 +12,7 @@ pasos:
     pregunta: "¿Qué hace {nombre}?"
     opciones:
       - [SE_ENOJA, "Se enoja y le avienta la pelota"]
-      - [SE_VA, "Se va a otro lado solo"]
+      - [SE_VA, "Se va a otro lado sin nadie"]
       - [BUSCA_AYUDA, "Va con la maestra"]
       - [AUTOSUFICIENTE, "Busca a otros niños para jugar"]
       - [SE_QUEDA_QUIETO, "Se queda mirando sin decir nada"]

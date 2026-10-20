@@ -17,10 +17,10 @@ pasos:
       - [PROTEGE, "Le prepara algo de comer y comen juntos"]
       - [NOTA_SIN_ACTUAR, "Dice «hay galletas» y sigue en lo suyo"]
       - [RECHAZA, "Le dice que deje de pedir cosas"]
-      - [DANA, "Cierra el refrigerador de golpe y lo manda a su cuarto"]
+      - [DANA, "Cierra el refrigerador de golpe y manda a {nombre} a su cuarto"]
       - [AUSENTE, "Dice «ahorita vengo» y no regresa"]
     opciones_solo:
-      - [AUTOSUFICIENTE, "{nombre} busca algo en la alacena y come solo"]
+      - [AUTOSUFICIENTE, "{nombre} busca algo en la alacena y come sin compañía"]
       - [CUIDA_A_OTRO, "{nombre} prepara algo para él y para alguien más de la casa"]
       - [BUSCA_AYUDA, "{nombre} va con un vecino"]
       - [SE_QUEDA_QUIETO, "{nombre} se acuesta a esperar"]

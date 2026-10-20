@@ -7,6 +7,7 @@ const PAUSA = 30_000; // a pause this long is recorded as inactividad
 
 // Every screen the child opens, with the one before it (funnels and drop-off).
 export function pantalla(nombre: string) {
+  if (nombre === anterior) return;
   registrar("pantalla", { pantalla: nombre, anterior });
   anterior = nombre;
 }

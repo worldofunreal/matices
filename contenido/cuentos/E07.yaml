@@ -17,16 +17,16 @@ pasos:
       - [PROTEGE, "Le pregunta si se cortó y le ayuda a recoger con cuidado"]
       - [NOTA_SIN_ACTUAR, "Mira los vidrios y sigue con lo suyo"]
       - [RECHAZA, "Le dice que siempre rompe todo"]
-      - [DANA, "Lo saca de la cocina de mal modo"]
+      - [DANA, "Saca a {nombre} de la cocina de mal modo"]
       - [AUSENTE, "Dice «tú lo rompiste, tú lo recoges» y se va"]
     opciones_solo:
-      - [AUTOSUFICIENTE, "{nombre} recoge los vidrios solo"]
+      - [AUTOSUFICIENTE, "{nombre} recoge los vidrios sin ayuda"]
       - [BUSCA_AYUDA, "{nombre} va a avisar a alguien"]
       - [SE_QUEDA_QUIETO, "{nombre} esconde los vidrios para que nadie se entere"]
   - id: culpa
     pregunta: "¿Por qué se rompió el vaso, según {nombre}?"
     opciones:
-      - [SE_CULPA, "«Porque soy un torpe»"]
+      - [SE_CULPA, "«Porque soy muy torpe»"]
       - [CULPA_A_OTRO, "«Porque el vaso estaba en la orilla»"]
       - [MINIMIZA, "«No pasa nada, fue un vaso»"]
       - [NO_LO_NOMBRA, "No quiere pensar en eso"]

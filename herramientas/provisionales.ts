@@ -145,11 +145,6 @@ function retrato(ctx: Ctx, p: Pieza, m: Manifiesto) {
     ctx.lineWidth = 4;
     ctx.strokeRect(32, 36, 32, 12);
   }
-  if (capa === "completo" || capa === "cara") {
-    ctx.fillStyle = "rgba(255,255,255,0.8)";
-    ctx.fillRect(0, 84, 96, 12);
-    etiqueta(ctx, n.replace(/_/g, " "), 48, 90, 92, 10);
-  }
 }
 
 // Walls from the map, if there is one for this place, so the placeholder matches the collisions.
@@ -168,9 +163,6 @@ function fondo(ctx: Ctx, p: Pieza) {
     ctx.fillStyle = tono(lugar, 40);
     muros?.data.forEach((t: number, i: number) => t && ctx.fillRect((i % datos.width) * 32, Math.floor(i / datos.width) * 32, 32, 32));
   }
-  ctx.globalAlpha = 0.5;
-  etiqueta(ctx, `${lugar.replace(/_/g, " ")} (provisional)`, w / 2, 24, w - 20, 20);
-  ctx.globalAlpha = 1;
 }
 
 function marco(ctx: Ctx, p: Pieza) {
@@ -206,9 +198,7 @@ function icono(ctx: Ctx, p: Pieza) {
     ctx.stroke();
     return;
   }
-  const partes = n.replace(/^(boton|persona)_/, "").split("_");
-  const corto = (partes.length > 1 ? partes.map((s) => s[0]).join("") : partes[0]).slice(0, 3).toUpperCase();
-  etiqueta(ctx, corto, w / 2, h / 2 + 1, w - 4, Math.floor(h / 2.2));
+  // No letters: a child reads them as words ("SOL"); the text under the icon already says what it is.
 }
 
 function dibujar(p: Pieza, m: Manifiesto) {

@@ -4,7 +4,7 @@
 .creacion {
   display: grid;
   gap: var(--espacio);
-  grid-template-rows: minmax(200px, 40%) 1fr;
+  grid-template-rows: minmax(180px, 32%) 1fr;
   background: linear-gradient(180deg, #fff6e8 0%, var(--papel) 40%);
 }
 
@@ -131,6 +131,7 @@
 
 .fila-colores {
   flex-basis: 100%;
+  min-width: 0;
   display: flex;
   justify-content: center;
   gap: 6px;

@@ -29,7 +29,7 @@ La referencia es el mismo conteo entre todos los participantes: cuántos son, el
 **Necesidades físicas** (E01, E02, E03, E08)
 En 3 de 4 sucesos, en su historia no llegó ningún adulto (AUSENTE: 2, AUTOSUFICIENTE: 1).
 En E03 llegó la tía y lo curó (PROTEGE).
-En E01 tocó primero "el abuelo" y cambió a "lo resuelve solo"; fue su decisión más lenta de la sesión.
+En E01 tocó primero "el abuelo" y cambió a "lo resuelve sin ayuda"; fue su decisión más lenta de la sesión.
 
 **Pedir ayuda**
 En 10 sucesos donde podía buscar a alguien, lo hizo en 2. Las dos veces buscó a la tía.

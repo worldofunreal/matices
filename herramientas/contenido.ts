@@ -35,6 +35,10 @@ function version(): string {
   return m[1];
 }
 
+// Words that change with gender. The same options are shown to every child, and the person who arrives can be
+// anyone of the house, so no text about them carries a gender (GDD §6).
+const CON_GENERO = /(^|[«"¡¿ ])(?:lo|la) (?=levanta|lleva|regaña|saca|abraza|felicita|jala|ve |manda|llevan)|\b(soy (?:un|una)|solos?|solas?|enojad[oa]s?|cansad[oa]s?|sentad[oa]s?|asustad[oa]s?|preocupad[oa]s?|nervios[oa]s?|content[oa]s?)\b/i;
+
 export function validar() {
   const codigos = codigosValidos();
   const areas = areasValidas();
@@ -43,6 +47,8 @@ export function validar() {
 
   const texto = (donde: string, t: unknown, conQuien: boolean) => {
     if (typeof t !== "string" || !t.trim()) return err(donde, "texto vacío");
+    const genero = t.match(CON_GENERO);
+    if (genero) err(donde, `"${genero[0]}" cambia con el género; se escribe sin género ("sin ayuda", "de mal humor")`);
     for (const m of t.match(/\{[^}]*\}/g) ?? []) {
       if (!MARCAS.has(m)) err(donde, `marca desconocida ${m}`);
       if (m === "{quien}" && !conQuien) err(donde, "{quien} sin un paso de personas antes");

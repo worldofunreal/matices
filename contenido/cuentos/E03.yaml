@@ -16,18 +16,18 @@ pasos:
     opciones:
       - [PROTEGE, "Le limpia la herida y le pone una curita"]
       - [NOTA_SIN_ACTUAR, "Le dice «no es nada, levántate»"]
-      - [RECHAZA, "Lo regaña por andar corriendo"]
-      - [DANA, "Lo jala del brazo de mal modo para que camine"]
-      - [AUSENTE, "Lo ve de lejos y se va"]
+      - [RECHAZA, "Regaña a {nombre} por andar corriendo"]
+      - [DANA, "Jala a {nombre} del brazo de mal modo para que camine"]
+      - [AUSENTE, "Ve a {nombre} de lejos y se va"]
     opciones_solo:
       - [AUTOSUFICIENTE, "{nombre} se sacude y sigue jugando aunque le duela"]
       - [BUSCA_AYUDA, "{nombre} va cojeando a buscar a alguien"]
-      - [SE_QUEDA_QUIETO, "{nombre} se queda sentado en el suelo"]
+      - [SE_QUEDA_QUIETO, "{nombre} se queda en el suelo sin moverse"]
   - id: luego
     pregunta: "¿Y luego?"
     opciones:
       - [PROTEGE, "Regresan juntos a casa"]
-      - [AUTOSUFICIENTE, "{nombre} se cura solo en el baño de su casa"]
+      - [AUTOSUFICIENTE, "{nombre} se cura sin ayuda en el baño de su casa"]
       - [AUSENTE, "Nadie le vuelve a preguntar por su rodilla"]
       - [BUSCA_AYUDA, "{nombre} le enseña la rodilla a alguien de su casa"]
   - id: carita

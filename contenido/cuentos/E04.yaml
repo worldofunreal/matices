@@ -27,7 +27,7 @@ pasos:
     pregunta: "¿Y luego?"
     opciones:
       - [PROTEGE, "Descubren que era el gato y se ríen"]
-      - [AUTOSUFICIENTE, "{nombre} se duerme solo con la luz prendida"]
+      - [AUTOSUFICIENTE, "{nombre} se duerme sin compañía con la luz prendida"]
       - [AUSENTE, "{nombre} no puede dormir en toda la noche"]
       - [BUSCA_AYUDA, "En la mañana {nombre} le cuenta a alguien"]
   - id: carita

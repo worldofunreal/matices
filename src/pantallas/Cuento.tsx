@@ -22,6 +22,9 @@ const PAUSA_ELEGIDA = 650; // the chosen card stays lit this long, then the stor
 const PAUSA_CARITA = 2500; // after a face, the story closes unless the child opens "Contar más"
 const PAUSA_CIERRE = 2200; // La Cuentera's closing line stays this long
 const PAUSA_AHORA_NO = 1600;
+// A tap this soon after the cards appear was meant for what was there before (walking in the world, the
+// previous step): nobody reads a question that fast, so it does not count as an answer.
+const A_CIEGAS = 700;
 
 export type EstadoCuerpo = (typeof ESTADOS)[number];
 export interface Carta {
@@ -38,7 +41,7 @@ interface Ruta {
 type Elegidos = Record<(typeof GRUPOS)[number], string[]>;
 
 // A step is skipped when solo_si does not match, or when it asks about {quien} and nobody was chosen
-// ("Nadie", "lo resuelve solo" or "No sé") and it has no options for that case (contenido/README.md).
+// ("Nadie", "lo resuelve sin ayuda" or "No sé") and it has no options for that case (contenido/README.md).
 function saltar(p: Paso, quien: Carta | null, anterior: string | null) {
   if (p.solo_si && !(anterior && p.solo_si.includes(anterior))) return true;
   if (p.personas || !p.pregunta?.includes("{quien}")) return false;
@@ -126,7 +129,7 @@ export function Cuento({ id, alCerrar }: { id: string; alCerrar: (estadoCuerpo: 
   };
 
   const elegirCarta = (carta: Carta) => {
-    if (bloqueo.current || ruta.fase.tipo !== "paso") return;
+    if (bloqueo.current || ruta.fase.tipo !== "paso" || performance.now() - inicioPaso.current < A_CIEGAS) return;
     const i = ruta.fase.i;
     const p = pasos[i];
     registrar("cuento_paso", { cuento: id, paso: p.id, opciones: ruta.cartas.map((x) => x.codigo), elegida: carta.codigo, ms_decidir: Math.round(performance.now() - inicioPaso.current) });
@@ -151,7 +154,7 @@ export function Cuento({ id, alCerrar }: { id: string; alCerrar: (estadoCuerpo: 
   };
 
   const elegirCarita = (valor: number) => {
-    if (bloqueo.current) return;
+    if (bloqueo.current || performance.now() - inicioPaso.current < A_CIEGAS) return;
     bloqueo.current = true;
     caritaRef.current = valor;
     setCaritaUI(valor);

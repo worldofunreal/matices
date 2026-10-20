@@ -22,10 +22,10 @@ pasos:
   - id: que_hace
     pregunta: "¿Qué hace {quien}?"
     opciones:
-      - [PROTEGE, "Lo levanta y lo lleva a la enfermería"]
+      - [PROTEGE, "Ayuda a {nombre} a levantarse y van a la enfermería"]
       - [NOTA_SIN_ACTUAR, "Le dice «no es para tanto»"]
       - [RECHAZA, "Le dice que deje de llorar"]
-      - [DANA, "Lo regaña enfrente de todos"]
+      - [DANA, "Regaña a {nombre} enfrente de todos"]
       - [AUSENTE, "No se da cuenta"]
   - id: carita
     pregunta: "¿Cómo se siente {nombre}?"

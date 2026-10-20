@@ -19,7 +19,7 @@ pasos:
       - [RECHAZA, "Se queja de que lo hicieron venir"]
       - [AUSENTE, "Dice que va a ir y no llega"]
     opciones_solo:
-      - [AUTOSUFICIENTE, "{nombre} va solo y dice que nadie pudo"]
+      - [AUTOSUFICIENTE, "{nombre} va por su cuenta y dice que nadie pudo"]
       - [BUSCA_AYUDA, "{nombre} le pide a otro adulto que vaya"]
       - [SE_QUEDA_QUIETO, "{nombre} no entrega el aviso"]
   - id: carita

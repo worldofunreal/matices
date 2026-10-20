@@ -18,9 +18,9 @@ pasos:
       - [NOTA_SIN_ACTUAR, "Dice «luego la vemos» y no regresa"]
       - [RECHAZA, "Dice «eso ya deberías saberlo»"]
       - [DANA, "Le quita el cuaderno de mal modo"]
-      - [AUSENTE, "Dice que está cansado y se va a dormir"]
+      - [AUSENTE, "Dice que tiene sueño y se va a dormir"]
     opciones_solo:
-      - [AUTOSUFICIENTE, "{nombre} lo intenta solo hasta tarde"]
+      - [AUTOSUFICIENTE, "{nombre} lo intenta sin ayuda hasta tarde"]
       - [BUSCA_AYUDA, "{nombre} va a preguntarle a alguien"]
       - [SE_QUEDA_QUIETO, "{nombre} guarda el cuaderno sin hacerla"]
   - id: luego
@@ -28,6 +28,6 @@ pasos:
     opciones:
       - [PROTEGE, "Terminan la tarea juntos"]
       - [BUSCA_AYUDA, "Al día siguiente le pregunta a la maestra"]
-      - [AUTOSUFICIENTE, "{nombre} la termina solo como puede"]
+      - [AUTOSUFICIENTE, "{nombre} la termina sin ayuda como puede"]
       - [AUSENTE, "La tarea se queda sin hacer"]
   - id: carita

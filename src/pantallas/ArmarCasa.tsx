@@ -216,8 +216,12 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
       if ("figura" in que) {
         setMenu(null);
         setElegida(que);
-        setPuntero({ x: ev.clientX, y: ev.clientY });
-      } else setMenu(que.inst);
+        if (ev.pointerType === "mouse") setPuntero({ x: ev.clientX, y: ev.clientY });
+      } else {
+        setMenu(que.inst);
+        // The menu opens under the finger; the click that follows the tap must not press its first button.
+        addEventListener("click", (c) => c.stopPropagation(), { capture: true, once: true });
+      }
     };
     addEventListener("pointermove", mover);
     // Capture: a placed person stops the event from bubbling, so the release is heard before that.
@@ -229,10 +233,11 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
     setMenu(null);
   };
 
-  // A person chosen with a tap follows the pointer, with no button pressed, until the next tap on a room.
+  // A person chosen with a tap follows the mouse until the next tap on a room. A finger leaves no
+  // trail, so on touch screens the chosen card and the glowing rooms say what comes next.
   useEffect(() => {
     if (!elegida) return;
-    const seguir = (ev: PointerEvent) => setPuntero({ x: ev.clientX, y: ev.clientY });
+    const seguir = (ev: PointerEvent) => ev.pointerType === "mouse" && setPuntero({ x: ev.clientX, y: ev.clientY });
     addEventListener("pointermove", seguir);
     return () => removeEventListener("pointermove", seguir);
   }, [elegida]);
@@ -305,7 +310,11 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
             <div className="desliza" data-toque ref={vista} onPointerDown={bajar} onPointerMove={moverDedo} onPointerUp={subirDedo} onPointerCancel={subirDedo} onWheel={rueda}>
               <div className={`casa${elegida ? " eligiendo" : ""}`} ref={lienzo} style={{ width: mapa.ancho * s, height: mapa.alto * s, transform: `translate(${cam.x}px, ${cam.y}px)` }}>
                 <img className="pixel" src="assets/lugares/casa/fondo.png" alt="" draggable={false} style={{ width: mapa.ancho * s, height: mapa.alto * s }} />
-                {elegida && mapa.cuartos.map((c) => <div key={c.nombre} className="cuarto" style={{ left: c.x * s, top: c.y * s, width: c.w * s, height: c.h * s }} />)}
+                {mapa.cuartos.map((c) => (
+                  <div key={c.nombre} className="cuarto" style={{ left: c.x * s, top: c.y * s, width: c.w * s, height: c.h * s }}>
+                    <span>{T.cuartos[c.nombre].replace(/^(el|la) /, "")}</span>
+                  </div>
+                ))}
                 {[...casa, ...(prota ? [{ inst: "prota" as const, ...prota }] : [])]
                   .sort((a, b) => a.y - b.y)
                   .map((f) => {

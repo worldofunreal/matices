@@ -18,17 +18,17 @@ pasos:
       - [PROTEGE, "Le canta las mañanitas y le da un abrazo"]
       - [NOTA_SIN_ACTUAR, "Dice «felicidades» y sigue viendo su teléfono"]
       - [RECHAZA, "Dice «¿y ahora qué celebras?» de mal modo"]
-      - [DANA, "Avienta el pastel a un lado y se va enojado"]
+      - [DANA, "Avienta el pastel a un lado y se va de mal humor"]
       - [AUSENTE, "Dice que no se puede quedar y se va"]
     opciones_solo:
-      - [AUTOSUFICIENTE, "{nombre} prende las velitas solo"]
+      - [AUTOSUFICIENTE, "{nombre} prende las velitas sin ayuda"]
       - [BUSCA_AYUDA, "{nombre} va a buscar a alguien para celebrar"]
       - [SE_QUEDA_QUIETO, "{nombre} se queda mirando el pastel"]
   - id: luego
     pregunta: "¿Y luego?"
     opciones:
       - [PROTEGE, "Parten el pastel juntos"]
-      - [AUTOSUFICIENTE, "{nombre} apaga las velitas solo"]
+      - [AUTOSUFICIENTE, "{nombre} apaga las velitas sin ayuda"]
       - [AUSENTE, "El pastel se queda en la mesa y nadie lo come"]
       - [BUSCA_AYUDA, "{nombre} llama a alguien para contarle"]
   - id: carita

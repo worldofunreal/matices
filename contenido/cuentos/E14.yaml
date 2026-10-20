@@ -24,8 +24,8 @@ pasos:
   - id: regreso
     pregunta: "Días después, regresa. ¿Qué pasa?"
     opciones:
-      - [PROTEGE, "Lo abraza y le cuenta del viaje"]
+      - [PROTEGE, "Abraza a {nombre} y le cuenta del viaje"]
       - [NOTA_SIN_ACTUAR, "Llega y se pone a ver la tele"]
-      - [RECHAZA, "Llega enojado con todos"]
+      - [RECHAZA, "Llega de mal humor con todos"]
       - [AUSENTE, "No regresa el día que dijo"]
   - id: carita

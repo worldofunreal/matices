@@ -3,7 +3,6 @@
 // hablar" cubren lo que hay debajo; mientras cubren, el mundo se queda quieto (useSuperpuesto).
 import { createContext, useContext, useState, type ReactNode } from "react";
 import contenido from "virtual:contenido";
-import { estado } from "../datos/guardado";
 import { registrar } from "../datos/eventos";
 import { detalleActual } from "../datos/monitor";
 import { Libro } from "../pantallas/Libro";
@@ -24,7 +23,6 @@ export function Siempre({ pantalla, children }: { pantalla: string; children: Re
   const [capa, setCapa] = useState<Capa | null>(null);
   // The mark for the adult. It stays until the game is closed.
   const [senal, setSenal] = useState(false);
-  const frase = S.aviso.replaceAll("{nombre}", estado().nombre);
 
   const alternar = (c: "libro" | "opciones") => setCapa(capa === c ? null : c);
 
@@ -46,8 +44,8 @@ export function Siempre({ pantalla, children }: { pantalla: string; children: Re
         <div className="siempre-velo">
           <section className="siempre-aviso panel" role="dialog" aria-label={S.quiero_hablar}>
             <span className="siempre-icono">{Icono.hablar}</span>
-            <p>{frase}</p>
-            <Bocina clave="siempre.aviso" texto={frase} />
+            <p>{S.aviso}</p>
+            <Bocina clave="siempre.aviso" texto={S.aviso} />
             <button className="boton principal" onClick={() => setCapa(null)}>
               {S.seguir}
             </button>

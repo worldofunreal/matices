@@ -11,7 +11,7 @@ El juego guarda eventos con hora exacta, no conclusiones. Cada opción de cada s
 | `RECHAZA` | Regaña, se burla o lo aleja | "¡Otra vez tú! Déjame dormir" |
 | `DANA` | Hace algo que lastima (siempre simbolizado) | Lo saca del cuarto de mal modo |
 | `AUSENTE` | No llega o se va | No llega nadie |
-| `AUTOSUFICIENTE` | El protagonista lo resuelve solo | Busca la medicina solo |
+| `AUTOSUFICIENTE` | El protagonista lo resuelve solo | Busca la medicina sin ayuda |
 | `CUIDA_A_OTRO` | El protagonista cuida a un adulto o hermano | Le prepara algo de comer al adulto |
 | `BUSCA_AYUDA` | El protagonista va a buscar a alguien | Va a despertar a alguien |
 | `OTRA` | El niño dibuja otra cosa | El dibujo queda para el psicólogo |

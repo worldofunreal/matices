@@ -17,16 +17,16 @@ pasos:
       - [PROTEGE, "Le toma la temperatura y se queda con {nombre}"]
       - [NOTA_SIN_ACTUAR, "Dice «ya se te pasará» y sigue con lo suyo"]
       - [RECHAZA, "Dice «¡otra vez tú! déjame dormir»"]
-      - [DANA, "Lo saca del cuarto de mal modo"]
+      - [DANA, "Saca a {nombre} del cuarto de mal modo"]
       - [AUSENTE, "No viene nadie"]
     opciones_solo:
-      - [AUTOSUFICIENTE, "{nombre} busca la medicina solo"]
+      - [AUTOSUFICIENTE, "{nombre} busca la medicina sin ayuda"]
       - [BUSCA_AYUDA, "{nombre} va a despertar a alguien"]
       - [SE_QUEDA_QUIETO, "{nombre} se queda en la cama aguantando"]
   - id: luego
     pregunta: "¿Y luego?"
     opciones:
-      - [PROTEGE, "En la mañana lo llevan al doctor"]
+      - [PROTEGE, "En la mañana llevan a {nombre} al doctor"]
       - [AUTOSUFICIENTE, "En la mañana {nombre} va a la escuela aunque siga enfermo"]
       - [AUSENTE, "Nadie le vuelve a preguntar cómo sigue"]
       - [BUSCA_AYUDA, "{nombre} le cuenta a la maestra que se siente mal"]

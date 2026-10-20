@@ -136,7 +136,7 @@ cuento:
   otra: "Otra cosa"
   no_se: "No sé"
   nadie: "Nadie"
-  solo: "{nombre} lo resuelve solo"
+  solo: "{nombre} lo resuelve sin ayuda"
   vecino: "Un vecino o vecina"
   escuela:
     maestra: "La maestra"
@@ -193,7 +193,7 @@ siempre:
   mi_libro: "Mi libro"
   quiero_hablar: "Quiero hablar con alguien"
   opciones: "Opciones"
-  aviso: "Ya le avisamos a {nombre}. Puedes seguir jugando o esperar aquí."
+  aviso: "Ya le avisamos al adulto que te acompaña. Puedes seguir jugando o esperar aquí."
   seguir: "Seguir jugando"
 
 # Opciones (GDD §13, §14). Música, efectos, velocidad del texto y lectura sencilla se guardan y

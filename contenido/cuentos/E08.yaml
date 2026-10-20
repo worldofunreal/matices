@@ -16,7 +16,7 @@ pasos:
     opciones:
       - [CUIDA_A_OTRO, "Le lleva agua y hace la comida para todos"]
       - [BUSCA_AYUDA, "Va a buscar a otro adulto"]
-      - [AUTOSUFICIENTE, "Se hace su comida y se va a la escuela solo"]
+      - [AUTOSUFICIENTE, "Se hace su comida y se va a la escuela por su cuenta"]
       - [SE_QUEDA_QUIETO, "Se queda en su cuarto sin hacer ruido"]
   - id: quien_llega
     pregunta: "¿Quién se ocupa de la casa ese día?"
