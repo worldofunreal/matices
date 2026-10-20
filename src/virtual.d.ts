@@ -40,12 +40,12 @@ declare module "virtual:contenido" {
     textos: Textos;
     figuras: { id: string; tipo: "adulto" | "menor" | "mascota"; nombre: string }[];
     lugares: string[];
+    conexiones: Record<string, string[]>;
     sitios: Record<string, { mapa: string; zona: { x: number; y: number; w: number; h: number } | null }>;
     actividades: { id: string; tipo: TipoActividad; dia: 1 | 2 | 3; hora: "manana" | "tarde" | "noche"; lugar: string }[];
   };
   export type TipoActividad = "cuentera" | "dibujo" | "describir" | "sobre_mi";
   interface Textos {
-    asentimiento: { texto: string; si: string; no: string; psicologo_prueba: string };
     creacion: {
       inicio: string;
       espejo: string;
@@ -96,7 +96,6 @@ declare module "virtual:contenido" {
       solo: string;
       vecino: string;
       escuela: Record<"maestra" | "companero" | "conserje" | "directora", string>;
-      otra_vez: string;
       carita: string;
       caritas: string[];
       contar_mas: string;

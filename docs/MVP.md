@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | H1. Base (hecho; se conserva) | Carpeta de arte con un archivo provisional por cada pieza; el juego carga todo desde la lista de arte; colores de piel y cabello desde la paleta; guardado y regreso; registro de eventos cifrado en el aparato | Se reemplaza un PNG provisional por otro del mismo tamaño y el juego lo muestra sin cambiar código; se cierra el juego a la mitad y regresa donde estaba |
 | M0. Base sin Phaser | Interfaz en React y CSS: letra, colores, botones, tarjetas, paneles; acomodo para vertical y horizontal; cada pantalla carga solo su arte | Abre en menos de 1 segundo en un teléfono |
-| M1. Inicio y personaje | Sí del niño, creación de personaje (GDD §6) con las reglas de experiencia (GDD §12) | El owner aprueba cómo se ve; ese estilo sigue en todo lo demás |
+| M1. Personaje | Creación de personaje (GDD §6) con las reglas de experiencia (GDD §12) | El owner aprueba cómo se ve; ese estilo sigue en todo lo demás |
 | M2. Armar la casa | Figuras a los cuartos, renombrar, quitar (GDD §7) | Funciona igual en vertical y en horizontal |
 | M3. Mundo | El mapa en el lienzo, botones encima en HTML; los nueve lugares, puertas, días y horas, vecinos, objetos, espejo | Se recorren los tres días como antes de la migración |
 | M4. Modo cuento | Los 15 sucesos con un toque por decisión, bocina, "Ahora no", "Otra cosa" con dibujo, caritas, panel, estados del cuerpo, Mi libro | Cada suceso se juega de punta a punta y cada paso deja su evento |

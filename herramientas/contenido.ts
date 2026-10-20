@@ -120,7 +120,7 @@ function validar() {
   }
 
   const textos = parse(readFileSync(join(DIR, "textos.yaml"), "utf8"));
-  const marcasTextos = new Set(["{psicologo}", "{nombre}", "{n}", "{figura}", "{cuarto}"]);
+  const marcasTextos = new Set(["{nombre}", "{n}", "{figura}", "{cuarto}"]);
   const recorrer = (v: unknown, donde: string): void => {
     if (typeof v === "string") {
       if (!v.trim()) err(donde, "texto vacío");
@@ -249,7 +249,9 @@ function validar() {
   if (textos.cuento?.caritas?.length !== 5) err("textos cuento.caritas", "deben ser 5");
 
   if (errores.length) throw new Error(`Contenido inválido:\n- ${errores.join("\n- ")}`);
-  return { version: version(), cuentos, sobreMi, escena, panel, textos, figuras, lugares, sitios, actividades };
+  // Doors: the places each place leads to. The world's guide walks this graph toward the next story.
+  const conexiones = Object.fromEntries(Object.entries(mapas).map(([l, m]) => [l, m ? objetosDe(m).filter((o) => o.type === "puerta").map((o) => propiedades(o).destino) : []]));
+  return { version: version(), cuentos, sobreMi, escena, panel, textos, figuras, lugares, sitios, actividades, conexiones };
 }
 
 type ObjetoMapa = { name: string; type: string; properties?: { name: string; value: string }[] };

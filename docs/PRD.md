@@ -46,7 +46,7 @@ Sugerencias para la llamada, válidas solo si la institución las aprueba: tres 
 ## 5. Requisitos funcionales
 
 ### Juego (niño)
-- F1. Consentimiento del niño con voz antes de cualquier registro; actividad equivalente sin registro si dice "Ahora no".
+- F1. El consentimiento del tutor y el sí del niño se obtienen antes de dar acceso, fuera del juego (`legal/consentimiento-y-datos.md`); el juego no los pide.
 - F2. Creación de personaje y armar la casa (GDD §6 y §7).
 - F3. Mundo explorable: casa, calle, escuela, parque, tiendita, biblioteca.
 - F4. 15 sucesos según `contenido/cuentos`, con orden barajado por semilla y reglas de intensidad.

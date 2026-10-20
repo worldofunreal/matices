@@ -52,7 +52,7 @@ Esquema en `docs/clinico/codigos-y-eventos.md`. Cada evento lleva la versión de
 
 | Carpeta | Qué hay |
 | --- | --- |
-| `src/` | El juego: `pantallas/` (cada pantalla en React), `ui/` (piezas de interfaz y estilos), `lienzo/` (pixel art: capas, colores y el mapa) |
+| `src/` | El juego: `pantallas/` (cada pantalla en React), `ui/` (piezas de interfaz y estilos), `lienzo/` (pixel art: capas y colores), `mundo/` (el mapa: muros, puertas, personas, rutas y el personaje que camina) |
 | `herramientas/contenido.ts` | Lee `contenido/`, lo revisa contra los códigos de `docs/clinico/codigos-y-eventos.md` y las áreas de `docs/clinico/marco-clinico.md`, y detiene la compilación si algo no cuadra |
 | `public/mapas/` | Mapas en formato Tiled: `muros` (choques) y `objetos` (puntos); el dibujo del lugar es su fondo en `public/assets/lugares/` |
 | `public/assets/` | Todo el arte; `manifiesto.yaml` lista cada pieza con su medida. La compilación se detiene si falta una o no cuadra su medida |

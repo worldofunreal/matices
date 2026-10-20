@@ -1,0 +1,132 @@
+/* The drawing sheet covers the world. Portrait: sheet above the tools; landscape: tools at the side. */
+.dibujo {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: max(12px, env(safe-area-inset-top)) var(--espacio) max(12px, env(safe-area-inset-bottom));
+  background: var(--papel);
+  animation: aparecer var(--suave) both;
+}
+
+.dibujo-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dibujo-cabecera p {
+  flex: 1;
+  margin: 0;
+  font-size: 19px;
+  font-weight: 750;
+}
+
+.dibujo-cabecera .bocina {
+  flex: none;
+}
+
+.dibujo-cuerpo {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.dibujo-hoja {
+  position: relative;
+  height: 100%;
+  max-height: 100%;
+  max-width: 100%;
+  aspect-ratio: 4 / 3;
+  min-height: 0;
+  border-radius: 14px;
+  background: #faf6ee;
+  box-shadow: var(--sombra-alta);
+  overflow: hidden;
+}
+
+.dibujo-hoja canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.dibujo-herramientas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.dibujo-colores {
+  display: grid;
+  grid-template-columns: repeat(6, 36px);
+  gap: 8px;
+}
+
+.dibujo-colores .muestra {
+  width: 36px;
+  height: 36px;
+  border-width: 3px;
+}
+
+.dibujo-grosores,
+.dibujo-acciones {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.grosor {
+  width: var(--toque);
+  height: var(--toque);
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--tarjeta);
+  box-shadow: var(--sombra);
+  cursor: pointer;
+}
+
+.grosor span {
+  display: block;
+  border-radius: 50%;
+  background: var(--tinta);
+}
+
+.grosor[aria-pressed="true"] {
+  box-shadow: 0 0 0 4px var(--girasol), var(--sombra-alta);
+}
+
+.dibujo-acciones .boton.redondo[aria-pressed="true"] {
+  box-shadow: 0 0 0 4px var(--girasol), var(--sombra-alta);
+}
+
+.dibujo-pie {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@media (orientation: landscape) {
+  .dibujo-cuerpo {
+    flex-direction: row;
+  }
+
+  .dibujo-herramientas {
+    flex-direction: column;
+  }
+
+  .dibujo-colores {
+    grid-template-columns: repeat(3, 36px);
+  }
+}

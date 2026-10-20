@@ -1,0 +1,80 @@
+/* Mi libro: the finished pages and drawings, read only (GDD §10). Covers the world. */
+.libro {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: max(12px, env(safe-area-inset-top)) var(--espacio) max(12px, env(safe-area-inset-bottom));
+  background: var(--papel);
+  animation: aparecer var(--suave) both;
+}
+
+.libro-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.libro-cabecera h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.libro-paginas {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  align-content: start;
+  gap: 12px;
+}
+
+.libro-pagina-tarjeta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 10px;
+  border: 0;
+  border-radius: var(--radio);
+  background: var(--tarjeta);
+  box-shadow: var(--sombra);
+  color: inherit;
+  font-size: 16px;
+  font-weight: 750;
+  text-align: center;
+  cursor: pointer;
+}
+
+.libro-sin-carita {
+  width: 64px;
+  height: 64px;
+}
+
+.libro-detalle {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.libro-detalle p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.libro-dibujo {
+  width: min(100%, 520px);
+  border-radius: 14px;
+  background: #faf6ee;
+  box-shadow: var(--sombra);
+}

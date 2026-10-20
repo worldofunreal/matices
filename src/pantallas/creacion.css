@@ -190,3 +190,16 @@
   text-align: center;
   line-height: 1.15;
 }
+
+/* Three full-body choices always fit in one row. */
+.opciones.cuerpo,
+.opciones.ropa {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 116px));
+  justify-content: center;
+}
+
+.opciones.cuerpo .opcion,
+.opciones.ropa .opcion {
+  padding: 12px 6px 10px;
+}

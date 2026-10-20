@@ -69,7 +69,7 @@ El tiempo no avanza solo: avanza cuando el niño llega a la puerta o lugar que m
 
 ## 6. Creación del personaje
 
-Primera pantalla después del consentimiento del niño. Unos 3 minutos.
+Primera pantalla del juego. Unos 3 minutos.
 
 | Paso | Opciones | Nota |
 | --- | --- | --- |

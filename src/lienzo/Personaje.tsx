@@ -45,3 +45,35 @@ export function Retrato({ a, tam, expresion = "neutral" }: { a: Apariencia; tam:
   }, [a, expresion]);
   return <canvas ref={ref} className="pixel" width={96} height={96} style={{ width: tam, height: tam }} />;
 }
+
+// One still frame of any character sheet (figures, fixed characters), facing down.
+export function Hoja({ id, piel = 0, escala }: { id: string; piel?: number; escala: number }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    void pieza(id, { piel }).then((l) => {
+      const ctx = ref.current?.getContext("2d");
+      if (!ctx) return; // the picture left the screen before it loaded
+      ctx.imageSmoothingEnabled = false;
+      ctx.clearRect(0, 0, CUADRO.ancho, CUADRO.alto);
+      ctx.drawImage(l, 0, 0, CUADRO.ancho, CUADRO.alto, 0, 0, CUADRO.ancho, CUADRO.alto);
+    });
+  }, [id, piel]);
+  return <canvas ref={ref} className="pixel" width={CUADRO.ancho} height={CUADRO.alto} style={{ width: CUADRO.ancho * escala, height: CUADRO.alto * escala }} />;
+}
+
+// A single image piece (portrait, icon) with optional skin color.
+export function Imagen({ id, piel = 0, tam }: { id: string; piel?: number; tam: number }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    void pieza(id, { piel }).then((l) => {
+      const c = ref.current;
+      if (!c) return; // the picture left the screen before it loaded
+      c.width = l.width;
+      c.height = l.height;
+      const ctx = c.getContext("2d")!;
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(l, 0, 0);
+    });
+  }, [id, piel]);
+  return <canvas ref={ref} className="pixel" style={{ width: tam, height: tam }} />;
+}

@@ -56,4 +56,28 @@ export const Icono = {
     </>,
   ),
   listo: svg(<path d="M5 12.5l4.5 4.5L19 7.5" />),
+  mas: svg(<path d="M12 5v14M5 12h14" />),
+  menos: svg(<path d="M5 12h14" />),
+  encuadrar: svg(<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />),
+  quitar: svg(<path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13" />),
+  libro: svg(
+    <>
+      <path d="M3 5.5c3-1.6 6-1.6 9 .9 3-2.5 6-2.5 9-.9V19c-3-1.4-6-1.4-9 .6-3-2-6-2-9-.6z" />
+      <path d="M12 6.4V19" />
+    </>,
+  ),
+  cerrar: svg(<path d="M6 6l12 12M18 6L6 18" />),
+  borrar: svg(
+    <>
+      <path d="M5 15.5l8.2-8.7a1.8 1.8 0 0 1 2.6 0l2.7 2.8a1.8 1.8 0 0 1 0 2.6L12 20H8.2L5 16.8a1 1 0 0 1 0-1.3z" />
+      <path d="M9 20h11" />
+    </>,
+  ),
+  volver: svg(<path d="M15 5l-7 7 7 7" />),
+  deshacer: svg(
+    <>
+      <path d="M9 14L4 9l5-5" />
+      <path d="M4 9h10a6 6 0 0 1 0 12h-4" />
+    </>,
+  ),
 };

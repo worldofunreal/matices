@@ -66,14 +66,18 @@ Todos llevan: código del niño, sesión, versión del contenido, semilla de ord
 | `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
 | `casa_figura` | Qué hizo (`poner`, `mover`, `quitar`, `renombrar`, `piel`), figura, si es adulto, menor o mascota, cuarto, distancia al personaje en cuadros, orden. Al terminar, `casa_lista` con todas las figuras y el tiempo | Quién forma el mundo del niño |
 | `cuento` | Suceso y si empezó, terminó o se dejó con "Ahora no" | Cuántos cuentos se completan |
-| `cuento_paso` | Suceso, paso, opciones en el orden mostrado, opción y código, toques previos, ms para decidir desde que terminó la voz y si eligió antes de que terminara | El dato central |
+| `cuento_paso` | Suceso, paso, opciones en el orden mostrado, opción y código, ms para decidir desde que aparece el paso | El dato central |
 | `carita` | Suceso, valor 1 a 5 | Cómo se siente el protagonista |
 | `panel_cpe` | Suceso, íconos de cuerpo, pensamiento y entorno | Cuántas emociones distingue |
 | `estado_cuerpo` | Suceso, estado elegido | Intensidad que el niño le da |
 | `explora` | Al tocar un objeto o a una persona fija (lugar y cuál), y al salir de un lugar (lugar, ms de permanencia, visitas) | Qué busca, evita, repite |
 | `tramo` | Día y parte del día que empieza (`manana`, `tarde`, `noche`, `fin`) | Ritmo de la partida |
-| `describe` | Escena, título, emoción por personaje | Lectura de una escena ambigua |
-| `sobre_mi` | Frase, respuesta (`A`, `B`, `AMBOS`, `AHORA_NO`), ms | Lo que dice de su vida |
+| `describe_paso` | Escena, paso (`titulo`, `emocion`, `plato`), opciones en el orden mostrado, opción y código, ms para decidir | Cada decisión de la escena ambigua |
+| `describe` | Escena, título, emoción y plato (de quién es el otro plato), ms | Lectura de una escena ambigua |
+| `sobre_mi` | Frase, área, respuesta (`A`, `B`, `AMBOS`, `AHORA_NO`), lado que dice Tito (`tito_dice`), orden, ms para decidir | Lo que dice de su vida |
+| `actividad` | Actividad, `que` (`inicio`, `fin` o `ahora_no`) y ms al terminar | Cuánto dura cada actividad y dónde se detiene |
+| `calma` | Día, ms y respiraciones | Si respira con la vela al empezar el día |
+| `aterrizaje` | Día, plantas regadas y ms | Cómo cierra el día |
 | `dibujo` | De dónde salió (suceso y paso de "Otra cosa", o dibujo libre), trazos con color, grosor, goma y tiempo de cada punto, cuántos deshizo, tiempo, imagen final | El dibujo y su proceso |
 | `ahora_no` | Suceso y paso | Dónde no quiso entrar |
 | `quiero_hablar` | Pantalla y hora | Dispara el aviso |
@@ -94,14 +98,13 @@ Todos llevan: código del niño, sesión, versión del contenido, semilla de ord
   "paso": "quien_llega",
   "opciones": ["FIGURA:tia", "NADIE", "SOLO", "FIGURA:abuelo", "NO_SE"],
   "elegida": "SOLO",
-  "toques_previos": ["FIGURA:abuelo"],
   "ms_decidir": 9400
 }
 ```
 
 ## Cómo leer el tiempo
 
-El tiempo para decidir empieza cuando termina la voz. Incluye leer y pensar; solo se compara contra el propio niño (decisiones más lentas que su mediana), nunca contra otros.
+El tiempo para decidir empieza cuando aparece el paso o la carta. La voz solo suena si el niño toca la bocina, así que no cuenta como inicio. Incluye leer y pensar; solo se compara contra el propio niño (decisiones más lentas que su mediana), nunca contra otros.
 
 ## Eventos de producto
 

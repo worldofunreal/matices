@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { Asentimiento } from "./pantallas/Asentimiento";
 import { Creacion } from "./pantallas/Creacion";
-import { Continuara } from "./pantallas/Continuara";
+import { ArmarCasa } from "./pantallas/ArmarCasa";
+import { Mundo } from "./pantallas/Mundo";
 import { estado } from "./datos/guardado";
-import { preguntado } from "./datos/eventos";
 import { pantalla } from "./datos/monitor";
 
-type Pantalla = { nombre: "asentimiento" } | { nombre: "creacion"; modo: "inicio" | "espejo" } | { nombre: "continuara" };
+type Pantalla = { nombre: "creacion"; modo: "inicio" | "espejo" } | { nombre: "casa" } | { nombre: "mundo" };
 
-// Where the child picks up: their own yes first, then their character, then the game.
+// Where the child picks up: their character first, then their house, then the world. Consent and the child's yes
+// happen before they get access (docs/legal/consentimiento-y-datos.md).
 function primera(): Pantalla {
-  if (!preguntado()) return { nombre: "asentimiento" };
   if (!estado().creado) return { nombre: "creacion", modo: "inicio" };
-  return { nombre: "continuara" };
+  if (!estado().casaLista) return { nombre: "casa" };
+  return { nombre: "mundo" };
 }
 
 export function App() {
@@ -21,7 +21,7 @@ export function App() {
     pantalla(siguiente.nombre);
     setP(siguiente);
   };
-  if (p.nombre === "asentimiento") return <Asentimiento alResponder={() => ir(primera())} />;
-  if (p.nombre === "creacion") return <Creacion key={p.modo} modo={p.modo} alTerminar={() => ir({ nombre: "continuara" })} />;
-  return <Continuara alCambiar={() => ir({ nombre: "creacion", modo: "espejo" })} />;
+  if (p.nombre === "creacion") return <Creacion key={p.modo} modo={p.modo} alTerminar={() => ir(primera())} />;
+  if (p.nombre === "casa") return <ArmarCasa alTerminar={() => ir(primera())} />;
+  return <Mundo alEspejo={() => ir({ nombre: "creacion", modo: "espejo" })} />;
 }

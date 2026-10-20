@@ -63,6 +63,9 @@ export async function pieza(id: string, colores: Colores = {}): Promise<HTMLCanv
   return c;
 }
 
+// The same piece if it is already built, read without waiting (the drawing loop uses this).
+export const piezaYa = (id: string, colores: Colores = {}) => listos.get(clave(id, colores));
+
 // Warms the cache so a screen draws at once when it opens.
 export const precargar = (ids: string[]) => Promise.all(ids.map(imagen));
 

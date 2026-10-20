@@ -17,12 +17,12 @@ Ningún niño juega con registro sin la firma de su tutor y su propio sí dentro
 
 1. **Aviso de privacidad para el tutor**, en lenguaje sencillo: qué se registra, para qué, quién lo ve, cuánto tiempo se guarda, y cómo pedir acceso, corrección, borrado u oposición.
 2. **Firma del tutor**, expresa y por escrito. El uso de datos para el estudio del piloto se firma aparte.
-3. **El sí del niño**, en la primera pantalla, con voz. El texto y los botones ("Sí quiero jugar" · "Ahora no") están en `contenido/textos.yaml`, clave `asentimiento`. Dice quién va a ver lo que elija, que maestros y compañeros no lo ven, que si algo preocupa de su seguridad se buscará a adultos que lo cuiden, y que puede dejar de jugar cuando quiera.
+3. **El sí del niño**, antes de darle acceso al juego y fuera de él: el adulto que lo acompaña le explica quién va a ver lo que elija, que maestros y compañeros no lo ven, que si algo preocupa de su seguridad se buscará a adultos que lo cuiden, y que puede dejar de jugar cuando quiera. Quien tiene acceso al juego ya aceptó jugar; el juego no lo vuelve a preguntar.
 4. **Salir en cualquier momento.** El niño puede dejar de jugar sin dar razones; el tutor puede retirar el permiso y pedir borrado, salvo lo que la institución deba conservar por un aviso de protección en curso.
 
-El niño que dice "Ahora no" o no tiene firma juega el mismo juego sin registro: no se guarda ningún evento, ni clínico ni de uso, y se ve igual para que nadie note la diferencia.
+El niño que no acepta o no tiene firma no recibe acceso.
 
-La pantalla del paso 3 no promete secreto absoluto: decir la verdad sobre los límites de la confidencialidad evita que el niño se sienta traicionado si hay que avisar.
+Lo que se le dice en el paso 3 no promete secreto absoluto: decir la verdad sobre los límites de la confidencialidad evita que el niño se sienta traicionado si hay que avisar.
 
 ## Cómo se cuidan los datos
 

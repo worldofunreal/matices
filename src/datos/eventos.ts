@@ -14,12 +14,7 @@ interface Partida {
   nino: string;
   semilla: number;
   sesion: number;
-  // The child's own yes (docs/legal/consentimiento-y-datos.md, step 3). null: not asked yet.
-  // Until the answer, events wait in memory; with "Ahora no" nothing is ever stored.
-  registro: boolean | null;
 }
-
-let pendientes: object[] = [];
 
 let partida: Partida;
 let inicio = performance.now();
@@ -39,29 +34,19 @@ export async function iniciarRegistro(): Promise<Partida> {
   const previa = await leer<Partida>("partida");
   partida = previa
     ? { ...previa, sesion: previa.sesion + 1 }
-    : { nino: `PRUEBA-${crypto.getRandomValues(new Uint16Array(1))[0].toString(16).padStart(4, "0")}`, semilla: crypto.getRandomValues(new Uint32Array(1))[0], sesion: 1, registro: null };
+    : { nino: `PRUEBA-${crypto.getRandomValues(new Uint16Array(1))[0].toString(16).padStart(4, "0")}`, semilla: crypto.getRandomValues(new Uint32Array(1))[0], sesion: 1 };
   await guardar("partida", partida);
   inicio = performance.now();
   return partida;
 }
 
-export const preguntado = () => partida.registro !== null;
 export const semilla = () => partida.semilla;
-
-export async function fijarRegistro(si: boolean) {
-  partida = { ...partida, registro: si };
-  await guardar("partida", partida);
-  const cola = pendientes;
-  pendientes = [];
-  if (si) for (const e of cola) guardarEvento(e);
-}
 
 function guardarEvento(evento: object & { tipo?: unknown }) {
   void cifrar(evento).then((cifrado) => agregarEvento({ ...cifrado, enviar: PRODUCTO.has(String(evento.tipo)) }));
 }
 
 export function registrar(tipo: string, datos: Record<string, unknown> = {}) {
-  if (partida.registro === false) return;
   // Common fields go last so an event's own data can never overwrite them.
   const evento = {
     ...datos,
@@ -74,8 +59,7 @@ export function registrar(tipo: string, datos: Record<string, unknown> = {}) {
     t_ms: Math.round(performance.now() - inicio),
     tipo,
   };
-  if (partida.registro === null) pendientes.push(evento);
-  else guardarEvento(evento);
+  guardarEvento(evento);
   if (import.meta.env.DEV) console.debug("evento", evento);
 }
 
