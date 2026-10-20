@@ -125,10 +125,6 @@
   .dibujo-herramientas {
     flex-direction: column;
   }
-
-  .dibujo-colores {
-    grid-template-columns: repeat(3, 36px);
-  }
 }
 
 /* The corner buttons' band stays free (estilos.css, --franja). */

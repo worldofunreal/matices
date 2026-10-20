@@ -31,4 +31,9 @@ pasos:
       - [AUTOSUFICIENTE, "{nombre} se va a dormir con hambre sin decir nada"]
       - [AUSENTE, "Nadie llega hasta muy tarde"]
       - [BUSCA_AYUDA, "{nombre} le cuenta a alguien que tenía hambre"]
+    opciones_solo:
+      - [PROTEGE, "Más tarde alguien llega y le da de cenar"]
+      - [AUTOSUFICIENTE, "{nombre} se va a dormir con hambre sin decir nada"]
+      - [AUSENTE, "Nadie llega hasta muy tarde"]
+      - [BUSCA_AYUDA, "{nombre} le cuenta a alguien que tenía hambre"]
   - id: carita

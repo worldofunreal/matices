@@ -107,11 +107,20 @@
 }
 
 /* The landing waters three plants (GDD §10). */
+/* Three pots always fit in one row: they shrink with a narrow phone instead of scrolling. */
 .macetas {
-  display: flex;
-  gap: 16px;
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 108px));
+  gap: 12px;
+  align-items: end;
   justify-content: center;
+  padding: 6px;
+}
+
+.maceta canvas {
+  max-width: 100%;
+  height: auto !important;
+  aspect-ratio: 1;
 }
 
 .maceta {
@@ -125,6 +134,6 @@
 }
 
 .maceta.regada {
-  transform: scale(1.15);
+  transform: scale(1.06);
   box-shadow: 0 0 0 4px var(--verde), var(--sombra-alta);
 }

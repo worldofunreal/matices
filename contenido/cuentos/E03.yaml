@@ -30,4 +30,9 @@ pasos:
       - [AUTOSUFICIENTE, "{nombre} se cura sin ayuda en el baño de su casa"]
       - [AUSENTE, "Nadie le vuelve a preguntar por su rodilla"]
       - [BUSCA_AYUDA, "{nombre} le enseña la rodilla a alguien de su casa"]
+    opciones_solo:
+      - [PROTEGE, "Más tarde alguien de su casa le cura la rodilla"]
+      - [AUTOSUFICIENTE, "{nombre} se cura sin ayuda en el baño de su casa"]
+      - [AUSENTE, "Nadie le vuelve a preguntar por su rodilla"]
+      - [BUSCA_AYUDA, "{nombre} le enseña la rodilla a alguien de su casa"]
   - id: carita

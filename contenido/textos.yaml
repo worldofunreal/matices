@@ -171,11 +171,11 @@ actividades:
   describir:
     inicio: "Mira este dibujo con calma."
     emociones:
-      contento: "Contento"
-      tranquilo: "Tranquilo"
+      contento: "Feliz"
+      tranquilo: "En calma"
       triste: "Triste"
-      enojado: "Enojado"
-      asustado: "Asustado"
+      enojado: "Con enojo"
+      asustado: "Con miedo"
       no_se: "No sé"
   sobre_mi:
     los_dos: "Los dos"
@@ -183,7 +183,7 @@ actividades:
     fin: "Gracias por contarme."
   seguir: "Seguir"
   aterrizaje:
-    texto: "Antes de dormir, riega las plantas del patio."
+    texto: "Antes de dormir, riega las plantas del patio. Toca cada maceta."
     adios: "Hasta mañana, {nombre}."
     adios_final: "Gracias por estos tres días, {nombre}."
 

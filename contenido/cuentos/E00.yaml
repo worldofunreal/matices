@@ -31,4 +31,9 @@ pasos:
       - [AUTOSUFICIENTE, "{nombre} apaga las velitas sin ayuda"]
       - [AUSENTE, "El pastel se queda en la mesa y nadie lo come"]
       - [BUSCA_AYUDA, "{nombre} llama a alguien para contarle"]
+    opciones_solo:
+      - [PROTEGE, "Más tarde alguien llega y parten el pastel"]
+      - [AUTOSUFICIENTE, "{nombre} apaga las velitas sin ayuda"]
+      - [AUSENTE, "El pastel se queda en la mesa y nadie lo come"]
+      - [BUSCA_AYUDA, "{nombre} llama a alguien para contarle"]
   - id: carita

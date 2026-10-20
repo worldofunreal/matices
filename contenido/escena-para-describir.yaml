@@ -5,7 +5,7 @@ pregunta_titulo: "¿Qué está pasando?"
 titulos:
   - [ESPERA_A_ALGUIEN_QUE_LLEGA, "Espera a alguien que ya viene"]
   - [ESPERA_A_ALGUIEN_QUE_NO_LLEGA, "Espera a alguien que no va a llegar"]
-  - [CASTIGO, "Lo castigaron y no puede salir"]
+  - [CASTIGO, "Le pusieron un castigo y no puede salir"]
   - [MIRA_ALGO_BONITO, "Está viendo algo bonito afuera"]
   - [TIENE_MIEDO, "Tiene miedo de algo de afuera"]
 pregunta_emocion: "¿Cómo se siente?"

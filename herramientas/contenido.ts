@@ -37,7 +37,7 @@ function version(): string {
 
 // Words that change with gender. The same options are shown to every child, and the person who arrives can be
 // anyone of the house, so no text about them carries a gender (GDD §6).
-const CON_GENERO = /(^|[«"¡¿ ])(?:lo|la) (?=levanta|lleva|regaña|saca|abraza|felicita|jala|ve |manda|llevan)|\b(soy (?:un|una)|solos?|solas?|enojad[oa]s?|cansad[oa]s?|sentad[oa]s?|asustad[oa]s?|preocupad[oa]s?|nervios[oa]s?|content[oa]s?)\b/i;
+const CON_GENERO = /(^|[«"¡¿ ])(?:lo|la) (?=levanta|lleva|regaña|saca|abraza|felicita|jala|ve |manda|llevan|castiga)|\b(soy (?:un|una)|solos?|solas?|enojad[oa]s?|cansad[oa]s?|sentad[oa]s?|asustad[oa]s?|preocupad[oa]s?|nervios[oa]s?|content[oa]s?)\b/i;
 
 export function validar() {
   const codigos = codigosValidos();
@@ -101,6 +101,9 @@ export function validar() {
           opciones(`${dp} opciones`, p.opciones, conQuien);
         }
         if (p.opciones_solo) opciones(`${dp} opciones_solo`, p.opciones_solo, conQuien);
+        // After "Nadie" or "lo resuelve sin ayuda" nobody is there to be together with.
+        const juntos = conQuien && !p.personas && !p.opciones_solo && (p.opciones ?? []).find((o: Opcion) => /\bjunt[oa]s\b/i.test(String(o[1])));
+        if (juntos) err(dp, `"${juntos[1]}" no tiene sentido si nadie llegó; agrega opciones_solo`);
         for (const s of p.solo_si ?? []) codigo(`${dp} solo_si`, s);
       }
       if (c.pasos?.at(-1)?.id !== "carita") err(d, "el último paso debe ser carita");

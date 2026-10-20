@@ -326,17 +326,6 @@ export class Motor {
       ctx.drawImage(fondo, sx, sy, sw, sh, sx, sy, sw, sh);
     }
 
-    if (this.guia) {
-      const k = 0.5 + 0.5 * Math.sin(this.tiempo / 450);
-      ctx.save();
-      ctx.globalAlpha = 1 - 0.6 * k;
-      ctx.beginPath();
-      ctx.arc(this.guia.x, this.guia.y, 14 + 6 * k, 0, Math.PI * 2);
-      ctx.lineWidth = 3;
-      ctx.strokeStyle = "#f2c14e";
-      ctx.stroke();
-      ctx.restore();
-    }
 
     // Everything that stands on the ground is drawn from back to front, by its feet.
     const brillo = 0.82 + 0.18 * (0.5 + 0.5 * Math.sin(this.tiempo / 700));
@@ -378,32 +367,50 @@ export class Motor {
       ctx.restore();
     }
 
-    if (this.guia) this.flechaGuia(this.guia);
+    // The ring goes over the light of the time of day, so it keeps its color at night.
+    if (this.guia) {
+      const k = 0.5 + 0.5 * Math.sin(this.tiempo / 450);
+      ctx.save();
+      ctx.globalAlpha = 1 - 0.35 * k;
+      ctx.beginPath();
+      ctx.arc(this.guia.x, this.guia.y, 14 + 6 * k, 0, Math.PI * 2);
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = "#f2c14e";
+      ctx.stroke();
+      ctx.restore();
+    }
+    if (this.guia && !this.pausado) this.flechaGuia(this.guia); // a cover over the world hides the ring; no arrow then
   }
 
-  // When the ring is off screen, an arrow on the edge of the screen points at it, so the child always knows where to go.
+  // When the ring is off screen or under a button, an arrow points at it, so the child always knows where to go.
   private flechaGuia(g: { x: number; y: number }) {
     const { canvas: c } = this.o;
     const ctx = this.ctx;
     const px = (g.x - this.cam.x) * this.z;
     const py = (g.y - this.cam.y) * this.z;
-    if (px >= 0 && px <= c.width && py >= 0 && py <= c.height) return;
     const dpr = c.width / (c.clientWidth || c.width);
-    const borde = { x: 36 * dpr, y: 96 * dpr }; // clear of the round buttons in the corners
+    const r = c.getBoundingClientRect();
+    const enPantalla = px >= 0 && px <= c.width && py >= 0 && py <= c.height;
+    if (enPantalla && document.elementFromPoint(r.left + px / dpr, r.top + py / dpr) === c) return;
+    const borde = 32 * dpr;
     const cx = c.width / 2;
     const cy = c.height / 2;
     const dx = px - cx;
     const dy = py - cy;
-    const t = Math.min((cx - borde.x) / Math.abs(dx || 1e-6), (cy - borde.y) / Math.abs(dy || 1e-6));
+    // On the edge, toward the ring; where a button sits there, it slides toward the middle until it is clear.
+    let t = Math.min(1, (cx - borde) / Math.abs(dx || 1e-6), (cy - borde) / Math.abs(dy || 1e-6));
+    while (t > 0.2 && document.elementFromPoint(r.left + (cx + dx * t) / dpr, r.top + (cy + dy * t) / dpr) !== c) t -= 0.04;
     const k = 0.5 + 0.5 * Math.sin(this.tiempo / 300);
     const lado = (16 + 3 * k) * dpr;
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, cx + dx * t, cy + dy * t);
     ctx.rotate(Math.atan2(dy, dx));
     ctx.beginPath();
-    ctx.moveTo(lado, 0);
-    ctx.lineTo(-lado * 0.7, -lado * 0.8);
-    ctx.lineTo(-lado * 0.7, lado * 0.8);
+    // A long point, so the direction reads at a glance.
+    ctx.moveTo(lado * 1.2, 0);
+    ctx.lineTo(-lado * 0.8, -lado * 0.7);
+    ctx.lineTo(-lado * 0.3, 0);
+    ctx.lineTo(-lado * 0.8, lado * 0.7);
     ctx.closePath();
     ctx.fillStyle = "#f2c14e";
     ctx.strokeStyle = "#1d1a24";

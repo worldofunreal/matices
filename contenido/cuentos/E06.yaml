@@ -30,4 +30,9 @@ pasos:
       - [BUSCA_AYUDA, "Al día siguiente le pregunta a la maestra"]
       - [AUTOSUFICIENTE, "{nombre} la termina sin ayuda como puede"]
       - [AUSENTE, "La tarea se queda sin hacer"]
+    opciones_solo:
+      - [PROTEGE, "Más tarde alguien de su casa le ayuda"]
+      - [BUSCA_AYUDA, "Al día siguiente le pregunta a la maestra"]
+      - [AUTOSUFICIENTE, "{nombre} la termina sin ayuda como puede"]
+      - [AUSENTE, "La tarea se queda sin hacer"]
   - id: carita

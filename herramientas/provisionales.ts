@@ -201,6 +201,54 @@ function icono(ctx: Ctx, p: Pieza) {
   // No letters: a child reads them as words ("SOL"); the text under the icon already says what it is.
 }
 
+// The scene to describe (contenido/escena-para-describir.yaml): a child looks out of a window at night, and
+// two plates are served on the table. A box with a name cannot be described, so the placeholder shows it.
+function escena(ctx: Ctx, w: number, h: number) {
+  ctx.fillStyle = "#eadfca";
+  ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = "#b98d63";
+  ctx.fillRect(0, h - 50, w, 50);
+  ctx.fillStyle = "#1d2340";
+  ctx.fillRect(190, 30, 110, 110);
+  ctx.fillStyle = "#f2e9a0";
+  for (const [x, y] of [[205, 48], [262, 62], [236, 40], [284, 96], [214, 88]]) ctx.fillRect(x, y, 3, 3);
+  ctx.strokeStyle = "#7a5c4f";
+  ctx.lineWidth = 6;
+  ctx.strokeRect(190, 30, 110, 110);
+  ctx.beginPath();
+  ctx.moveTo(245, 30);
+  ctx.lineTo(245, 140);
+  ctx.moveTo(190, 85);
+  ctx.lineTo(300, 85);
+  ctx.stroke();
+  ctx.fillStyle = "#3c4fa8";
+  ctx.fillRect(228, 166, 10, 26);
+  ctx.fillRect(242, 166, 10, 26);
+  ctx.fillStyle = "#6cbf6a";
+  ctx.fillRect(224, 118, 32, 50);
+  ctx.fillStyle = "#4a3426";
+  ctx.beginPath();
+  ctx.arc(240, 106, 14, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "#8a5a3a";
+  ctx.fillRect(24, 148, 140, 10);
+  ctx.fillRect(34, 158, 8, 34);
+  ctx.fillRect(146, 158, 8, 34);
+  for (const x of [62, 126]) {
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.ellipse(x, 144, 20, 6, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#9a9a9a";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = "#f28c38";
+    ctx.beginPath();
+    ctx.ellipse(x, 142, 8, 3, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
 function dibujar(p: Pieza, m: Manifiesto) {
   const [w, h] = p.medida;
   const lienzo = createCanvas(w, h);
@@ -212,6 +260,7 @@ function dibujar(p: Pieza, m: Manifiesto) {
   else if (p.tipo === "fondo") fondo(ctx, p);
   else if (p.tipo === "marco") marco(ctx, p);
   else if (p.tipo === "boton" || p.tipo === "icono") icono(ctx, p);
+  else if (p.id.endsWith("/escena_d01")) escena(ctx, w, h);
   else if (p.tipo === "tarjeta") {
     ctx.fillStyle = p.id.endsWith("elegida") ? "rgba(255,230,120,0.45)" : "#f4ecdc";
     ctx.fillRect(0, 0, w, h);
