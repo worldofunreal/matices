@@ -5,7 +5,7 @@ import { precargar, idsDe, cuantos } from "../lienzo/arte";
 import { Bocina } from "../ui/Bocina";
 import { Icono } from "../ui/iconos";
 import { estado, cambiarEstado, type FiguraPuesta } from "../datos/guardado";
-import { nuevaInstancia, nombreDe, codigoDe, tipoDe } from "../datos/casa";
+import { nuevaInstancia, nombreDe, codigoDe, tipoDe, etiquetaDe } from "../datos/casa";
 import { registrar } from "../datos/eventos";
 import "./casa.css";
 
@@ -40,8 +40,11 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
   const [menu, setMenu] = useState<Quien | null>(null);
   const [renombrando, setRenombrando] = useState(false);
   const [arrastre, setArrastre] = useState<Arrastre | null>(null);
+  const [puntero, setPuntero] = useState<{ x: number; y: number } | null>(null); // where the person chosen with a tap is
   const [escala, setEscala] = useState(0.6);
   const [cam, setCam] = useState({ x: 0, y: 0 }); // where the house sits inside the view, in screen pixels
+  const escalaRef = useRef(escala); // the current zoom, for the resize handler
+  escalaRef.current = escala;
   const lienzo = useRef<HTMLDivElement>(null);
   const vista = useRef<HTMLDivElement>(null);
   const orden = useRef(estado().casa.length);
@@ -87,15 +90,12 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
     setCam(acomodar(0, 0, z));
   };
 
-  // First view: as tall as the view allows, centered on the child's room.
+  // First view: the whole house, centered, so the child sees all of it before zooming in (GDD §7).
   useLayoutEffect(() => {
     if (!mapa) return;
-    const { w, h } = vistaMide();
-    const z = Math.min(1, Math.max(todaLaCasa(), h / mapa.alto));
-    const r = mapa.cuartos.find((c) => c.nombre === "recamara")!;
-    setEscala(z);
-    setCam(acomodar(w / 2 - (r.x + r.w / 2) * z, h / 2 - (r.y + r.h / 2) * z, z));
-    const o = new ResizeObserver(() => setCam((c) => acomodar(c.x, c.y, escala)));
+    verToda();
+    // When the window changes size, the house stays inside the view at its current zoom.
+    const o = new ResizeObserver(() => setCam((c) => acomodar(c.x, c.y, escalaRef.current)));
     o.observe(vista.current!);
     return () => o.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -191,6 +191,7 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
       evento("mover", nueva.find((f) => f.inst === (que as { inst: string }).inst)!);
     }
     setElegida(null);
+    setPuntero(null);
     return true;
   };
 
@@ -208,23 +209,33 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
     };
     const soltar = (ev: PointerEvent) => {
       removeEventListener("pointermove", mover);
-      removeEventListener("pointerup", soltar);
+      removeEventListener("pointerup", soltar, true);
       setArrastre(null);
       if (a.movio) return void poner(que, ev.clientX, ev.clientY);
       toques.current++;
       if ("figura" in que) {
         setMenu(null);
         setElegida(que);
+        setPuntero({ x: ev.clientX, y: ev.clientY });
       } else setMenu(que.inst);
     };
     addEventListener("pointermove", mover);
-    addEventListener("pointerup", soltar);
+    // Capture: a placed person stops the event from bubbling, so the release is heard before that.
+    addEventListener("pointerup", soltar, true);
   };
 
   const tocarCasa = (e: PE) => {
     if (elegida && poner(elegida, e.clientX, e.clientY)) return;
     setMenu(null);
   };
+
+  // A person chosen with a tap follows the pointer, with no button pressed, until the next tap on a room.
+  useEffect(() => {
+    if (!elegida) return;
+    const seguir = (ev: PointerEvent) => setPuntero({ x: ev.clientX, y: ev.clientY });
+    addEventListener("pointermove", seguir);
+    return () => removeEventListener("pointermove", seguir);
+  }, [elegida]);
 
   const cambiarPiel = (inst: string) => {
     const nueva = casa.map((f) => (f.inst === inst ? { ...f, piel: (f.piel + 1) % cuantos("piel") } : f));
@@ -268,6 +279,8 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
   const nombreElegida = elegida && "figura" in elegida ? contenido.figuras.find((f) => f.id === elegida.figura)!.nombre : null;
   const enMenu = menu && menu !== "prota" ? casa.find((f) => f.inst === menu) : null;
   const s = escala;
+  // The person on the cursor: the one being dragged, or the one chosen with a tap until the next tap on a room.
+  const llevaFigura = arrastre?.movio && "figura" in arrastre.que ? { figura: arrastre.que.figura, x: arrastre.x, y: arrastre.y } : elegida && "figura" in elegida && puntero ? { figura: elegida.figura, x: puntero.x, y: puntero.y } : null;
 
   return (
     <main className="pantalla armar-casa">
@@ -296,6 +309,7 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
                     onPointerUp={(e) => e.stopPropagation()}
                   >
                     {f.inst === "prota" ? <Personaje a={estado().apariencia} escala={s} /> : <Hoja id={`figuras/${(f as FiguraPuesta).figura}`} piel={(f as FiguraPuesta).piel} escala={s} />}
+                    <span className="placa">{f.inst === "prota" ? estado().nombre : etiquetaDe(f as FiguraPuesta)}</span>
                   </div>
                   );
                 })}
@@ -364,9 +378,9 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
         </footer>
       </section>
 
-      {arrastre?.movio && "figura" in arrastre.que && (
-        <div className="fantasma" style={{ left: arrastre.x, top: arrastre.y }}>
-          <Hoja id={`figuras/${arrastre.que.figura}`} escala={Math.max(1, s * 1.2)} />
+      {llevaFigura && (
+        <div className="fantasma" style={{ left: llevaFigura.x, top: llevaFigura.y }}>
+          <Hoja id={`figuras/${llevaFigura.figura}`} escala={Math.max(1, s * 1.2)} />
         </div>
       )}
     </main>

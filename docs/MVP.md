@@ -12,7 +12,7 @@
 | M2. Armar la casa | Figuras a los cuartos, renombrar, quitar (GDD §7) | Funciona igual en vertical y en horizontal |
 | M3. Mundo | El mapa en el lienzo, botones encima en HTML; los nueve lugares, puertas, días y horas, vecinos, objetos, espejo | Se recorren los tres días como antes de la migración |
 | M4. Modo cuento | Los 15 sucesos con un toque por decisión, bocina, "Ahora no", "Otra cosa" con dibujo, caritas, panel, estados del cuerpo, Mi libro | Cada suceso se juega de punta a punta y cada paso deja su evento |
-| M5. Actividades | Dibujo libre, escena para describir, Sobre mí, conocer a La Cuentera, calma y aterrizaje | Los tres días se juegan completos |
+| M5. Actividades | Dibujo libre, escena para describir, Sobre mí, conocer a La Cuentera y aterrizaje | Los tres días se juegan completos |
 | H7. Siempre a la mano | "Quiero hablar con alguien", Mi libro, opciones (GDD §13, §15) | Se alcanzan desde cualquier pantalla con una mano |
 | H8. Datos | Archivo cifrado para el psicólogo (modo A); servidor propio de analítica y tablero del equipo (PRD F16, F17) | Un psicólogo abre el archivo de una partida; el tablero muestra abandono, tiempos y errores de las partidas de prueba |
 | H9. Plataformas | Android e iOS (Capacitor), Windows, macOS y Linux (Tauri) | El juego se instala y juega sin red en cada una |

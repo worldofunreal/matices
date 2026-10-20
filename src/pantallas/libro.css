@@ -11,6 +11,21 @@
   animation: aparecer var(--suave) both;
 }
 
+/* The corner buttons' band stays free (estilos.css, --franja). */
+@media (orientation: portrait) {
+  .libro {
+    padding-top: calc(var(--franja) + env(safe-area-inset-top));
+    padding-bottom: calc(var(--franja) + env(safe-area-inset-bottom));
+  }
+}
+
+@media (orientation: landscape) {
+  .libro {
+    padding-left: calc(var(--franja) + env(safe-area-inset-left));
+    padding-right: calc(var(--franja) + env(safe-area-inset-right));
+  }
+}
+
 .libro-cabecera {
   display: flex;
   align-items: center;

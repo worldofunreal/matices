@@ -1,0 +1,100 @@
+/* Siempre a la mano (GDD §13): the three corner buttons, the mark for the adult and the card that says
+   someone was called. Only the buttons take taps; the rest of the screen stays usable. */
+.siempre {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.siempre .boton {
+  position: absolute;
+  pointer-events: auto;
+}
+
+.siempre-libro,
+.siempre-hablar {
+  top: max(var(--barra-margen), env(safe-area-inset-top));
+}
+
+.siempre-libro {
+  left: max(var(--barra-margen), env(safe-area-inset-left));
+}
+
+.siempre-hablar,
+.siempre-opciones {
+  right: max(var(--barra-margen), env(safe-area-inset-right));
+}
+
+.siempre-opciones {
+  bottom: max(var(--barra-margen), env(safe-area-inset-bottom));
+}
+
+/* The mark for the adult: small, with no words, in the bottom-left corner (docs/legal/protocolo-de-aviso.md). */
+.siempre-senal {
+  position: fixed;
+  z-index: 55;
+  left: max(var(--barra-margen), env(safe-area-inset-left));
+  bottom: max(var(--barra-margen), env(safe-area-inset-bottom));
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--tarjeta);
+  color: var(--terracota);
+  box-shadow: var(--sombra);
+  pointer-events: none;
+}
+
+.siempre-senal svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* The card of "Quiero hablar": the fixed line, its speaker and the way back to playing. */
+.siempre-velo {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: grid;
+  place-items: center;
+  padding: var(--espacio);
+  background: rgb(29 26 36 / 0.45);
+  animation: aparecer var(--suave) both;
+}
+
+.siempre-aviso {
+  width: min(100%, 440px);
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 24px 20px 20px;
+  text-align: center;
+}
+
+.siempre-aviso p {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.siempre-aviso .boton.principal {
+  width: 100%;
+}
+
+.siempre-icono {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--papel-2);
+  color: var(--terracota);
+}
+
+.siempre-icono svg {
+  width: 34px;
+  height: 34px;
+}

@@ -66,6 +66,41 @@ export const Icono = {
       <path d="M12 6.4V19" />
     </>,
   ),
+  hablar: svg(
+    <>
+      <path fill="#fff" d="M9 3.5h8.5A2.5 2.5 0 0 1 20 6v4.5a2.5 2.5 0 0 1-2.5 2.5H17v3l-3-3H9a2.5 2.5 0 0 1-2.5-2.5V6A2.5 2.5 0 0 1 9 3.5z" />
+      <path fill="#fff" d="M6.5 8h6A2.5 2.5 0 0 1 15 10.5v3a2.5 2.5 0 0 1-2.5 2.5H10l-3.5 3.5V16H6.5A2.5 2.5 0 0 1 4 13.5v-3A2.5 2.5 0 0 1 6.5 8z" />
+    </>,
+  ),
+  opciones: svg(
+    <>
+      <path d="M4 7h16M4 12h16M4 17h16" />
+      <circle cx="9" cy="7" r="2.2" fill="#fff" />
+      <circle cx="15" cy="12" r="2.2" fill="#fff" />
+      <circle cx="8" cy="17" r="2.2" fill="#fff" />
+    </>,
+  ),
+  musica: svg(
+    <>
+      <path d="M9 17.5V5.5l10-2v12" />
+      <circle cx="6.5" cy="17.5" r="2.5" />
+      <circle cx="16.5" cy="15.5" r="2.5" />
+    </>,
+  ),
+  efectos: svg(<path d="M12 3.5v4M12 16.5v4M3.5 12h4M16.5 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18" />),
+  velocidad: svg(
+    <>
+      <path d="M4 6.5 12 12l-8 5.5z" />
+      <path d="M12 6.5 20 12l-8 5.5z" />
+    </>,
+  ),
+  ambiente: svg(
+    <>
+      <path d="M5 19c0-8.5 4.5-13.5 14-14.5-.5 9.5-5 14.5-14 14.5z" />
+      <path d="M5 19 13 11" />
+    </>,
+  ),
+  lectura: svg(<path d="M4 19 12 5l8 14M7.5 14h9" />),
   cerrar: svg(<path d="M6 6l12 12M18 6L6 18" />),
   borrar: svg(
     <>

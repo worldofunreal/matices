@@ -11,12 +11,12 @@ import { estado, cambiarEstado, type Estado } from "../datos/guardado";
 import { bloqueo, revisarHora, puedeDormir, dormir } from "../datos/dia";
 import { siguiente, sitio, tocaAqui, terminar } from "../datos/cuentos";
 import { registrar } from "../datos/eventos";
+import { enDetalle } from "../datos/monitor";
 import { Bocina } from "../ui/Bocina";
-import { Icono } from "../ui/iconos";
+import { useSuperpuesto } from "../ui/Siempre";
 import { Cuento, type EstadoCuerpo } from "./Cuento";
 import { Dibujo } from "./Dibujo";
-import { Libro } from "./Libro";
-import { Actividad, Calma, type TipoActividad } from "./Actividades";
+import { Actividad, Aterrizaje, type TipoActividad } from "./Actividades";
 import "./mundo.css";
 
 const M = contenido.textos.mundo;
@@ -90,8 +90,7 @@ type Abierto =
   | { tipo: "cuento"; id: string }
   | { tipo: "dibujo"; id: string }
   | { tipo: "actividad"; id: string; actividad: TipoActividad }
-  | { tipo: "calma"; modo: "calma" | "aterrizaje"; final: boolean }
-  | { tipo: "libro" };
+  | { tipo: "aterrizaje"; final: boolean };
 
 export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const lienzo = useRef<HTMLCanvasElement>(null);
@@ -101,7 +100,11 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const temporizador = useRef(0);
   const motorRef = useRef<Motor | null>(null);
   const mapaRef = useRef<Mapa | null>(null);
-  const ocupado = useRef(false); // a story, a drawing or the book is open: the world stands still
+  const ocupado = useRef(false); // a story or a drawing is open: the world stands still
+  // Mi libro, Opciones or the "Quiero hablar" card cover the screen (Siempre.tsx): the world stands still under them too.
+  const superpuesto = useSuperpuesto();
+  const superpuestoRef = useRef(false);
+  superpuestoRef.current = superpuesto;
   const finAterrizaje = useRef<(() => void) | null>(null); // what goes on after the landing, at bedtime
   const [recarga, setRecarga] = useState(0);
   const [cubierto, setCubierto] = useState(true);
@@ -124,7 +127,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     const motor = motorRef.current;
     const mapa = mapaRef.current;
     if (!motor || !mapa) return;
-    motor.pausar(false);
+    motor.pausar(superpuestoRef.current);
     if (revisarHora(mapa.lugar)) {
       setCubierto(true);
       window.setTimeout(() => setRecarga((r) => r + 1), 400);
@@ -133,9 +136,10 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     motor.guia = guiaDe(mapa);
   };
 
+  // The surroundings change after a story only when the child keeps the ambient effects on (Opciones).
   const alCerrarCuento = (e: EstadoCuerpo | null) => {
     cerrarOverlay();
-    if (e) setAmbiente(e);
+    if (e && estado().opciones.ambiente) setAmbiente(e);
   };
 
   useEffect(() => {
@@ -143,6 +147,17 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     const t = window.setTimeout(() => setAmbiente(null), AMBIENTE_MS);
     return () => clearTimeout(t);
   }, [ambiente]);
+
+  // The world stops while any cover is open, and goes on only when no story or drawing is open either.
+  useEffect(() => {
+    motorRef.current?.pausar(superpuesto || ocupado.current);
+  }, [superpuesto]);
+
+  // Where the child is, for "Quiero hablar con alguien": the story, drawing or landing open over the world.
+  useEffect(() => {
+    enDetalle(abierto?.tipo ?? null);
+    return () => enDetalle(null);
+  }, [abierto]);
 
   // One place per run of this effect: a door, a new day or a return from the mirror starts it again.
   useEffect(() => {
@@ -164,7 +179,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     // Going to bed: the landing first (GDD §10), then a line, then the next day (or the closing card after the last one).
     const irADormir = () => {
       finAterrizaje.current = dormirse;
-      abrir({ tipo: "calma", modo: "aterrizaje", final: estado().dia >= 3 });
+      abrir({ tipo: "aterrizaje", final: estado().dia >= 3 });
     };
 
     const dormirse = () => {
@@ -231,7 +246,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
             cruzar(p);
           }
           // A story or a drawing starts where the child stands, at its time of day (GDD §4).
-          if (!ocupado.current) {
+          if (!ocupado.current && !superpuestoRef.current) {
             const c = tocaAqui(lugarActual, motor.x, motor.y - CAIDA);
             if (c?.tipo === "cuento") abrir({ tipo: "cuento", id: c.id });
             else if (c?.tipo === "dibujo") abrir({ tipo: "dibujo", id: c.id });
@@ -240,6 +255,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         },
       });
       motor.guia = guiaDe(m);
+      motor.pausar(superpuestoRef.current);
       activo = motor;
       motorRef.current = motor;
       mapaRef.current = m;
@@ -254,11 +270,6 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       };
       motor.iniciar();
       setCubierto(false);
-      // Each day starts with the calm, once (GDD §4).
-      if (lugarActual === "casa" && e0.hora === "manana" && e0.calma < e0.dia) {
-        cambiarEstado({ calma: e0.dia }, true);
-        abrir({ tipo: "calma", modo: "calma", final: false });
-      }
     });
 
     return () => {
@@ -281,14 +292,6 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     <main className={`mundo${ambiente === "alerta" || ambiente === "saturado" ? " encuadre" : ""}`}>
       <canvas ref={lienzo} className="mundo-lienzo" onPointerDown={(e) => accion.current?.tocar(e.clientX, e.clientY)} />
 
-      {!abierto && (
-        <div className="mundo-botones">
-          <button className="boton redondo" aria-label="Mi libro" onClick={() => abrir({ tipo: "libro" })}>
-            {Icono.libro}
-          </button>
-        </div>
-      )}
-
       {burbuja && (
         <div key={burbuja.id} className="globo" role="status">
           <p>{burbuja.texto}</p>
@@ -303,9 +306,8 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
 
       {abierto?.tipo === "actividad" && <Actividad id={abierto.id} tipo={abierto.actividad} alCerrar={cerrarOverlay} />}
 
-      {abierto?.tipo === "calma" && (
-        <Calma
-          modo={abierto.modo}
+      {abierto?.tipo === "aterrizaje" && (
+        <Aterrizaje
           final={abierto.final}
           alCerrar={() => {
             const fin = finAterrizaje.current;
@@ -329,16 +331,6 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
             registrar("ahora_no", { cuento: dibujoLibre.id, paso: "libre" });
             terminar(dibujoLibre.id, "ahora_no");
             cerrarOverlay();
-          }}
-        />
-      )}
-
-      {abierto?.tipo === "libro" && (
-        <Libro
-          alCerrar={() => {
-            setAbierto(null);
-            ocupado.current = false;
-            motorRef.current?.pausar(false);
           }}
         />
       )}

@@ -130,3 +130,18 @@
     grid-template-columns: repeat(3, 36px);
   }
 }
+
+/* The corner buttons' band stays free (estilos.css, --franja). */
+@media (orientation: portrait) {
+  .dibujo {
+    padding-top: calc(var(--franja) + env(safe-area-inset-top));
+    padding-bottom: calc(var(--franja) + env(safe-area-inset-bottom));
+  }
+}
+
+@media (orientation: landscape) {
+  .dibujo {
+    padding-left: calc(var(--franja) + env(safe-area-inset-left));
+    padding-right: calc(var(--franja) + env(safe-area-inset-right));
+  }
+}

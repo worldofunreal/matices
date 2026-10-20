@@ -29,16 +29,6 @@
   opacity: 1;
 }
 
-/* The HUD over the map: the book button in the top-left corner (GDD §13). */
-.mundo-botones {
-  position: absolute;
-  top: max(12px, env(safe-area-inset-top));
-  left: max(12px, env(safe-area-inset-left));
-  z-index: 5;
-  display: flex;
-  gap: 10px;
-}
-
 /* The surroundings tint for a few seconds after a story (GDD §9, "Estados del cuerpo"). */
 .velo-ambiente {
   position: absolute;

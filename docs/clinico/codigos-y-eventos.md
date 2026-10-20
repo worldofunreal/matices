@@ -76,7 +76,6 @@ Todos llevan: código del niño, sesión, versión del contenido, semilla de ord
 | `describe` | Escena, título, emoción y plato (de quién es el otro plato), ms | Lectura de una escena ambigua |
 | `sobre_mi` | Frase, área, respuesta (`A`, `B`, `AMBOS`, `AHORA_NO`), lado que dice Tito (`tito_dice`), orden, ms para decidir | Lo que dice de su vida |
 | `actividad` | Actividad, `que` (`inicio`, `fin` o `ahora_no`) y ms al terminar | Cuánto dura cada actividad y dónde se detiene |
-| `calma` | Día, ms y respiraciones | Si respira con la vela al empezar el día |
 | `aterrizaje` | Día, plantas regadas y ms | Cómo cierra el día |
 | `dibujo` | De dónde salió (suceso y paso de "Otra cosa", o dibujo libre), trazos con color, grosor, goma y tiempo de cada punto, cuántos deshizo, tiempo, imagen final | El dibujo y su proceso |
 | `ahora_no` | Suceso y paso | Dónde no quiso entrar |

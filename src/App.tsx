@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Creacion } from "./pantallas/Creacion";
 import { ArmarCasa } from "./pantallas/ArmarCasa";
 import { Mundo } from "./pantallas/Mundo";
+import { Siempre } from "./ui/Siempre";
 import { estado } from "./datos/guardado";
 import { pantalla } from "./datos/monitor";
 
@@ -21,7 +22,14 @@ export function App() {
     pantalla(siguiente.nombre);
     setP(siguiente);
   };
-  if (p.nombre === "creacion") return <Creacion key={p.modo} modo={p.modo} alTerminar={() => ir(primera())} />;
-  if (p.nombre === "casa") return <ArmarCasa alTerminar={() => ir(primera())} />;
-  return <Mundo alEspejo={() => ir({ nombre: "creacion", modo: "espejo" })} />;
+  // Siempre a la mano (GDD §13) sits over every screen, so it wraps whichever one is shown.
+  const visible =
+    p.nombre === "creacion" ? (
+      <Creacion key={p.modo} modo={p.modo} alTerminar={() => ir(primera())} />
+    ) : p.nombre === "casa" ? (
+      <ArmarCasa alTerminar={() => ir(primera())} />
+    ) : (
+      <Mundo alEspejo={() => ir({ nombre: "creacion", modo: "espejo" })} />
+    );
+  return <Siempre pantalla={p.nombre}>{visible}</Siempre>;
 }

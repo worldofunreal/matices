@@ -12,6 +12,12 @@
   .creacion {
     grid-template-rows: 1fr;
     grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
+    padding-left: max(var(--espacio), env(safe-area-inset-left)); /* the stage keeps its width; only the workshop yields */
+    padding-right: max(var(--espacio), env(safe-area-inset-right));
+  }
+
+  .creacion .taller {
+    margin-right: var(--franja); /* the buttons on the right edge sit beside the workshop */
   }
 }
 

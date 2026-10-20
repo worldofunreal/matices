@@ -23,6 +23,9 @@
   --espacio: clamp(12px, 2.2vmin, 20px);
   --rapido: 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
   --suave: 320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --barra: 52px; /* the round buttons in the corners (siempre.css) */
+  --barra-margen: 12px;
+  --franja: calc(var(--barra) + 2 * var(--barra-margen)); /* the band they take at the edges; pages keep it free */
   color-scheme: light;
 }
 
@@ -75,6 +78,21 @@ canvas.pixel {
   from {
     opacity: 0;
     transform: translateY(6px);
+  }
+}
+
+/* Portrait: one row of corner buttons at the top and one at the bottom. Landscape: one column at each side. */
+@media (orientation: portrait) {
+  .pantalla {
+    padding-top: calc(var(--franja) + env(safe-area-inset-top));
+    padding-bottom: calc(var(--franja) + env(safe-area-inset-bottom));
+  }
+}
+
+@media (orientation: landscape) {
+  .pantalla {
+    padding-left: calc(var(--franja) + env(safe-area-inset-left));
+    padding-right: calc(var(--franja) + env(safe-area-inset-right));
   }
 }
 
@@ -272,8 +290,8 @@ canvas.pixel {
   z-index: 20;
   left: 8px;
   right: 8px;
-  bottom: 8px;
-  max-height: 86%;
+  bottom: calc(var(--franja) + 8px); /* above the band where the options button sits */
+  max-height: calc(100% - 2 * var(--franja) - 8px);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -290,6 +308,7 @@ canvas.pixel {
     left: auto;
     top: 8px;
     bottom: 8px;
+    right: calc(var(--franja) + 8px); /* beside the buttons on the right edge */
     width: min(46vw, 560px);
     max-height: none;
   }
@@ -385,6 +404,12 @@ canvas.pixel {
   animation: aparecer var(--rapido) both;
 }
 
+@media (orientation: portrait) {
+  .globo {
+    top: calc(var(--franja) + env(safe-area-inset-top)); /* under the corner buttons */
+  }
+}
+
 .globo p {
   margin: 0;
   flex: 1;
@@ -408,4 +433,54 @@ canvas.pixel {
   font-size: clamp(24px, 6vmin, 40px);
   font-weight: 800;
   text-align: center;
+}
+
+/* Lectura sencilla (GDD §13, Opciones): bigger letters and more air for the text the child reads.
+   The root class is set by aplicarLectura (pantallas/Opciones.tsx). */
+.lectura-sencilla .boton {
+  font-size: 21px;
+}
+
+.lectura-sencilla .tarjeta,
+.lectura-sencilla .libro-pagina-tarjeta span {
+  font-size: 19px;
+  line-height: 1.4;
+}
+
+.lectura-sencilla .globo {
+  font-size: 22px;
+  line-height: 1.5;
+}
+
+.lectura-sencilla .siempre-aviso p {
+  font-size: 24px;
+  line-height: 1.5;
+}
+
+.lectura-sencilla .cuento-inicio {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.lectura-sencilla .cuento-texto h2,
+.lectura-sencilla .actividad-pregunta h2 {
+  font-size: 24px;
+  line-height: 1.35;
+}
+
+.lectura-sencilla .actividad-texto,
+.lectura-sencilla .actividad-inicio,
+.lectura-sencilla .dibujo-cabecera p,
+.lectura-sencilla .pregunta h2 {
+  font-size: 22px;
+  line-height: 1.5;
+}
+
+.lectura-sencilla .preferencia-cabecera p {
+  font-size: 21px;
+}
+
+.lectura-sencilla .libro-detalle p {
+  font-size: 20px;
+  line-height: 1.6;
 }

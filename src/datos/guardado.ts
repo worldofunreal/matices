@@ -25,8 +25,20 @@ export interface Estado {
     finUltimo?: number | null; // when the last story of any kind ended
   };
   libro: Pagina[]; // "Mi libro": one page per finished story
-  calma: number; // last day whose calm was offered
+  opciones: Opciones; // the child's settings (GDD §13); saved at once when changed
 }
+
+// Levels go from 0 to 5. The voice never goes silent, so it starts at 1 (GDD §15).
+export interface Opciones {
+  voz: number;
+  musica: number;
+  efectos: number;
+  velocidad: "lenta" | "normal" | "rapida";
+  ambiente: boolean; // the tint and framing after a story's state (GDD §9)
+  lectura: boolean; // lectura sencilla (GDD §13)
+}
+
+const OPCIONES_INICIALES: Opciones = { voz: 5, musica: 3, efectos: 3, velocidad: "normal", ambiente: true, lectura: false };
 
 export interface Pagina {
   cuento: string;
@@ -48,7 +60,7 @@ export interface FiguraPuesta {
   piel: number;
 }
 
-const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "", casa: [], casaLista: false, protaCasa: null, dia: 1, hora: "manana", llegada: null, visitas: {}, cuentos: { orden: {}, hechos: {}, finMedio: null }, libro: [], calma: 0 };
+const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "", casa: [], casaLista: false, protaCasa: null, dia: 1, hora: "manana", llegada: null, visitas: {}, cuentos: { orden: {}, hechos: {}, finMedio: null }, libro: [], opciones: OPCIONES_INICIALES };
 
 let actual: Estado = NUEVO;
 let leido = false; // never write before the saved game was read, or it would be overwritten

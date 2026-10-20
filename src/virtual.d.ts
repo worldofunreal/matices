@@ -110,8 +110,24 @@ declare module "virtual:contenido" {
       dibujo_libre: string;
       describir: { inicio: string; emociones: Record<string, string> };
       sobre_mi: { los_dos: string; ahora_no: string; fin: string };
-      calma: { texto: string; seguir: string };
+      seguir: string;
       aterrizaje: { texto: string; adios: string; adios_final: string };
+    };
+    siempre: { mi_libro: string; quiero_hablar: string; opciones: string; aviso: string; seguir: string };
+    opciones: {
+      titulo: string;
+      cerrar: string;
+      voz: string;
+      musica: string;
+      efectos: string;
+      velocidad: string;
+      velocidades: string[];
+      ambiente: string;
+      lectura: string;
+      prendido: string;
+      apagado: string;
+      bajar: string;
+      subir: string;
     };
   }
   export default contenido;

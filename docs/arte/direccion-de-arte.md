@@ -63,7 +63,7 @@ Cualquier pieza se puede entregar en cualquier momento: el juego ya funciona con
 | 3 | Interior de la casa y sus muebles; figuras para armar la casa (`lugares/casa/`, `figuras/`) | H3 |
 | 4 | Calle, escuela, parque, tiendita, biblioteca y sus objetos; vecinos y personajes fijos | H4 |
 | 5 | La Cuentera, marcos, tarjetas, botones, iconos de códigos, caritas, panel | H5 |
-| 6 | Tito y Tita, escena para describir, vela | H6 |
+| 6 | Tito y Tita, escena para describir | H6 |
 
 ## Cómo entregarlo
 

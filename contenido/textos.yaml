@@ -181,10 +181,34 @@ actividades:
     los_dos: "Los dos"
     ahora_no: "Ahora no"
     fin: "Gracias por contarme."
-  calma:
-    texto: "Antes de empezar el día, respira con la vela. Sube… y baja."
-    seguir: "Seguir"
+  seguir: "Seguir"
   aterrizaje:
     texto: "Antes de dormir, riega las plantas del patio."
     adios: "Hasta mañana, {nombre}."
     adios_final: "Gracias por estos tres días, {nombre}."
+
+# Siempre a la mano (GDD §13): los botones de todas las pantallas. Lo que dice la frase es fijo
+# (docs/legal/protocolo-de-aviso.md).
+siempre:
+  mi_libro: "Mi libro"
+  quiero_hablar: "Quiero hablar con alguien"
+  opciones: "Opciones"
+  aviso: "Ya le avisamos a {nombre}. Puedes seguir jugando o esperar aquí."
+  seguir: "Seguir jugando"
+
+# Opciones (GDD §13, §14). Música, efectos, velocidad del texto y lectura sencilla se guardan y
+# quedan listos para conectarse cuando existan.
+opciones:
+  titulo: "Opciones"
+  cerrar: "Cerrar"
+  voz: "Volumen de la voz"
+  musica: "Música"
+  efectos: "Efectos"
+  velocidad: "Velocidad del texto"
+  velocidades: ["Lenta", "Normal", "Rápida"]
+  ambiente: "Efectos de ambiente"
+  lectura: "Lectura sencilla"
+  prendido: "Sí"
+  apagado: "No"
+  bajar: "Bajar"
+  subir: "Subir"

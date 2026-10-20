@@ -107,6 +107,24 @@
   cursor: grabbing;
 }
 
+/* The nameplate under each person in the house, so it is clear who is who (GDD §7). The text stays crisp at any zoom. */
+.placa {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--tarjeta);
+  box-shadow: var(--sombra);
+  color: var(--tinta);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 .menu {
   position: absolute;
   left: 50%;

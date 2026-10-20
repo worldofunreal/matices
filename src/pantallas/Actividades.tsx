@@ -17,7 +17,6 @@ const T = contenido.textos.cuento;
 const E = contenido.escena;
 const S = contenido.sobreMi;
 const PAUSA_ELEGIDA = 650; // the chosen card stays lit this long, then the activity goes on
-const CICLO = 4000; // one breath of the candle: up and down (GDD §10)
 
 export type TipoActividad = "cuentera" | "describir" | "sobre_mi";
 type Como = "terminado" | "ahora_no";
@@ -73,7 +72,7 @@ function Cuentera({ cerrar }: { cerrar: (como: Como) => void }) {
           {T.boton_ahora_no}
         </button>
         <button className="boton principal" onClick={() => (ultima ? cerrar("terminado") : setI(i + 1))}>
-          {A.calma.seguir}
+          {A.seguir}
         </button>
       </footer>
     </>
@@ -201,7 +200,7 @@ function SobreMi({ cerrar }: { cerrar: (como: Como) => void }) {
             {T.boton_ahora_no}
           </button>
           <button className="boton principal" onClick={() => setI(0)}>
-            {A.calma.seguir}
+            {A.seguir}
           </button>
         </footer>
       </>
@@ -241,23 +240,17 @@ function SobreMi({ cerrar }: { cerrar: (como: Como) => void }) {
   );
 }
 
-// Calm at the start of each day (a candle that breathes; it can be skipped) and the landing at the end
-// of each day (watering the plants of the patio, then La Cuentera's goodbye). GDD §10.
-export function Calma({ modo, final, alCerrar }: { modo: "calma" | "aterrizaje"; final: boolean; alCerrar: () => void }) {
+// The landing at the end of each day (watering the plants of the patio, then La Cuentera's goodbye). GDD §10.
+export function Aterrizaje({ final, alCerrar }: { final: boolean; alCerrar: () => void }) {
   const t0 = useRef(performance.now());
   const cerrandoRef = useRef(false);
   const [regadas, setRegadas] = useState<number[]>([]);
   const [adios, setAdios] = useState(false);
-  const texto = modo === "calma" ? A.calma.texto : A.aterrizaje.texto;
 
   const terminar = (riegos: number) => {
     if (cerrandoRef.current) return;
     cerrandoRef.current = true;
     const ms = Math.round(performance.now() - t0.current);
-    if (modo === "calma") {
-      registrar("calma", { dia: estado().dia, ms, respiraciones: Math.floor(ms / CICLO) });
-      return alCerrar();
-    }
     registrar("aterrizaje", { dia: estado().dia, regadas: riegos, ms });
     setAdios(true);
     window.setTimeout(alCerrar, 2200);
@@ -273,7 +266,7 @@ export function Calma({ modo, final, alCerrar }: { modo: "calma" | "aterrizaje";
   return (
     <>
       <div className="velo" />
-      <section className={`marco-libro calma ${modo}`}>
+      <section className="marco-libro aterrizaje">
         {adios ? (
           <div className="actividad-cuerpo">
             <Imagen id="personajes/retrato_cuentera_contento" tam={96} />
@@ -282,24 +275,18 @@ export function Calma({ modo, final, alCerrar }: { modo: "calma" | "aterrizaje";
         ) : (
           <>
             <div className="actividad-cuerpo">
-              <p className="actividad-texto">{texto}</p>
-              {modo === "calma" ? (
-                <div className="vela">
-                  <Imagen id="interfaz/vela" tam={96} />
-                </div>
-              ) : (
-                <div className="macetas">
-                  {[0, 1, 2].map((k) => (
-                    <button key={k} className={`maceta${regadas.includes(k) ? " regada" : ""}`} aria-label="Regar" onClick={() => regar(k)}>
-                      <Imagen id="lugares/casa/maceta" tam={96} />
-                    </button>
-                  ))}
-                </div>
-              )}
+              <p className="actividad-texto">{A.aterrizaje.texto}</p>
+              <div className="macetas">
+                {[0, 1, 2].map((k) => (
+                  <button key={k} className={`maceta${regadas.includes(k) ? " regada" : ""}`} aria-label="Regar" onClick={() => regar(k)}>
+                    <Imagen id="lugares/casa/maceta" tam={96} />
+                  </button>
+                ))}
+              </div>
             </div>
             <footer className="actividad-pie">
               <button className="boton principal" onClick={() => terminar(regadas.length)}>
-                {A.calma.seguir}
+                {A.seguir}
               </button>
             </footer>
           </>

@@ -8,6 +8,10 @@ export const tipoDe = (figura: string) => porId.get(figura)?.tipo ?? "adulto";
 export const nombreDe = (f: FiguraPuesta) => f.nombre ?? porId.get(f.figura)?.nombre ?? f.figura;
 export const codigoDe = (f: FiguraPuesta) => `FIGURA:${f.inst}`;
 
+// The nameplate in the house (GDD §7): the child's name for it, or the figure's name. A second copy of a
+// figure gets its number, so two "Hermano menor" can be told apart.
+export const etiquetaDe = (f: FiguraPuesta) => (f.nombre ? f.nombre : nombreDe(f) + (f.inst.includes("#") ? ` ${f.inst.split("#")[1]}` : ""));
+
 // Next free instance id: abuela, then abuela#2, abuela#3…
 export function nuevaInstancia(figura: string, casa: FiguraPuesta[]) {
   const usadas = new Set(casa.map((f) => f.inst));

@@ -2,11 +2,18 @@
 import { registrar } from "./eventos";
 
 let anterior: string | null = null;
+let detalle: string | null = null; // a story, drawing or landing open over the screen
 
 // Every screen the child opens, with the one before it (funnels and drop-off).
 export function pantalla(nombre: string) {
   registrar("pantalla", { pantalla: nombre, anterior });
   anterior = nombre;
+}
+
+// The part of the screen that is open over it, for the records that need it ("Quiero hablar con alguien").
+export const detalleActual = () => detalle;
+export function enDetalle(nombre: string | null) {
+  detalle = nombre;
 }
 
 export function vigilar(sesion: number) {

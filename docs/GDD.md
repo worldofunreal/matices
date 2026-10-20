@@ -40,7 +40,7 @@ El juego **recoge**, el psicólogo **interpreta**. El juego nunca diagnostica, p
 Tres **días** en la colonia. Cada día tiene mañana, tarde y noche. Un día dura unos 33 minutos, pero no está atado a una sesión: el juego se pausa en cualquier momento y retoma donde se quedó (ver `PRD.md`, contexto de uso).
 
 ```
-Día = Calma de entrada → Mañana (casa → camino → escuela) → Tarde (colonia) → Noche (casa) → Aterrizaje
+Día = Mañana (casa → camino → escuela) → Tarde (colonia) → Noche (casa) → Aterrizaje
          ↑ en cada tramo se dispara 1 o 2 sucesos sin final, según el plan del día
 ```
 
@@ -86,9 +86,9 @@ Todo se puede cambiar después desde el espejo de la casa (se registra el cambio
 
 Unos 5 minutos, después del personaje. Es a la vez mecánica de juego y de observación.
 
-- Vista de la casa en corte (sin techo): sala-comedor, cocina, 2 recámaras, baño, patio con tinaco y lavadero.
+- Vista de la casa en corte (sin techo): sala-comedor, cocina, 2 recámaras, baño, patio con tinaco y lavadero. Al abrirla se ve completa y centrada; se acerca con dos dedos, con la rueda o con + y −, y el botón de cuatro esquinas la vuelve a ver completa.
 - Repisa de figuras: la lista está en `contenido/figuras.yaml` (abuelos, padres, tíos, madrastra, padrastro, hermanos mayores y menores, bebé, primos, otra persona adulta, perro, gato). La tía puede llamarse Elena si el niño la renombra.
-- El niño toca una figura y luego un cuarto. Puede poner una, varias, la misma más de una vez (dos hermanos menores) o ninguna. Cada figura puede renombrarse ("Mi abue"), cambiar de color de piel, moverse o quitarse. El personaje también está en la casa y se puede mover.
+- El niño toca una figura y luego un cuarto. Mientras está elegida, la figura se pega al dedo o al cursor, igual que al arrastrarla, hasta que toca un cuarto. Puede poner una, varias, la misma más de una vez (dos hermanos menores) o ninguna. Cada figura puede renombrarse ("Mi abue"), cambiar de color de piel, moverse o quitarse. El personaje también está en la casa y se puede mover. Cada persona de la casa lleva su nombre en una placa; si hay dos iguales, la segunda lleva un número (Hermano menor 2).
 - La Cuentera solo dice: "Esta es tu casa en el cuento".
 - Se registra: quién, en qué orden, en qué cuarto, qué tan cerca del personaje, cambios (`clinico/codigos-y-eventos.md`, `casa_figura`). Si renombró una figura se registra que la renombró, nunca el nombre que escribió.
 
@@ -147,7 +147,7 @@ En el paso 6, si el niño abre el panel y elige sensaciones intensas, el ambient
 | Ahora no | En todo suceso | Cierra el suceso con la frase de La Cuentera. Se registra. |
 | Quiero hablar con alguien | Siempre visible | Avisa en silencio al psicólogo. Ver `docs/legal/protocolo-de-aviso.md`. |
 | Conocer a La Cuentera | Día 1, biblioteca | Se presenta, explica su libro y "Ahora no". |
-| Calma y aterrizaje | Inicio y fin de cada día | Calma: respiración con una vela que sube y baja; se puede seguir sin hacerla. Aterrizaje: al irse a la cama, regar las plantas del patio y despedirse de La Cuentera. |
+| Aterrizaje | Fin de cada día | Al irse a la cama, regar las plantas del patio y despedirse de La Cuentera. |
 
 ## 11. Dirección visual
 

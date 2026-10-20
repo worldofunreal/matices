@@ -1,6 +1,6 @@
-/* Activities and the calm/landing (GDD §10), over the frozen world in La Cuentera's book. */
+/* Activities and the landing (GDD §10), over the frozen world in La Cuentera's book. */
 .actividad,
-.calma {
+.aterrizaje {
   z-index: 20;
 }
 
@@ -106,21 +106,7 @@
   height: 20px;
 }
 
-/* The candle breathes up and down (GDD §10); the landing waters three plants. */
-.vela {
-  animation: respirar 4s ease-in-out infinite;
-}
-
-@keyframes respirar {
-  0%,
-  100% {
-    transform: scale(0.9);
-  }
-  50% {
-    transform: scale(1.25);
-  }
-}
-
+/* The landing waters three plants (GDD §10). */
 .macetas {
   display: flex;
   gap: 16px;
@@ -141,10 +127,4 @@
 .maceta.regada {
   transform: scale(1.15);
   box-shadow: 0 0 0 4px var(--verde), var(--sombra-alta);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .vela {
-    animation: none;
-  }
 }

@@ -1,0 +1,124 @@
+/* Opciones (GDD §13, §14): the child's settings over the world, like Mi libro. One column in portrait,
+   two in landscape. The corner buttons keep their band free (estilos.css, --franja).
+   Names start with "preferencias" on purpose: the creation screen already uses the class "opciones". */
+.preferencias {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: max(12px, env(safe-area-inset-top)) var(--espacio) max(12px, env(safe-area-inset-bottom));
+  background: var(--papel);
+  animation: aparecer var(--suave) both;
+}
+
+@media (orientation: portrait) {
+  .preferencias {
+    padding-top: calc(var(--franja) + env(safe-area-inset-top));
+    padding-bottom: calc(var(--franja) + env(safe-area-inset-bottom));
+  }
+}
+
+@media (orientation: landscape) {
+  .preferencias {
+    padding-left: calc(var(--franja) + env(safe-area-inset-left));
+    padding-right: calc(var(--franja) + env(safe-area-inset-right));
+  }
+}
+
+.preferencias-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.preferencias-cabecera h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.preferencias-lista {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 2px;
+}
+
+@media (orientation: landscape) {
+  .preferencias-lista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.preferencia {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border-radius: var(--radio-chico);
+  background: var(--tarjeta);
+  box-shadow: var(--sombra);
+}
+
+.preferencia-cabecera {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.preferencia-cabecera p {
+  flex: 1;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.preferencia-icono {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--papel-2);
+}
+
+.preferencia-icono svg {
+  width: 22px;
+  height: 22px;
+}
+
+.preferencia-control {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.preferencia-control .chip {
+  min-height: var(--toque);
+  padding: 0 18px;
+}
+
+/* The level: five bars, filled up to the chosen one. */
+.preferencia-barras {
+  display: flex;
+  gap: 6px;
+}
+
+.preferencia-barras span {
+  width: 16px;
+  height: 30px;
+  border-radius: 8px;
+  background: var(--linea);
+}
+
+.preferencia-barras span.on {
+  background: var(--verde);
+}
