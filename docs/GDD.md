@@ -109,6 +109,8 @@ Una colonia urbana de una ciudad mexicana, sin nombre de estado ni de colonia.
 
 Reglas de los personajes fijos: Lucía, Nico, Clara, Don Chuy y los vecinos **solo saludan y comentan cosas neutras** ("Qué calor hoy"). No preguntan "¿estás bien?" ni ofrecen ayuda por su cuenta: dentro de un suceso, solo hacen lo que el niño elija para ellos. Así ninguno empuja una respuesta.
 
+Cámara: sigue al personaje. Se acerca y se aleja con + y − o con la rueda, en pasos enteros para que el pixel art quede nítido. Se arrastra para mirar alrededor, y el botón de cuatro esquinas vuelve a centrar en el personaje; al tocar el suelo o moverse, la cámara vuelve a seguirlo.
+
 ### La Cuentera
 
 Narradora y anfitriona. Vive en la biblioteca de la colonia. Señora mayor, rebozo, lentes, un libro grande con páginas en blanco. Tono cálido y parejo. Nunca opina sobre un final, nunca pregunta por la vida real del niño (eso lo hacen solo los gemelos, avisando antes). Sus frases fijas (inicio, pregunta, cierre y "Ahora no") están en `contenido/textos.yaml`, sección `cuento`.

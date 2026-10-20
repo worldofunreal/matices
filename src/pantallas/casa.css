@@ -54,21 +54,6 @@
   top: 0;
 }
 
-.controles {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.controles .boton {
-  width: 46px;
-  height: 46px;
-  min-height: 46px;
-}
-
 .casa > img {
   display: block;
 }

@@ -141,6 +141,19 @@ canvas.pixel {
 }
 
 /* Round icon button (speaker, close). */
+/* Zoom buttons: a row, right-aligned, unless a screen places the group (casa.css, mundo.css). */
+.controles {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.controles .boton {
+  width: 46px;
+  height: 46px;
+  min-height: 46px;
+}
+
 .redondo {
   width: var(--toque);
   height: var(--toque);

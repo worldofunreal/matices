@@ -13,6 +13,7 @@ import { siguiente, sitio, tocaAqui, terminar } from "../datos/cuentos";
 import { registrar } from "../datos/eventos";
 import { enDetalle } from "../datos/monitor";
 import { Bocina } from "../ui/Bocina";
+import { Icono } from "../ui/iconos";
 import { useSuperpuesto } from "../ui/Siempre";
 import { Cuento, type EstadoCuerpo } from "./Cuento";
 import { Dibujo } from "./Dibujo";
@@ -237,6 +238,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         apariencia: e0.apariencia,
         figuras: lugarActual === "casa" ? e0.casa.map((f) => ({ x: f.x, y: f.y, id: f.figura, piel: f.piel })) : [],
         hora: e0.hora,
+        alTocar: (cx, cy) => accion.current?.tocar(cx, cy),
         alCuadro: () => {
           if (motor.moviendo) cambiarEstado({ x: Math.round(motor.x), y: Math.round(motor.y), direccion: motor.dir });
           const p = m.puertas.find((d) => dentro(d, motor.x, motor.y - CAIDA));
@@ -290,7 +292,18 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
 
   return (
     <main className={`mundo${ambiente === "alerta" || ambiente === "saturado" ? " encuadre" : ""}`}>
-      <canvas ref={lienzo} className="mundo-lienzo" onPointerDown={(e) => accion.current?.tocar(e.clientX, e.clientY)} />
+      <canvas ref={lienzo} className="mundo-lienzo" />
+      <div className="controles mundo-controles">
+        <button className="boton redondo" aria-label="Acercar" onClick={() => motorRef.current?.acercar()}>
+          {Icono.mas}
+        </button>
+        <button className="boton redondo" aria-label="Alejar" onClick={() => motorRef.current?.alejar()}>
+          {Icono.menos}
+        </button>
+        <button className="boton redondo" aria-label="Centrar en el personaje" onClick={() => motorRef.current?.centrar()}>
+          {Icono.encuadrar}
+        </button>
+      </div>
 
       {burbuja && (
         <div key={burbuja.id} className="globo" role="status">

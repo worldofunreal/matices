@@ -71,3 +71,13 @@
   transform: scale(1.05);
   transition: transform 600ms ease;
 }
+
+/* Zoom buttons in the bottom-left corner, clear of the top bar and Opciones. */
+.mundo-controles {
+  position: absolute;
+  left: max(14px, env(safe-area-inset-left));
+  bottom: max(14px, env(safe-area-inset-bottom));
+  z-index: 10;
+  flex-direction: column;
+  justify-content: flex-start;
+}

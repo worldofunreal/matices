@@ -9,9 +9,14 @@ import { TILE, celdaDe, libre, libreCerca, rutaA, visible, type Mapa, type Punto
 const VELOCIDAD = 90; // game pixels per second
 const PASO_MS = 140; // time per walking frame
 const LADO_CORTO = 360; // the short side of the screen shows about this many game pixels
+const ZOOM_MAX = 4; // the closest the child can zoom, in whole steps
+const ARRASTRE = 8; // screen pixels a finger moves before a tap becomes a drag
 const PIE = { media: 10, alto: 12 }; // the feet box is 20 × 12 px, its bottom edge at the feet
 const LUZ: Record<Hora, string | null> = { manana: null, tarde: "#ffe6c4", noche: "#6f7fb8" }; // multiplied over the map
 const FLECHAS: Record<string, [number, number]> = { ArrowLeft: [-1, 0], KeyA: [-1, 0], ArrowRight: [1, 0], KeyD: [1, 0], ArrowUp: [0, -1], KeyW: [0, -1], ArrowDown: [0, 1], KeyS: [0, 1] };
+
+// The zoom the child picked stays while they walk from place to place.
+let zoomElegido: number | null = null;
 
 export interface Figura {
   x: number;
@@ -30,6 +35,7 @@ export interface OpcionesMotor {
   figuras: Figura[];
   hora: Hora;
   alCuadro: () => void; // after every frame, for the rules
+  alTocar: (cx: number, cy: number) => void; // a tap on the screen, not the end of a drag
 }
 
 export class Motor {
@@ -50,6 +56,10 @@ export class Motor {
   private tiempo = 0;
   private ultimo = 0;
   private raf = 0;
+  private libre = false; // true while the child has moved the view; false while the camera follows the walker
+  private mirada = { x: 0, y: 0 }; // the top-left of the view while it is not following
+  private arrastre: { id: number; x: number; y: number; cam: { x: number; y: number }; movio: boolean } | null = null;
+  private acumulado = 0; // wheel movement not yet turned into a zoom step
 
   constructor(o: OpcionesMotor) {
     this.o = o;
@@ -65,6 +75,11 @@ export class Motor {
     addEventListener("keydown", this.teclaBajar);
     addEventListener("keyup", this.teclaSubir);
     addEventListener("blur", this.soltarTeclas);
+    addEventListener("pointermove", this.mover);
+    addEventListener("pointerup", this.soltar);
+    addEventListener("pointercancel", this.cancelar);
+    this.o.canvas.addEventListener("pointerdown", this.bajar);
+    this.o.canvas.addEventListener("wheel", this.rueda, { passive: false });
     this.ultimo = performance.now();
     const cuadro = (t: number) => {
       const dt = Math.min(0.05, (t - this.ultimo) / 1000);
@@ -84,6 +99,11 @@ export class Motor {
     removeEventListener("keydown", this.teclaBajar);
     removeEventListener("keyup", this.teclaSubir);
     removeEventListener("blur", this.soltarTeclas);
+    removeEventListener("pointermove", this.mover);
+    removeEventListener("pointerup", this.soltar);
+    removeEventListener("pointercancel", this.cancelar);
+    this.o.canvas.removeEventListener("pointerdown", this.bajar);
+    this.o.canvas.removeEventListener("wheel", this.rueda);
   }
 
   // The canvas fills the window; the zoom keeps the short side at about LADO_CORTO game pixels.
@@ -92,7 +112,7 @@ export class Motor {
     const dpr = devicePixelRatio || 1;
     c.width = Math.round(innerWidth * dpr);
     c.height = Math.round(innerHeight * dpr);
-    this.z = Math.max(1, Math.floor(Math.min(c.width, c.height) / LADO_CORTO));
+    this.z = zoomElegido ?? Math.max(1, Math.floor(Math.min(c.width, c.height) / LADO_CORTO));
     this.ctx.imageSmoothingEnabled = false;
   };
 
@@ -107,6 +127,75 @@ export class Motor {
   };
 
   private soltarTeclas = () => this.teclas.clear();
+
+  // The zoom buttons and the wheel change the zoom one whole step at a time, so every pixel stays sharp.
+  acercar() {
+    this.fijarZoom(this.z + 1);
+  }
+
+  alejar() {
+    this.fijarZoom(this.z - 1);
+  }
+
+  // Back to following the walker.
+  centrar() {
+    this.libre = false;
+  }
+
+  private fijarZoom(nuevo: number) {
+    const n = Math.min(ZOOM_MAX, Math.max(1, nuevo));
+    if (n === this.z) return;
+    if (this.libre) {
+      // The middle of the view stays where it is.
+      const c = this.o.canvas;
+      const medioX = this.mirada.x + c.width / this.z / 2;
+      const medioY = this.mirada.y + c.height / this.z / 2;
+      this.mirada = { x: medioX - c.width / n / 2, y: medioY - c.height / n / 2 };
+    }
+    this.z = n;
+    zoomElegido = n;
+  }
+
+  // A tap walks or acts (see Mundo.tsx). A drag moves the view, and the camera stops following the walker until "centrar".
+  private bajar = (e: PointerEvent) => {
+    this.arrastre = { id: e.pointerId, x: e.clientX, y: e.clientY, cam: { ...this.cam }, movio: false };
+  };
+
+  private mover = (e: PointerEvent) => {
+    const a = this.arrastre;
+    if (!a || a.id !== e.pointerId) return;
+    const dx = e.clientX - a.x;
+    const dy = e.clientY - a.y;
+    if (!a.movio) {
+      if (Math.hypot(dx, dy) <= ARRASTRE) return;
+      a.movio = true;
+      this.libre = true;
+    }
+    const c = this.o.canvas;
+    const porPixel = c.width / c.getBoundingClientRect().width / this.z; // game pixels per screen pixel
+    this.mirada = { x: a.cam.x - dx * porPixel, y: a.cam.y - dy * porPixel };
+  };
+
+  private soltar = (e: PointerEvent) => {
+    const a = this.arrastre;
+    if (!a || a.id !== e.pointerId) return;
+    this.arrastre = null;
+    if (!a.movio) this.o.alTocar(e.clientX, e.clientY);
+  };
+
+  private cancelar = () => {
+    this.arrastre = null;
+  };
+
+  // Mouse wheel or trackpad: a few small movements make one step.
+  private rueda = (e: WheelEvent) => {
+    e.preventDefault();
+    this.acumulado += e.deltaY;
+    if (Math.abs(this.acumulado) < 100) return;
+    if (this.acumulado < 0) this.acercar();
+    else this.alejar();
+    this.acumulado = 0;
+  };
 
   // The thing under a tap, if it is an object or a person. The one in front (lower on screen) wins.
   puntoEn(cx: number, cy: number): Punto | null {
@@ -145,6 +234,7 @@ export class Motor {
   }
 
   private caminarA(x: number, y: number) {
+    this.libre = false; // a new walk brings the view back to the walker
     this.alLlegar = null;
     this.ruta = [];
     const destino = libreCerca(this.o.mapa, Math.floor(x / TILE), Math.floor(y / TILE));
@@ -182,6 +272,7 @@ export class Motor {
         vy += FLECHAS[t][1];
       }
       if (vx || vy) {
+        this.libre = false; // walking with the keys brings the view back to the walker
         this.ruta = [];
         this.alLlegar = null;
         const n = Math.hypot(vx, vy);
@@ -213,9 +304,13 @@ export class Motor {
     const z = this.z;
     const vw = c.width / z;
     const vh = c.height / z;
-    // The camera follows the walker and stops at the map's edges; a map smaller than the view is centered.
-    const eje = (pos: number, mide: number, vista: number) => (mide > vista ? Math.min(Math.max(pos - vista / 2, 0), mide - vista) : (mide - vista) / 2);
-    this.cam = { x: Math.round(eje(this.x, m.ancho, vw)), y: Math.round(eje(this.y - PIE.alto * 2, m.alto, vh)) };
+    // The camera follows the walker, unless the child has moved the view. It stops at the map's edges; a map
+    // smaller than the view is centered.
+    const encajar = (pos: number, mide: number, vista: number) => (mide > vista ? Math.min(Math.max(pos, 0), mide - vista) : (mide - vista) / 2);
+    const destino = this.libre ? this.mirada : { x: this.x - vw / 2, y: this.y - PIE.alto * 2 - vh / 2 };
+    const fijo = { x: encajar(destino.x, m.ancho, vw), y: encajar(destino.y, m.alto, vh) };
+    if (this.libre) this.mirada = fijo;
+    this.cam = { x: Math.round(fijo.x), y: Math.round(fijo.y) };
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = "#1d1a24";
     ctx.fillRect(0, 0, c.width, c.height);

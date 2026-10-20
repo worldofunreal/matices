@@ -105,7 +105,7 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
   const gesto = useRef<{ x: number; y: number; cam: { x: number; y: number }; s: number; dist: number; movio: boolean } | null>(null);
 
   const bajar = (e: PE) => {
-    if ((e.target as HTMLElement).closest(".puesta, .controles")) return;
+    if ((e.target as HTMLElement).closest(".puesta")) return;
     // Keep receiving this finger even if it leaves the view; not every pointer can be captured.
     try {
       (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
@@ -290,30 +290,7 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
           <Bocina clave="casa.instruccion" texto={nombreElegida ? T.elegida.replace("{figura}", nombreElegida) : `${T.inicio} ${T.instruccion}`} />
         </div>
         {listo && mapa && (
-          <div className="desliza" ref={vista} onPointerDown={bajar} onPointerMove={moverDedo} onPointerUp={subirDedo} onPointerCancel={subirDedo} onWheel={rueda}>
-            <div className={`casa${elegida ? " eligiendo" : ""}`} ref={lienzo} style={{ width: mapa.ancho * s, height: mapa.alto * s, transform: `translate(${cam.x}px, ${cam.y}px)` }}>
-              <img className="pixel" src="assets/lugares/casa/fondo.png" alt="" draggable={false} style={{ width: mapa.ancho * s, height: mapa.alto * s }} />
-              {elegida && mapa.cuartos.map((c) => <div key={c.nombre} className="cuarto" style={{ left: c.x * s, top: c.y * s, width: c.w * s, height: c.h * s }} />)}
-              {[...casa, ...(prota ? [{ inst: "prota" as const, ...prota }] : [])]
-                .sort((a, b) => a.y - b.y)
-                .map((f) => {
-                  // A placed person being dragged follows the finger.
-                  const llevando = arrastre?.movio && "inst" in arrastre.que && arrastre.que.inst === f.inst;
-                  const p = llevando ? enCasa(arrastre.x, arrastre.y + 20) : f;
-                  return (
-                  <div
-                    key={f.inst}
-                    className={`puesta${menu === f.inst ? " abierta" : ""}${llevando ? " llevando" : ""}`}
-                    style={{ left: p.x * s, top: p.y * s }}
-                    onPointerDown={empezar({ inst: f.inst })}
-                    onPointerUp={(e) => e.stopPropagation()}
-                  >
-                    {f.inst === "prota" ? <Personaje a={estado().apariencia} escala={s} /> : <Hoja id={`figuras/${(f as FiguraPuesta).figura}`} piel={(f as FiguraPuesta).piel} escala={s} />}
-                    <span className="placa">{f.inst === "prota" ? estado().nombre : etiquetaDe(f as FiguraPuesta)}</span>
-                  </div>
-                  );
-                })}
-            </div>
+          <>
             <div className="controles">
               <button className="boton redondo" aria-label="Acercar" onClick={() => zoomEn(escala * 1.4, vistaMide().w / 2, vistaMide().h / 2)}>
                 {Icono.mas}
@@ -325,7 +302,32 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
                 {Icono.encuadrar}
               </button>
             </div>
-          </div>
+            <div className="desliza" ref={vista} onPointerDown={bajar} onPointerMove={moverDedo} onPointerUp={subirDedo} onPointerCancel={subirDedo} onWheel={rueda}>
+              <div className={`casa${elegida ? " eligiendo" : ""}`} ref={lienzo} style={{ width: mapa.ancho * s, height: mapa.alto * s, transform: `translate(${cam.x}px, ${cam.y}px)` }}>
+                <img className="pixel" src="assets/lugares/casa/fondo.png" alt="" draggable={false} style={{ width: mapa.ancho * s, height: mapa.alto * s }} />
+                {elegida && mapa.cuartos.map((c) => <div key={c.nombre} className="cuarto" style={{ left: c.x * s, top: c.y * s, width: c.w * s, height: c.h * s }} />)}
+                {[...casa, ...(prota ? [{ inst: "prota" as const, ...prota }] : [])]
+                  .sort((a, b) => a.y - b.y)
+                  .map((f) => {
+                    // A placed person being dragged follows the finger.
+                    const llevando = arrastre?.movio && "inst" in arrastre.que && arrastre.que.inst === f.inst;
+                    const p = llevando ? enCasa(arrastre.x, arrastre.y + 20) : f;
+                    return (
+                    <div
+                      key={f.inst}
+                      className={`puesta${menu === f.inst ? " abierta" : ""}${llevando ? " llevando" : ""}`}
+                      style={{ left: p.x * s, top: p.y * s }}
+                      onPointerDown={empezar({ inst: f.inst })}
+                      onPointerUp={(e) => e.stopPropagation()}
+                    >
+                      {f.inst === "prota" ? <Personaje a={estado().apariencia} escala={s} /> : <Hoja id={`figuras/${(f as FiguraPuesta).figura}`} piel={(f as FiguraPuesta).piel} escala={s} />}
+                      <span className="placa">{f.inst === "prota" ? estado().nombre : etiquetaDe(f as FiguraPuesta)}</span>
+                    </div>
+                    );
+                  })}
+              </div>
+            </div>
+          </>
         )}
 
         {menu && (
