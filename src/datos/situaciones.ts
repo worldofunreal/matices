@@ -1,6 +1,6 @@
 // Everyday situations (GDD §9, contenido/situaciones.yaml). The child does something; the first time,
-// someone says a line; the next time, they ask and the child answers or walks away (IGNORA). After an
-// answer, every repeat is logged against it. Nothing here stops the world.
+// someone says a line; every time after, they ask and the child answers or walks away (IGNORA). A repeat
+// after an answer is logged against the last one, and the question comes again. Nothing here stops the world.
 import contenido, { type Opcion } from "virtual:contenido";
 import { estado, cambiarEstado } from "./guardado";
 import { registrar, semilla } from "./eventos";
@@ -16,14 +16,10 @@ export function ocurre(id: string, quien: string): Reaccion | null {
   const antes = estado().situaciones[id] ?? { veces: 0, respuesta: null };
   const veces = antes.veces + 1;
   cambiarEstado({ situaciones: { ...estado().situaciones, [id]: { ...antes, veces } } }, true);
-  const aviso = { situacion: id, texto: s.aviso, clave: `situaciones.${id}.aviso`, respuestas: null };
-  if (antes.respuesta) {
-    registrar("situacion", { situacion: id, paso: "repite", quien, veces, tras: antes.respuesta });
-    return quien === "NADIE" ? null : aviso;
-  }
+  if (antes.respuesta) registrar("situacion", { situacion: id, paso: "repite", quien, veces, tras: antes.respuesta });
   if (veces === 1 || quien === "NADIE") {
-    registrar("situacion", { situacion: id, paso: "aviso", quien, veces });
-    return quien === "NADIE" ? null : aviso;
+    if (!antes.respuesta) registrar("situacion", { situacion: id, paso: "aviso", quien, veces });
+    return quien === "NADIE" ? null : { situacion: id, texto: s.aviso, clave: `situaciones.${id}.aviso`, respuestas: null };
   }
   // Shown in an order of its own per child, so no answer is always the first one.
   const respuestas = azar(`${semilla()}-${id}`).barajar(s.respuestas);

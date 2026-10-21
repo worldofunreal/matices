@@ -116,6 +116,7 @@ export function validar() {
       if (o.type === "npc") {
         if (!piezas.has(`personajes/${o.name}`)) err(`${d} ${o.name}`, "no hay arte de este personaje");
         if (!mundo.saludos?.[o.name]?.length) err(`${d} ${o.name}`, "no tiene saludos en textos.yaml");
+        if (!mundo.nombres?.[o.name]) err(`${d} ${o.name}`, "no tiene nombre en textos.yaml (mundo.nombres)");
       }
       if (o.type === "objeto") {
         const arte = p.arte ?? `lugares/${lugar}/${o.name}`;

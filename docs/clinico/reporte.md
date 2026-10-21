@@ -15,7 +15,7 @@ La referencia es el mismo conteo entre todos los participantes: cuántos son, el
 0. **"Quiero hablar con alguien"**, arriba, con hora y pantalla, si lo tocó.
 1. **Calidad de los datos.** Sesiones completas, minutos de inactividad, veces que repitió la voz. Si la calidad es baja, el reporte lo dice primero.
 2. **Su personaje y su casa.** Imagen del personaje y de la casa, quiénes viven ahí y dónde los puso.
-3. **Situaciones.** Por cada situación: qué hizo, quién reaccionó, qué contestó y en cuánto tiempo, y cuántas veces lo hizo de nuevo después de contestar.
+3. **Situaciones.** Por cada situación: qué hizo, quién reaccionó, qué contestó cada vez que le preguntaron y en cuánto tiempo, y cuántas veces lo hizo de nuevo después de contestar.
 4. **Por área.** Las áreas en la tabla de arriba, con las situaciones de donde sale cada conteo.
 5. **Dibujos.** Imagen final y reproductor trazo por trazo.
 6. **Exploración.** Lugares y objetos más visitados y los que nunca tocó; cuánto corrió y dónde.
@@ -28,7 +28,8 @@ La referencia es el mismo conteo entre todos los participantes: cuántos son, el
 **Correr en la casa** (S01)
 Corrió en la casa 4 veces. La primera, la abuela le dijo que no corriera.
 La segunda, la abuela le habló y contestó "No lo vuelvo a hacer" (PROMETE) en 4 segundos.
-Después de contestar, corrió 2 veces más en la casa.
+Después de contestar, corrió 2 veces más en la casa; la abuela le volvió a hablar y contestó
+"Perdón" (SE_DISCULPA) y luego se fue sin contestar (IGNORA).
 ```
 
 ## Reglas de escritura

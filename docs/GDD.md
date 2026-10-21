@@ -51,7 +51,7 @@ Andar libre (caminar, correr, tocar cosas, jugar con el perro, saludar)
    → hace algo que toca una regla o una necesidad de todos los días
       → alguien del mundo reacciona (una línea corta, con voz)
          → si lo vuelve a hacer, le habla y le deja contestar: 3 respuestas o irse
-            → el juego sigue; si lo repite después de contestar, se registra contra lo que dijo
+            → el juego sigue; cada vez que lo repite se registra contra lo que dijo y le vuelve a preguntar
 ```
 
 ## 6. Creación del personaje
@@ -97,6 +97,8 @@ Una colonia urbana de una ciudad mexicana, sin nombre de estado ni de colonia.
 
 Reglas de los personajes fijos: Lucía, Nico, Clara, Don Chuy y los vecinos **solo saludan y comentan cosas neutras** ("Qué calor hoy"). No preguntan "¿estás bien?" ni ofrecen ayuda por su cuenta. Así ninguno empuja una respuesta.
 
+Todos llevan una placa con su nombre bajo los pies, para saber quién es quién: las personas y mascotas de la casa (con el nombre que les puso el niño), los personajes fijos y el niño.
+
 Cámara: sigue al personaje. Se acerca y se aleja con + y − o con la rueda, en pasos enteros para que el pixel art quede nítido. Se arrastra para mirar alrededor, y el botón de cuatro esquinas vuelve a centrar en el personaje; al tocar el suelo o moverse, la cámara vuelve a seguirlo.
 
 ### Salidas siempre a la vista
@@ -111,7 +113,7 @@ Lo que se registra en cada una: qué hizo, quién reaccionó (o que no había na
 
 | Situación | Qué pasa | Áreas (`clinico/marco-clinico.md`) | Estado |
 | --- | --- | --- | --- |
-| S01 Correr en la casa | El perro de la casa sigue al niño y a ratos sale corriendo; para alcanzarlo hay que correr. La primera vez, el adulto más cercano dice "¡No corras dentro de la casa!". La segunda, le habla ("Te dije que no corrieras dentro de la casa…") y el niño contesta "No me importa", "No lo vuelvo a hacer" o "Perdón", o se va | Conducta; a quién culpa (más adelante, con S04) | Hecha |
+| S01 Correr en la casa | El perro de la casa sigue al niño y a ratos sale corriendo; para alcanzarlo hay que correr. La primera vez, el adulto más cercano dice "¡No corras dentro de la casa!". Desde la segunda, cada vez le habla ("Te dije que no corrieras dentro de la casa…") y el niño contesta "No me importa", "No lo vuelvo a hacer" o "Perdón", o se va. Seguir corriendo después del regaño cuenta como otra vez | Conducta; a quién culpa (más adelante, con S04) | Hecha |
 | S02 Hambre | En la mañana suena la panza. Puede ir al refri, ir con alguien de la casa o seguir jugando | Necesidades físicas; pedir ayuda | Por hacer |
 | S03 La tarea | De noche la mochila tiene tarea. Puede hacerla en la mesa, pedir ayuda a alguien o dejarla | Escuela y aprendizaje; supervisión | Por hacer |
 | S04 Se rompe algo | Si corre cerca de la mesa, se cae un vaso. Llega alguien: "¿Qué pasó?". "Fui yo", "Fue el perro", "No sé" o irse | A quién culpa; conducta | Por hacer |

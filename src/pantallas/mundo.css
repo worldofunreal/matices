@@ -47,12 +47,18 @@
 
 /* HTML over the world (motor.ts places each one on its world point every frame). Never catches a tap. */
 .letrero,
-.globo-figura {
+.globo-figura,
+.nombre-mundo {
   position: absolute;
   left: 0;
   top: 0;
   z-index: 8;
   pointer-events: none;
+}
+
+/* Under the door signs and the speech bubble. */
+.nombre-mundo {
+  z-index: 7;
 }
 
 /* A sign on each door: where it leads (GDD §8). */

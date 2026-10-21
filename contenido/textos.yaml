@@ -87,6 +87,22 @@ mundo:
     don_chuy: ["Buenas.", "Llegaron paletas nuevas."]
     clara: ["Bienvenido a la biblioteca.", "Los libros de cuentos están arriba."]
     cuentera: ["Hola. Aquí vengo a leer.", "Qué gusto verte."]
+  # El nombre en la placa de cada personaje fijo.
+  nombres:
+    vecino_1: Vecino
+    vecino_2: Vecina
+    vecino_3: Vecino
+    vecino_4: Vecina
+    lucia: Maestra Lucía
+    nico: Nico
+    conserje: Conserje
+    companero_1: Compañero
+    companero_2: Compañera
+    companero_3: Compañero
+    companero_4: Compañera
+    don_chuy: Don Chuy
+    clara: Clara
+    cuentera: La Cuentera
   objetos:
     comun:
       arbol: "Un árbol."

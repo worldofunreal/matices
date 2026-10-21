@@ -60,8 +60,9 @@ function participante(i: number) {
       for (let v = 1; v <= veces; v++) {
         ev("corre", { lugar: x.lugar, ms: entre(800, 6000) });
         if (respuesta) ev("situacion", { situacion: x.id, paso: "repite", quien, veces: v, tras: respuesta });
-        else if (v === 1 || quien === "NADIE") ev("situacion", { situacion: x.id, paso: "aviso", quien, veces: v });
-        else {
+        if (v === 1 || quien === "NADIE") {
+          if (!respuesta) ev("situacion", { situacion: x.id, paso: "aviso", quien, veces: v });
+        } else {
           const opciones = x.respuestas.map((r) => r[0]).sort(() => Math.random() - 0.5);
           ev("situacion", { situacion: x.id, paso: "pregunta", quien, veces: v, opciones });
           respuesta = Math.random() < 0.25 ? "IGNORA" : azar(opciones);

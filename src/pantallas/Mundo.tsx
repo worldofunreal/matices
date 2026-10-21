@@ -3,7 +3,7 @@
 // tap says, and the everyday situations (GDD §9), which never stop the world.
 import { useEffect, useRef, useState } from "react";
 import contenido from "virtual:contenido";
-import { cargarMapa, quitarAusentes, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
+import { cargarMapa, quitarAusentes, visible, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
 import { Motor } from "../mundo/motor";
 import { pieza, altoVisible } from "../lienzo/arte";
 import { capas, coloresDe } from "../personaje/apariencia";
@@ -21,7 +21,7 @@ import "./mundo.css";
 const M = contenido.textos.mundo;
 const CAIDA = 6; // the walker's body center sits 6 game pixels above the feet
 const CORRER_MS = 500; // running this long in the house counts as running (S01)
-const ENTRE_VECES_MS = 4000; // and a new time only this long after the last one
+const ENTRE_VECES_MS = 4000; // and a new time (a new run or running on) only this long after the last one
 const ALEJARSE = 48; // game pixels the child walks away from a question to leave it unanswered (IGNORA)
 
 const dentro = (r: { x: number; y: number; w: number; h: number }, x: number, y: number) => x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h;
@@ -152,7 +152,6 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     let activo: Motor | null = null;
     let puerta: string | null = null;
     let corriendoDesde = 0; // when the current run started
-    let contada = false; // the current run already counted as a time of S01
     let ultimaVez = -Infinity;
     let escapo = 0;
     setBurbuja(null);
@@ -250,10 +249,9 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           if (!motor.rapido && corriendoDesde) {
             registrar("corre", { lugar: lugarActual, ms: Math.round(ahora - corriendoDesde) });
             corriendoDesde = 0;
-            contada = false;
           }
-          if (lugarActual === "casa" && corriendoDesde && !contada && ahora - corriendoDesde > CORRER_MS && ahora - ultimaVez > ENTRE_VECES_MS) {
-            contada = true;
+          // Running on after being told counts again, so does a new run; an open question waits for its answer.
+          if (lugarActual === "casa" && corriendoDesde && ahora - corriendoDesde > CORRER_MS && ahora - ultimaVez > ENTRE_VECES_MS && !hablaRef.current?.r.respuestas) {
             ultimaVez = ahora;
             correrEnCasa(motor);
           }
@@ -299,6 +297,25 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   return (
     <main className="mundo">
       <canvas ref={lienzo} className="mundo-lienzo" />
+
+      {/* A nameplate under everyone: the people and pets of the house, the fixed people here and the child.
+          The dog the motor moves (the first one) carries its plate along. */}
+      {mapa?.lugar === "casa" &&
+        estado().casa.map((f) => (
+          <div key={f.inst} className="nombre-mundo" data-mundo-x={f.x} data-mundo-y={f.y} data-mundo-sigue={f.inst === estado().casa.find((x) => x.figura === "perro")?.inst ? "perro" : undefined} aria-hidden="true">
+            <span className="placa">{etiquetaDe(f)}</span>
+          </div>
+        ))}
+      {mapa?.puntos.filter((p) => p.tipo === "npc" && visible(p, estado().hora)).map((p) => (
+        <div key={p.nombre} className="nombre-mundo" data-mundo-x={p.x} data-mundo-y={p.y} aria-hidden="true">
+          <span className="placa">{M.nombres[p.nombre]}</span>
+        </div>
+      ))}
+      {mapa && estado().nombre && (
+        <div className="nombre-mundo" data-mundo-sigue="prota" aria-hidden="true">
+          <span className="placa">{estado().nombre}</span>
+        </div>
+      )}
 
       {/* A sign on every door: where it leads, dimmed with a lock when it is closed now (GDD §8). */}
       {mapa?.puertas.map((d) => {

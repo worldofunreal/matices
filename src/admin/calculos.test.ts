@@ -34,7 +34,7 @@ test("cuenta por participante, por área, la referencia de todos y lo que hizo d
   assert.equal(a.get("pedir_ayuda")!.get("PROMETE")!.n, 1);
   const todos = [...g.values()].map((evs) => codigosPorArea(evs, C));
   assert.deepEqual(referencia(todos, "conducta", "PROMETE"), { N: 2, mediana: 0.5, min: 0, max: 1 });
-  assert.deepEqual(situaciones(g.get("a")!).get("S01"), { veces: 3, quien: ["FIGURA:abuela"], respuesta: "PROMETE", segundos: 4.1, despues: 1 });
+  assert.deepEqual(situaciones(g.get("a")!).get("S01"), { veces: 3, quien: ["FIGURA:abuela"], respuestas: [{ codigo: "PROMETE", segundos: 4.1 }], despues: 1 });
 });
 
 test("uso por pantalla, avance y apariencia", () => {

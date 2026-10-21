@@ -115,25 +115,8 @@
   cursor: grabbing;
 }
 
-/* The nameplate under each person in the house, so it is clear who is who (GDD §7). The text stays crisp at any zoom.
-   It is the easiest part to hit, so a tap on it opens the person like a tap on the figure; while someone
-   is being placed it lets the tap through to the room. */
-.placa {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 2px 9px;
-  border-radius: 999px;
-  background: var(--tarjeta);
-  box-shadow: var(--sombra);
-  color: var(--tinta);
-  font-size: 13px;
-  font-weight: 800;
-  line-height: 1.4;
-  white-space: nowrap;
-}
-
+/* The nameplate (estilos.css) is the easiest part to hit, so a tap on it opens the person like a tap on the
+   figure; while someone is being placed it lets the tap through to the room. */
 .casa.eligiendo .placa {
   pointer-events: none;
 }

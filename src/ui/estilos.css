@@ -373,3 +373,21 @@ canvas.pixel {
 .lectura-sencilla .preferencia-cabecera p {
   font-size: 21px;
 }
+
+/* The nameplate under each person, pet and the child, in the house and in the world, so it is clear who is
+   who (GDD §7, §8). It hangs under its holder's feet; the text stays crisp at any zoom. */
+.placa {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--tarjeta);
+  box-shadow: var(--sombra);
+  color: var(--tinta);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.4;
+  white-space: nowrap;
+}

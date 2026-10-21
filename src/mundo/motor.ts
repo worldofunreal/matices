@@ -139,6 +139,7 @@ export class Motor {
     if (e.key === "Shift") this.shift = true;
     if (!FLECHAS[e.code]) return;
     e.preventDefault();
+    if (e.repeat && !this.teclas.has(e.code)) return; // stopped (parar) with the key held: only a new press walks
     this.teclas.add(e.code);
   };
 
@@ -514,16 +515,18 @@ export class Motor {
     this.ponerHtml(flecha);
   }
 
-  // HTML over the world: every element with data-mundo-x / data-mundo-y sits on that world point; the one
-  // with data-flecha sits beside the edge arrow, and hides when there is no arrow.
+  // HTML over the world: every element with data-mundo-x / data-mundo-y sits on that world point, one with
+  // data-mundo-sigue on the feet of who moves ("prota", "perro"); the one with data-flecha sits beside the
+  // edge arrow, and hides when there is no arrow.
   private ponerHtml(flecha: { x: number; y: number } | null) {
     const c = this.o.canvas;
     const dpr = c.width / (c.clientWidth || c.width);
     const raiz = c.parentElement;
     if (!raiz) return;
-    for (const el of raiz.querySelectorAll<HTMLElement>("[data-mundo-x]")) {
-      const x = ((Number(el.dataset.mundoX) - this.cam.x) * this.z) / dpr;
-      const y = ((Number(el.dataset.mundoY) - this.cam.y) * this.z) / dpr;
+    for (const el of raiz.querySelectorAll<HTMLElement>("[data-mundo-x], [data-mundo-sigue]")) {
+      const sigue = el.dataset.mundoSigue === "prota" ? this : el.dataset.mundoSigue === "perro" ? this.perro?.f : null;
+      const x = (((sigue?.x ?? Number(el.dataset.mundoX)) - this.cam.x) * this.z) / dpr;
+      const y = (((sigue?.y ?? Number(el.dataset.mundoY)) - this.cam.y) * this.z) / dpr;
       el.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
     }
     const texto = raiz.querySelector<HTMLElement>("[data-flecha]");

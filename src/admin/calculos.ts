@@ -142,19 +142,16 @@ export function referencia(todos: Map<string, Map<string, { n: number }>>[], are
 }
 
 // Each situation as it happened (docs/clinico/reporte.md, part 3): how many times, who reacted, what the child
-// answered and how fast, and how many times they did it again after answering.
+// answered each time it was asked and how fast, and how many times they did it again after answering.
 export function situaciones(evs: Evento[]) {
-  const m = new Map<string, { veces: number; quien: string[]; respuesta: string | null; segundos: number | null; despues: number }>();
+  const m = new Map<string, { veces: number; quien: string[]; respuestas: { codigo: string; segundos: number }[]; despues: number }>();
   for (const e of de(evs, "situacion")) {
-    const f = m.get(e.situacion) ?? (m.set(e.situacion, { veces: 0, quien: [], respuesta: null, segundos: null, despues: 0 }), m.get(e.situacion)!);
+    const f = m.get(e.situacion) ?? (m.set(e.situacion, { veces: 0, quien: [], respuestas: [], despues: 0 }), m.get(e.situacion)!);
     if (e.paso !== "respuesta") {
       f.veces = Math.max(f.veces, e.veces ?? 0);
       if (!f.quien.includes(e.quien)) f.quien.push(e.quien);
     }
-    if (e.paso === "respuesta") {
-      f.respuesta = e.elegida;
-      f.segundos = Math.round(e.ms_decidir / 100) / 10;
-    }
+    if (e.paso === "respuesta") f.respuestas.push({ codigo: e.elegida, segundos: Math.round(e.ms_decidir / 100) / 10 });
     if (e.paso === "repite") f.despues++;
   }
   return m;

@@ -303,13 +303,13 @@ function Perfil({ nino, todos }: { nino: string; todos: Evento[] }) {
 
       <section>
         <h2>Situaciones</h2>
-        <p className="nota">Qué hizo, quién reaccionó, qué contestó y cuántas veces lo volvió a hacer después de contestar.</p>
+        <p className="nota">Qué hizo, quién reaccionó, qué contestó cada vez (en orden, con los segundos que tardó) y cuántas veces lo volvió a hacer después de contestar.</p>
         {sits.size ? (
           <table>
-            <thead><tr><th>Situación</th><th className="num">Veces</th><th>Quién reaccionó</th><th>Contestó</th><th className="num">Segundos</th><th className="num">Lo hizo después</th></tr></thead>
+            <thead><tr><th>Situación</th><th className="num">Veces</th><th>Quién reaccionó</th><th>Contestó</th><th className="num">Lo hizo después</th></tr></thead>
             <tbody>
               {[...sits].map(([id, f]) => (
-                <tr key={id}><td>{situacion(id)}</td><td className="num">{f.veces}</td><td>{f.quien.map(etiqueta).join(", ")}</td><td>{f.respuesta ?? "—"}</td><td className="num">{f.segundos ?? ""}</td><td className="num">{f.respuesta ? f.despues : ""}</td></tr>
+                <tr key={id}><td>{situacion(id)}</td><td className="num">{f.veces}</td><td>{f.quien.map(etiqueta).join(", ")}</td><td>{f.respuestas.map((r) => `${r.codigo} (${r.segundos} s)`).join(" → ") || "—"}</td><td className="num">{f.respuestas.length ? f.despues : ""}</td></tr>
               ))}
             </tbody>
           </table>

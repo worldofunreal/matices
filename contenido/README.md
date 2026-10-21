@@ -18,7 +18,7 @@ Texto de las situaciones y del resto del juego. El juego lee estos archivos tal 
   quien: adulto_cerca        # quién reacciona: la persona adulta de la casa más cerca del niño
   areas: [conducta]
   aviso: "¡No corras dentro de la casa!"            # la primera vez
-  pregunta: "Te dije que no corrieras dentro…"      # la segunda; después vuelve el aviso
+  pregunta: "Te dije que no corrieras dentro…"      # desde la segunda, cada vez
   respuestas:                                       # [CÓDIGO, texto]
     - [DESAFIA, "No me importa"]
 ```

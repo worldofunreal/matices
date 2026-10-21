@@ -61,6 +61,7 @@ declare module "virtual:contenido" {
       dia: string;
       fin: string;
       saludos: Record<string, string[]>;
+      nombres: Record<string, string>;
       objetos: Record<string, Record<string, string>>;
       correr: string;
       a_dormir: string;
