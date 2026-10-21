@@ -7,8 +7,10 @@
 # cuadros de 48 × 64 (anchos para que quepa el cabello abultado); la derecha es la izquierda volteada, pies en la misma fila de píxeles en todos los cuadros. Es el único que camina:
 # las figuras de la casa y los personajes fijos son un solo cuadro de 48 × 64, de pie y de frente.
 
-# Piel, cabello y mochila se dibujan con los colores "clave" (de claro a sombra; la piel lleva 5). El juego cambia
-# esos tres colores por los del tono o color elegido. Los colores clave son los de la variante 1.
+# Piel, cabello, ropa, tenis y extras llevan los colores "clave" de su rampa (de claro a sombra; la piel lleva 5).
+# El juego cambia esos colores por los del tono o color elegido. Los colores clave son los de la variante 1.
+# Cada pieza dice su rampa en `colores`. Las capas se recortan con herramientas/acomodar.ts, que deja cada
+# pieza en su clave aunque se haya dibujado en otro color.
 colores:
   piel:
     clave: ["#ffead4", "#f6d7bd", "#e2b896", "#c4936f", "#af7954"]
@@ -37,6 +39,65 @@ colores:
       - ["#e0605a", "#bf4540", "#8f2f2b"]
       - ["#6cbf6a", "#4c9a4a", "#356f34"]
       - ["#f2c14e", "#d19e2f", "#9c741d"]
+  sueter:
+    clave: ["#4e4e56", "#3c3c44", "#2e2e35"]
+    variantes:
+      - ["#4e4e56", "#3c3c44", "#2e2e35"]
+      - ["#2f3f6e", "#24315a", "#1a2445"]
+      - ["#7a2a35", "#5f1f29", "#46161e"]
+      - ["#2f5a3e", "#234630", "#183323"]
+      - ["#6a4a33", "#533926", "#3d291b"]
+  uniforme_abajo:
+    clave: ["#96969c", "#7a7a82", "#62626a"]
+    variantes:
+      - ["#96969c", "#7a7a82", "#62626a"]
+      - ["#3a4a78", "#2c3a62", "#202b4b"]
+      - ["#b09a6e", "#927e56", "#736240"]
+      - ["#3a3a3e", "#2c2c30", "#1f1f22"]
+  playera:
+    clave: ["#1f7a7a", "#16605f", "#0f4746"]
+    variantes:
+      - ["#1f7a7a", "#16605f", "#0f4746"]
+      - ["#c8433d", "#a2322d", "#78241f"]
+      - ["#e8c040", "#c49c2a", "#94741c"]
+      - ["#7d4fb0", "#623b8f", "#482a6b"]
+      - ["#e47fa6", "#c76189", "#9a4668"]
+      - ["#3f78c8", "#2f5fa4", "#22467b"]
+  pants:
+    clave: ["#55585c", "#424548", "#313336"]
+    variantes:
+      - ["#55585c", "#424548", "#313336"]
+      - ["#34508a", "#283f6f", "#1d2f54"]
+      - ["#2f2f33", "#232327", "#18181b"]
+      - ["#6b5040", "#543e31", "#3e2d23"]
+  tenis:
+    clave: ["#f2f2f2", "#cfcfcf", "#9a9a9a"]
+    variantes:
+      - ["#f2f2f2", "#cfcfcf", "#9a9a9a"]
+      - ["#3a3a3e", "#2a2a2e", "#1c1c1f"]
+      - ["#d0453f", "#a8332e", "#7a2420"]
+      - ["#4a7fd0", "#3765ab", "#274a80"]
+  gorra:
+    clave: ["#d23c3c", "#ab2e2e", "#7f2121"]
+    variantes:
+      - ["#d23c3c", "#ab2e2e", "#7f2121"]
+      - ["#3b6cc4", "#2d55a0", "#203e77"]
+      - ["#3f9a4e", "#2f7a3c", "#215a2b"]
+      - ["#36363a", "#27272b", "#1a1a1d"]
+      - ["#e8c23e", "#c49e28", "#93761a"]
+  lentes:
+    clave: ["#5e676a", "#4a5255", "#373d40"]
+    variantes:
+      - ["#5e676a", "#4a5255", "#373d40"]
+      - ["#2a2a2e", "#1f1f22", "#141416"]
+      - ["#b8403a", "#92302b", "#6a221f"]
+      - ["#3e6fb8", "#2f5793", "#22406c"]
+  aretes:
+    clave: ["#f2c64a", "#d1a12e", "#9c761c"]
+    variantes:
+      - ["#f2c64a", "#d1a12e", "#9c761c"]
+      - ["#e2e6ea", "#b8bec4", "#868c92"]
+      - ["#e0504a", "#b83a35", "#882a26"]
 
 grupos:
   - carpeta: personaje
@@ -56,46 +117,16 @@ grupos:
       cabello_08: Rapado
       cabello_09: Afro
       cabello_10: Con fleco
-      ropa_uniforme_arriba: Suéter liso con playera blanca tipo polo
-      ropa_uniforme_pantalon: Pantalón del uniforme
-      ropa_uniforme_falda: Falda a la rodilla con short
-      ropa_casa_arriba: Playera de casa
-      ropa_casa_abajo: Pants de casa
-      calzado_tenis: Tenis
-      extra_lentes: Lentes
-      extra_aretes: Aretes pequeños
-      extra_gorra: Gorra
+      ropa_uniforme_arriba: {que: Suéter liso con playera blanca tipo polo, colores: [sueter]}
+      ropa_uniforme_pantalon: {que: Pantalón del uniforme, colores: [uniforme_abajo]}
+      ropa_uniforme_falda: {que: Falda a la rodilla con short, colores: [uniforme_abajo]}
+      ropa_casa_arriba: {que: Playera de casa, colores: [playera]}
+      ropa_casa_abajo: {que: Pants de casa, colores: [pants]}
+      calzado_tenis: {que: Tenis, colores: [tenis]}
+      extra_lentes: {que: Lentes, colores: [lentes]}
+      extra_aretes: {que: Aretes pequeños, colores: [aretes]}
+      extra_gorra: {que: Gorra, colores: [gorra]}
       extra_mochila: {que: Mochila, colores: [mochila]}
-
-  - carpeta: personaje
-    tipo: retrato
-    medida: [96, 96]
-    colores: [piel, cabello]
-    expresiones: [neutral]
-    piezas:
-      retrato_cara_nina: Cara y hombros de la niña
-      retrato_cara_nino: Cara y hombros del niño
-
-  - carpeta: personaje
-    tipo: retrato
-    medida: [96, 96]
-    colores: [cabello]
-    piezas:
-      retrato_cabello_01: Largo lacio
-      retrato_cabello_02: Largo chino
-      retrato_cabello_03: Trenzas
-      retrato_cabello_04: Dos coletas
-      retrato_cabello_05: Cola de caballo
-      retrato_cabello_06: Corto lacio
-      retrato_cabello_07: Corto chino
-      retrato_cabello_08: Rapado
-      retrato_cabello_09: Afro
-      retrato_cabello_10: Con fleco
-      retrato_ropa_uniforme: Cuello del suéter y la playera del uniforme
-      retrato_ropa_casa: Cuello de la playera de casa
-      retrato_extra_lentes: Lentes
-      retrato_extra_aretes: Aretes
-      retrato_extra_gorra: Gorra
 
   - carpeta: figuras
     tipo: hoja

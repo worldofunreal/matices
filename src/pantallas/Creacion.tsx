@@ -1,12 +1,13 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import contenido from "virtual:contenido";
-import { Personaje, Retrato } from "../lienzo/Personaje";
-import { precargar, idsDe, queEs, colorMedio, cuantos, CUADRO } from "../lienzo/arte";
+import { Personaje, Cabeza } from "../lienzo/Personaje";
+import { precargar, idsDe, queEs, colorMedio, cuantos, rampaDe, CUADRO } from "../lienzo/arte";
+import type { Rampa } from "../../herramientas/arte.ts";
 import { Bocina } from "../ui/Bocina";
 import { Icono } from "../ui/iconos";
 import { estado, cambiarEstado } from "../datos/guardado";
 import { registrar } from "../datos/eventos";
-import { LOOK, type Apariencia, type Extra } from "../personaje/apariencia";
+import { LOOK, capas, type Apariencia, type Extra } from "../personaje/apariencia";
 import "./creacion.css";
 
 const T = contenido.textos.creacion;
@@ -59,6 +60,22 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
     toques.current++;
     setA((x) => ({ ...x, ...c }));
   };
+  const color = (r: Rampa) => a.colores[r] ?? 0;
+  const ponerColor = (r: Rampa, i: number) => {
+    toques.current++;
+    setA((x) => ({ ...x, colores: { ...x.colores, [r]: i } }));
+  };
+  // One row of colors for a ramp; `nombre` says what it colors when there are several rows.
+  const filaColores = (r: Rampa, nombre?: string) => (
+    <div key={r} className="fila-colores">
+      {nombre && <span className="nombre-fila">{nombre}</span>}
+      {[...Array(cuantos(r)).keys()].map((i) => (
+        <button key={i} className="muestra" aria-pressed={color(r) === i} aria-label={`${nombre ?? r} ${i + 1}`} style={{ background: colorMedio(r, i) }} onClick={() => ponerColor(r, i)} />
+      ))}
+    </div>
+  );
+  // Top to bottom, as the child sees it: sweater or t-shirt, then trousers, then shoes.
+  const ropaPuesta = capas(a).filter((id) => /^personaje\/(ropa_|calzado_)/.test(id)).reverse();
 
   const terminar = () => {
     if (!nombre) {
@@ -71,13 +88,20 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
     registrar("personaje", {
       momento: modo,
       cuerpo: a.cuerpo,
-      tono: a.piel + 1,
+      tono: color("piel") + 1,
       orden_tonos: ordenPiel.map((i) => i + 1),
       cabello: a.cabello,
-      color_cabello: a.colorCabello + 1,
+      color_cabello: color("cabello") + 1,
       ropa: a.ropa === "uniforme" ? `uniforme_${a.abajo}` : "casa",
       extras: a.extras,
-      color_mochila: a.extras.includes("mochila") ? a.colorMochila + 1 : null,
+      color_mochila: a.extras.includes("mochila") ? color("mochila") + 1 : null,
+      // Color of each garment and extra it is wearing (1 is the first of its row).
+      colores: Object.fromEntries(
+        capas(a)
+          .map(rampaDe)
+          .filter((r) => r !== undefined && r !== "mochila")
+          .map((r) => [r, color(r) + 1]),
+      ),
       nombre_de_lista: T.nombres.includes(nombre),
       toques: toques.current,
       ms: Math.round(performance.now() - t0.current),
@@ -121,18 +145,14 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
             ))}
 
           {pestana === "piel" &&
-            ordenPiel.map((i) => <button key={i} className="muestra" aria-pressed={a.piel === i} aria-label={`Tono ${i + 1}`} style={{ background: colorMedio("piel", i) }} onClick={() => cambiar({ piel: i })} />)}
+            ordenPiel.map((i) => <button key={i} className="muestra" aria-pressed={color("piel") === i} aria-label={`Tono ${i + 1}`} style={{ background: colorMedio("piel", i) }} onClick={() => ponerColor("piel", i)} />)}
 
           {listo && pestana === "cabello" && (
             <>
-              <div className="fila-colores">
-                {[...Array(cuantos("cabello")).keys()].map((i) => (
-                  <button key={i} className="muestra" aria-pressed={a.colorCabello === i} aria-label={`Color ${i + 1}`} style={{ background: colorMedio("cabello", i) }} onClick={() => cambiar({ colorCabello: i })} />
-                ))}
-              </div>
+              {filaColores("cabello")}
               {CABELLOS.map((c) => (
                 <button key={c} className="opcion" aria-pressed={a.cabello === c} aria-label={queEs(`personaje/cabello_${c}`)} onClick={() => cambiar({ cabello: c })}>
-                  <Retrato a={{ ...a, cabello: c, extras: [] }} tam={64} />
+                  <Cabeza a={{ ...a, cabello: c, extras: [] }} escala={2} />
                 </button>
               ))}
             </>
@@ -148,6 +168,7 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
                 </button>
               );
             })}
+          {listo && pestana === "ropa" && ropaPuesta.map((id) => filaColores(rampaDe(id)!, T.color_de[id.split("/")[1]!]))}
 
           {listo && pestana === "extras" && (
             <>
@@ -155,17 +176,11 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
                 const tiene = a.extras.includes(e);
                 return (
                   <button key={e} className="opcion" aria-pressed={tiene} aria-label={T.extras[e]} onClick={() => cambiar({ extras: tiene ? a.extras.filter((x) => x !== e) : [...a.extras, e] })}>
-                    {e === "mochila" ? <Personaje a={{ ...a, extras: ["mochila"] }} escala={2} direccion="arriba" /> : <Retrato a={{ ...a, extras: [e] }} tam={64} />}
+                    {e === "mochila" ? <Personaje a={{ ...a, extras: ["mochila"] }} escala={2} direccion="arriba" /> : <Cabeza a={{ ...a, extras: [e] }} escala={2} />}
                   </button>
                 );
               })}
-              {a.extras.includes("mochila") && (
-                <div className="fila-colores">
-                  {[...Array(cuantos("mochila")).keys()].map((i) => (
-                    <button key={i} className="muestra" aria-pressed={a.colorMochila === i} aria-label={`Mochila ${i + 1}`} style={{ background: colorMedio("mochila", i) }} onClick={() => cambiar({ colorMochila: i })} />
-                  ))}
-                </div>
-              )}
+              {EXTRAS.filter((e) => a.extras.includes(e)).map((e) => filaColores(rampaDe(`personaje/extra_${e}`)!, T.extras[e]))}
             </>
           )}
 

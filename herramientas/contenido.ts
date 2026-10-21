@@ -7,7 +7,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { parse } from "yaml";
 import type { Plugin } from "vite";
-import { ROOT, MANIFIESTO, DOC_CODIGOS, PANEL_CPE, codigosValidos, panelCpe, leerManifiesto, medidaPng } from "./arte.ts";
+import { ROOT, MANIFIESTO, DOC_CODIGOS, PANEL_CPE, codigosValidos, panelCpe, leerManifiesto, medidaPng, RAMPAS } from "./arte.ts";
 
 const DIR = join(ROOT, "contenido");
 const CUENTOS = join(DIR, "cuentos");
@@ -144,6 +144,9 @@ export function validar() {
   if (nombres.length !== 40 || new Set(nombres).size !== 40) err("textos creacion.nombres", "deben ser 40 nombres distintos");
   for (const k of ["cuerpo", "piel", "cabello", "color_cabello", "ropa", "extras", "color_mochila", "nombre"])
     if (!textos.creacion?.pasos?.[k]) err("textos creacion.pasos", `falta ${k}`);
+  // Every garment that changes color needs the name of its row of colors.
+  for (const p of leerManifiesto().piezas)
+    if (/^personaje\/(ropa_|calzado_)/.test(p.id) && !textos.creacion?.color_de?.[p.id.split("/")[1]]) err("textos creacion.color_de", `falta ${p.id.split("/")[1]}`);
 
   // Figures: each one needs its sheet and portrait; rooms named in the texts must exist in the house map.
   const { figuras: listaFiguras } = parse(readFileSync(join(DIR, "figuras.yaml"), "utf8")) as { figuras: [string, string, string][] };
@@ -289,6 +292,15 @@ function validarArte() {
   }
   for (const [nombre, r] of Object.entries(m.colores))
     if (r.variantes.some((v) => v.length !== r.clave.length)) errores.push(`colores ${nombre}: cada variante lleva ${r.clave.length} colores`);
+  const rampas = Object.keys(m.colores);
+  for (const r of RAMPAS) if (!rampas.includes(r)) errores.push(`colores: falta la rampa ${r}`);
+  for (const r of rampas) if (!(RAMPAS as readonly string[]).includes(r)) errores.push(`colores: ${r} no está en RAMPAS (herramientas/arte.ts)`);
+  for (const p of m.piezas) for (const r of p.colores) if (!m.colores[r]) errores.push(`${p.id}: no hay rampa ${r}`);
+  // The game swaps exact colors: a key color repeated in another ramp of the same piece would be swapped twice.
+  for (const p of m.piezas) {
+    const vistos = p.colores.flatMap((r) => m.colores[r]?.clave ?? []);
+    if (new Set(vistos).size !== vistos.length) errores.push(`${p.id}: sus rampas repiten un color clave`);
+  }
   if (errores.length) throw new Error(`Arte inválido:\n- ${errores.join("\n- ")}`);
   // Recorded voice lines present in public/assets/voz/; any other line uses the browser voice.
   const carpetaVoz = join(ROOT, "public/assets/voz");

@@ -131,11 +131,21 @@
 
 .fila-colores {
   flex-basis: 100%;
+  grid-column: 1 / -1; /* a full row in the clothes grid too */
   min-width: 0;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 6px;
   padding-bottom: 4px;
+}
+
+/* What the row colors (Suéter, Tenis...) when a tab has several rows. */
+.nombre-fila {
+  flex-basis: 100%;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--tinta-suave);
 }
 
 /* One row of colors, so the hair and backpack choices below start on screen. */
@@ -210,7 +220,13 @@
 .opciones.ropa {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 116px));
+  grid-auto-rows: max-content; /* rows never shrink below the character when the color rows add height */
+  align-content: start;
   justify-content: center;
+}
+
+.opciones.cuerpo {
+  grid-template-columns: repeat(2, minmax(0, 116px));
 }
 
 .opciones.cuerpo .opcion,

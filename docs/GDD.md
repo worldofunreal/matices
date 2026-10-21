@@ -76,8 +76,8 @@ Primera pantalla del juego. Unos 3 minutos.
 | Cuerpo | Niña o niño. Cada uno empieza con su look: niña con cabello largo y falda, niño con cabello corto y pantalón | Mismos sucesos y opciones para todos; cabello y ropa se eligen libres después |
 | Tono de piel | 8 tonos, del más claro al más oscuro, en orden aleatorio en pantalla | El orden aleatorio evita que el primero sea "el normal" |
 | Cabello | 10 peinados × 6 colores | Incluye trenzas, chino, corto, rapado |
-| Ropa | Uniforme escolar genérico (suéter oscuro, pantalón o falda gris con short, tenis) o ropa de casa | Pantalón disponible para todos |
-| Lentes y extras | Lentes, aretes, gorra, mochila de 4 colores | |
+| Ropa | Uniforme escolar genérico (suéter, pantalón o falda con short, tenis) o ropa de casa (playera y pants). Cada prenda y los tenis con su fila de colores; el uniforme empieza oscuro con gris | Pantalón disponible para todos |
+| Lentes y extras | Lentes, aretes, gorra y mochila, cada uno con su fila de colores | Se ven con la cabeza del personaje, en grande |
 | Nombre | Elegir de una lista de 40 nombres o escribir uno | El nombre se queda en el aparato; nunca sale en los datos |
 
 Todo se puede cambiar después desde el espejo de la casa (se registra el cambio, no se juzga).

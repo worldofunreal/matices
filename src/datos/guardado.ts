@@ -68,8 +68,14 @@ const escribir = () => leido && void guardar("estado", actual);
 
 export async function cargarEstado(): Promise<Estado> {
   actual = { ...NUEVO, ...(await leer<Estado>("estado")) };
-  // Games saved while the neutral body existed (removed 2026-10-21) continue as the girl's body.
-  if (!(actual.apariencia.cuerpo in LOOK)) actual.apariencia = { ...actual.apariencia, cuerpo: "nina" };
+  // Games saved before 2026-10-21: the neutral body continues as the girl's, and the three separate
+  // colors (skin, hair, backpack) move into `colores`.
+  const vieja = actual.apariencia as Apariencia & { piel?: number; colorCabello?: number; colorMochila?: number };
+  if (!(vieja.cuerpo in LOOK)) vieja.cuerpo = "nina";
+  if (!vieja.colores) {
+    const { piel, colorCabello, colorMochila, ...resto } = vieja;
+    actual.apariencia = { ...resto, colores: { piel: piel ?? 0, cabello: colorCabello ?? 0, mochila: colorMochila ?? 0 } };
+  }
   leido = true;
   return actual;
 }

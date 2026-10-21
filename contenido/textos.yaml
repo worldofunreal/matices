@@ -29,6 +29,14 @@ creacion:
     aretes: "Aretes"
     gorra: "Gorra"
     mochila: "Mochila"
+  # Name over each row of colors in the clothes tab (one per piece of clothing that can change color).
+  color_de:
+    ropa_uniforme_arriba: "Suéter"
+    ropa_uniforme_pantalon: "Pantalón"
+    ropa_uniforme_falda: "Falda"
+    ropa_casa_arriba: "Playera"
+    ropa_casa_abajo: "Pants"
+    calzado_tenis: "Tenis"
   piel: "Color de piel {n}"
   color_cabello: "Color de cabello {n}"
   color_mochila: "Mochila de color {n}"

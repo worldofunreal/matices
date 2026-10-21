@@ -61,7 +61,7 @@ Cualquier pieza se puede entregar en cualquier momento: el juego ya funciona con
 | # | Qué | Hito |
 | --- | --- | --- |
 | 1 | Paleta (`paleta.png`, cuadritos de 8 × 8) y hoja de escala: piso, puerta, mesa y el niño parado, juntos | Antes de todo |
-| 2 | Protagonista: cuerpos, cabellos, ropa, extras y sus retratos (carpeta `personaje/`) | H2 |
+| 2 | Protagonista: cuerpos, cabellos, ropa y extras (carpeta `personaje/`) | H2 |
 | 3 | Interior de la casa y sus muebles; figuras para armar la casa (`lugares/casa/`, `figuras/`) | H3 |
 | 4 | Calle, escuela, parque, tiendita, biblioteca y sus objetos; vecinos y personajes fijos | H4 |
 | 5 | La Cuentera, iconos de códigos, caritas, panel | H5 |
@@ -74,8 +74,8 @@ Cualquier pieza se puede entregar en cualquier momento: el juego ya funciona con
 - **Lugares:** el fondo es el lugar vacío (piso y muros); cada mueble u objeto va en su propio PNG. Así el personaje puede pasar detrás de una mesa o un árbol.
 - **Hojas del protagonista:** 5 columnas (quieto, paso 1 a 4) por 3 filas (abajo, izquierda, arriba), cuadros de 48 × 64, pies a la misma altura en todos. Las figuras de la casa y los personajes fijos son un solo cuadro de 48 × 64.
 - **Capas del protagonista:** cada pieza (cuerpo, cabello, ropa, calzado, extras) en su hoja, dibujada en la misma posición que el cuerpo base.
-- **Piel, cabello y mochila:** se dibujan una sola vez. El juego los cambia a los 8 tonos de piel, los colores de cabello y los de mochila conservando las sombras; no se dibuja una versión por color. A mano se usan los tres colores clave de `manifiesto.yaml`; con generador, la regla de color de abajo.
-- **Retratos:** un PNG por expresión (`_neutral`, y `_contento` en La Cuentera).
+- **Piel, cabello, ropa, tenis y extras:** se dibujan una sola vez. El juego los cambia a los colores de su rampa en `manifiesto.yaml` conservando las sombras; no se dibuja una versión por color. A mano se usan los colores clave de su rampa; con generador, la regla de color de abajo y `acomodar.ts` los pasa a la clave.
+- **Retratos:** un PNG por expresión (`_neutral`, y `_contento` en La Cuentera). El protagonista no tiene.
 - **Fondos de lugares:** el provisional es el plano exacto (muros, puertas y dónde va cada mueble). El fondo final respeta ese plano, porque los choques y las puertas del juego salen de él.
 - **Voz:** una grabación `public/assets/voz/<línea>.mp3` reemplaza a la voz del navegador para esa línea.
 - Si el arte sale de otra herramienta o de una IA a otro tamaño, se entrega así y el desarrollo lo ajusta a la medida y la paleta, avisando si algo se pierde.
@@ -102,8 +102,7 @@ Con el protagonista esto ya es automático: `herramientas/generar.ts` le pide ca
 
 **Protagonista.** Todo sale de editar la misma imagen, paso a paso, para que cabeza, cuerpo y pies queden siempre en el mismo lugar. Se pide una dirección por imagen: al generador le cuesta menos que una hoja completa. Los dos cuerpos comparten cabeza, silueta, estatura y pose, para que cabellos, ropa y extras sirvan en los dos.
 
-1. Base de frente (hecha para la niña: `referencias/base-nina.png`). Para el niño se edita la base de la niña:
-   > Edit the attached pixel art character. Keep the exact same head, face size, body proportions, height, pose, pixel size and outline. Change only the face, ears and eyebrows: make it a boy. The silhouette stays exactly the same. Still bald, plain light-gray fitted t-shirt and shorts, barefoot. Background: flat solid magenta (#FF00FF), fully opaque, NOT transparent. Change nothing else.
+1. Base de frente (hecha para la niña: `referencias/base-nina.png`).
 2. Los pasos de cada dirección. Cada prompt pide **una sola figura en una sola imagen**, editando la figura quieta, y dice qué es lo que se sube, qué se conserva y qué cambia. El generador no conoce el proyecto: cada prompt se entiende solo. Cada dirección necesita la figura quieta y dos pasos; el desarrollo arma la caminata (paso, quieto, otro paso, quieto). De frente y de espalda el segundo paso es el primero volteado.
    - Quieta de perfil o de espalda, subiendo la base de frente:
      > The attached image is a pixel art game character standing still, facing the viewer, on a flat magenta background. Create ONE new image, the same size as the attached image, showing ONLY ONE character: this same character standing still, now [turned to face the left side of the image, seen in profile / seen from behind, facing away from the viewer]. Not a sprite sheet, not several frames, not several characters. Keep identical: the head size and its position on the canvas, the body proportions, the skin color, the clothes, the pixel size, the dark outline, and the flat magenta background (#FF00FF, fully opaque). Arms down at the sides, feet together at the bottom. No text, no floor shadow, no extra objects.
@@ -116,15 +115,19 @@ Con el protagonista esto ya es automático: `herramientas/generar.ts` le pide ca
    - Cabello, lentes, aretes, gorra y mochila: solo la figura quieta de cada dirección. Al caminar la cabeza y los hombros no se mueven, así que el cabello y la mochila tampoco: los pasos usan exactamente la capa de la figura quieta. Así nunca cambia ni se corta de un cuadro a otro.
    - La cabeza entera (cara, ojos, orejas) también es la de la figura quieta en todos los cuadros de una dirección; solo cambia lo que está debajo del cuello.
    - Una capa nunca lleva piel: la piel siempre es la del cuerpo. De cabellos y mochila solo se toma lo verde y su contorno.
+   - El niño sale del cuerpo de la niña: solo cambian cara, orejas y cejas, con la misma silueta (`generar.ts cuerpo_nina cuerpo_nino`). Se piden solo sus dos figuras quietas, de frente y de perfil; los pasos y la espalda son los de la niña, porque la cabeza de cada paso sale de la figura quieta. `acomodar.ts personaje/cuerpo_nino … --igual-a …/cuerpo_nina` lo encuadra igual que a ella, y así todas las capas le quedan. Mientras no esté, su provisional es una copia del cuerpo de la niña.
 
-   Para cabellos y mochila se agrega: *The [hair / backpack] is bright green with darker green shadows and lighter green highlights; nothing else is green.* La ropa es la de la tabla de ajustes, pero el uniforme se pide en azul (suéter azul rey, pantalón o falda azul marino) para que se distinga de la ropa gris del cuerpo al recortarlo; `acomodar.ts` lo pasa después a suéter oscuro y pantalón o falda gris.
-4. Retratos (96 × 96, se piden a 768 × 768), con el mismo método: primero la cara base y luego cada capa editándola.
-   > [estilo, cambiando la primera frase por: Pixel art character portrait, bust and shoulders, front 3/4 view] SUBJECT: the same character as the attached image, bald smooth head, light-gray t-shirt, neutral calm expression, centered, the head filling the upper two thirds.
+   Para cabellos y mochila se agrega: *The [hair / backpack] is bright green with darker green shadows and lighter green highlights; nothing else is green.* La ropa es la de la tabla de ajustes, pero el uniforme se pide en azul (suéter azul rey, pantalón o falda azul marino) para que se distinga de la ropa gris del cuerpo al recortarlo; `acomodar.ts` deja cada prenda, tenis y extra en los colores clave de su rampa (`manifiesto.yaml`), sin importar en qué color se dibujó; el juego los cambia por el color que elige el niño. Por eso cada pieza se dibuja una sola vez.
+
+   El protagonista no tiene retrato: la creación muestra su cabeza con las mismas capas del sprite.
 
 **Figuras de la casa y personajes fijos** (un cuadro de pie, con la plantilla de figura):
 > [estilo] One single standing sprite, 384×512 px, following the attached template: head top and feet on the guide lines, centered, facing the viewer, standing still. SUBJECT: [quién es, de `manifiesto.yaml`], everyday Mexican clothes.
 
-Su retrato, igual que el del protagonista pero con su ropa y cabello. Las figuras de la casa llevan piel clara natural; el cabello va en su color real.
+Su retrato (96 × 96, se pide a 768 × 768):
+> [estilo, cambiando la primera frase por: Pixel art character portrait, bust and shoulders, front 3/4 view] SUBJECT: the same character as the attached image, with its clothes and hair, neutral calm expression, centered, the head filling the upper two thirds.
+
+Las figuras de la casa llevan piel clara natural; el cabello va en su color real.
 
 **Fondos de lugares** (con su plano):
 > Pixel art, top-down 3/4 view RPG map, cozy Mexican city neighborhood, soft daylight, crisp square pixels, no anti-aliasing. Follow the attached floor plan EXACTLY: dark areas are walls, light areas are floor, gaps in the walls are doorways; keep every wall and doorway in the same place and size. 32-pixel tiles. Empty place: floor and walls only, no furniture, no people, no text. SUBJECT: [lo que dice `manifiesto.yaml` del fondo].

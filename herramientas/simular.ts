@@ -29,7 +29,7 @@ function participante(i: number) {
   ev("aparato", { navegador: azar(APARATOS), pantalla: [390, 844] }, 0);
   ev("sesion", { que: "inicio" }, 0);
   pantalla("creacion", null);
-  ev("personaje", { momento: "inicio", cuerpo: azar(["nina", "nino"]), tono: entre(1, 8), cabello: azar(["01", "02", "03", "04", "05", "06"]), color_cabello: entre(1, 6), ropa: azar(["uniforme_pantalon", "uniforme_falda", "casa"]), extras: Math.random() < 0.4 ? ["mochila"] : [], color_mochila: 2, nombre_de_lista: Math.random() < 0.6, toques: entre(8, 30), ms: entre(40, 180) * 1000 }, entre(40, 180) * 1000);
+  ev("personaje", { momento: "inicio", cuerpo: azar(["nina", "nino"]), tono: entre(1, 8), cabello: azar(["01", "02", "03", "04", "05", "06"]), color_cabello: entre(1, 6), ropa: azar(["uniforme_pantalon", "uniforme_falda", "casa"]), extras: Math.random() < 0.4 ? ["mochila"] : [], color_mochila: 2, colores: { sueter: entre(1, 5), uniforme_abajo: entre(1, 4), playera: entre(1, 6), pants: entre(1, 4), tenis: entre(1, 4) }, nombre_de_lista: Math.random() < 0.6, toques: entre(8, 30), ms: entre(40, 180) * 1000 }, entre(40, 180) * 1000);
   if (llega < 0.05) return eventos;
   pantalla("casa", "creacion");
   const cuartos = Object.keys(C.textos.casa.cuartos);

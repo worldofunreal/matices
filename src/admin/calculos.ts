@@ -210,13 +210,16 @@ export function aparienciaDe(evs: Evento[]): Apariencia | null {
   const uniforme = String(p.ropa).startsWith("uniforme");
   return {
     cuerpo: p.cuerpo,
-    piel: p.tono - 1,
     cabello: p.cabello,
-    colorCabello: p.color_cabello - 1,
     ropa: uniforme ? "uniforme" : "casa",
     abajo: uniforme && String(p.ropa).endsWith("falda") ? "falda" : "pantalon",
     extras: p.extras ?? [],
-    colorMochila: (p.color_mochila ?? 1) - 1,
+    colores: {
+      ...Object.fromEntries(Object.entries((p.colores ?? {}) as Record<string, number>).map(([r, n]) => [r, n - 1])),
+      piel: p.tono - 1,
+      cabello: p.color_cabello - 1,
+      mochila: (p.color_mochila ?? 1) - 1,
+    },
   };
 }
 

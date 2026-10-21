@@ -12,7 +12,9 @@ export const DOC_CODIGOS = join(ROOT, "docs/clinico/codigos-y-eventos.md");
 export const PANEL_CPE = join(ROOT, "contenido/panel-cpe.yaml");
 
 export type Tipo = "hoja" | "retrato" | "fondo" | "objeto" | "marco" | "tarjeta" | "boton" | "icono" | "ilustracion";
-export type Rampa = "piel" | "cabello" | "mochila";
+// Color ramps the game can swap (manifiesto.yaml `colores`). One list, used by the build check and the game.
+export const RAMPAS = ["piel", "cabello", "mochila", "sueter", "uniforme_abajo", "playera", "pants", "tenis", "gorra", "lentes", "aretes"] as const;
+export type Rampa = (typeof RAMPAS)[number];
 
 export interface Pieza {
   id: string; // texture key: carpeta/nombre, e.g. "personaje/cuerpo_nina"

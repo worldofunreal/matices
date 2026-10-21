@@ -275,11 +275,16 @@ function dibujar(p: Pieza, m: Manifiesto) {
 const rehacer = process.argv.includes("--rehacer");
 const m = leerManifiesto();
 let creados = 0;
+// Until the boy's body is drawn, his placeholder is the girl's body: both share the same silhouette, so
+// every hair, garment and extra already fits him (docs/arte/direccion-de-arte.md).
+const COPIA: Record<string, string> = { "personaje/cuerpo_nino": "personaje/cuerpo_nina.png" };
+
 for (const p of m.piezas) {
   const ruta = join(ASSETS, p.archivo);
   if (existsSync(ruta) && !(rehacer && esProvisional(p.archivo))) continue;
   mkdirSync(dirname(ruta), { recursive: true });
-  writeFileSync(ruta, dibujar(p, m));
+  const copia = COPIA[p.id];
+  writeFileSync(ruta, copia && !esProvisional(copia) ? marcarProvisional(readFileSync(join(ASSETS, copia))) : dibujar(p, m));
   creados++;
 }
 console.log(`${m.piezas.length} piezas en el manifiesto; ${creados} provisionales nuevos`);

@@ -1,8 +1,9 @@
 // Pixel art from public/assets (manifiesto.yaml): loaded only when a screen needs it, with the key
-// skin, hair and backpack colors swapped for the chosen ones. Every piece is a canvas ready to draw.
+// colors of each ramp (skin, hair, clothes, extras) swapped for the chosen ones. Every piece is a canvas ready to draw.
 import arte from "virtual:arte";
+import type { Rampa } from "../../herramientas/arte.ts";
 
-export type Colores = { piel?: number; cabello?: number; mochila?: number };
+export type Colores = Partial<Record<Rampa, number>>;
 export const CUADRO = { ancho: 48, alto: 64 }; // one frame of a character sheet (wide enough for big hair)
 
 const piezas = new Map(arte.piezas.map((p) => [p.id, p]));
@@ -71,5 +72,7 @@ export const precargar = (ids: string[]) => Promise.all(ids.map(imagen));
 
 export const idsDe = (prefijo: string) => arte.piezas.filter((p) => p.id.startsWith(prefijo)).map((p) => p.id);
 export const queEs = (id: string) => piezas.get(id)?.que ?? id;
-export const colorMedio = (rampa: "piel" | "cabello" | "mochila", i: number) => arte.colores[rampa].variantes[i][1];
-export const cuantos = (rampa: "piel" | "cabello" | "mochila") => arte.colores[rampa].variantes.length;
+// The ramp a piece of clothing or an extra is recolored with (skin and hair aside).
+export const rampaDe = (id: string) => piezas.get(id)?.colores.find((r) => r !== "piel" && r !== "cabello");
+export const colorMedio = (rampa: Rampa, i: number) => arte.colores[rampa].variantes[i][1];
+export const cuantos = (rampa: Rampa) => arte.colores[rampa].variantes.length;

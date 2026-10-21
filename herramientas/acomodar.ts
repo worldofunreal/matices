@@ -43,18 +43,21 @@ function espejo(a: Img): Img {
   return { ...a, rgb, fg };
 }
 
-// Shrunk copy (area average, background included) for fast comparisons.
+// Shrunk copy for fast comparisons: per pixel the average color of the figure and how much of it is
+// figure (the background's noise is left out).
 function chica(a: Img, lado: number) {
-  const out = new Float32Array(lado * lado * 3), f = a.w / lado;
+  const out = new Float32Array(lado * lado * 4), f = a.w / lado;
   for (let y = 0; y < lado; y++)
     for (let x = 0; x < lado; x++) {
-      let r = 0, g = 0, b = 0, n = 0;
+      let r = 0, g = 0, b = 0, n = 0, t = 0;
       for (let sy = Math.floor(y * f); sy < (y + 1) * f; sy++)
         for (let sx = Math.floor(x * f); sx < (x + 1) * f; sx++) {
-          const i = (sy * a.w + sx) * 3;
-          r += a.rgb[i]; g += a.rgb[i + 1]; b += a.rgb[i + 2]; n++;
+          const i = sy * a.w + sx;
+          t++;
+          if (!a.fg[i]) continue;
+          r += a.rgb[i * 3]; g += a.rgb[i * 3 + 1]; b += a.rgb[i * 3 + 2]; n++;
         }
-      out.set([r / n, g / n, b / n], (y * lado + x) * 3);
+      out.set(n ? [r / n, g / n, b / n, n / t] : [0, 0, 0, 0], (y * lado + x) * 4);
     }
   return out;
 }
@@ -67,8 +70,12 @@ function alinear(cuerpo: Img, editada: Img): Img {
   const prueba = (lado: number, escalas: number[], corrimientos: number[], base: { s: number; dx: number; dy: number }) => {
     const A = chica(cuerpo, lado), B = chica(editada, lado);
     const f = cuerpo.w / lado, c = lado / 2;
+    // Around the body only: where either image is figure, within a margin of the body's box.
     const mascara: number[] = [];
-    for (let i = 0; i < lado * lado; i++) if (Math.hypot(A[i * 3] - 1, A[i * 3 + 1], A[i * 3 + 2] - 1) > 0.45) mascara.push(i);
+    let x0 = lado, y0 = lado, x1 = 0, y1 = 0;
+    for (let i = 0; i < lado * lado; i++) if (A[i * 4 + 3] > 0) { const x = i % lado, y = (i - x) / lado; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+    const m = Math.round(lado * 0.08);
+    for (let y = Math.max(0, y0 - m); y <= Math.min(lado - 1, y1 + m); y++) for (let x = Math.max(0, x0 - m); x <= Math.min(lado - 1, x1 + m); x++) mascara.push(y * lado + x);
     let mejor = { ...base, d: Infinity };
     for (const ds of escalas)
       for (const ex of corrimientos)
@@ -78,17 +85,22 @@ function alinear(cuerpo: Img, editada: Img): Img {
           for (const i of mascara) {
             const x = i % lado, y = (i - x) / lado;
             const bx = Math.round((x - c - dx / f) / s + c), by = Math.round((y - c - dy / f) / s + c);
-            if (bx < 0 || by < 0 || bx >= lado || by >= lado) { d += 3; continue; }
-            const j = (by * lado + bx) * 3;
-            d += Math.abs(A[i * 3] - B[j]) + Math.abs(A[i * 3 + 1] - B[j + 1]) + Math.abs(A[i * 3 + 2] - B[j + 2]);
+            const fa = A[i * 4 + 3];
+            if (bx < 0 || by < 0 || bx >= lado || by >= lado) { d += 3 * fa; continue; }
+            const j = (by * lado + bx) * 4, fb = B[j + 3];
+            d += 3 * Math.abs(fa - fb) + Math.min(fa, fb) * (Math.abs(A[i * 4] - B[j]) + Math.abs(A[i * 4 + 1] - B[j + 1]) + Math.abs(A[i * 4 + 2] - B[j + 2]));
           }
           if (d < mejor.d) mejor = { s, dx, dy, d };
         }
     return mejor;
   };
-  const rango = (a: number, b: number, p: number) => Array.from({ length: Math.round((b - a) / p) + 1 }, (_, i) => a + i * p);
+  // Smallest changes first: on a tie (common at low resolution) the edit stays as drawn.
+  const rango = (a: number, b: number, p: number) => Array.from({ length: Math.round((b - a) / p) + 1 }, (_, i) => a + i * p).sort((x, y) => Math.abs(x) - Math.abs(y));
   let t = prueba(200, rango(-0.06, 0.06, 0.01), rango(-12, 12, 1), { s: 1, dx: 0, dy: 0 });
   t = prueba(400, rango(-0.005, 0.005, 0.0025), rango(-2, 2, 1), t);
+  // Down to the source pixel: half a game pixel off would sample every patch at another spot.
+  if (cuerpo.w >= 800) t = prueba(800, [0], rango(-2, 2, 1), t);
+  if (cuerpo.w >= 1600) t = prueba(1600, [0], rango(-1, 1, 1), t);
   if (t.s === 1 && t.dx === 0 && t.dy === 0) return editada;
   const rgb = new Float32Array(editada.rgb.length), fg = new Uint8Array(editada.fg.length), c = editada.w / 2;
   for (let y = 0; y < editada.h; y++)
@@ -266,47 +278,35 @@ function igualarA(px: Uint8ClampedArray, ref: Uint8ClampedArray, propio: (r: num
   }
 }
 
-// The uniform is drawn blue so it stands out from the body's gray clothes when it is cut, and is then
-// tinted to its real colors: a dark sweater and gray trousers or skirt. Each blue becomes the shade with
-// the same lightness relative to the most common blue; near-black blue is the outline.
-const TINTE: Record<string, number[][]> = {
-  ropa_uniforme_arriba: [[78, 78, 86], [60, 60, 68], [46, 46, 54]],
-  ropa_uniforme_pantalon: [[150, 150, 156], [122, 122, 130], [98, 98, 106]],
-  ropa_uniforme_falda: [[150, 150, 156], [122, 122, 130], [98, 98, 106]],
-};
+// Which pixels of a layer are the piece itself and take its ramp's key colors. Hair and backpack are
+// drawn green and the uniform blue (generar.ts) so they stand out from the body's gray clothes when they
+// are cut; the rest are cut by their own color (PROPIO). Shoes are everything but their outline.
+function suyo(id: string): ((px: Uint8ClampedArray, i: number) => boolean) | null {
+  const n = id.split("/")[1]!;
+  if (/^(cabello_|extra_mochila)/.test(n)) return esVerde;
+  if (n.startsWith("ropa_uniforme_")) return (px, i) => px[i + 3] > 0 && px[i + 2] > px[i] + 25 && px[i + 2] > px[i + 1] + 15;
+  if (n === "calzado_tenis") return (px, i) => px[i + 3] > 0 && luz(px[i], px[i + 1], px[i + 2]) > 60;
+  const propio = PROPIO[n];
+  return propio ? (px, i) => px[i + 3] > 0 && propio(px[i] / 255, px[i + 1] / 255, px[i + 2] / 255) : null;
+}
 
-function tenir(px: Uint8ClampedArray, tonos: number[][]) {
-  const azules: number[] = [];
-  for (let i = 0; i < px.length; i += 4) if (px[i + 3] && px[i + 2] > px[i] + 25 && px[i + 2] > px[i + 1] + 15) azules.push(i);
-  if (!azules.length) return;
+// The piece's pixels become its ramp's key shades, so the game can swap them for the chosen color:
+// the most common lightness is the light key and darker pixels the shadow keys; near-black is the
+// outline. Done on the whole sheet at once, so every frame uses the same shades.
+function aClave(px: Uint8ClampedArray, es: (px: Uint8ClampedArray, i: number) => boolean, clave: string[]) {
+  const tonos = clave.map(hex);
+  const suyos: number[] = [];
+  for (let i = 0; i < px.length; i += 4) if (es(px, i)) suyos.push(i);
+  if (!suyos.length) return;
   const cuenta = new Map<number, number>();
-  for (const i of azules) {
+  for (const i of suyos) {
     const l = Math.round(luz(px[i], px[i + 1], px[i + 2]) / 6);
     cuenta.set(l, (cuenta.get(l) ?? 0) + 1);
   }
   const comun = [...cuenta].reduce((a, b) => (b[1] > a[1] ? b : a))[0] * 6;
-  for (const i of azules) {
-    const r = luz(px[i], px[i + 1], px[i + 2]) / comun;
-    px.set(r < 0.45 ? CONTORNO : tonos[r >= 0.9 ? 0 : r >= 0.7 ? 1 : 2], i);
-  }
-}
-
-// Green pixels (hair, backpack) become the key shades: the most common green is the light key and
-// darker greens the shadow keys. Near-black green is the outline and becomes the body's outline.
-function verdeAClave(px: Uint8ClampedArray, clave: string[]) {
-  const tonos = clave.map(hex);
-  const verdes: number[] = [];
-  for (let i = 0; i < px.length; i += 4) {
-    if (esVerde(px, i)) verdes.push(i);
-  }
-  if (!verdes.length) return;
-  const cuenta = new Map<number, number>();
-  for (const i of verdes) cuenta.set(Math.round(px[i + 1] / 8), (cuenta.get(Math.round(px[i + 1] / 8)) ?? 0) + 1);
-  const comun = [...cuenta].reduce((a, b) => (b[1] > a[1] ? b : a))[0] * 8;
-  for (const i of verdes) {
-    if (px[i + 1] < 70) { px.set(CONTORNO, i); continue; }
-    const r = px[i + 1] / comun;
-    px.set(tonos[r >= 0.85 ? 0 : r >= 0.62 ? 1 : 2], i);
+  for (const i of suyos) {
+    const l = luz(px[i], px[i + 1], px[i + 2]), r = l / comun;
+    px.set(l < 42 || r < 0.4 ? CONTORNO : tonos[Math.min(tonos.length - 1, r >= 0.85 ? 0 : r >= 0.62 ? 1 : 2)], i);
   }
 }
 
@@ -446,10 +446,14 @@ function cuello(px: Uint8ClampedArray) {
 }
 
 async function main() {
-  const [id, carpeta, carpetaCuerpo] = process.argv.slice(2);
+  // --igual-a <carpeta>: a body made from another one (the boy from the girl) is lined up and framed
+  // exactly like it, so every layer made for that body fits this one too.
+  const args = process.argv.slice(2), ig = args.indexOf("--igual-a");
+  const carpetaIgual = ig >= 0 ? args.splice(ig, 2)[1] : undefined;
+  const [id, carpeta, carpetaCuerpo] = args;
   const m = leerManifiesto();
   const pieza = m.piezas.find((p) => p.id === id) as Pieza | undefined;
-  if (!pieza || !carpeta) throw new Error("uso: node herramientas/acomodar.ts <pieza> <carpeta> [<carpeta del cuerpo>]");
+  if (!pieza || !carpeta) throw new Error("uso: node herramientas/acomodar.ts <pieza> <carpeta> [<carpeta del cuerpo>] [--igual-a <carpeta de otro cuerpo>]");
   const [w, h] = pieza.medida;
   const filas = h / ALTO, columnas = w / ANCHO;
   const hoja = await poses(carpeta, filas, columnas);
@@ -458,14 +462,16 @@ async function main() {
   const mochila = pieza.id === "personaje/extra_mochila";
   if (mochila && carpetaCuerpo) for (const f of hoja.keys()) hoja[f] = hoja[f].map(() => hoja[f][0]);
   const cuerpo = carpetaCuerpo ? await poses(carpetaCuerpo, filas, columnas) : hoja;
-  const ref = ancla(cuerpo[0][0]);
+  const igual = carpetaIgual ? await poses(carpetaIgual, filas, columnas) : null;
+  const molde = igual ?? cuerpo;
+  const ref = ancla(molde[0][0]);
   const k = FIGURA / (ref.abajo - ref.arriba);
   const c = createCanvas(w, h);
   const ctx = c.getContext("2d");
   hoja.forEach((fila, f) => {
     const cuadros = fila.map((img, col) => {
-      const an = ancla(cuerpo[f][col]);
-      const base = cuadro(cuerpo[f][col], k, an);
+      const an = ancla(molde[f][col]);
+      const base = cuadro(igual ? alinear(igual[f][col], cuerpo[f][col]) : cuerpo[f][col], k, an);
       pielAClave(base, m.colores.piel.clave);
       if (!carpetaCuerpo) return base;
       // A rigid layer's step is its standing frame exactly: it moves with the head, which does not move.
@@ -493,9 +499,6 @@ async function main() {
       if (/_(pantalon|falda|abajo)$/.test(pieza.id)) final.fill(0, 0, corte * ANCHO * 4); // and legwear below it
       const propio = PROPIO[pieza.id.split("/")[1]!];
       if (propio && col > 0) igualarA(final, quieta, propio);
-      const tinte = TINTE[pieza.id.split("/")[1]!];
-      if (tinte) tenir(final, tinte);
-      for (const r of ["cabello", "mochila"] as const) if (pieza.colores.includes(r)) verdeAClave(final, m.colores[r].clave);
       const d = ctx.createImageData(ANCHO, ALTO);
       d.data.set(final);
       ctx.putImageData(d, col * ANCHO, f * ALTO);
@@ -511,6 +514,8 @@ async function main() {
   if (carpetaCuerpo) {
     const todo = ctx.getImageData(0, 0, w, h);
     paleta(todo.data);
+    const rampa = pieza.colores.find((r) => r !== "piel"), es = suyo(pieza.id);
+    if (rampa && es) aClave(todo.data, es, m.colores[rampa].clave);
     ctx.putImageData(todo, 0, 0);
   }
   writeFileSync(join(ASSETS, pieza.archivo), c.toBuffer("image/png"));

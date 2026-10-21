@@ -56,6 +56,7 @@ declare module "virtual:contenido" {
       cuerpo: Record<"nina" | "nino", string>;
       ropa: Record<"uniforme_pantalon" | "uniforme_falda" | "casa", string>;
       extras: Record<"lentes" | "aretes" | "gorra" | "mochila", string>;
+      color_de: Record<string, string>;
       piel: string;
       color_cabello: string;
       color_mochila: string;
@@ -136,7 +137,7 @@ declare module "virtual:contenido" {
 }
 
 declare module "virtual:arte" {
-  type Rampa = "piel" | "cabello" | "mochila";
+  type Rampa = import("../herramientas/arte.ts").Rampa;
   interface Pieza {
     id: string;
     archivo: string;

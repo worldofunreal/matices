@@ -4,6 +4,8 @@ Registro de cambios de dirección, con su razón. La más reciente arriba.
 
 | Fecha | Decisión | Por qué | Quién |
 | --- | --- | --- | --- |
+| 2026-10-21 | Solo dos cuerpos, niña y niño; se quita "prefiero no elegir". Cada uno empieza con su look (niña: cabello largo y falda; niño: cabello corto y pantalón) y el uniforme empieza oscuro con gris. Cabello y ropa siguen libres para los dos | El cabello y la ropa ya dan esa libertad; un tercer cuerpo costaba un tercio más de arte | Omar |
+| 2026-10-21 | Cada prenda, los tenis y cada extra tienen su fila de colores, como la piel y el cabello. El protagonista no tiene retrato: la creación muestra su cabeza con las mismas capas | Personalización completa sin dibujar una versión por color | Omar |
 | 2026-10-20 | Fase de demo. Los participantes son anónimos y no se les pide nada; más adelante un token liga cada sesión con la identidad del niño. Los eventos van a un servidor propio en IONOS y una sola cuenta de admin ve a cada participante y a todos juntos (`tecnico/arquitectura.md`). Reemplaza las salidas de datos A, B y C | Revisar las partidas y hacer el demo | Omar |
 | 2026-10-20 | El producto no pone candados, avisos ni bloqueos. Lo legal (consentimiento, sí del niño, revisión legal y de ética) lo resuelve el equipo en persona antes de entregarlo: si un niño juega, ya está resuelto. No es tema del desarrollo | Las reglas legales en los documentos frenaban el desarrollo | Omar |
 | 2026-10-19 | El juego no pide el sí del niño ni muestra aviso al empezar | Pedirlo en el juego sesgaba el inicio | Omar |

@@ -63,7 +63,7 @@ Todos llevan: código del participante, sesión, versión del contenido y del ju
 
 | Evento | Datos | Para qué |
 | --- | --- | --- |
-| `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
+| `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, color de cada prenda, tenis y extra que lleva (`colores`), si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
 | `casa_figura` | Qué hizo (`poner`, `mover`, `quitar`, `renombrar`, `piel`), figura, si es adulto, menor o mascota, cuarto, distancia al personaje en cuadros, orden. Al terminar, `casa_lista` con todas las figuras y el tiempo | Quién forma el mundo del niño |
 | `cuento` | Suceso y si empezó, terminó o se dejó con "Ahora no" | Cuántos cuentos se completan |
 | `cuento_paso` | Suceso, paso, opciones en el orden mostrado, opción y código, ms para decidir desde que aparece el paso | El dato central |

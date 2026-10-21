@@ -13,7 +13,7 @@ const C: Contenido = {
 };
 const eventos = [
   ev("a", "pantalla", 0, { pantalla: "creacion" }),
-  ev("a", "personaje", 5000, { cuerpo: "nina", tono: 3, cabello: "02", color_cabello: 1, ropa: "uniforme_falda", extras: ["mochila"], color_mochila: 2 }),
+  ev("a", "personaje", 5000, { cuerpo: "nina", tono: 3, cabello: "02", color_cabello: 1, ropa: "uniforme_falda", extras: ["mochila"], color_mochila: 2, colores: { sueter: 3, uniforme_abajo: 1, tenis: 2 } }),
   ev("a", "pantalla", 9000, { pantalla: "mundo" }),
   ev("a", "toque_sin_efecto", 9500, { pantalla: "mundo" }),
   ev("a", "cuento_paso", 10000, { cuento: "E01", paso: "que_hace", elegida: "AUSENTE", ms_decidir: 4000 }),
@@ -41,5 +41,5 @@ test("uso por pantalla, avance y apariencia", () => {
   assert.equal(mundo.sinEfecto, 1);
   assert.equal(mundo.segundos, 4); // 9 s to the last event at 13 s
   assert.deepEqual(avance(g).map((p) => p.n), [1, 0, 1, 1, 0, 0]);
-  assert.deepEqual(aparienciaDe(g.get("a")!), { cuerpo: "nina", piel: 2, cabello: "02", colorCabello: 0, ropa: "uniforme", abajo: "falda", extras: ["mochila"], colorMochila: 1 });
+  assert.deepEqual(aparienciaDe(g.get("a")!), { cuerpo: "nina", cabello: "02", ropa: "uniforme", abajo: "falda", extras: ["mochila"], colores: { sueter: 2, uniforme_abajo: 0, tenis: 1, piel: 2, cabello: 0, mochila: 1 } });
 });
