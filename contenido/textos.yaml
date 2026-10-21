@@ -8,6 +8,8 @@ creacion:
   inicio: "Vamos a hacer a tu personaje."
   espejo: "Aquí puedes cambiar a tu personaje."
   listo: "Listo"
+  siguiente: "Sigue: {paso}"
+  atras: "Atrás"
   pasos:
     cuerpo: "¿Cómo es tu personaje?"
     piel: "¿De qué color es su piel?"

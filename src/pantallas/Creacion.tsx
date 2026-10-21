@@ -38,7 +38,7 @@ function useEscala(caja: React.RefObject<HTMLElement | null>) {
 }
 
 // Character creation (GDD §6): everything on one screen, one tap per choice, the character changes
-// as the child chooses. Also opened from the mirror in the house (modo "espejo").
+// as the child chooses, and each step leads to the next. Also opened from the mirror in the house (modo "espejo").
 export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTerminar: () => void }) {
   const [a, setA] = useState<Apariencia>(() => structuredClone(estado().apariencia));
   const [nombre, setNombre] = useState(estado().nombre);
@@ -110,21 +110,34 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
     alTerminar();
   };
 
-  const p = PESTANAS.find((x) => x.id === pestana)!;
+  // The tabs are also a path: the footer leads to the next step, and the last one finishes.
+  const n = PESTANAS.findIndex((x) => x.id === pestana);
+  const p = PESTANAS[n]!;
+  const anterior = PESTANAS[n - 1];
+  const siguiente = PESTANAS[n + 1];
 
   return (
-    <main className="pantalla creacion">
+    <main className="pantalla creacion" data-paso={pestana}>
       <div className="escenario" ref={escenario}>
         <div className="foco" />
-        {listo && <Personaje a={a} escala={escala} camina />}
+        <div className="figuras" aria-hidden="true">
+          {[...Array(7).keys()].map((i) => (
+            <span key={i} />
+          ))}
+        </div>
+        {listo && (
+          <div className="figura">
+            <Personaje a={a} escala={escala} camina />
+          </div>
+        )}
         {nombre && <div className="nombre-escenario">{nombre}</div>}
       </div>
 
       <section className="taller panel">
         <nav className="pestanas" role="tablist">
           {PESTANAS.map((x) => (
-            <button key={x.id} role="tab" aria-selected={x.id === pestana} className="pestana" onClick={() => setPestana(x.id)}>
-              {x.icono}
+            <button key={x.id} role="tab" aria-selected={x.id === pestana} className="pestana" data-paso={x.id} onClick={() => setPestana(x.id)}>
+              <span className="icono-paso">{x.icono}</span>
               <span>{x.nombre}</span>
             </button>
           ))}
@@ -209,10 +222,27 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
         </div>
 
         <footer className="pie-taller">
-          <button className="boton principal" onClick={terminar}>
-            {Icono.listo}
-            {T.listo}
-          </button>
+          {anterior && (
+            <button className="boton secundario" aria-label={T.atras} onClick={() => setPestana(anterior.id)}>
+              {Icono.volver}
+            </button>
+          )}
+          {siguiente && modo === "espejo" && (
+            <button className="boton secundario" onClick={terminar}>
+              {T.listo}
+            </button>
+          )}
+          {siguiente ? (
+            <button className="boton principal" onClick={() => setPestana(siguiente.id)}>
+              {T.siguiente.replace("{paso}", siguiente.nombre)}
+              {Icono.siguiente}
+            </button>
+          ) : (
+            <button className="boton principal" onClick={terminar}>
+              {Icono.listo}
+              {T.listo}
+            </button>
+          )}
         </footer>
       </section>
     </main>

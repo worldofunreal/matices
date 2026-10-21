@@ -71,6 +71,8 @@ El tiempo no avanza solo: avanza cuando el niño llega a la puerta o lugar que m
 
 Primera pantalla del juego. Unos 3 minutos.
 
+Los pasos van en orden: abajo, un botón lleva al siguiente ("Sigue: Piel") y en el último dice "Listo". Las pestañas de arriba dejan saltar a cualquier paso. Cada paso tiene su color: su pestaña, la luz detrás del personaje y lo elegido. No hay contador de pasos (§13).
+
 | Paso | Opciones | Nota |
 | --- | --- | --- |
 | Cuerpo | Niña o niño. Cada uno empieza con su look: niña con cabello largo y falda, niño con cabello corto y pantalón | Mismos sucesos y opciones para todos; cabello y ropa se eligen libres después |

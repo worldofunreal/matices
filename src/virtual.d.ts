@@ -52,6 +52,8 @@ declare module "virtual:contenido" {
       inicio: string;
       espejo: string;
       listo: string;
+      siguiente: string;
+      atras: string;
       pasos: Record<"cuerpo" | "piel" | "cabello" | "color_cabello" | "ropa" | "extras" | "color_mochila" | "nombre", string>;
       cuerpo: Record<"nina" | "nino", string>;
       ropa: Record<"uniforme_pantalon" | "uniforme_falda" | "casa", string>;

@@ -280,12 +280,13 @@ function igualarA(px: Uint8ClampedArray, ref: Uint8ClampedArray, propio: (r: num
 
 // Which pixels of a layer are the piece itself and take its ramp's key colors. Hair and backpack are
 // drawn green and the uniform blue (generar.ts) so they stand out from the body's gray clothes when they
-// are cut; the rest are cut by their own color (PROPIO). Shoes are everything but their outline.
+// are cut; the rest are cut by their own color (PROPIO). Shoes are their light parts: the dark-gray sole
+// and outline stay as drawn (counted as the shoe, the sole would become its most common shade).
 function suyo(id: string): ((px: Uint8ClampedArray, i: number) => boolean) | null {
   const n = id.split("/")[1]!;
   if (/^(cabello_|extra_mochila)/.test(n)) return esVerde;
   if (n.startsWith("ropa_uniforme_")) return (px, i) => px[i + 3] > 0 && px[i + 2] > px[i] + 25 && px[i + 2] > px[i + 1] + 15;
-  if (n === "calzado_tenis") return (px, i) => px[i + 3] > 0 && luz(px[i], px[i + 1], px[i + 2]) > 60;
+  if (n === "calzado_tenis") return (px, i) => px[i + 3] > 0 && luz(px[i], px[i + 1], px[i + 2]) > 100;
   const propio = PROPIO[n];
   return propio ? (px, i) => px[i + 3] > 0 && propio(px[i] / 255, px[i + 1] / 255, px[i + 2] / 255) : null;
 }

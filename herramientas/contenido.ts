@@ -131,7 +131,7 @@ export function validar() {
   }
 
   const textos = parse(readFileSync(join(DIR, "textos.yaml"), "utf8"));
-  const marcasTextos = new Set(["{nombre}", "{n}", "{figura}", "{cuarto}"]);
+  const marcasTextos = new Set(["{nombre}", "{n}", "{figura}", "{cuarto}", "{paso}"]);
   const recorrer = (v: unknown, donde: string): void => {
     if (typeof v === "string") {
       if (!v.trim()) err(donde, "texto vacío");

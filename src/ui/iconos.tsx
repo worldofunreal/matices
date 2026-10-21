@@ -109,6 +109,7 @@ export const Icono = {
     </>,
   ),
   volver: svg(<path d="M15 5l-7 7 7 7" />),
+  siguiente: svg(<path d="M9 5l7 7-7 7" />),
   deshacer: svg(
     <>
       <path d="M9 14L4 9l5-5" />
