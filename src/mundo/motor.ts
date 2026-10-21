@@ -11,6 +11,7 @@ const VELOCIDAD = 90; // game pixels per second
 const CORRER = 165; // running
 const PERRO_CORRE = 130; // the dog runs off faster than walking and slower than running: to catch it, run
 const PERRO_CERCA = 22; // how close the child must pass to the dog to be followed, or to catch it
+const PERRO_PASO_MS = 120; // one frame of the dog's side walk
 const PASO_MS = 140; // time per walking frame
 const LADO_CORTO = 360; // the short side of the screen shows about this many game pixels
 const ZOOM_MAX = 4; // the closest the child can zoom, in whole steps
@@ -458,19 +459,23 @@ export class Motor {
     for (const f of this.o.figuras) {
       const hoja = piezaYa(`figuras/${f.id}`, { piel: f.piel });
       if (!hoja) continue;
-      // The dog hops while it moves and looks the way it goes.
+      // The dog walks from the side (drawn facing left: standing, step, standing, step) and looks the way
+      // it goes; without that art it hops with its sitting figure.
       const perro = this.perro?.f === f ? this.perro : null;
-      const salto = perro?.anda ? Math.round(Math.abs(Math.sin(this.tiempo / 70)) * 2) : 0;
+      const lado = perro?.anda ? piezaYa("figuras/perro_lado") : undefined;
+      const salto = perro?.anda && !lado ? Math.round(Math.abs(Math.sin(this.tiempo / 70)) * 2) : 0;
+      const img = lado ?? hoja, w = lado ? CUADRO.ancho : hoja.width;
+      const col = lado ? [0, 1, 0, 2][Math.floor(this.tiempo / PERRO_PASO_MS) % 4] : 0;
+      const voltear = lado ? !perro!.izq : !!perro?.izq;
       cosas.push({
         y: f.y,
         dibujar: () => {
-          const x = Math.round(f.x - hoja.width / 2);
-          const y = Math.round(f.y - hoja.height) - salto;
-          if (!perro?.izq) return ctx.drawImage(hoja, x, y);
+          const x = Math.round(f.x - w / 2);
+          const y = Math.round(f.y - img.height) - salto;
           ctx.save();
-          ctx.translate(x + hoja.width, y);
-          ctx.scale(-1, 1);
-          ctx.drawImage(hoja, 0, 0);
+          ctx.translate(voltear ? x + w : x, y);
+          if (voltear) ctx.scale(-1, 1);
+          ctx.drawImage(img, col * w, 0, w, img.height, 0, 0, w, img.height);
           ctx.restore();
         },
       });

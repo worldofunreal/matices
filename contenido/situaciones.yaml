@@ -10,6 +10,6 @@ situaciones:
     aviso: "¡No corras dentro de la casa!"
     pregunta: "Te dije que no corrieras dentro de la casa. Es peligroso, o puedes romper algo."
     respuestas:
-      - [DESAFIA, "Me vale pito"]
+      - [DESAFIA, "No me importa"]
       - [PROMETE, "No lo vuelvo a hacer"]
       - [SE_DISCULPA, "Perdón"]

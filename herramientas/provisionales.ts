@@ -123,6 +123,16 @@ function persona(ctx: Ctx, p: Pieza, m: Manifiesto) {
 }
 
 function hoja(ctx: Ctx, p: Pieza, m: Manifiesto) {
+  // The dog's side walk: its sitting placeholder in each frame.
+  if (p.id === "figuras/perro_lado") {
+    for (let i = 0; i < p.medida[0] / 48; i++) {
+      ctx.save();
+      ctx.translate(i * 48, 0);
+      persona(ctx, { ...p, id: "figuras/perro", medida: [48, p.medida[1]] }, m);
+      ctx.restore();
+    }
+    return;
+  }
   if (p.id.startsWith("figuras/")) return persona(ctx, p, m);
   const capa = capaDe(p);
   const filas = [0, 1, 3]; // abajo, izquierda, arriba (derecha is izquierda mirrored)

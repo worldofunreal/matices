@@ -20,7 +20,7 @@ Texto de las situaciones y del resto del juego. El juego lee estos archivos tal 
   aviso: "¡No corras dentro de la casa!"            # la primera vez
   pregunta: "Te dije que no corrieras dentro…"      # la segunda; después vuelve el aviso
   respuestas:                                       # [CÓDIGO, texto]
-    - [DESAFIA, "Me vale pito"]
+    - [DESAFIA, "No me importa"]
 ```
 
 ## Reglas

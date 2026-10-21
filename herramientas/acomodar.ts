@@ -5,7 +5,7 @@
 //   arriba_paso (.png/.jpg). abajo and arriba take their second step as the first one mirrored.
 //   single figure (fixed character, 48 × 64): quieta.
 //   Figures of the house: node herramientas/acomodar.ts figuras (or figuras/<id>), no folder: each one is ARTE/figuras/<id>.png
-//   (or <id>_quieta), cut to its height (FIGURAS in arte.ts).
+//   (or <id>_quieta), anywhere under ARTE/figuras, cut to its height (FIGURAS in arte.ts).
 //   A layer (hair, clothes, extras) is each body pose edited by the generator (herramientas/generar.ts):
 //   with the body's folder, the layer keeps only the pixels that changed, framed like the body.
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -455,20 +455,59 @@ function cuello(px: Uint8ClampedArray) {
 // generator drew it. People take the skin key colors (the house can change their skin); pets keep their fur.
 async function figura(pieza: Pieza, m: Manifiesto) {
   const [w, h] = pieza.medida, n = pieza.id.split("/")[1]!;
+  if (n === "perro_lado") return perroLado(pieza);
   const { figuras } = parse(readFileSync(join(ROOT, "contenido/figuras.yaml"), "utf8")) as { figuras: [string, string, string][] };
-  const carpeta = join(ARTE, "figuras");
-  const f = readdirSync(carpeta).find((a) => new RegExp(`^${n}(_quieta)?\\.(png|jpe?g|webp)$`).test(a));
+  const f = buscarFigura(n);
   if (!f) return false;
-  const img = await leer(join(carpeta, f));
+  const img = await leer(f);
   const an = ancla(img), { alto } = FIGURAS[n];
   const px = cuadro(img, alto / (an.abajo - an.arriba), an, { alto: h, y: h - 2 - alto });
   if (figuras.find((f) => f[0] === n)?.[1] !== "mascota") pielAClave(px, m.colores.piel.clave);
-  for (let y = 0; y < h; y++) for (const x of [0, w - 1]) if (px[(y * w + x) * 4 + 3]) throw new Error(`${pieza.id}: toca la orilla del cuadro y se cortaría`);
-  const c = createCanvas(w, h), d = c.getContext("2d").createImageData(w, h);
-  d.data.set(px);
-  c.getContext("2d").putImageData(d, 0, 0);
-  writeFileSync(join(ASSETS, pieza.archivo), c.toBuffer("image/png"));
+  guardarFigura(pieza, [px]);
   console.log(`${pieza.archivo}: ${w} × ${h}, ${alto} de alto`);
+  return true;
+}
+
+// A figure's image can be anywhere under ARTE/figuras (a folder per figure or none): it is found by its name.
+function buscarFigura(n: string) {
+  const carpeta = join(ARTE, "figuras");
+  const f = (readdirSync(carpeta, { recursive: true }) as string[]).find((a) => new RegExp(`(^|/)${n}(_quieta)?\\.(png|jpe?g|webp)$`).test(a));
+  return f && join(carpeta, f);
+}
+
+// Frames side by side; none may touch its side edges, or it would be cut.
+function guardarFigura(pieza: Pieza, cuadros: Uint8ClampedArray[]) {
+  const [w, h] = pieza.medida;
+  const c = createCanvas(w, h), ctx = c.getContext("2d");
+  cuadros.forEach((px, i) => {
+    for (let y = 0; y < h; y++) for (const x of [0, ANCHO - 1]) if (px[(y * ANCHO + x) * 4 + 3]) throw new Error(`${pieza.id}: toca la orilla del cuadro y se cortaría`);
+    const d = ctx.createImageData(ANCHO, h);
+    d.data.set(px);
+    ctx.putImageData(d, i * ANCHO, 0);
+  });
+  writeFileSync(join(ASSETS, pieza.archivo), c.toBuffer("image/png"));
+}
+
+// The dog walking from the side, facing left: standing and two steps, one frame each. Every image is first
+// brought to the standing one's size (the generator saves some bigger) and shares its scale, so a step keeps
+// its real height (the head dips). Each frame lines up by the head, which hardly moves while walking, with the
+// standing body centered; the feet stand on the frame's last rows.
+const PERRO_LADO = ["perro_lado", "perro_lado_paso_1", "perro_lado_paso_2"], PERRO_LADO_ALTO = 30;
+async function perroLado(pieza: Pieza) {
+  const rutas = PERRO_LADO.map(buscarFigura);
+  if (rutas.some((r) => !r)) return false;
+  const [ref, ...pasos] = await Promise.all(rutas.map((r) => leer(r!)));
+  const imgs = [ref, ...pasos.map((p) => (p.w === ref.w && p.h === ref.h ? p : redimensionar(p, ref.w, ref.h)))];
+  const a0 = ancla(ref), k = PERRO_LADO_ALTO / (a0.abajo - a0.arriba);
+  let x0 = ref.w, x1 = 0;
+  for (let i = 0; i < ref.fg.length; i++) if (ref.fg[i]) { x0 = Math.min(x0, i % ref.w); x1 = Math.max(x1, i % ref.w); }
+  const corrimiento = (x0 + x1) / 2 - a0.centro;
+  const h = pieza.medida[1];
+  guardarFigura(pieza, imgs.map((img) => {
+    const an = ancla(img);
+    return cuadro(img, k, { ...an, centro: an.centro + corrimiento }, { alto: h, y: h - 2 - Math.round((an.abajo - an.arriba) * k) });
+  }));
+  console.log(`${pieza.archivo}: ${PERRO_LADO.length} cuadros, ${PERRO_LADO_ALTO} de alto`);
   return true;
 }
 

@@ -63,7 +63,7 @@ Cualquier pieza se puede entregar en cualquier momento: el juego ya funciona con
 | 2 | Protagonista: cuerpos, cabellos, ropa y extras (carpeta `personaje/`) | H2 |
 | 3 | Interior de la casa y sus muebles; figuras para armar la casa (`lugares/casa/`, `figuras/`) | H3 |
 | 4 | Calle, escuela, parque, tiendita, biblioteca y sus objetos; vecinos y personajes fijos | H4 |
-| 5 | La caminata del perro y lo que pidan las situaciones de GDD §9 | M4 |
+| 5 | Lo que pidan las situaciones de GDD §9 (la caminata del perro ya está) | M4 |
 
 ## Cómo entregarlo
 
@@ -122,7 +122,7 @@ Con el protagonista esto ya es automático: `herramientas/generar.ts` le pide ca
 
 No tienen retrato aparte: la repisa muestra la cabeza de su figura.
 
-**El perro, caminando:** además de su figura quieta, su figura quieta de perfil y dos pasos de perfil (`perro_lado`, `perro_lado_paso_1`, `perro_lado_paso_2`), editando su figura; la derecha es la izquierda volteada. Mientras no estén, el perro avanza con su figura quieta dando saltitos.
+**El perro, caminando:** además de su figura quieta, su figura de perfil mirando a la izquierda y dos pasos de perfil (`perro_lado`, `perro_lado_paso_1`, `perro_lado_paso_2`), editando su figura; la derecha es la izquierda volteada. Las imágenes pueden ir en cualquier carpeta dentro de `figuras/`. `acomodar.ts figuras/perro_lado` las junta en `figuras/perro_lado.png` (tres cuadros de 48 × 48, el perro de 30 de alto con las patas abajo). Al caminar alterna quieto, paso, quieto, paso; parado usa su figura de frente. Si faltan, avanza con su figura de frente dando saltitos.
 
 **Personajes fijos** (un cuadro de pie, con la plantilla de figura):
 > [estilo] One single standing sprite, 384×512 px, following the attached template: head top and feet on the guide lines, centered, facing the viewer, standing still. SUBJECT: [quién es, de `manifiesto.yaml`], everyday Mexican clothes.

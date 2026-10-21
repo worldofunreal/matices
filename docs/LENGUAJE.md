@@ -13,6 +13,7 @@ El lenguaje del juego y de sus documentos no etiqueta a niños, familias ni luga
 | Familia disfuncional, mala madre, mal padre | Juicio sobre la familia | Lo que pasó, descrito ("en su historia no llegó ningún adulto") |
 | Víctima, maltratado, abandonado (sobre un niño real) | Es un diagnóstico o una conclusión legal que el juego no hace | Lo que el niño eligió |
 | Normal / anormal | Comparación no validada | Describir sin comparar |
+| Groserías y palabras vulgares, aunque sea en una respuesta del niño | Es un juego para niños y lo revisan instituciones | Una respuesta grosera en tono, con palabras de niño: "No me importa" |
 | Correcto, bien hecho, ganaste (en el juego) | Rompe el principio de que ninguna respuesta es la correcta | Nada: el juego sigue |
 
 ## Sí se usa

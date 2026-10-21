@@ -6,7 +6,7 @@ El juego guarda eventos con hora exacta, no conclusiones. Cada respuesta de cada
 
 | Código | Qué contesta el niño | Ejemplo en S01 (correr en la casa) |
 | --- | --- | --- |
-| `DESAFIA` | Rechaza el límite | "Me vale pito" |
+| `DESAFIA` | Rechaza el límite | "No me importa" |
 | `PROMETE` | Promete no repetirlo | "No lo vuelvo a hacer" |
 | `SE_DISCULPA` | Pide perdón | "Perdón" |
 | `IGNORA` | Se aleja sin contestar | — |

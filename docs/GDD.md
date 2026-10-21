@@ -111,7 +111,7 @@ Lo que se registra en cada una: qué hizo, quién reaccionó (o que no había na
 
 | Situación | Qué pasa | Áreas (`clinico/marco-clinico.md`) | Estado |
 | --- | --- | --- | --- |
-| S01 Correr en la casa | El perro de la casa sigue al niño y a ratos sale corriendo; para alcanzarlo hay que correr. La primera vez, el adulto más cercano dice "¡No corras dentro de la casa!". La segunda, le habla ("Te dije que no corrieras dentro de la casa…") y el niño contesta "Me vale pito", "No lo vuelvo a hacer" o "Perdón", o se va | Conducta; a quién culpa (más adelante, con S04) | Hecha |
+| S01 Correr en la casa | El perro de la casa sigue al niño y a ratos sale corriendo; para alcanzarlo hay que correr. La primera vez, el adulto más cercano dice "¡No corras dentro de la casa!". La segunda, le habla ("Te dije que no corrieras dentro de la casa…") y el niño contesta "No me importa", "No lo vuelvo a hacer" o "Perdón", o se va | Conducta; a quién culpa (más adelante, con S04) | Hecha |
 | S02 Hambre | En la mañana suena la panza. Puede ir al refri, ir con alguien de la casa o seguir jugando | Necesidades físicas; pedir ayuda | Por hacer |
 | S03 La tarea | De noche la mochila tiene tarea. Puede hacerla en la mesa, pedir ayuda a alguien o dejarla | Escuela y aprendizaje; supervisión | Por hacer |
 | S04 Se rompe algo | Si corre cerca de la mesa, se cae un vaso. Llega alguien: "¿Qué pasó?". "Fui yo", "Fue el perro", "No sé" o irse | A quién culpa; conducta | Por hacer |

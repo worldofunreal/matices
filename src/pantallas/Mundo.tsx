@@ -80,6 +80,7 @@ async function cargarArte(m: Mapa, e: Estado) {
     pieza(`lugares/${m.lugar}/fondo`),
     ...m.puntos.map((p) => pieza(p.arte)),
     ...(m.lugar === "casa" ? e.casa.map((f) => pieza(`figuras/${f.figura}`, { piel: f.piel })) : []),
+    ...(m.lugar === "casa" && e.casa.some((f) => f.figura === "perro") ? [pieza("figuras/perro_lado")] : []),
     ...capas(e.apariencia).map((id) => pieza(id, coloresDe(e.apariencia))),
   ]);
 }
