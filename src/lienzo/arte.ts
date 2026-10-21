@@ -67,6 +67,20 @@ export async function pieza(id: string, colores: Colores = {}): Promise<HTMLCanv
 // The same piece if it is already built, read without waiting (the drawing loop uses this).
 export const piezaYa = (id: string, colores: Colores = {}) => listos.get(clave(id, colores));
 
+// How tall the drawing of a built piece is, from its bottom edge to its first painted row (speech goes over the head).
+const altos = new Map<string, number>();
+export function altoVisible(id: string): number {
+  const hecho = altos.get(id);
+  if (hecho !== undefined) return hecho;
+  const c = [...listos].find(([k]) => k === id || k.startsWith(`${id}~`))?.[1];
+  if (!c) return 0;
+  const px = c.getContext("2d")!.getImageData(0, 0, c.width, c.height).data;
+  let fila = 0;
+  while (fila < c.height && !px.subarray(fila * c.width * 4, (fila + 1) * c.width * 4).some((v, i) => i % 4 === 3 && v > 0)) fila++;
+  altos.set(id, c.height - fila);
+  return c.height - fila;
+}
+
 // Warms the cache so a screen draws at once when it opens.
 export const precargar = (ids: string[]) => Promise.all(ids.map(imagen));
 

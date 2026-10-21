@@ -1,28 +1,28 @@
-// The world (GDD §8): one place at a time. Walking and drawing are in mundo/motor.ts; this screen
-// holds the rules: doors and their hours, the bed, the mirror, what a tap says, and the stories and
-// drawings that start where the child stands (GDD §9, §10). Only the speaker plays a voice (GDD §12).
+// The world (GDD §8): one place at a time. Walking, running, the dog and drawing are in mundo/motor.ts;
+// this screen holds the rules: doors and their hours with a sign on each one, the bed, the mirror, what a
+// tap says, and the everyday situations (GDD §9), which never stop the world.
 import { useEffect, useRef, useState } from "react";
 import contenido from "virtual:contenido";
 import { cargarMapa, quitarAusentes, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
 import { Motor } from "../mundo/motor";
-import { pieza } from "../lienzo/arte";
+import { pieza, altoVisible } from "../lienzo/arte";
 import { capas, coloresDe } from "../personaje/apariencia";
-import { estado, cambiarEstado, type Estado } from "../datos/guardado";
-import { bloqueo, revisarHora, puedeDormir, dormir } from "../datos/dia";
-import { siguiente, sitio, tocaAqui, terminar } from "../datos/cuentos";
+import { estado, cambiarEstado, type Estado, type FiguraPuesta } from "../datos/guardado";
+import { bloqueo, revisarHora, dormir } from "../datos/dia";
+import { adultoMasCerca, codigoDe, etiquetaDe } from "../datos/casa";
+import { ocurre, responder, type Reaccion } from "../datos/situaciones";
 import { registrar } from "../datos/eventos";
-import { enDetalle } from "../datos/monitor";
 import { Bocina } from "../ui/Bocina";
 import { Icono } from "../ui/iconos";
+import { sonarSiGrabada } from "../ui/voz";
 import { useSuperpuesto } from "../ui/Siempre";
-import { Cuento, type EstadoCuerpo } from "./Cuento";
-import { Dibujo } from "./Dibujo";
-import { Actividad, Aterrizaje, type TipoActividad } from "./Actividades";
 import "./mundo.css";
 
 const M = contenido.textos.mundo;
 const CAIDA = 6; // the walker's body center sits 6 game pixels above the feet
-const AMBIENTE_MS = 3200; // how long the surroundings look different after a story (GDD §9)
+const CORRER_MS = 500; // running this long in the house counts as running (S01)
+const ENTRE_VECES_MS = 4000; // and a new time only this long after the last one
+const ALEJARSE = 48; // game pixels the child walks away from a question to leave it unanswered (IGNORA)
 
 const dentro = (r: { x: number; y: number; w: number; h: number }, x: number, y: number) => x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h;
 
@@ -47,25 +47,22 @@ function primerPaso(desde: string, meta: string): string | null {
   return paso;
 }
 
-// Where the soft ring points: the next story's spot, or the door toward its place (GDD §5).
-function guiaDe(m: Mapa): { x: number; y: number } | null {
+// The sign over a door: where it leads. Inside the same building a place has its inside name ("Patio").
+export const nombreSalida = (desde: string, destino: string) => (desde.split("_")[0] === destino.split("_")[0] && M.lugares_dentro[destino]) || M.lugares[destino];
+
+// Where the day goes next (GDD §4): the school in the morning, home in the afternoon, bed at night.
+// The ring sits on the door toward it (or on the bed), and its sign and the edge arrow say its name.
+function guiaDe(m: Mapa): { x: number; y: number; nombre: string; puerta: string | null } | null {
   const { hora } = estado();
-  const c = siguiente();
-  let meta: string;
-  let zona: { x: number; y: number } | null = null;
-  if (c && c.hora === hora) {
-    const s = sitio(c.id);
-    meta = s.mapa;
-    if (s.zona) zona = { x: s.zona.x + s.zona.w / 2, y: s.zona.y + s.zona.h / 2 };
-  } else meta = hora === "manana" ? "calle" : "casa";
-  if (meta === m.lugar) {
+  const meta = hora === "manana" ? "escuela_patio" : "casa";
+  if (hora === "manana" && m.lugar.startsWith("escuela")) return null;
+  if (m.lugar === meta) {
     const cama = m.puntos.find((p) => p.nombre === "cama");
-    if (!zona && hora === "noche" && (!c || c.hora !== hora) && cama) zona = { x: cama.x, y: cama.y - 16 };
-    return zona;
+    return hora === "noche" && cama ? { x: cama.x, y: cama.y - 16, nombre: M.a_dormir, puerta: null } : null;
   }
   const paso = primerPaso(m.lugar, meta);
   const puerta = m.puertas.find((p) => p.destino === paso);
-  return puerta ? { x: puerta.x + puerta.w / 2, y: puerta.y + puerta.h / 2 } : null;
+  return puerta ? { x: puerta.x + puerta.w / 2, y: puerta.y + puerta.h / 2, nombre: nombreSalida(m.lugar, puerta.destino), puerta: puerta.nombre } : null;
 }
 
 // Where the child starts: the arrival of a door, or where they stopped, or where they put their
@@ -87,11 +84,8 @@ async function cargarArte(m: Mapa, e: Estado) {
   ]);
 }
 
-type Abierto =
-  | { tipo: "cuento"; id: string }
-  | { tipo: "dibujo"; id: string }
-  | { tipo: "actividad"; id: string; actividad: TipoActividad }
-  | { tipo: "aterrizaje"; final: boolean };
+// Someone of the house speaking to the child, over their head; with answers, they wait for one.
+type Habla = { r: Reaccion; f: FiguraPuesta; quien: string; t0: number; x0: number; y0: number };
 
 export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const lienzo = useRef<HTMLCanvasElement>(null);
@@ -100,65 +94,52 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   alEspejoRef.current = alEspejo;
   const temporizador = useRef(0);
   const motorRef = useRef<Motor | null>(null);
-  const mapaRef = useRef<Mapa | null>(null);
-  const ocupado = useRef(false); // a story or a drawing is open: the world stands still
-  // Mi libro, Opciones or the "Quiero hablar" card cover the screen (Siempre.tsx): the world stands still under them too.
+  // Mi libro, Opciones or the "Quiero hablar" card cover the screen (Siempre.tsx): the world stands still under them.
   const superpuesto = useSuperpuesto();
-  const superpuestoRef = useRef(false);
-  superpuestoRef.current = superpuesto;
-  const finAterrizaje = useRef<(() => void) | null>(null); // what goes on after the landing, at bedtime
   const [recarga, setRecarga] = useState(0);
   const [cubierto, setCubierto] = useState(true);
   const [burbuja, setBurbuja] = useState<{ id: number; clave: string; texto: string } | null>(null);
   const [cartel, setCartel] = useState<{ texto: string } | null>(null);
-  const [abierto, setAbierto] = useState<Abierto | null>(null);
-  const [ambiente, setAmbiente] = useState<EstadoCuerpo | null>(null);
-
-  const abrir = (a: Abierto) => {
-    ocupado.current = true;
-    motorRef.current?.pausar(true);
-    setAbierto(a);
-  };
-
-  // Closing a story or a drawing: the world moves again, the ring points at what is next, and a new
-  // part of the day (tarde → noche at home) reloads the place so its light changes.
-  const cerrarOverlay = () => {
-    setAbierto(null);
-    ocupado.current = false;
-    const motor = motorRef.current;
-    const mapa = mapaRef.current;
-    if (!motor || !mapa) return;
-    motor.pausar(superpuestoRef.current);
-    if (revisarHora(mapa.lugar)) {
-      setCubierto(true);
-      window.setTimeout(() => setRecarga((r) => r + 1), 400);
-      return;
-    }
-    motor.guia = guiaDe(mapa);
-  };
-
-  // The surroundings change after a story only when the child keeps the ambient effects on (Opciones).
-  const alCerrarCuento = (e: EstadoCuerpo | null) => {
-    cerrarOverlay();
-    if (e && estado().opciones.ambiente) setAmbiente(e);
-  };
+  const [mapa, setMapa] = useState<Mapa | null>(null);
+  const [guia, setGuia] = useState<ReturnType<typeof guiaDe>>(null);
+  const [corriendo, setCorriendo] = useState(false);
+  const [habla, setHabla] = useState<Habla | null>(null);
+  const hablaRef = useRef<Habla | null>(null);
+  hablaRef.current = habla;
 
   useEffect(() => {
-    if (!ambiente) return;
-    const t = window.setTimeout(() => setAmbiente(null), AMBIENTE_MS);
-    return () => clearTimeout(t);
-  }, [ambiente]);
-
-  // The world stops while any cover is open, and goes on only when no story or drawing is open either.
-  useEffect(() => {
-    motorRef.current?.pausar(superpuesto || ocupado.current);
+    motorRef.current?.pausar(superpuesto);
   }, [superpuesto]);
 
-  // Where the child is, for "Quiero hablar con alguien": the story, drawing or landing open over the world.
   useEffect(() => {
-    enDetalle(abierto?.tipo ?? null);
-    return () => enDetalle(null);
-  }, [abierto]);
+    if (motorRef.current) motorRef.current.corriendo = corriendo;
+  }, [corriendo]);
+
+  // The answer to a question, or walking away from it (IGNORA).
+  const contestar = (codigo: string) => {
+    const h = hablaRef.current;
+    if (!h?.r.respuestas) return;
+    responder(h.r, h.quien, codigo, performance.now() - h.t0);
+    setHabla(null);
+  };
+
+  // Numbers 1 to 3 answer on a computer (GDD §12).
+  useEffect(() => {
+    if (!habla?.r.respuestas) return;
+    const tecla = (e: KeyboardEvent) => {
+      const r = habla.r.respuestas?.[Number(e.key) - 1];
+      if (r) contestar(r[0]);
+    };
+    addEventListener("keydown", tecla);
+    return () => removeEventListener("keydown", tecla);
+  }, [habla]);
+
+  // A line without answers goes away by itself.
+  useEffect(() => {
+    if (!habla || habla.r.respuestas) return;
+    const t = window.setTimeout(() => setHabla(null), Math.max(3000, habla.r.texto.length * 80));
+    return () => clearTimeout(t);
+  }, [habla]);
 
   // One place per run of this effect: a door, a new day or a return from the mirror starts it again.
   useEffect(() => {
@@ -169,7 +150,12 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     let vivo = true;
     let activo: Motor | null = null;
     let puerta: string | null = null;
+    let corriendoDesde = 0; // when the current run started
+    let contada = false; // the current run already counted as a time of S01
+    let ultimaVez = -Infinity;
+    let escapo = 0;
     setBurbuja(null);
+    setHabla(null);
 
     const mostrar = (clave: string, texto: string) => {
       setBurbuja({ id: Date.now(), clave, texto });
@@ -177,12 +163,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       temporizador.current = window.setTimeout(() => setBurbuja(null), Math.max(3500, texto.length * 70));
     };
 
-    // Going to bed: the landing first (GDD §10), then a line, then the next day (or the closing card after the last one).
-    const irADormir = () => {
-      finAterrizaje.current = dormirse;
-      abrir({ tipo: "aterrizaje", final: estado().dia >= 3 });
-    };
-
+    // Going to bed: a line, then the next day (or the closing card after the last one).
     const dormirse = () => {
       activo?.pausar(true);
       mostrar("mundo.dormir", M.dormir);
@@ -200,7 +181,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     const usar = (p: Punto) => {
       registrar("explora", { lugar: lugarActual, objeto: p.nombre });
       if (p.nombre === "espejo") return alEspejoRef.current();
-      if (p.nombre === "cama" && estado().hora === "noche") return puedeDormir() ? irADormir() : mostrar("mundo.sin_sueno", M.sin_sueno);
+      if (p.nombre === "cama" && estado().hora === "noche") return dormirse();
       mostrar(`mundo.objetos.${lugarActual}.${p.nombre}`, M.objetos[lugarActual]?.[p.nombre] ?? M.objetos.comun[p.nombre]);
     };
 
@@ -213,13 +194,25 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     };
 
     const cruzar = (p: Puerta) => {
-      const no = bloqueo(lugarActual, p.destino, p.horas);
+      const no = bloqueo(lugarActual, p.horas);
       if (no) return mostrar(`mundo.${no}`, M[no]);
+      if (hablaRef.current?.r.respuestas) contestar("IGNORA");
       activo?.pausar(true);
       cambiarEstado({ lugar: p.destino, llegada: p.llegada, x: null, y: null }, true);
       revisarHora(p.destino, lugarActual);
       setCubierto(true);
       window.setTimeout(() => setRecarga((r) => r + 1), 220);
+    };
+
+    // S01 (GDD §9): running in the house. The closest adult the child placed reacts; with no adult, nobody does.
+    const correrEnCasa = (motor: Motor) => {
+      const f = adultoMasCerca(motor.x, motor.y);
+      const quien = f ? codigoDe(f) : "NADIE";
+      const r = ocurre("S01", quien);
+      if (!r || !f) return;
+      if (r.respuestas) motor.parar();
+      sonarSiGrabada(r.clave, r.texto);
+      setHabla({ r, f, quien, t0: performance.now(), x0: motor.x, y0: motor.y });
     };
 
     void cargarMapa(lugarActual).then(async (m) => {
@@ -239,6 +232,10 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         figuras: lugarActual === "casa" ? e0.casa.map((f) => ({ x: f.x, y: f.y, id: f.figura, piel: f.piel })) : [],
         hora: e0.hora,
         alTocar: (cx, cy) => accion.current?.tocar(cx, cy),
+        alPerro: (que) => {
+          if (que === "escapa") escapo = performance.now();
+          registrar("perro", que === "alcanza" ? { que, ms: Math.round(performance.now() - escapo) } : { que });
+        },
         alCuadro: () => {
           if (motor.moviendo) cambiarEstado({ x: Math.round(motor.x), y: Math.round(motor.y), direccion: motor.dir });
           const p = m.puertas.find((d) => dentro(d, motor.x, motor.y - CAIDA));
@@ -247,20 +244,29 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
             puerta = p.nombre;
             cruzar(p);
           }
-          // A story or a drawing starts where the child stands, at its time of day (GDD §4).
-          if (!ocupado.current && !superpuestoRef.current) {
-            const c = tocaAqui(lugarActual, motor.x, motor.y - CAIDA);
-            if (c?.tipo === "cuento") abrir({ tipo: "cuento", id: c.id });
-            else if (c?.tipo === "dibujo") abrir({ tipo: "dibujo", id: c.id });
-            else if (c) abrir({ tipo: "actividad", id: c.id, actividad: c.tipo as TipoActividad });
+          const ahora = performance.now();
+          if (motor.rapido && !corriendoDesde) corriendoDesde = ahora;
+          if (!motor.rapido && corriendoDesde) {
+            registrar("corre", { lugar: lugarActual, ms: Math.round(ahora - corriendoDesde) });
+            corriendoDesde = 0;
+            contada = false;
           }
+          if (lugarActual === "casa" && corriendoDesde && !contada && ahora - corriendoDesde > CORRER_MS && ahora - ultimaVez > ENTRE_VECES_MS) {
+            contada = true;
+            ultimaVez = ahora;
+            correrEnCasa(motor);
+          }
+          // Walking away from a question leaves it unanswered.
+          const h = hablaRef.current;
+          if (h?.r.respuestas && Math.hypot(motor.x - h.x0, motor.y - h.y0) > ALEJARSE) contestar("IGNORA");
         },
       });
-      motor.guia = guiaDe(m);
-      motor.pausar(superpuestoRef.current);
+      motor.corriendo = corriendo;
+      const g = guiaDe(m);
+      motor.guia = g;
+      motor.pausar(superpuesto);
       activo = motor;
       motorRef.current = motor;
-      mapaRef.current = m;
       accion.current = {
         tocar: (cx, cy) => {
           if (motor.pausado) return;
@@ -270,6 +276,8 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           else motor.tocarSuelo(cx, cy);
         },
       };
+      setMapa(m);
+      setGuia(g);
       motor.iniciar();
       setCubierto(false);
     });
@@ -278,21 +286,57 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       vivo = false;
       accion.current = null;
       clearTimeout(temporizador.current);
+      if (hablaRef.current?.r.respuestas) contestar("IGNORA");
       if (activo) {
         activo.detener();
         registrar("explora", { lugar: lugarActual, ms: Math.round(performance.now() - t0), visitas });
       }
       motorRef.current = null;
-      mapaRef.current = null;
     };
   }, [recarga]);
 
-  const dibujoLibre = abierto?.tipo === "dibujo" ? abierto : null;
-  const consignaLibre = contenido.textos.actividades.dibujo_libre;
-
   return (
-    <main className={`mundo${ambiente === "alerta" || ambiente === "saturado" ? " encuadre" : ""}`}>
+    <main className="mundo">
       <canvas ref={lienzo} className="mundo-lienzo" />
+
+      {/* A sign on every door: where it leads, dimmed with a lock when it is closed now (GDD §8). */}
+      {mapa?.puertas.map((d) => {
+        const cerrada = !!bloqueo(mapa.lugar, d.horas);
+        return (
+          <div key={d.nombre} className={`letrero${cerrada ? " cerrada" : ""}${guia?.puerta === d.nombre ? " guia" : ""}`} data-mundo-x={d.x + d.w / 2} data-mundo-y={d.y + d.h / 2} aria-hidden="true">
+            <span>
+              {cerrada && Icono.candado}
+              {nombreSalida(mapa.lugar, d.destino)}
+            </span>
+          </div>
+        );
+      })}
+      <div className="letrero guia flecha-texto" data-flecha hidden aria-hidden="true">
+        <span>{guia?.nombre}</span>
+      </div>
+
+      {habla && (
+        <div className="globo-figura" data-mundo-x={habla.f.x} data-mundo-y={habla.f.y - altoVisible(`figuras/${habla.f.figura}`) - 2} role="status">
+          <div className="globo-figura-caja">
+            <span className="globo-quien">{etiquetaDe(habla.f)}</span>
+            <p>{habla.r.texto}</p>
+            <Bocina clave={habla.r.clave} texto={habla.r.texto} />
+          </div>
+        </div>
+      )}
+      {habla?.r.respuestas && (
+        <div className="respuestas">
+          {habla.r.respuestas.map(([codigo, texto]) => (
+            <div key={codigo} className="respuesta">
+              <button className="boton principal" onClick={() => contestar(codigo)}>
+                {texto}
+              </button>
+              <Bocina clave={`situaciones.${habla.r.situacion}.${codigo}`} texto={texto} />
+            </div>
+          ))}
+        </div>
+      )}
+
       <div className="controles mundo-controles">
         <button className="boton redondo" aria-label="Acercar" onClick={() => motorRef.current?.acercar()}>
           {Icono.mas}
@@ -303,6 +347,9 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         <button className="boton redondo" aria-label="Centrar en el personaje" onClick={() => motorRef.current?.centrar()}>
           {Icono.encuadrar}
         </button>
+        <button className="boton redondo correr" aria-label={M.correr} aria-pressed={corriendo} onClick={() => setCorriendo((c) => !c)}>
+          {Icono.correr}
+        </button>
       </div>
 
       {burbuja && (
@@ -312,41 +359,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         </div>
       )}
 
-      {ambiente && <div key={ambiente} className={`velo-ambiente ${ambiente}`} />}
       <div className={`velo-mundo${cubierto ? " cubierto" : ""}`} />
-
-      {abierto?.tipo === "cuento" && <Cuento id={abierto.id} alCerrar={alCerrarCuento} />}
-
-      {abierto?.tipo === "actividad" && <Actividad id={abierto.id} tipo={abierto.actividad} alCerrar={cerrarOverlay} />}
-
-      {abierto?.tipo === "aterrizaje" && (
-        <Aterrizaje
-          final={abierto.final}
-          alCerrar={() => {
-            const fin = finAterrizaje.current;
-            finAterrizaje.current = null;
-            cerrarOverlay();
-            fin?.();
-          }}
-        />
-      )}
-
-      {dibujoLibre && (
-        <Dibujo
-          origen="libre"
-          consigna={consignaLibre}
-          alTerminar={(imagen) => {
-            terminar(dibujoLibre.id, "terminado");
-            cambiarEstado({ libro: [...estado().libro, { cuento: dibujoLibre.id, titulo: consignaLibre, lineas: [], carita: null, dibujos: imagen ? [imagen] : [] }] }, true);
-            cerrarOverlay();
-          }}
-          ahoraNo={() => {
-            registrar("ahora_no", { cuento: dibujoLibre.id, paso: "libre" });
-            terminar(dibujoLibre.id, "ahora_no");
-            cerrarOverlay();
-          }}
-        />
-      )}
 
       {cartel && (
         <div className="cartel" role="status">

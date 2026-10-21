@@ -18,13 +18,8 @@ export interface Estado {
   hora: Hora;
   llegada: string | null; // arrival point after crossing a door
   visitas: Record<string, number>;
-  cuentos: {
-    orden: Record<number, string[]>; // each day's stories, in the order they happen
-    hechos: Record<string, "terminado" | "ahora_no">;
-    finMedio: number | null; // when the last medium-intensity story ended (ms since epoch)
-    finUltimo?: number | null; // when the last story of any kind ended
-  };
-  libro: Pagina[]; // "Mi libro": one page per finished story
+  situaciones: Record<string, Situacion>; // what has happened in each everyday situation (GDD §9)
+  libro: Pagina[]; // "Mi libro": the child's drawings
   opciones: Opciones; // the child's settings (GDD §13); saved at once when changed
 }
 
@@ -34,18 +29,19 @@ export interface Opciones {
   musica: number;
   efectos: number;
   velocidad: "lenta" | "normal" | "rapida";
-  ambiente: boolean; // the tint and framing after a story's state (GDD §9)
   lectura: boolean; // lectura sencilla (GDD §13)
 }
 
-const OPCIONES_INICIALES: Opciones = { voz: 5, musica: 3, efectos: 3, velocidad: "normal", ambiente: true, lectura: false };
+const OPCIONES_INICIALES: Opciones = { voz: 5, musica: 3, efectos: 3, velocidad: "normal", lectura: false };
 
 export interface Pagina {
-  cuento: string;
-  titulo: string;
-  lineas: string[];
-  carita: number | null;
-  dibujos: string[]; // drawings made in this story ("Otra cosa"), as images
+  dibujo: string; // the drawing, as an image
+  cuando: number; // ms since epoch
+}
+
+export interface Situacion {
+  veces: number; // how many times the child did it
+  respuesta: string | null; // the code of the answer, once given
 }
 
 export type Hora = "manana" | "tarde" | "noche";
@@ -60,7 +56,7 @@ export interface FiguraPuesta {
   piel: number;
 }
 
-const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "", casa: [], casaLista: false, protaCasa: null, dia: 1, hora: "manana", llegada: null, visitas: {}, cuentos: { orden: {}, hechos: {}, finMedio: null }, libro: [], opciones: OPCIONES_INICIALES };
+const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "", casa: [], casaLista: false, protaCasa: null, dia: 1, hora: "manana", llegada: null, visitas: {}, situaciones: {}, libro: [], opciones: OPCIONES_INICIALES };
 
 let actual: Estado = NUEVO;
 let leido = false; // never write before the saved game was read, or it would be overwritten
@@ -76,6 +72,10 @@ export async function cargarEstado(): Promise<Estado> {
     const { piel, colorCabello, colorMochila, ...resto } = vieja;
     actual.apariencia = { ...resto, colores: { piel: piel ?? 0, cabello: colorCabello ?? 0, mochila: colorMochila ?? 0 } };
   }
+  // Games saved before 2026-10-21 (version 0.1): the story pages keep only their drawings.
+  const v01 = actual as Estado & { cuentos?: unknown };
+  delete v01.cuentos;
+  actual.libro = (actual.libro as (Pagina & { dibujos?: string[] })[]).flatMap((p) => (p.dibujos ? p.dibujos.map((d) => ({ dibujo: d, cuando: 0 })) : [p]));
   leido = true;
   return actual;
 }

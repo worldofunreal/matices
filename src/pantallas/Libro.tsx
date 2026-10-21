@@ -1,25 +1,48 @@
-// Mi libro (GDD §10): the pages of the finished stories and their drawings. Read only.
-import { useState } from "react";
-import { Imagen } from "../lienzo/Personaje";
+// Mi libro (GDD §10): the child's drawings, and a blank sheet to draw whenever they want.
+import { useEffect, useState } from "react";
+import contenido from "virtual:contenido";
 import { Icono } from "../ui/iconos";
-import { estado } from "../datos/guardado";
+import { estado, cambiarEstado } from "../datos/guardado";
+import { enDetalle } from "../datos/monitor";
+import { Dibujo } from "./Dibujo";
 import "./libro.css";
 
+const L = contenido.textos.libro;
+
 export function Libro({ alCerrar }: { alCerrar: () => void }) {
-  const paginas = estado().libro;
+  const [paginas, setPaginas] = useState(estado().libro);
   const [abierta, setAbierta] = useState<number | null>(null);
+  const [dibujando, setDibujando] = useState(false);
+  useEffect(() => () => enDetalle(null), []);
+
+  if (dibujando)
+    return (
+      <Dibujo
+        origen="libre"
+        consigna={L.consigna}
+        alTerminar={(imagen) => {
+          enDetalle(null);
+          setDibujando(false);
+          if (!imagen) return;
+          const libro = [...estado().libro, { dibujo: imagen, cuando: Date.now() }];
+          cambiarEstado({ libro }, true);
+          setPaginas(libro);
+        }}
+      />
+    );
+
   const p = abierta === null ? null : paginas[abierta];
   return (
-    <section className="libro" aria-label="Mi libro">
+    <section className="libro" aria-label={L.titulo}>
       <header className="libro-cabecera">
         {p ? (
           <button className="boton redondo" aria-label="Volver" onClick={() => setAbierta(null)}>
             {Icono.volver}
           </button>
         ) : (
-          <h2>Mi libro</h2>
+          <h2>{L.titulo}</h2>
         )}
-        {p && <h2>{p.titulo}</h2>}
+        {p && <h2 />}
         <button className="boton redondo" aria-label="Cerrar" onClick={alCerrar}>
           {Icono.cerrar}
         </button>
@@ -27,10 +50,19 @@ export function Libro({ alCerrar }: { alCerrar: () => void }) {
 
       {!p && (
         <div className="libro-paginas">
+          <button
+            className="libro-pagina-tarjeta libro-nueva"
+            onClick={() => {
+              enDetalle("dibujo");
+              setDibujando(true);
+            }}
+          >
+            <span className="libro-lapiz">{Icono.lapiz}</span>
+            <span>{L.dibujar}</span>
+          </button>
           {paginas.map((pagina, i) => (
-            <button key={i} className="libro-pagina-tarjeta" onClick={() => setAbierta(i)}>
-              {pagina.carita ? <Imagen id={`interfaz/carita_${pagina.carita}`} tam={64} /> : <span className="libro-sin-carita" />}
-              <span>{pagina.titulo}</span>
+            <button key={i} className="libro-pagina-tarjeta" aria-label={`Dibujo ${i + 1}`} onClick={() => setAbierta(i)}>
+              <img className="libro-miniatura" src={pagina.dibujo} alt="" />
             </button>
           ))}
         </div>
@@ -38,17 +70,7 @@ export function Libro({ alCerrar }: { alCerrar: () => void }) {
 
       {p && (
         <article className="libro-detalle">
-          {p.lineas.map((linea, i) => (
-            <p key={i}>{linea}</p>
-          ))}
-          {p.carita && (
-            <div className="libro-carita">
-              <Imagen id={`interfaz/carita_${p.carita}`} tam={64} />
-            </div>
-          )}
-          {p.dibujos.map((src, i) => (
-            <img key={i} className="libro-dibujo" src={src} alt="Dibujo del cuento" />
-          ))}
+          <img className="libro-dibujo" src={p.dibujo} alt={`Dibujo ${abierta! + 1}`} />
         </article>
       )}
     </section>

@@ -289,106 +289,7 @@ canvas.pixel {
   flex: none;
 }
 
-/* ---- Shared by the world and the stories (GDD §9, §13) */
-
-/* La Cuentera's book: at the bottom in portrait, at the side in landscape. */
-.marco-libro {
-  position: fixed;
-  z-index: 20;
-  left: 8px;
-  right: 8px;
-  bottom: calc(var(--franja) + 8px); /* above the band where the options button sits */
-  max-height: calc(100% - 2 * var(--franja) - 8px);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 18px 18px 14px;
-  border-radius: 28px;
-  background: var(--papel);
-  box-shadow: var(--sombra-alta);
-  overflow: hidden;
-  animation: subir var(--suave) both;
-}
-
-@media (orientation: landscape) {
-  .marco-libro {
-    left: auto;
-    top: 8px;
-    bottom: 8px;
-    right: calc(var(--franja) + 8px); /* beside the buttons on the right edge */
-    width: min(46vw, 560px);
-    max-height: none;
-  }
-}
-
-@keyframes subir {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-}
-
-/* Dims the world behind a story or an activity. */
-.velo {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-  background: rgb(29 26 36 / 0.45);
-  animation: aparecer var(--suave) both;
-}
-
-/* Option card: picture or portrait, then the words. One tap chooses; the speaker sits in the corner. */
-.tarjeta {
-  position: relative;
-  min-height: 104px;
-  padding: 12px 10px;
-  border: 0;
-  border-radius: var(--radio-chico);
-  background: var(--tarjeta);
-  box-shadow: var(--sombra);
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 16px;
-  font-weight: 750;
-  line-height: 1.2;
-  text-align: center;
-  transition: transform var(--rapido), box-shadow var(--rapido);
-}
-
-.tarjeta:active {
-  transform: scale(0.96);
-}
-
-/* The chosen card lights up for a moment; then the story goes on by itself (GDD §12). */
-.tarjeta.elegida {
-  box-shadow: 0 0 0 5px var(--girasol), var(--sombra-alta);
-  transform: translateY(-2px);
-}
-
-.tarjeta .bocina {
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  width: 40px;
-  height: 40px;
-  min-height: 40px;
-  box-shadow: none;
-  background: var(--papel-2);
-}
-
-.tarjeta .bocina svg {
-  width: 20px;
-  height: 20px;
-}
-
-.tarjeta img,
-.tarjeta canvas {
-  image-rendering: pixelated;
-}
+/* ---- The world (GDD §8, §13) */
 
 /* A line over the world. Only the speaker plays it (GDD §12). */
 .globo {
@@ -448,7 +349,6 @@ canvas.pixel {
   font-size: 21px;
 }
 
-.lectura-sencilla .tarjeta,
 .lectura-sencilla .libro-pagina-tarjeta span {
   font-size: 19px;
   line-height: 1.4;
@@ -464,19 +364,6 @@ canvas.pixel {
   line-height: 1.5;
 }
 
-.lectura-sencilla .cuento-inicio {
-  font-size: 18px;
-  line-height: 1.5;
-}
-
-.lectura-sencilla .cuento-texto h2,
-.lectura-sencilla .actividad-pregunta h2 {
-  font-size: 24px;
-  line-height: 1.35;
-}
-
-.lectura-sencilla .actividad-texto,
-.lectura-sencilla .actividad-inicio,
 .lectura-sencilla .dibujo-cabecera p,
 .lectura-sencilla .pregunta h2 {
   font-size: 22px;
@@ -485,9 +372,4 @@ canvas.pixel {
 
 .lectura-sencilla .preferencia-cabecera p {
   font-size: 21px;
-}
-
-.lectura-sencilla .libro-detalle p {
-  font-size: 20px;
-  line-height: 1.6;
 }

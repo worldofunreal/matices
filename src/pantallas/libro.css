@@ -1,4 +1,4 @@
-/* Mi libro: the finished pages and drawings, read only (GDD §10). Covers the world. */
+/* Mi libro: the child's drawings and a blank sheet (GDD §10). Covers the world. */
 .libro {
   position: fixed;
   inset: 0;
@@ -66,9 +66,17 @@
   cursor: pointer;
 }
 
-.libro-sin-carita {
-  width: 64px;
-  height: 64px;
+.libro-lapiz svg {
+  width: 48px;
+  height: 48px;
+}
+
+.libro-miniatura {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #faf6ee;
 }
 
 .libro-detalle {
@@ -79,12 +87,6 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 14px;
-}
-
-.libro-detalle p {
-  margin: 0;
-  font-size: 18px;
-  line-height: 1.45;
 }
 
 .libro-dibujo {

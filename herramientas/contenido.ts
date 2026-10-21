@@ -7,20 +7,18 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { parse } from "yaml";
 import type { Plugin } from "vite";
-import { ROOT, MANIFIESTO, DOC_CODIGOS, PANEL_CPE, codigosValidos, panelCpe, leerManifiesto, medidaPng, RAMPAS, FIGURAS } from "./arte.ts";
+import { ROOT, MANIFIESTO, DOC_CODIGOS, codigosValidos, leerManifiesto, medidaPng, RAMPAS, FIGURAS } from "./arte.ts";
 
 const DIR = join(ROOT, "contenido");
-const CUENTOS = join(DIR, "cuentos");
 const DOC_AREAS = join(ROOT, "docs/clinico/marco-clinico.md");
 const README = join(DIR, "README.md");
 
 const MODULOS: Record<string, () => unknown> = { "virtual:contenido": validar, "virtual:arte": validarArte };
 
-const PERSONAS = new Set(["casa", "casa_adultos", "escuela", "vecino", "nadie", "solo"]);
-const AUTOMATICOS = new Set(["OTRA", "NO_SE"]);
-const MARCAS = new Set(["{nombre}", "{quien}"]);
-
-type Opcion = [string, string];
+const AUTOMATICOS = new Set(["IGNORA"]);
+// What the child does that starts a situation, and who reacts (GDD §9).
+const CUANDO = new Set(["correr"]);
+const QUIEN = new Set(["adulto_cerca"]);
 
 // The 13 areas, from the table in docs/clinico/marco-clinico.md (the only place they are written).
 function areasDelMarco(): { id: string; nombre: string; familia: string }[] {
@@ -35,8 +33,8 @@ function version(): string {
   return m[1];
 }
 
-// Words that change with gender. The same options are shown to every child, and the person who arrives can be
-// anyone of the house, so no text about them carries a gender (GDD §6).
+// Words that change with gender. The same lines are shown to every child, and who reacts can be anyone
+// of the house, so no text carries a gender (GDD §6).
 const CON_GENERO = /(^|[«"¡¿ ])(?:lo|la) (?=levanta|lleva|regaña|saca|abraza|felicita|jala|ve |manda|llevan|castiga)|\b(soy (?:un|una)|solos?|solas?|enojad[oa]s?|cansad[oa]s?|sentad[oa]s?|asustad[oa]s?|preocupad[oa]s?|nervios[oa]s?|content[oa]s?)\b/i;
 
 export function validar() {
@@ -45,90 +43,19 @@ export function validar() {
   const errores: string[] = [];
   const err = (donde: string, msg: string) => errores.push(`${donde}: ${msg}`);
 
-  const texto = (donde: string, t: unknown, conQuien: boolean) => {
+  const texto = (donde: string, t: unknown) => {
     if (typeof t !== "string" || !t.trim()) return err(donde, "texto vacío");
     const genero = t.match(CON_GENERO);
     if (genero) err(donde, `"${genero[0]}" cambia con el género; se escribe sin género ("sin ayuda", "de mal humor")`);
-    for (const m of t.match(/\{[^}]*\}/g) ?? []) {
-      if (!MARCAS.has(m)) err(donde, `marca desconocida ${m}`);
-      if (m === "{quien}" && !conQuien) err(donde, "{quien} sin un paso de personas antes");
-    }
+    for (const m of t.match(/\{[^}]*\}/g) ?? []) err(donde, `marca desconocida ${m}`);
   };
   const codigo = (donde: string, c: unknown) => {
     if (typeof c !== "string" || !codigos.has(c)) err(donde, `código inexistente ${String(c)}`);
     else if (AUTOMATICOS.has(c)) err(donde, `${c} se agrega solo; no se escribe`);
   };
-  const opciones = (donde: string, lista: unknown, conQuien: boolean) => {
-    if (!Array.isArray(lista) || lista.length === 0) return err(donde, "lista de opciones vacía");
-    lista.forEach((o, i) => {
-      if (!Array.isArray(o) || o.length !== 2) return err(`${donde}[${i}]`, "debe ser [CÓDIGO, texto]");
-      codigo(`${donde}[${i}]`, o[0]);
-      texto(`${donde}[${i}]`, o[1], conQuien);
-    });
-  };
   const area = (donde: string, a: unknown) => {
     if (typeof a !== "string" || !areas.has(a)) err(donde, `área inexistente ${String(a)}`);
   };
-
-  const cuentos = readdirSync(CUENTOS)
-    .filter((f) => f.endsWith(".yaml"))
-    .sort()
-    .map((f) => {
-      const c = parse(readFileSync(join(CUENTOS, f), "utf8"));
-      const d = `cuentos/${f}`;
-      if (c.id !== f.replace(".yaml", "")) err(d, `el id ${c.id} no coincide con el archivo`);
-      if (![1, 2, 3].includes(c.dia)) err(d, "dia debe ser 1, 2 o 3");
-      if (!["baja", "media"].includes(c.intensidad)) err(d, "intensidad debe ser baja o media");
-      if (!["manana", "tarde", "noche"].includes(c.hora)) err(d, "hora debe ser manana, tarde o noche");
-      if (typeof c.lugar !== "string") err(d, "falta lugar");
-      area(`${d} area_principal`, c.area_principal);
-      (c.areas ?? []).forEach((a: unknown) => area(`${d} areas`, a));
-      texto(`${d} inicio`, c.inicio, false);
-      if (!Array.isArray(c.pasos) || c.pasos.length === 0) err(d, "sin pasos");
-      let conQuien = false;
-      const vistos = new Set<string>();
-      for (const p of c.pasos ?? []) {
-        const dp = `${d} paso ${p.id}`;
-        if (vistos.has(p.id)) err(dp, "id de paso repetido");
-        vistos.add(p.id);
-        if (p.id === "carita") continue;
-        texto(`${dp} pregunta`, p.pregunta, conQuien);
-        if (p.personas) {
-          if (p.opciones) err(dp, "un paso lleva personas u opciones, no ambas");
-          for (const x of p.personas) if (!PERSONAS.has(x)) err(dp, `persona inexistente ${x}`);
-          conQuien = true;
-        } else {
-          opciones(`${dp} opciones`, p.opciones, conQuien);
-        }
-        if (p.opciones_solo) opciones(`${dp} opciones_solo`, p.opciones_solo, conQuien);
-        // After "Nadie" or "lo resuelve sin ayuda" nobody is there to be together with.
-        const juntos = conQuien && !p.personas && !p.opciones_solo && (p.opciones ?? []).find((o: Opcion) => /\bjunt[oa]s\b/i.test(String(o[1])));
-        if (juntos) err(dp, `"${juntos[1]}" no tiene sentido si nadie llegó; agrega opciones_solo`);
-        for (const s of p.solo_si ?? []) codigo(`${dp} solo_si`, s);
-      }
-      if (c.pasos?.at(-1)?.id !== "carita") err(d, "el último paso debe ser carita");
-      return c;
-    });
-
-  const sobreMi = parse(readFileSync(join(DIR, "sobre-mi.yaml"), "utf8"));
-  texto("sobre-mi aviso", sobreMi.aviso, false);
-  for (const f of sobreMi.frases ?? []) {
-    area(`sobre-mi ${f.id}`, f.area);
-    texto(`sobre-mi ${f.id} a`, f.a, false);
-    texto(`sobre-mi ${f.id} b`, f.b, false);
-  }
-
-  const escena = parse(readFileSync(join(DIR, "escena-para-describir.yaml"), "utf8"));
-  opciones(`escena ${escena.id} titulos`, escena.titulos as Opcion[], false);
-
-  const panel = panelCpe();
-  for (const [grupo, ops] of Object.entries(panel)) {
-    if (!["cuerpo", "pensamiento", "entorno"].includes(grupo)) err("panel-cpe", `grupo desconocido ${grupo}`);
-    for (const o of ops) {
-      if (!Array.isArray(o) || !/^[a-z_]+$/.test(o[0])) err(`panel-cpe ${grupo}`, `id inválido ${String(o?.[0])}`);
-      texto(`panel-cpe ${grupo} ${o?.[0]}`, o?.[1], false);
-    }
-  }
 
   const textos = parse(readFileSync(join(DIR, "textos.yaml"), "utf8"));
   const marcasTextos = new Set(["{nombre}", "{n}", "{figura}", "{cuarto}", "{paso}"]);
@@ -157,7 +84,7 @@ export function validar() {
     if (!piezas.has(`figuras/${id}`)) err(`figuras ${id}`, `falta figuras/${id} en el manifiesto`);
     if (!FIGURAS[id]) err(`figuras ${id}`, "falta en FIGURAS (herramientas/arte.ts)");
     if (FIGURAS[id] && FIGURAS[id].alto > (manifiesto.piezas.find((p) => p.id === `figuras/${id}`)?.medida[1] ?? 0) - 2) err(`figuras ${id}`, "no cabe en su cuadro");
-    texto(`figuras ${id}`, nombre, false);
+    texto(`figuras ${id}`, nombre);
     return { id, tipo, nombre };
   });
   const mapaCasa = JSON.parse(readFileSync(join(ROOT, "public/mapas/casa.json"), "utf8"));
@@ -234,43 +161,38 @@ export function validar() {
     }
   }
 
-  // Where each story happens: "<lugar>.<zona>" or "<lugar>". The place is a map, or a group of maps
-  // sharing a prefix (escuela → escuela_patio, escuela_planta_baja…); the zone is a room or zone in it.
-  const { actividades } = parse(readFileSync(join(DIR, "actividades.yaml"), "utf8")) as { actividades: { id: string; tipo: string; dia: number; hora: string; lugar: string }[] };
-  for (const a of actividades) {
-    if (!["cuentera", "dibujo", "describir", "sobre_mi"].includes(a.tipo)) err(`actividades ${a.id}`, `tipo inválido ${a.tipo}`);
-    if (![1, 2, 3].includes(a.dia)) err(`actividades ${a.id}`, "dia debe ser 1, 2 o 3");
-    if (!HORAS.has(a.hora)) err(`actividades ${a.id}`, `hora inválida ${a.hora}`);
+  // Situations (GDD §9): what starts each one, who reacts, its lines and its answers with their codes.
+  const { situaciones } = parse(readFileSync(join(DIR, "situaciones.yaml"), "utf8")) as { situaciones: { id: string; nombre: string; lugar: string; cuando: string; quien: string; areas: string[]; aviso: string; pregunta: string; respuestas: [string, string][] }[] };
+  const ids = new Set<string>();
+  for (const x of situaciones) {
+    const d = `situaciones ${x.id}`;
+    if (!/^S\d\d$/.test(x.id) || ids.has(x.id)) err(d, "id repetido o no es S01, S02…");
+    ids.add(x.id);
+    texto(`${d} nombre`, x.nombre);
+    if (!mapas[x.lugar]) err(d, `el lugar ${x.lugar} no es un mapa`);
+    if (!CUANDO.has(x.cuando)) err(d, `cuando desconocido ${x.cuando}`);
+    if (!QUIEN.has(x.quien)) err(d, `quien desconocido ${x.quien}`);
+    if (!x.areas?.length) err(d, "sin áreas");
+    (x.areas ?? []).forEach((a) => area(`${d} areas`, a));
+    texto(`${d} aviso`, x.aviso);
+    texto(`${d} pregunta`, x.pregunta);
+    if (!Array.isArray(x.respuestas) || !x.respuestas.length || x.respuestas.length > 3) err(d, "de 1 a 3 respuestas");
+    (x.respuestas ?? []).forEach((r, i) => {
+      if (!Array.isArray(r) || r.length !== 2) return err(`${d} respuestas[${i}]`, "debe ser [CÓDIGO, texto]");
+      codigo(`${d} respuestas[${i}]`, r[0]);
+      texto(`${d} respuestas[${i}]`, r[1]);
+    });
   }
-  const sitios: Record<string, { mapa: string; zona: { x: number; y: number; w: number; h: number } | null }> = {};
-  for (const c of [...cuentos, ...actividades]) {
-    const [lugar, zona] = String(c.lugar).split(".");
-    const candidatos = Object.keys(mapas).filter((m) => m === lugar || m.startsWith(`${lugar}_`));
-    let sitio = null;
-    for (const m of candidatos) {
-      if (!zona) {
-        sitio = { mapa: m, zona: null };
-        break;
-      }
-      const z = mapas[m]!.layers.filter((l) => l.name === "cuartos" || l.name === "zonas").flatMap((l) => l.objects ?? []).find((o) => o.name === zona) as (ObjetoMapa & { x: number; y: number; width: number; height: number }) | undefined;
-      if (z) {
-        sitio = { mapa: m, zona: { x: z.x, y: z.y, w: z.width, h: z.height } };
-        break;
-      }
-    }
-    if (!sitio) err(c.id, `el lugar ${c.lugar} no existe en los mapas`);
-    else sitios[c.id] = sitio;
-  }
-  for (const k of ["inicio", "pregunta", "cierre", "ahora_no", "otra", "no_se", "nadie", "solo", "vecino", "carita", "listo", "dibujar"])
-    if (!textos.cuento?.[k]) err("textos cuento", `falta ${k}`);
-  if (textos.cuento?.caritas?.length !== 5) err("textos cuento.caritas", "deben ser 5");
+  // Every door needs its sign (GDD §8).
+  for (const [lugar, m] of Object.entries(mapas))
+    for (const o of m ? objetosDe(m).filter((x) => x.type === "puerta") : []) if (!mundo.lugares?.[propiedades(o).destino]) err(`mapas/${lugar}.json ${o.name}`, `falta el letrero de ${propiedades(o).destino} en textos mundo.lugares`);
 
   if (errores.length) throw new Error(`Contenido inválido:\n- ${errores.join("\n- ")}`);
-  // Doors: the places each place leads to. The world's guide walks this graph toward the next story.
+  // Doors: the places each place leads to. The world's guide walks this graph toward where the day goes next.
   const conexiones = Object.fromEntries(Object.entries(mapas).map(([l, m]) => [l, m ? objetosDe(m).filter((o) => o.type === "puerta").map((o) => propiedades(o).destino) : []]));
   // What can be touched in each place (the dashboard's "never touched").
   const objetos = Object.fromEntries(Object.entries(mapas).map(([l, m]) => [l, m ? objetosDe(m).filter((o) => o.type === "objeto").map((o) => o.name) : []]));
-  return { version: version(), cuentos, sobreMi, escena, panel, textos, figuras, lugares, sitios, actividades, conexiones, objetos, areas: areasDelMarco() };
+  return { version: version(), situaciones, textos, figuras, lugares, conexiones, objetos, areas: areasDelMarco() };
 }
 
 type ObjetoMapa = { name: string; type: string; properties?: { name: string; value: string }[] };
@@ -318,9 +240,8 @@ export function contenido(): Plugin {
     load(id) {
       const nombre = id.slice(1);
       if (!id.startsWith("\0") || !(nombre in MODULOS)) return;
-      const vigilar = [DOC_CODIGOS, DOC_AREAS, README, PANEL_CPE, MANIFIESTO, join(DIR, "textos.yaml"), join(DIR, "figuras.yaml"), join(DIR, "actividades.yaml"), ...readdirSync(join(ROOT, "public/mapas")).map((f) => join(ROOT, "public/mapas", f)), join(DIR, "sobre-mi.yaml"), join(DIR, "escena-para-describir.yaml")];
+      const vigilar = [DOC_CODIGOS, DOC_AREAS, README, MANIFIESTO, join(DIR, "textos.yaml"), join(DIR, "figuras.yaml"), join(DIR, "situaciones.yaml"), ...readdirSync(join(ROOT, "public/mapas")).map((f) => join(ROOT, "public/mapas", f))];
       for (const f of vigilar) this.addWatchFile(f);
-      for (const f of readdirSync(CUENTOS)) this.addWatchFile(join(CUENTOS, f));
       return `export default ${JSON.stringify(MODULOS[nombre]())};`;
     },
   };

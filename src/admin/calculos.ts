@@ -5,9 +5,8 @@ import type { Apariencia } from "../personaje/apariencia";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Evento = { nino: string; id: number; tipo: string; sesion: number; t_ms: number; cuando?: number; [k: string]: any };
 export interface Contenido {
-  cuentos: { id: string; titulo: string; area_principal: string; areas: string[] }[];
+  situaciones: { id: string; nombre: string; areas: string[] }[];
   areas: { id: string; nombre: string }[];
-  sobreMi: { frases: { id: string; area: string; a: string; b: string }[] };
   objetos: Record<string, string[]>; // what can be touched in each place
 }
 
@@ -25,11 +24,6 @@ export const mediana = (xs: number[]) => {
   const s = [...xs].sort((a, b) => a - b);
   const m = s.length >> 1;
   return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
-};
-const contar = <K>(xs: K[]) => {
-  const m = new Map<K, number>();
-  for (const x of xs) m.set(x, (m.get(x) ?? 0) + 1);
-  return m;
 };
 
 // "Android · Chrome" from the browser's description: enough to tell devices apart, never a device id.
@@ -49,7 +43,7 @@ export function minutos(evs: Evento[]) {
 
 export function resumen(nino: string, evs: Evento[]) {
   const horas = evs.map((e) => e.cuando).filter((x): x is number => typeof x === "number");
-  const cuentos = de(evs, "cuento");
+  const respuestas = de(evs, "situacion").filter((e) => e.paso === "respuesta");
   const tramos = de(evs, "tramo");
   return {
     nino,
@@ -59,8 +53,8 @@ export function resumen(nino: string, evs: Evento[]) {
     minutos: minutos(evs),
     dia: tramos.length ? Math.max(...tramos.map((t) => t.dia)) : 0,
     termino: tramos.some((t) => t.hora === "fin"),
-    terminados: cuentos.filter((c) => c.que === "fin").length,
-    ahoraNo: de(evs, "ahora_no").length,
+    respuestas: respuestas.filter((r) => r.elegida !== "IGNORA").length,
+    ignora: respuestas.filter((r) => r.elegida === "IGNORA").length,
     quiereHablar: de(evs, "quiero_hablar").length,
     aparato: aparatoDe(ultimo(evs, "aparato")?.navegador),
     errores: de(evs, "error").length,
@@ -126,52 +120,50 @@ export function fpsPorAparato(grupos: Map<string, Evento[]>) {
   return [...m].filter(([, f]) => f.length).map(([aparato, f]) => ({ aparato, fps: Math.round(mediana(f)), medidas: f.length }));
 }
 
-// For each area, how many times each code came up in the stories that cover it, and from which stories.
+// For each area, how many times each answer code came up in the situations that cover it, and from which ones.
 export function codigosPorArea(evs: Evento[], c: Contenido) {
-  const areasDe = new Map(c.cuentos.map((x) => [x.id, [x.area_principal, ...x.areas]]));
-  const m = new Map<string, Map<string, { n: number; cuentos: Set<string> }>>();
-  for (const e of de(evs, "cuento_paso")) {
-    for (const area of areasDe.get(e.cuento) ?? []) {
+  const areasDe = new Map(c.situaciones.map((x) => [x.id, x.areas]));
+  const m = new Map<string, Map<string, { n: number; situaciones: Set<string> }>>();
+  for (const e of de(evs, "situacion").filter((x) => x.paso === "respuesta")) {
+    for (const area of areasDe.get(e.situacion) ?? []) {
       const codigos = m.get(area) ?? (m.set(area, new Map()), m.get(area)!);
-      // "Who comes" choices name a person; the area counts them with the rest.
-      const f = codigos.get(e.elegida) ?? (codigos.set(e.elegida, { n: 0, cuentos: new Set() }), codigos.get(e.elegida)!);
+      const f = codigos.get(e.elegida) ?? (codigos.set(e.elegida, { n: 0, situaciones: new Set() }), codigos.get(e.elegida)!);
       f.n++;
-      f.cuentos.add(e.cuento);
+      f.situaciones.add(e.situacion);
     }
   }
   return m;
 }
 
-// The same count among everyone who played a story of that area: how many, the middle one, lowest, highest.
+// The same count among everyone who answered in a situation of that area: how many, the middle one, lowest, highest.
 export function referencia(todos: Map<string, Map<string, { n: number }>>[], area: string, codigo: string) {
   const cuentas = todos.filter((m) => m.has(area)).map((m) => m.get(area)!.get(codigo)?.n ?? 0);
   return { N: cuentas.length, mediana: mediana(cuentas), min: cuentas.length ? Math.min(...cuentas) : 0, max: cuentas.length ? Math.max(...cuentas) : 0 };
 }
 
-export function patrones(evs: Evento[]) {
-  const pasos = de(evs, "cuento_paso");
-  return {
-    buscoAyuda: pasos.filter((p) => p.elegida === "BUSCA_AYUDA").length,
-    quienLlega: [...contar(pasos.filter((p) => p.paso === "quien_llega").map((p) => p.elegida as string))].sort((a, b) => b[1] - a[1]),
-    ahoraNo: de(evs, "ahora_no").map((e) => ({ cuento: e.cuento, paso: e.paso })),
-    lentas: [...pasos].sort((a, b) => b.ms_decidir - a.ms_decidir).slice(0, 3).map((p) => ({ cuento: p.cuento, paso: p.paso, elegida: p.elegida, segundos: Math.round(p.ms_decidir / 100) / 10 })),
-  };
-}
-
-export function sobreMi(evs: Evento[], c: Contenido) {
-  const frases = new Map(c.sobreMi.frases.map((f) => [f.id, f]));
-  const m = new Map<string, { a: string; b: string; respuesta: string }[]>();
-  for (const e of de(evs, "sobre_mi")) {
-    const f = frases.get(e.frase);
-    if (!f) continue;
-    m.set(e.area, [...(m.get(e.area) ?? []), { a: f.a, b: f.b, respuesta: e.respuesta }]);
+// Each situation as it happened (docs/clinico/reporte.md, part 3): how many times, who reacted, what the child
+// answered and how fast, and how many times they did it again after answering.
+export function situaciones(evs: Evento[]) {
+  const m = new Map<string, { veces: number; quien: string[]; respuesta: string | null; segundos: number | null; despues: number }>();
+  for (const e of de(evs, "situacion")) {
+    const f = m.get(e.situacion) ?? (m.set(e.situacion, { veces: 0, quien: [], respuesta: null, segundos: null, despues: 0 }), m.get(e.situacion)!);
+    if (e.paso !== "respuesta") {
+      f.veces = Math.max(f.veces, e.veces ?? 0);
+      if (!f.quien.includes(e.quien)) f.quien.push(e.quien);
+    }
+    if (e.paso === "respuesta") {
+      f.respuesta = e.elegida;
+      f.segundos = Math.round(e.ms_decidir / 100) / 10;
+    }
+    if (e.paso === "repite") f.despues++;
   }
   return m;
 }
 
 export function exploracion(evs: Evento[], c: Contenido) {
-  const lugares = new Map<string, { ms: number; visitas: number; tocados: Set<string> }>();
-  const lugar = (l: string) => lugares.get(l) ?? (lugares.set(l, { ms: 0, visitas: 0, tocados: new Set() }), lugares.get(l)!);
+  const lugares = new Map<string, { ms: number; visitas: number; corrio: number; tocados: Set<string> }>();
+  const lugar = (l: string) => lugares.get(l) ?? (lugares.set(l, { ms: 0, visitas: 0, corrio: 0, tocados: new Set() }), lugares.get(l)!);
+  for (const e of de(evs, "corre")) lugar(e.lugar).corrio += e.ms;
   for (const e of de(evs, "explora")) {
     const l = lugar(e.lugar);
     if (e.ms != null) {
@@ -185,6 +177,7 @@ export function exploracion(evs: Evento[], c: Contenido) {
     lugar: nombre,
     minutos: Math.round(l.ms / 6000) / 10,
     visitas: l.visitas,
+    segundosCorriendo: Math.round(l.corrio / 1000),
     tocados: [...l.tocados],
     noTocados: [...new Set(c.objetos[nombre] ?? [])].filter((o) => !l.tocados.has(o)),
   })).sort((a, b) => b.minutos - a.minutos);

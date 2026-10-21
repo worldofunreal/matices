@@ -19,7 +19,7 @@ Abre la dirección que aparece. Si se agrega una pieza a `public/assets/manifies
 
 ## Cómo se juega, en corto
 
-El niño crea a su personaje, arma su casa con las personas que quiera y recorre su colonia, la escuela y el parque durante tres días del juego, que se pueden jugar en las sesiones que haga falta. A lo largo del día pasan cosas que se quedan sin final: se raspa la rodilla, no hay comida, un adulto no llega. La Cuentera abre su libro y le pregunta "¿Y qué pasó después?". El niño decide quién llega, qué hace y cómo termina. Ningún final es el correcto.
+El niño crea a su personaje, arma su casa con las personas que quiera y recorre su colonia, la escuela y el parque durante tres días del juego, que se pueden jugar en las sesiones que haga falta. Ahí pasan cosas de todos los días: el perro lo sigue, un adulto le dice que no corra, tiene hambre, hay tarea. El niño hace lo que quiera; el juego registra qué hizo, qué contestó y si después hizo lo que dijo. Nada detiene el juego para preguntar y ninguna respuesta es la correcta.
 
 ## Documentos
 
@@ -39,7 +39,7 @@ El niño crea a su personaje, arma su casa con las personas que quiera y recorre
 | [docs/DECISIONES.md](docs/DECISIONES.md) | Cambios frente al GDD original y por qué |
 | [docs/PENDIENTES.md](docs/PENDIENTES.md) | Lo que falta decidir: clínico, creativo, técnico |
 | [docs/REFERENCIAS.md](docs/REFERENCIAS.md) | Fuentes consultadas |
-| [contenido/](contenido/) | Texto de los 15 sucesos, Sobre mí y escena para describir |
+| [contenido/](contenido/) | Texto de las situaciones, las figuras y los textos fijos |
 
 ## Autoría y revisión
 

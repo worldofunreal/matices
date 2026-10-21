@@ -3,15 +3,16 @@
 // Run: node herramientas/acomodar.ts <pieza> <carpeta> [<carpeta del cuerpo>]
 //   hoja of the protagonist: abajo_quieta, abajo_paso, izq_quieta, izq_paso1, izq_paso2, arriba_quieta,
 //   arriba_paso (.png/.jpg). abajo and arriba take their second step as the first one mirrored.
-//   single figure (fixed character, 48 × 64): quieta. A figure of the house (figuras/<id>, 48 × 80): quieta, cut to its
-//   height (FIGURAS in arte.ts); generar.ts figuras makes it.
+//   single figure (fixed character, 48 × 64): quieta.
+//   Figures of the house: node herramientas/acomodar.ts figuras (or figuras/<id>), no folder: each one is ARTE/figuras/<id>.png
+//   (or <id>_quieta), cut to its height (FIGURAS in arte.ts).
 //   A layer (hair, clothes, extras) is each body pose edited by the generator (herramientas/generar.ts):
 //   with the body's folder, the layer keeps only the pixels that changed, framed like the body.
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import { parse } from "yaml";
-import { ASSETS, ROOT, FIGURAS, leerManifiesto, type Manifiesto, type Pieza } from "./arte.ts";
+import { ARTE, ASSETS, ROOT, FIGURAS, leerManifiesto, type Manifiesto, type Pieza } from "./arte.ts";
 
 const ANCHO = 48, ALTO = 64, CABEZA_Y = 2, FIGURA = 60; // figure height inside the frame
 
@@ -452,10 +453,13 @@ function cuello(px: Uint8ClampedArray) {
 // A figure of the house: one standing figure (quieta), cut to the height of its age (FIGURAS) with its feet
 // on the frame's last rows and its head centered, so every adult stands taller than the child however big the
 // generator drew it. People take the skin key colors (the house can change their skin); pets keep their fur.
-async function figura(pieza: Pieza, carpeta: string, m: Manifiesto) {
+async function figura(pieza: Pieza, m: Manifiesto) {
   const [w, h] = pieza.medida, n = pieza.id.split("/")[1]!;
   const { figuras } = parse(readFileSync(join(ROOT, "contenido/figuras.yaml"), "utf8")) as { figuras: [string, string, string][] };
-  const [[img]] = await poses(carpeta, 1, 1);
+  const carpeta = join(ARTE, "figuras");
+  const f = readdirSync(carpeta).find((a) => new RegExp(`^${n}(_quieta)?\\.(png|jpe?g|webp)$`).test(a));
+  if (!f) return false;
+  const img = await leer(join(carpeta, f));
   const an = ancla(img), { alto } = FIGURAS[n];
   const px = cuadro(img, alto / (an.abajo - an.arriba), an, { alto: h, y: h - 2 - alto });
   if (figuras.find((f) => f[0] === n)?.[1] !== "mascota") pielAClave(px, m.colores.piel.clave);
@@ -465,6 +469,7 @@ async function figura(pieza: Pieza, carpeta: string, m: Manifiesto) {
   c.getContext("2d").putImageData(d, 0, 0);
   writeFileSync(join(ASSETS, pieza.archivo), c.toBuffer("image/png"));
   console.log(`${pieza.archivo}: ${w} × ${h}, ${alto} de alto`);
+  return true;
 }
 
 async function main() {
@@ -474,9 +479,16 @@ async function main() {
   const carpetaIgual = ig >= 0 ? args.splice(ig, 2)[1] : undefined;
   const [id, carpeta, carpetaCuerpo] = args;
   const m = leerManifiesto();
+  // Figures of the house: one file per figure, all in ARTE/figuras (<id>.png or <id>_quieta.png).
+  if (id === "figuras" || id?.startsWith("figuras/")) {
+    const piezas = m.piezas.filter((p) => (id === "figuras" ? p.id.startsWith("figuras/") && p.tipo === "hoja" : p.id === id));
+    const faltan: string[] = [];
+    for (const p of piezas) if (!(await figura(p, m))) faltan.push(p.id);
+    if (faltan.length) console.log(`sin imagen todavía: ${faltan.join(", ")}`);
+    return;
+  }
   const pieza = m.piezas.find((p) => p.id === id) as Pieza | undefined;
   if (!pieza || !carpeta) throw new Error("uso: node herramientas/acomodar.ts <pieza> <carpeta> [<carpeta del cuerpo>] [--igual-a <carpeta de otro cuerpo>]");
-  if (pieza.id.startsWith("figuras/")) return figura(pieza, carpeta, m);
   const [w, h] = pieza.medida;
   const filas = h / ALTO, columnas = w / ANCHO;
   const hoja = await poses(carpeta, filas, columnas);

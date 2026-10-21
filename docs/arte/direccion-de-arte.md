@@ -41,11 +41,10 @@ Estilo: pixel art en vista de tres cuartos, ambientado en una colonia urbana de 
 
 | Elemento | Medida |
 | --- | --- |
-| Pantalla | El mundo llena la pantalla en cualquier orientación, en pixel art ampliado en enteros. Menús, libro, tarjetas y botones son interfaz en HTML y CSS, no pixel art: marcos, tarjetas y botones no se dibujan |
+| Pantalla | El mundo llena la pantalla en cualquier orientación, en pixel art ampliado en enteros. Menús, libro, letreros, globos y botones son interfaz en HTML y CSS, no pixel art: marcos, tarjetas y botones no se dibujan |
 | Tile | 32 × 32 |
-| Sprite de personaje | 48 × 64 (el cuerpo mide unos 27 × 60 por dentro; el resto del ancho es para cabellos abultados, como el afro o las coletas, que nunca deben tocar la orilla). El protagonista: 3 direcciones (abajo, izquierda, arriba; la derecha es la izquierda volteada), quieto (1 cuadro) y caminata (4 cuadros) por dirección. No hay diagonales: el personaje camina en 4 direcciones. Personajes fijos: un solo cuadro, de pie y de frente. Figuras de la casa: un solo cuadro de 48 × 80, de pie y de frente, con los pies abajo y la altura de su edad (un adulto es más alto que el niño) |
+| Sprite de personaje | 48 × 64 (el cuerpo mide unos 27 × 60 por dentro; el resto del ancho es para cabellos abultados, como el afro o las coletas, que nunca deben tocar la orilla). El protagonista: 3 direcciones (abajo, izquierda, arriba; la derecha es la izquierda volteada), quieto (1 cuadro) y caminata (4 cuadros) por dirección. No hay diagonales: el personaje camina en 4 direcciones. Personajes fijos: un solo cuadro, de pie y de frente. Figuras de la casa: un solo cuadro de 48 × 80, de pie y de frente, con los pies abajo y la altura de su edad (un adulto es más alto que el niño); el perro, además, su caminata |
 | Capas de sprite | cuerpo/piel, ropa inferior, ropa superior, calzado, cabello, extras; mismo lienzo y misma posición |
-| Retrato | 96 × 96; una expresión, neutral (La Cuentera también contenta) |
 | Paleta | Un máximo de 48 colores para todo el juego, definidos en `paleta.png` (pendiente) |
 | Noche | Capa multiplicada azul + luces cálidas en ventanas; nunca negro total |
 | Exportación | PNG sin compresión con pérdida; hojas de sprites con rejilla fija |
@@ -64,8 +63,7 @@ Cualquier pieza se puede entregar en cualquier momento: el juego ya funciona con
 | 2 | Protagonista: cuerpos, cabellos, ropa y extras (carpeta `personaje/`) | H2 |
 | 3 | Interior de la casa y sus muebles; figuras para armar la casa (`lugares/casa/`, `figuras/`) | H3 |
 | 4 | Calle, escuela, parque, tiendita, biblioteca y sus objetos; vecinos y personajes fijos | H4 |
-| 5 | La Cuentera, iconos de códigos, caritas, panel | H5 |
-| 6 | Tito y Tita, escena para describir | H6 |
+| 5 | La caminata del perro y lo que pidan las situaciones de GDD §9 | M4 |
 
 ## Cómo entregarlo
 
@@ -75,7 +73,6 @@ Cualquier pieza se puede entregar en cualquier momento: el juego ya funciona con
 - **Hojas del protagonista:** 5 columnas (quieto, paso 1 a 4) por 3 filas (abajo, izquierda, arriba), cuadros de 48 × 64, pies a la misma altura en todos. Los personajes fijos son un solo cuadro de 48 × 64; las figuras de la casa, uno de 48 × 80.
 - **Capas del protagonista:** cada pieza (cuerpo, cabello, ropa, calzado, extras) en su hoja, dibujada en la misma posición que el cuerpo base.
 - **Piel, cabello, ropa, tenis y extras:** se dibujan una sola vez. El juego los cambia a los colores de su rampa en `manifiesto.yaml` conservando las sombras; no se dibuja una versión por color. A mano se usan los colores clave de su rampa; con generador, la regla de color de abajo y `acomodar.ts` los pasa a la clave.
-- **Retratos:** un PNG por expresión (`_neutral`, y `_contento` en La Cuentera). El protagonista no tiene.
 - **Fondos de lugares:** el provisional es el plano exacto (muros, puertas y dónde va cada mueble). El fondo final respeta ese plano, porque los choques y las puertas del juego salen de él.
 - **Voz:** una grabación `public/assets/voz/<línea>.mp3` reemplaza a la voz del navegador para esa línea.
 - Si el arte sale de otra herramienta o de una IA a otro tamaño, se entrega así y el desarrollo lo ajusta a la medida y la paleta, avisando si algo se pierde.
@@ -123,22 +120,18 @@ Con el protagonista esto ya es automático: `herramientas/generar.ts` le pide ca
 
 **Figuras de la casa** (abuelos, padres, tíos, hermanos, bebé, primos, otra persona, perro y gato): cada una es un dibujo propio, hecho a partir de la figura de frente de la niña o del niño, para que tenga el mismo estilo. `generar.ts figuras` pide cada una y `generar.ts --lista figuras` da la imagen que se sube, el prompt y dónde se guarda. Quién es cada una, de qué cuerpo sale y cuánto mide en el juego está en `FIGURAS` (`herramientas/arte.ts`); el protagonista mide 60. `acomodar.ts figuras/<id> <carpeta>` la deja exactamente de esa altura, con los pies abajo, así que un adulto siempre queda más alto que el niño aunque el generador lo dibuje de otro tamaño. Las personas llevan piel clara natural, que el juego cambia; el cabello va en su color real; perro y gato no cambian de color.
 
-No tienen retrato aparte: las tarjetas y la repisa muestran la cabeza de su figura, así cada persona se ve igual en la casa y en las tarjetas.
+No tienen retrato aparte: la repisa muestra la cabeza de su figura.
+
+**El perro, caminando:** además de su figura quieta, su figura quieta de perfil y dos pasos de perfil (`perro_lado`, `perro_lado_paso_1`, `perro_lado_paso_2`), editando su figura; la derecha es la izquierda volteada. Mientras no estén, el perro avanza con su figura quieta dando saltitos.
 
 **Personajes fijos** (un cuadro de pie, con la plantilla de figura):
 > [estilo] One single standing sprite, 384×512 px, following the attached template: head top and feet on the guide lines, centered, facing the viewer, standing still. SUBJECT: [quién es, de `manifiesto.yaml`], everyday Mexican clothes.
-
-Su retrato y los de la escuela y el vecino (96 × 96, se piden a 768 × 768):
-> [estilo, cambiando la primera frase por: Pixel art character portrait, bust and shoulders, front 3/4 view] SUBJECT: the same character as the attached image, with its clothes and hair, neutral calm expression, centered, the head filling the upper two thirds.
 
 **Fondos de lugares** (con su plano):
 > Pixel art, top-down 3/4 view RPG map, cozy Mexican city neighborhood, soft daylight, crisp square pixels, no anti-aliasing. Follow the attached floor plan EXACTLY: dark areas are walls, light areas are floor, gaps in the walls are doorways; keep every wall and doorway in the same place and size. 32-pixel tiles. Empty place: floor and walls only, no furniture, no people, no text. SUBJECT: [lo que dice `manifiesto.yaml` del fondo].
 
 **Muebles y objetos:**
 > [estilo, cambiando la primera frase por: Pixel art game object for a top-down 3/4 view RPG] One single object, centered, filling a [ancho × alto en pixeles ×8] area. SUBJECT: [el objeto, de `manifiesto.yaml`].
-
-**Iconos** (24 × 24 o 32 × 32, de 6 a 12 por imagen):
-> Pixel art icon set, [6] icons in one row, each in its own [192×192] square, simple bold shapes readable at small size, dark outline, flat soft colors, flat magenta background (#FF00FF), no text. Icons: [lista].
 
 ## Qué se revisa en cada entrega
 
@@ -149,4 +142,4 @@ Su retrato y los de la escuela y el vecino (96 × 96, se piden a 768 × 768):
 
 ## Reglas de contenido visual
 
-Ninguna imagen muestra golpes, sangre, armas, abuso ni muerte. "Lastima" y "regaña" se representan con símbolos (nube, rayo pequeño), nunca con la acción.
+Ninguna imagen muestra golpes, sangre, armas, abuso ni muerte.

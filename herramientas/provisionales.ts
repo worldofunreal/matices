@@ -130,51 +130,6 @@ function hoja(ctx: Ctx, p: Pieza, m: Manifiesto) {
     for (let paso = 0; paso < p.medida[0] / 48; paso++) figura(ctx, paso * 48 + 8, fila * 64 + 16, filas[fila], paso, capa, m, p.id);
 }
 
-function retrato(ctx: Ctx, p: Pieza, m: Manifiesto) {
-  const n = nombre(p).replace(/^retrato_/, "");
-  const [pc, pm] = m.colores.piel.clave;
-  const [cc] = m.colores.cabello.clave;
-  const expresion = ["contento", "neutral", "triste", "enojado", "asustado"].find((e) => n.endsWith(`_${e}`));
-  const capa = n.startsWith("cara_") ? "cara" : n.startsWith("cabello_") ? "cabello" : n.startsWith("ropa_") ? "ropa" : n.startsWith("extra_") ? "extra" : "completo";
-  const c = (x: number, y: number, rad: number, color: string) => {
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(x, y, rad, 0, Math.PI * 2);
-    ctx.fill();
-  };
-  if (capa === "cara" || capa === "completo") {
-    ctx.fillStyle = capa === "completo" ? tono(n, 55) : pm;
-    ctx.fillRect(18, 74, 60, 22); // shoulders
-    c(48, 44, 26, pc);
-    ctx.fillStyle = "#1d1a24";
-    ctx.fillRect(37, 40, 5, 5);
-    ctx.fillRect(54, 40, 5, 5);
-    ctx.strokeStyle = "#1d1a24";
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    const boca = { contento: [56, 1], neutral: [58, 0], triste: [62, -1], enojado: [60, -0.5], asustado: [58, 0] }[expresion ?? "neutral"]!;
-    ctx.moveTo(39, boca[0]);
-    ctx.quadraticCurveTo(48, boca[0] + 8 * boca[1], 57, boca[0]);
-    ctx.stroke();
-    if (expresion === "asustado") c(48, 60, 4, "#1d1a24");
-  }
-  if (capa === "cabello" || capa === "completo") {
-    ctx.fillStyle = cc;
-    ctx.beginPath();
-    ctx.arc(48, 40, 28, Math.PI, 0);
-    ctx.fill();
-  }
-  if (capa === "ropa") {
-    ctx.fillStyle = tono(n, 55);
-    ctx.fillRect(18, 76, 60, 20);
-  }
-  if (capa === "extra") {
-    ctx.strokeStyle = tono(n, 35);
-    ctx.lineWidth = 4;
-    ctx.strokeRect(32, 36, 32, 12);
-  }
-}
-
 // Walls from the map, if there is one for this place, so the placeholder matches the collisions.
 function fondo(ctx: Ctx, p: Pieza) {
   const [w, h] = p.medida;
@@ -193,90 +148,6 @@ function fondo(ctx: Ctx, p: Pieza) {
   }
 }
 
-function marco(ctx: Ctx, p: Pieza) {
-  ctx.fillStyle = tono(p.id, 85);
-  ctx.fillRect(0, 0, 48, 48);
-  ctx.strokeStyle = tono(p.id, 35);
-  ctx.lineWidth = 4;
-  ctx.strokeRect(4, 4, 40, 40);
-  ctx.fillStyle = tono(p.id, 35);
-  for (const [x, y] of [[0, 0], [40, 0], [0, 40], [40, 40]]) ctx.fillRect(x, y, 8, 8);
-}
-
-function icono(ctx: Ctx, p: Pieza) {
-  const [w, h] = p.medida;
-  const n = nombre(p);
-  ctx.fillStyle = tono(n, 75);
-  ctx.beginPath();
-  ctx.roundRect(1, 1, w - 2, h - 2, 6);
-  ctx.fill();
-  ctx.strokeStyle = tono(n, 35);
-  ctx.lineWidth = 2;
-  ctx.stroke();
-  const carita = n.match(/^carita_(\d)$/);
-  if (carita) {
-    const k = Number(carita[1]) - 3;
-    ctx.fillStyle = "#1d1a24";
-    ctx.fillRect(10, 11, 3, 3);
-    ctx.fillRect(19, 11, 3, 3);
-    ctx.strokeStyle = "#1d1a24";
-    ctx.beginPath();
-    ctx.moveTo(9, 21);
-    ctx.quadraticCurveTo(16, 21 + k * 3, 23, 21);
-    ctx.stroke();
-    return;
-  }
-  // No letters: a child reads them as words ("SOL"); the text under the icon already says what it is.
-}
-
-// The scene to describe (contenido/escena-para-describir.yaml): a child looks out of a window at night, and
-// two plates are served on the table. A box with a name cannot be described, so the placeholder shows it.
-function escena(ctx: Ctx, w: number, h: number) {
-  ctx.fillStyle = "#eadfca";
-  ctx.fillRect(0, 0, w, h);
-  ctx.fillStyle = "#b98d63";
-  ctx.fillRect(0, h - 50, w, 50);
-  ctx.fillStyle = "#1d2340";
-  ctx.fillRect(190, 30, 110, 110);
-  ctx.fillStyle = "#f2e9a0";
-  for (const [x, y] of [[205, 48], [262, 62], [236, 40], [284, 96], [214, 88]]) ctx.fillRect(x, y, 3, 3);
-  ctx.strokeStyle = "#7a5c4f";
-  ctx.lineWidth = 6;
-  ctx.strokeRect(190, 30, 110, 110);
-  ctx.beginPath();
-  ctx.moveTo(245, 30);
-  ctx.lineTo(245, 140);
-  ctx.moveTo(190, 85);
-  ctx.lineTo(300, 85);
-  ctx.stroke();
-  ctx.fillStyle = "#3c4fa8";
-  ctx.fillRect(228, 166, 10, 26);
-  ctx.fillRect(242, 166, 10, 26);
-  ctx.fillStyle = "#6cbf6a";
-  ctx.fillRect(224, 118, 32, 50);
-  ctx.fillStyle = "#4a3426";
-  ctx.beginPath();
-  ctx.arc(240, 106, 14, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.fillStyle = "#8a5a3a";
-  ctx.fillRect(24, 148, 140, 10);
-  ctx.fillRect(34, 158, 8, 34);
-  ctx.fillRect(146, 158, 8, 34);
-  for (const x of [62, 126]) {
-    ctx.fillStyle = "#ffffff";
-    ctx.beginPath();
-    ctx.ellipse(x, 144, 20, 6, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = "#9a9a9a";
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-    ctx.fillStyle = "#f28c38";
-    ctx.beginPath();
-    ctx.ellipse(x, 142, 8, 3, 0, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
-
 function dibujar(p: Pieza, m: Manifiesto) {
   const [w, h] = p.medida;
   const lienzo = createCanvas(w, h);
@@ -284,18 +155,8 @@ function dibujar(p: Pieza, m: Manifiesto) {
   ctx.imageSmoothingEnabled = false;
   const n = nombre(p).replace(/_/g, " ");
   if (p.tipo === "hoja") hoja(ctx, p, m);
-  else if (p.tipo === "retrato") retrato(ctx, p, m);
   else if (p.tipo === "fondo") fondo(ctx, p);
-  else if (p.tipo === "marco") marco(ctx, p);
-  else if (p.tipo === "boton" || p.tipo === "icono") icono(ctx, p);
-  else if (p.id.endsWith("/escena_d01")) escena(ctx, w, h);
-  else if (p.tipo === "tarjeta") {
-    ctx.fillStyle = p.id.endsWith("elegida") ? "rgba(255,230,120,0.45)" : "#f4ecdc";
-    ctx.fillRect(0, 0, w, h);
-    ctx.strokeStyle = p.id.endsWith("elegida") ? "#f2c14e" : "#7a5c4f";
-    ctx.lineWidth = 4;
-    ctx.strokeRect(2, 2, w - 4, h - 4);
-  } else caja(ctx, w, h, tono(n), n);
+  else caja(ctx, w, h, tono(n), n);
   return marcarProvisional(lienzo.encodeSync("png"));
 }
 

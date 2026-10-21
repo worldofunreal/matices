@@ -2,51 +2,27 @@ declare const __VERSION_JUEGO__: string;
 
 declare module "virtual:contenido" {
   export type Opcion = [string, string];
-  export interface Paso {
+  export interface Situacion {
     id: string;
-    pregunta?: string;
-    personas?: string[];
-    opciones?: Opcion[];
-    opciones_solo?: Opcion[];
-    solo_si?: string[];
-  }
-  export interface Cuento {
-    id: string;
-    titulo: string;
-    dia: 1 | 2 | 3;
-    intensidad: "baja" | "media";
+    nombre: string;
     lugar: string;
-    hora: "manana" | "tarde" | "noche";
-    area_principal: string;
+    cuando: "correr";
+    quien: "adulto_cerca";
     areas: string[];
-    inicio: string;
-    pasos: Paso[];
+    aviso: string;
+    pregunta: string;
+    respuestas: Opcion[];
   }
   const contenido: {
     version: string;
-    cuentos: Cuento[];
-    sobreMi: { aviso: string; frases: { id: string; area: string; a: string; b: string }[] };
-    escena: {
-      id: string;
-      imagen: string;
-      pregunta_titulo: string;
-      titulos: Opcion[];
-      pregunta_emocion: string;
-      emociones: string[];
-      pregunta_platos: string;
-      platos: string[];
-    };
-    panel: Record<"cuerpo" | "pensamiento" | "entorno", Opcion[]>;
+    situaciones: Situacion[];
     textos: Textos;
     figuras: { id: string; tipo: "adulto" | "menor" | "mascota"; nombre: string }[];
     lugares: string[];
     conexiones: Record<string, string[]>;
-    sitios: Record<string, { mapa: string; zona: { x: number; y: number; w: number; h: number } | null }>;
-    actividades: { id: string; tipo: TipoActividad; dia: 1 | 2 | 3; hora: "manana" | "tarde" | "noche"; lugar: string }[];
     areas: { id: string; nombre: string; familia: string }[];
     objetos: Record<string, string[]>;
   };
-  export type TipoActividad = "cuentera" | "dibujo" | "describir" | "sobre_mi";
   interface Textos {
     creacion: {
       inicio: string;
@@ -86,38 +62,12 @@ declare module "virtual:contenido" {
       fin: string;
       saludos: Record<string, string[]>;
       objetos: Record<string, Record<string, string>>;
-      salida: string;
-      sin_sueno: string;
+      correr: string;
+      a_dormir: string;
+      lugares: Record<string, string>;
+      lugares_dentro: Record<string, string>;
     };
-    cuento: {
-      inicio: string;
-      pregunta: string;
-      cierre: string;
-      ahora_no: string;
-      boton_ahora_no: string;
-      otra: string;
-      no_se: string;
-      nadie: string;
-      solo: string;
-      vecino: string;
-      escuela: Record<"maestra" | "companero" | "conserje" | "directora", string>;
-      carita: string;
-      caritas: string[];
-      contar_mas: string;
-      panel: Record<"cuerpo" | "pensamiento" | "entorno", string>;
-      estado: string;
-      estados: Record<"tranquilo" | "inquieto" | "alerta" | "saturado", string>;
-      listo: string;
-      dibujar: string;
-    };
-    actividades: {
-      cuentera: string[];
-      dibujo_libre: string;
-      describir: { inicio: string; emociones: Record<string, string> };
-      sobre_mi: { los_dos: string; ahora_no: string; fin: string };
-      seguir: string;
-      aterrizaje: { texto: string; adios: string; adios_final: string };
-    };
+    libro: { titulo: string; dibujar: string; consigna: string; listo: string };
     siempre: { mi_libro: string; quiero_hablar: string; opciones: string; aviso: string; seguir: string };
     opciones: {
       titulo: string;
@@ -127,7 +77,6 @@ declare module "virtual:contenido" {
       efectos: string;
       velocidad: string;
       velocidades: string[];
-      ambiente: string;
       lectura: string;
       prendido: string;
       apagado: string;
@@ -143,7 +92,7 @@ declare module "virtual:arte" {
   interface Pieza {
     id: string;
     archivo: string;
-    tipo: "hoja" | "retrato" | "fondo" | "objeto" | "marco" | "tarjeta" | "boton" | "icono" | "ilustracion";
+    tipo: "hoja" | "fondo" | "objeto";
     medida: [number, number];
     que: string;
     colores: Rampa[];

@@ -1,4 +1,4 @@
-// The people of the child's house, as the stories use them ("¿Quién llega?", GDD §9).
+// The people of the child's house (GDD §7), as the situations use them (GDD §9).
 import contenido from "virtual:contenido";
 import { estado, type FiguraPuesta } from "./guardado";
 
@@ -21,7 +21,10 @@ export function nuevaInstancia(figura: string, casa: FiguraPuesta[]) {
   return `${figura}#${n}`;
 }
 
-// People who can arrive in a story: everyone in the house but pets; "casa_adultos" only adults.
-export function personasDeCasa(soloAdultos = false) {
-  return estado().casa.filter((f) => (soloAdultos ? tipoDe(f.figura) === "adulto" : tipoDe(f.figura) !== "mascota"));
+// Who reacts in the house: the adult the child put closest to where they stand, or nobody (GDD §9).
+export function adultoMasCerca(x: number, y: number): FiguraPuesta | null {
+  let mejor: FiguraPuesta | null = null;
+  for (const f of estado().casa)
+    if (tipoDe(f.figura) === "adulto" && (!mejor || Math.hypot(f.x - x, f.y - y) < Math.hypot(mejor.x - x, mejor.y - y))) mejor = f;
+  return mejor;
 }

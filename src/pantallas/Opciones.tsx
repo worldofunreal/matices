@@ -55,7 +55,7 @@ export function Opciones({ alCerrar }: { alCerrar: () => void }) {
     </div>
   );
 
-  const sino = (clave: "ambiente" | "lectura") => (
+  const sino = (clave: "lectura") => (
     <div className="preferencia-control">
       <button className="chip" aria-pressed={o[clave]} onClick={() => cambiar(clave, true)}>
         {O.prendido}
@@ -93,9 +93,6 @@ export function Opciones({ alCerrar }: { alCerrar: () => void }) {
               </button>
             ))}
           </div>
-        </Fila>
-        <Fila icono={Icono.ambiente} texto={O.ambiente} clave="ambiente">
-          {sino("ambiente")}
         </Fila>
         <Fila icono={Icono.lectura} texto={O.lectura} clave="lectura">
           {sino("lectura")}

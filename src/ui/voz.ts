@@ -42,3 +42,8 @@ export function hablar(clave: string, texto: string): Promise<void> {
     speechSynthesis.speak(frase);
   });
 }
+
+// A line someone says in the world: a recording plays on its own; the browser voice only from the speaker (GDD §12).
+export function sonarSiGrabada(clave: string, texto: string) {
+  if (grabadas.has(clave)) void hablar(clave, texto);
+}

@@ -10,17 +10,16 @@
 // Another body (node herramientas/generar.ts cuerpo_nina cuerpo_nino) goes to ARTE/personaje/cuerpo_nino; then
 //   node herramientas/acomodar.ts personaje/cuerpo_nino ARTE/personaje/cuerpo_nino --igual-a ARTE/personaje/cuerpo_nina
 // Figures of the house: node herramientas/generar.ts figuras [<id> ...] (all of FIGURAS in arte.ts without ids) draws
-// each one from the protagonist's front pose, to ARTE/figuras/<id>/quieta.png; then
-//   node herramientas/acomodar.ts figuras/<id> ARTE/figuras/<id>
+// each one from the protagonist's front pose, to ARTE/figuras/<id>.png, all in one folder; then
+//   node herramientas/acomodar.ts figuras   (every figure found there)
 import { spawn } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
-import { homedir, tmpdir } from "node:os";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import { writeFileSync } from "node:fs";
-import { FIGURAS } from "./arte.ts";
+import { ARTE, FIGURAS } from "./arte.ts";
 
-export const ARTE = join(homedir(), ".local/share/matices/arte");
 const A_LA_VEZ = 4; // Codex runs at once
 const INTENTOS = 3;
 
@@ -270,17 +269,18 @@ async function main() {
   const cola: (() => Promise<void>)[] = [];
   const correr = () => Promise.all(Array.from({ length: A_LA_VEZ }, async () => { for (let t; (t = cola.shift()); ) await t(); }));
   if (cuerpo === "figuras") {
+    const carpeta = join(ARTE, "figuras");
+    mkdirSync(carpeta, { recursive: true });
     for (const id of capas.length ? capas : Object.keys(FIGURAS)) {
       if (!FIGURAS[id]) throw new Error(`no hay instrucciones para la figura ${id}`);
-      const base = await baseFigura(FIGURAS[id].base), destino = join(ARTE, "figuras", id);
-      mkdirSync(destino, { recursive: true });
-      const hecho = archivo(destino, "quieta");
-      const mal = hecho && (await revisarFigura(base, join(destino, hecho)));
+      const base = await baseFigura(FIGURAS[id].base);
+      const hecho = archivo(carpeta, id) ?? archivo(carpeta, `${id}_quieta`);
+      const mal = hecho && (await revisarFigura(base, join(carpeta, hecho)));
       if (mal) console.log(lista ? `\n> ${id}: ${mal}` : `${id}: ${mal}, se pide de nuevo`);
-      if (mal && !lista) rmSync(join(destino, hecho));
+      if (mal && !lista) rmSync(join(carpeta, hecho));
       if (hecho && !mal) continue;
-      if (lista) console.log(`\n## ${id} · quieta\n- Adjuntar: ${base}\n- Guardar como: ${join(destino, "quieta.png")}\n- Después: node herramientas/acomodar.ts figuras/${id} ${destino}\n\n\`\`\`\n${promptFigura(id)}\n\`\`\``);
-      else cola.push(() => una(base, destino, "quieta", id));
+      if (lista) console.log(`\n## ${id} · quieta\n- Adjuntar: ${base}\n- Guardar como: ${join(carpeta, id + ".png")}\n\n\`\`\`\n${promptFigura(id)}\n\`\`\``);
+      else cola.push(() => una(base, carpeta, id, id));
     }
     return void (await correr());
   }

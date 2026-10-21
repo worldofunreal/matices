@@ -2,16 +2,18 @@
 // Shared by the build check (contenido.ts) and the placeholder generator (provisionales.ts).
 import { readFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { homedir } from "node:os";
 import { crc32 } from "node:zlib";
 import { parse } from "yaml";
 
 export const ROOT = resolve(import.meta.dirname, "..");
+// Where the generator images live, outside the repository (docs/arte/direccion-de-arte.md).
+export const ARTE = join(homedir(), ".local/share/matices/arte");
 export const ASSETS = join(ROOT, "public/assets");
 export const MANIFIESTO = join(ASSETS, "manifiesto.yaml");
 export const DOC_CODIGOS = join(ROOT, "docs/clinico/codigos-y-eventos.md");
-export const PANEL_CPE = join(ROOT, "contenido/panel-cpe.yaml");
 
-export type Tipo = "hoja" | "retrato" | "fondo" | "objeto" | "marco" | "tarjeta" | "boton" | "icono" | "ilustracion";
+export type Tipo = "hoja" | "fondo" | "objeto";
 // Color ramps the game can swap (manifiesto.yaml `colores`). One list, used by the build check and the game.
 export const RAMPAS = ["piel", "cabello", "mochila", "sueter", "uniforme_abajo", "playera", "pants", "tenis", "gorra", "lentes", "aretes"] as const;
 export type Rampa = (typeof RAMPAS)[number];
@@ -35,8 +37,6 @@ type Grupo = {
   tipo: Tipo;
   medida?: [number, number];
   colores?: Rampa[];
-  expresiones?: string[];
-  desde?: "codigos" | "panel-cpe";
   piezas?: Record<string, string | { que: string; medida?: [number, number]; colores?: Rampa[] }>;
 };
 
@@ -45,35 +45,17 @@ export function codigosValidos(): Set<string> {
   return new Set([...doc.matchAll(/`([A-Z][A-Z_]+)`/g)].map((m) => m[1]));
 }
 
-export function panelCpe(): Record<string, [string, string][]> {
-  return parse(readFileSync(PANEL_CPE, "utf8"));
-}
-
 export function leerManifiesto(): Manifiesto {
   const m = parse(readFileSync(MANIFIESTO, "utf8"));
   const piezas: Pieza[] = [];
   for (const g of m.grupos as Grupo[]) {
-    let entradas: [string, string | { que: string; medida?: [number, number]; colores?: Rampa[] }][] = Object.entries(g.piezas ?? {});
-    if (g.desde === "codigos")
-      entradas = [...codigosValidos()].sort().map((c) => [c.toLowerCase(), `Código ${c}`]);
-    if (g.desde === "panel-cpe")
-      entradas = Object.entries(panelCpe()).flatMap(([grupo, ops]) => ops.map(([id, t]) => [id, `${grupo}: ${t}`]));
+    const entradas: [string, string | { que: string; medida?: [number, number]; colores?: Rampa[] }][] = Object.entries(g.piezas ?? {});
     for (const [nombre, v] of entradas) {
       const que = typeof v === "string" ? v : v.que;
       const medida = (typeof v === "string" ? undefined : v.medida) ?? g.medida;
       const colores = (typeof v === "string" ? undefined : v.colores) ?? g.colores ?? [];
       if (!medida) throw new Error(`manifiesto: ${g.carpeta}/${nombre} no tiene medida`);
-      for (const sufijo of g.expresiones ?? [""]) {
-        const n = sufijo ? `${nombre}_${sufijo}` : nombre;
-        piezas.push({
-          id: `${g.carpeta}/${n}`,
-          archivo: `${g.carpeta}/${n}.png`,
-          tipo: g.tipo,
-          medida,
-          que: sufijo ? `${que} (${sufijo})` : que,
-          colores,
-        });
-      }
+      piezas.push({ id: `${g.carpeta}/${nombre}`, archivo: `${g.carpeta}/${nombre}.png`, tipo: g.tipo, medida, que, colores });
     }
   }
   const repetidos = piezas.filter((p, i) => piezas.findIndex((q) => q.id === p.id) !== i);

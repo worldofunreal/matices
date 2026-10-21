@@ -6,13 +6,13 @@ import { pintarHoja, HOJA, type Trazo } from "../pantallas/Dibujo";
 import * as K from "./calculos";
 import type { Evento } from "./calculos";
 
-const C: K.Contenido = { cuentos: contenido.cuentos, areas: contenido.areas, sobreMi: contenido.sobreMi, objetos: contenido.objetos };
+const C: K.Contenido = { situaciones: contenido.situaciones, areas: contenido.areas, objetos: contenido.objetos };
 const nombreArea = new Map(contenido.areas.map((a) => [a.id, a.nombre]));
-const tituloDe = new Map(contenido.cuentos.map((c) => [c.id, c.titulo]));
+const nombreDe = new Map(contenido.situaciones.map((x) => [x.id, x.nombre]));
 const figuraDe = new Map(contenido.figuras.map((f) => [f.id, f.nombre]));
 const cuartoDe = (c: string) => contenido.textos.casa.cuartos[c] ?? c;
 
-// FIGURA:tia#2 → "Tía (2)"; ESCUELA:maestra → "maestra"; other codes stay as written in codigos-y-eventos.md.
+// FIGURA:tia#2 → "Tía (2)"; other codes stay as written in codigos-y-eventos.md.
 function etiqueta(codigo: string) {
   const [tipo, resto] = codigo.split(":");
   if (tipo === "FIGURA" && resto) {
@@ -22,7 +22,7 @@ function etiqueta(codigo: string) {
   return resto ?? codigo;
 }
 const fecha = (ms: number | null | undefined) => (ms ? new Date(ms).toLocaleString("es-MX", { dateStyle: "short", timeStyle: "short" }) : "—");
-const cuento = (id: string) => `${id} ${tituloDe.get(id) ?? ""}`.trim();
+const situacion = (id: string) => `${id} ${nombreDe.get(id) ?? ""}`.trim();
 
 function descargar(nombre: string, texto: string, tipo: string) {
   const a = document.createElement("a");
@@ -145,7 +145,7 @@ function Todos({ eventos }: { eventos: Evento[] }) {
           <div className="cifra"><strong>{resumenes.length}</strong><span>participantes</span></div>
           <div className="cifra"><strong>{resumenes.filter((r) => r.termino).length}</strong><span>terminaron los 3 días</span></div>
           <div className="cifra"><strong>{K.mediana(resumenes.map((r) => r.minutos))}</strong><span>minutos jugados (del medio)</span></div>
-          <div className="cifra"><strong>{resumenes.reduce((a, r) => a + r.terminados, 0)}</strong><span>cuentos terminados</span></div>
+          <div className="cifra"><strong>{resumenes.reduce((a, r) => a + r.respuestas, 0)}</strong><span>respuestas en situaciones</span></div>
           <div className="cifra"><strong>{resumenes.reduce((a, r) => a + r.errores, 0)}</strong><span>errores</span></div>
         </div>
       </section>
@@ -155,13 +155,13 @@ function Todos({ eventos }: { eventos: Evento[] }) {
         <p className="nota">Toca una fila para ver su perfil.</p>
         <table>
           <thead>
-            <tr><th>Código</th><th>Primera vez</th><th>Última vez</th><th className="num">Sesiones</th><th className="num">Min</th><th className="num">Día</th><th className="num">Cuentos</th><th className="num">Ahora no</th><th className="num">Quiero hablar</th><th>Aparato</th><th className="num">Errores</th><th>Se quedó en</th></tr>
+            <tr><th>Código</th><th>Primera vez</th><th>Última vez</th><th className="num">Sesiones</th><th className="num">Min</th><th className="num">Día</th><th className="num">Respuestas</th><th className="num">Se fue sin contestar</th><th className="num">Quiero hablar</th><th>Aparato</th><th className="num">Errores</th><th>Se quedó en</th></tr>
           </thead>
           <tbody>
             {resumenes.map((r) => (
               <tr key={r.nino} className="fila-clic" onClick={() => ir(r.nino)}>
                 <td><code>{r.nino}</code></td><td>{fecha(r.primera)}</td><td>{fecha(r.ultima)}</td><td className="num">{r.sesiones}</td><td className="num">{r.minutos}</td>
-                <td className="num">{r.termino ? "fin" : r.dia || "—"}</td><td className="num">{r.terminados}</td><td className="num">{r.ahoraNo}</td><td className="num">{r.quiereHablar || ""}</td>
+                <td className="num">{r.termino ? "fin" : r.dia || "—"}</td><td className="num">{r.respuestas}</td><td className="num">{r.ignora}</td><td className="num">{r.quiereHablar || ""}</td>
                 <td>{r.aparato}</td><td className="num">{r.errores || ""}</td><td>{r.ultimaPantalla}</td>
               </tr>
             ))}
@@ -206,7 +206,7 @@ function Todos({ eventos }: { eventos: Evento[] }) {
 
       <section>
         <h2>Por área, entre todos</h2>
-        <p className="nota">Cuántas veces salió cada código en los cuentos de cada área.</p>
+        <p className="nota">Cuántas veces salió cada respuesta en las situaciones de cada área.</p>
         <table>
           <thead><tr><th>Área</th><th>Códigos</th></tr></thead>
           <tbody>
@@ -234,8 +234,7 @@ function Perfil({ nino, todos }: { nino: string; todos: Evento[] }) {
   const ap = K.aparienciaDe(evs);
   const casa = K.casa(evs);
   const areas = K.codigosPorArea(evs, C);
-  const pat = K.patrones(evs);
-  const sobre = K.sobreMi(evs, C);
+  const sits = K.situaciones(evs);
   const dibujos = evs.filter((e) => e.tipo === "dibujo" && e.imagen);
   const explora = K.exploracion(evs, C);
   const recorrido = evs.filter((e) => e.tipo === "pantalla");
@@ -281,7 +280,7 @@ function Perfil({ nino, todos }: { nino: string; todos: Evento[] }) {
 
       <section>
         <h2>Por área</h2>
-        <p className="nota">Como un examen de laboratorio, pero sin rangos inventados: la referencia es el mismo conteo entre todos los participantes que jugaron un cuento de esa área. Sin colores de alto o bajo hasta tener 120 o más niños por grupo de edad.</p>
+        <p className="nota">Como un examen de laboratorio, pero sin rangos inventados: la referencia es el mismo conteo entre todos los participantes que contestaron en una situación de esa área. Sin colores de alto o bajo hasta tener 120 o más niños por grupo de edad.</p>
         <table>
           <thead><tr><th>Área</th><th>Resultado</th><th>De dónde sale</th><th>Referencia de todos</th></tr></thead>
           <tbody>
@@ -292,7 +291,7 @@ function Perfil({ nino, todos }: { nino: string; todos: Evento[] }) {
                   <tr key={a.id + codigo}>
                     <td>{i === 0 ? nombreArea.get(a.id) : ""}</td>
                     <td>{etiqueta(codigo)}: {f.n}</td>
-                    <td>{[...f.cuentos].map(cuento).join(", ")}</td>
+                    <td>{[...f.situaciones].map(situacion).join(", ")}</td>
                     <td>N = {r.N} · del medio {r.mediana} · de {r.min} a {r.max}</td>
                   </tr>
                 );
@@ -303,26 +302,19 @@ function Perfil({ nino, todos }: { nino: string; todos: Evento[] }) {
       </section>
 
       <section>
-        <h2>Patrones</h2>
-        <p>Buscó ayuda {pat.buscoAyuda} {pat.buscoAyuda === 1 ? "vez" : "veces"}.</p>
-        {pat.quienLlega.length > 0 && <p>¿Quién llega?: {pat.quienLlega.map(([c, n]) => `${etiqueta(c)} ${n}`).join(" · ")}</p>}
-        <p>"Ahora no": {pat.ahoraNo.length ? pat.ahoraNo.map((a) => `${cuento(a.cuento)} (${a.paso})`).join(" · ") : "nunca"}</p>
-        {pat.lentas.length > 0 && <p>Decisiones más lentas: {pat.lentas.map((l) => `${cuento(l.cuento)}, ${l.paso}: ${etiqueta(l.elegida)} en ${l.segundos} s`).join(" · ")}</p>}
-      </section>
-
-      {sobre.size > 0 && (
-        <section>
-          <h2>Sobre mí</h2>
+        <h2>Situaciones</h2>
+        <p className="nota">Qué hizo, quién reaccionó, qué contestó y cuántas veces lo volvió a hacer después de contestar.</p>
+        {sits.size ? (
           <table>
-            <thead><tr><th>Área</th><th>Frase A</th><th>Frase B</th><th>Eligió</th></tr></thead>
+            <thead><tr><th>Situación</th><th className="num">Veces</th><th>Quién reaccionó</th><th>Contestó</th><th className="num">Segundos</th><th className="num">Lo hizo después</th></tr></thead>
             <tbody>
-              {[...sobre].flatMap(([area, fs]) => fs.map((f, i) => (
-                <tr key={area + i}><td>{i === 0 ? (nombreArea.get(area) ?? area) : ""}</td><td>{f.a}</td><td>{f.b}</td><td>{f.respuesta}</td></tr>
-              )))}
+              {[...sits].map(([id, f]) => (
+                <tr key={id}><td>{situacion(id)}</td><td className="num">{f.veces}</td><td>{f.quien.map(etiqueta).join(", ")}</td><td>{f.respuesta ?? "—"}</td><td className="num">{f.segundos ?? ""}</td><td className="num">{f.respuesta ? f.despues : ""}</td></tr>
+              ))}
             </tbody>
           </table>
-        </section>
-      )}
+        ) : <p className="nota">Todavía ninguna.</p>}
+      </section>
 
       {dibujos.length > 0 && (
         <section>
@@ -334,8 +326,8 @@ function Perfil({ nino, todos }: { nino: string; todos: Evento[] }) {
       <section>
         <h2>Exploración</h2>
         <table>
-          <thead><tr><th>Lugar</th><th className="num">Minutos</th><th className="num">Visitas</th><th>Tocó</th><th>No tocó</th></tr></thead>
-          <tbody>{explora.map((l) => <tr key={l.lugar}><td>{l.lugar}</td><td className="num">{l.minutos}</td><td className="num">{l.visitas}</td><td>{l.tocados.join(", ")}</td><td>{l.noTocados.join(", ")}</td></tr>)}</tbody>
+          <thead><tr><th>Lugar</th><th className="num">Minutos</th><th className="num">Visitas</th><th className="num">Segundos corriendo</th><th>Tocó</th><th>No tocó</th></tr></thead>
+          <tbody>{explora.map((l) => <tr key={l.lugar}><td>{l.lugar}</td><td className="num">{l.minutos}</td><td className="num">{l.visitas}</td><td className="num">{l.segundosCorriendo}</td><td>{l.tocados.join(", ")}</td><td>{l.noTocados.join(", ")}</td></tr>)}</tbody>
         </table>
       </section>
 
@@ -371,7 +363,7 @@ function DibujoVisto({ d }: { d: Evento }) {
       paso();
     });
   };
-  const origen = String(d.origen).startsWith("E") ? cuento(String(d.origen).split(".")[0]) : "Dibujo libre";
+  const origen = "Dibujo libre";
   return (
     <figure>
       {repitiendo ? <canvas ref={hoja} /> : <img src={d.imagen} alt={`Dibujo de ${origen}`} />}

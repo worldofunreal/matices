@@ -94,12 +94,7 @@ export const Icono = {
       <path d="M12 6.5 20 12l-8 5.5z" />
     </>,
   ),
-  ambiente: svg(
-    <>
-      <path d="M5 19c0-8.5 4.5-13.5 14-14.5-.5 9.5-5 14.5-14 14.5z" />
-      <path d="M5 19 13 11" />
-    </>,
-  ),
+
   lectura: svg(<path d="M4 19 12 5l8 14M7.5 14h9" />),
   cerrar: svg(<path d="M6 6l12 12M18 6L6 18" />),
   borrar: svg(
@@ -109,6 +104,19 @@ export const Icono = {
     </>,
   ),
   volver: svg(<path d="M15 5l-7 7 7 7" />),
+  // A sneaker with speed lines: the run button (GDD §12).
+  correr: svg(
+    <>
+      <path d="M8 8h3l2 3 5 1.5c1.5.5 2.5 1.5 2.5 3V17H8z" />
+      <path d="M8 17h12.5M2 10h4M3 13.5h3" />
+    </>,
+  ),
+  candado: svg(
+    <>
+      <rect x="5" y="11" width="14" height="9" rx="2" />
+      <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+    </>,
+  ),
   siguiente: svg(<path d="M9 5l7 7-7 7" />),
   deshacer: svg(
     <>

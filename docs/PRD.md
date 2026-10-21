@@ -8,7 +8,7 @@ Los psicólogos que atienden niños en México atienden a muchos niños con poco
 
 ## 2. Propuesta
 
-Un videojuego que el niño juega solo o en grupo, en el lugar y las sesiones que defina la institución, y que registra sus elecciones en situaciones cotidianas. El psicólogo recibe un reporte descriptivo por niño, con marcas que él mismo define para decidir a quién atender primero.
+Un videojuego que el niño juega solo o en grupo, en el lugar y las sesiones que defina la institución. El niño anda libre por su casa, la escuela y la colonia; el juego registra lo que hace en situaciones de todos los días (GDD §9), sin detenerlo para preguntarle. El psicólogo recibe un reporte descriptivo por niño, con marcas que él mismo define para decidir a quién atender primero.
 
 El juego recoge. El psicólogo interpreta. El juego no diagnostica.
 
@@ -37,7 +37,7 @@ Sugerencias para la llamada, válidas solo si la institución las aprueba: tres 
 ## 4. Objetivos
 
 1. Que un psicólogo pueda observar a muchos niños sin una sesión individual larga por niño, en el formato que apruebe la institución.
-2. Que cada reporte cubra las 13 áreas del marco clínico con al menos dos observaciones por área.
+2. Que cada reporte cubra las áreas del marco clínico con al menos dos situaciones por área.
 3. Que ningún niño quede sin forma de pedir ayuda durante el juego.
 4. Que el piloto pueda medir qué tanto coincide el juego con el juicio clínico.
 
@@ -47,10 +47,10 @@ Sugerencias para la llamada, válidas solo si la institución las aprueba: tres 
 - F1. El juego no pide datos ni permisos y no pone candados ni avisos: lo legal se resuelve fuera del producto antes de entregarlo. Cada participante es anónimo; más adelante un token liga la sesión con la identidad del niño.
 - F2. Creación de personaje y armar la casa (GDD §6 y §7).
 - F3. Mundo explorable: casa, calle, escuela, parque, tiendita, biblioteca.
-- F4. 15 sucesos según `contenido/cuentos`, con orden barajado por semilla y reglas de intensidad.
-- F5. Escena para describir, Sobre mí, dibujo libre.
-- F6. "Ahora no" en todo suceso; "Quiero hablar con alguien" en toda pantalla.
-- F7. Voz en toda línea y tarjeta; opciones de accesibilidad.
+- F4. Situaciones cotidianas según `contenido/situaciones.yaml` (GDD §9): ninguna detiene el juego y siempre se puede no contestar alejándose.
+- F5. Dibujo libre en Mi libro, cuando el niño quiera.
+- F6. "Quiero hablar con alguien" en toda pantalla.
+- F7. Voz en toda línea y respuesta; letreros en cada salida; opciones de accesibilidad.
 - F8. Funciona completo sin red ni internet; se pausa y se retoma en cualquier punto.
 
 ### Tablero (cuenta de admin)
@@ -66,7 +66,7 @@ Sugerencias para la llamada, válidas solo si la institución las aprueba: tres 
 - F17. Los datos llegan a un servidor propio en IONOS (no a un servicio externo). El tablero (F13) muestra embudos por pantalla, abandono, tiempos, errores y rendimiento por aparato.
 
 ### Contenido
-- F15. Sucesos y frases como archivos de datos; cada opción con código obligatorio. El contenido sin código no compila.
+- F15. Situaciones y frases como archivos de datos; cada respuesta con código obligatorio. El contenido sin código no compila.
 
 ## 6. Requisitos no funcionales
 

@@ -1,5 +1,5 @@
-// The drawing sheet (GDD §10): 12 colors, 3 sizes, eraser and undo. Used for "Otra cosa" in a story
-// and for the free drawing. Every stroke keeps its timing; the drawing is the only free content.
+// The drawing sheet (GDD §10): 12 colors, 3 sizes, eraser and undo. Opened from Mi libro, whenever the child
+// wants. Every stroke keeps its timing; the drawing is the only free content.
 import { useEffect, useRef, useState } from "react";
 import contenido from "virtual:contenido";
 import { Bocina } from "../ui/Bocina";
@@ -33,7 +33,7 @@ export function pintarHoja(ctx: CanvasRenderingContext2D, trazos: Trazo[], hasta
   }
 }
 
-export function Dibujo({ origen, consigna, alTerminar, ahoraNo }: { origen: string; consigna: string; alTerminar: (imagen: string | null) => void; ahoraNo?: () => void }) {
+export function Dibujo({ origen, consigna, alTerminar }: { origen: string; consigna: string; alTerminar: (imagen: string | null) => void }) {
   const hoja = useRef<HTMLCanvasElement>(null);
   const trazos = useRef<Trazo[]>([]);
   const actual = useRef<Trazo | null>(null);
@@ -147,14 +147,9 @@ export function Dibujo({ origen, consigna, alTerminar, ahoraNo }: { origen: stri
         </div>
       </div>
       <footer className="dibujo-pie">
-        {ahoraNo && (
-          <button className="boton secundario" onClick={ahoraNo}>
-            {contenido.textos.cuento.boton_ahora_no}
-          </button>
-        )}
         <button className="boton principal" onClick={listo}>
           {Icono.listo}
-          {contenido.textos.cuento.listo}
+          {contenido.textos.libro.listo}
         </button>
       </footer>
     </section>

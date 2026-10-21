@@ -1,4 +1,4 @@
-# Textos fijos del juego (no los de los sucesos). Cada texto tiene voz; una grabación en
+# Textos fijos del juego (los de las situaciones están en situaciones.yaml). Cada texto tiene voz; una grabación en
 # public/assets/voz/<clave>.mp3 reemplaza a la voz del navegador (ej. voz/creacion.pasos.cuerpo.mp3).
 # {nombre}: nombre del personaje.
 # {figura}: nombre de una figura de la casa. {cuarto}: nombre de un cuarto.
@@ -46,7 +46,7 @@ creacion:
   nombres: [Ana, Sofía, Valeria, Camila, Ximena, Regina, Fernanda, Daniela, Mariana, Lupita, Itzel, Renata, Paola, Andrea, Jimena, Naomi, Alma, Citlali, Abril, Luz, Diego, Santiago, Mateo, Emiliano, Leonardo, Juan, José, Luis, Ángel, Miguel, Iker, Tadeo, Gael, Kevin, Brayan, Alexis, Sam, Alex, Dani, Cris]
 
 casa:
-  inicio: "Esta es tu casa en el cuento. Toca a alguien de abajo y luego un cuarto."
+  inicio: "Esta es tu casa. Toca a alguien de abajo y luego un cuarto."
   instruccion: "Puedes poner a varias personas, o a nadie. También puedes arrastrarlas."
   elegida: "{figura}. Ahora toca un cuarto."
   puesta: "{figura} en {cuarto}."
@@ -86,7 +86,7 @@ mundo:
     companero_4: ["Hola.", "Ya casi es la salida."]
     don_chuy: ["Buenas.", "Llegaron paletas nuevas."]
     clara: ["Bienvenido a la biblioteca.", "Los libros de cuentos están arriba."]
-    cuentera: ["Hola. Aquí guardo mi libro de cuentos.", "Qué gusto verte."]
+    cuentera: ["Hola. Aquí vengo a leer.", "Qué gusto verte."]
   objetos:
     comun:
       arbol: "Un árbol."
@@ -131,70 +131,31 @@ mundo:
       refrigerador_refrescos: "El refri de los refrescos."
       estante: "Dulces y papitas."
     biblioteca_planta_alta:
-      sillon_cuentera: "El sillón de La Cuentera."
-  salida: "Todavía no es la salida."
-  sin_sueno: "Todavía no tengo sueño."
+      sillon_cuentera: "Un sillón para leer."
+  correr: "Correr"
+  a_dormir: "A dormir"
+  # Letreros de las puertas (GDD §8): a dónde lleva cada una. Dentro del mismo edificio, su nombre de adentro.
+  lugares:
+    casa: "Casa"
+    calle: "Calle"
+    tiendita: "Tiendita"
+    parque: "Parque"
+    escuela_patio: "Escuela"
+    escuela_planta_baja: "Salones"
+    escuela_planta_alta: "Planta alta"
+    biblioteca_planta_baja: "Biblioteca"
+    biblioteca_planta_alta: "Planta alta"
+  lugares_dentro:
+    escuela_patio: "Patio"
+    biblioteca_planta_baja: "Planta baja"
 
-# Modo cuento (GDD §9). Las frases de La Cuentera son fijas: nunca opina sobre un final.
-cuento:
-  inicio: "Aquí empieza un cuento que perdió su final…"
-  pregunta: "¿Y qué pasó después?"
-  cierre: "Así queda el cuento. Gracias."
-  ahora_no: "Está bien. Lo dejamos aquí."
-  boton_ahora_no: "Ahora no"
-  otra: "Otra cosa"
-  no_se: "No sé"
-  nadie: "Nadie"
-  solo: "{nombre} lo resuelve sin ayuda"
-  vecino: "Un vecino o vecina"
-  escuela:
-    maestra: "La maestra"
-    companero: "Un compañero"
-    conserje: "El conserje"
-    directora: "La directora"
-  carita: "¿Cómo se siente {nombre}?"
-  caritas: ["Muy mal", "Mal", "Más o menos", "Bien", "Muy bien"]
-  contar_mas: "Contar más"
-  panel:
-    cuerpo: "En el cuerpo"
-    pensamiento: "En la cabeza"
-    entorno: "Alrededor"
-  estado: "¿Cómo se siente todo alrededor?"
-  estados:
-    tranquilo: "Tranquilo"
-    inquieto: "Inquieto"
-    alerta: "Alerta"
-    saturado: "Demasiado"
-  listo: "Listo"
-  dibujar: "Dibuja lo que pasa."
-
-# Actividades (GDD §10). La consigna del dibujo está pendiente de revisión clínica y la puede
+# Mi libro (GDD §10): los dibujos del niño. La consigna está pendiente de revisión clínica y la puede
 # cambiar el psicólogo (docs/PENDIENTES.md).
-actividades:
-  cuentera:
-    - "Hola, {nombre}. Yo soy La Cuentera."
-    - "En mi libro hay cuentos que perdieron su final."
-    - "Cuando pase algo en tu día, el libro se va a abrir y tú decides qué pasó después."
-    - "Ningún final es el correcto. Y si no quieres seguir, tocas «Ahora no»."
-  dibujo_libre: "Dibuja a todas las personas de tu casa haciendo algo."
-  describir:
-    inicio: "Mira este dibujo con calma."
-    emociones:
-      contento: "Feliz"
-      tranquilo: "En calma"
-      triste: "Triste"
-      enojado: "Con enojo"
-      asustado: "Con miedo"
-      no_se: "No sé"
-  sobre_mi:
-    los_dos: "Los dos"
-    ahora_no: "Ahora no"
-    fin: "Gracias por contarme."
-  seguir: "Seguir"
-  aterrizaje:
-    texto: "Antes de dormir, riega las plantas del patio. Toca cada maceta."
-    adios: "Hasta mañana, {nombre}."
-    adios_final: "Gracias por estos tres días, {nombre}."
+libro:
+  titulo: "Mi libro"
+  dibujar: "Dibujar"
+  consigna: "Dibuja a todas las personas de tu casa haciendo algo."
+  listo: "Listo"
 
 # Siempre a la mano (GDD §13): los botones de todas las pantallas. Lo que dice la frase es fijo
 # (GDD §10).
@@ -215,7 +176,6 @@ opciones:
   efectos: "Efectos"
   velocidad: "Velocidad del texto"
   velocidades: ["Lenta", "Normal", "Rápida"]
-  ambiente: "Efectos de ambiente"
   lectura: "Lectura sencilla"
   prendido: "Sí"
   apagado: "No"

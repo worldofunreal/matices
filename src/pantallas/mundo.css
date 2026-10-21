@@ -29,49 +29,6 @@
   opacity: 1;
 }
 
-/* The surroundings tint for a few seconds after a story (GDD §9, "Estados del cuerpo"). */
-.velo-ambiente {
-  position: absolute;
-  inset: 0;
-  z-index: 12;
-  pointer-events: none;
-  opacity: 0;
-  animation: ambiente 3.2s ease both;
-}
-
-.velo-ambiente.tranquilo {
-  background: #9fd7b0;
-}
-
-.velo-ambiente.inquieto {
-  background: #f2d36b;
-}
-
-.velo-ambiente.alerta {
-  background: #f29b4b;
-}
-
-.velo-ambiente.saturado {
-  background: #8c5a7a;
-}
-
-@keyframes ambiente {
-  0%,
-  100% {
-    opacity: 0;
-  }
-  20%,
-  70% {
-    opacity: 0.3;
-  }
-}
-
-/* A slightly closer framing for the strongest states (GDD §9). */
-.mundo.encuadre .mundo-lienzo {
-  transform: scale(1.05);
-  transition: transform 600ms ease;
-}
-
 /* Zoom buttons in the bottom-left corner, clear of the top bar and Opciones. */
 .mundo-controles {
   position: absolute;
@@ -80,4 +37,150 @@
   z-index: 10;
   flex-direction: column;
   justify-content: flex-start;
+}
+
+/* The run button lights up while it is on (GDD §12). */
+.mundo-controles .correr[aria-pressed="true"] {
+  background: var(--girasol);
+  color: var(--tinta);
+}
+
+/* HTML over the world (motor.ts places each one on its world point every frame). Never catches a tap. */
+.letrero,
+.globo-figura {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 8;
+  pointer-events: none;
+}
+
+/* A sign on each door: where it leads (GDD §8). */
+.letrero span {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgb(43 34 51 / 0.82);
+  color: #fbf6ee;
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.letrero span svg {
+  width: 15px;
+  height: 15px;
+}
+
+.letrero.cerrada span {
+  background: rgb(43 34 51 / 0.5);
+  color: rgb(251 246 238 / 0.7);
+}
+
+/* The sign where the day goes next pulses in the ring's yellow. */
+.letrero.guia span {
+  background: var(--girasol);
+  color: var(--tinta);
+  font-size: 17px;
+  box-shadow: var(--sombra-alta);
+  animation: guia 1.4s ease-in-out infinite;
+}
+
+@keyframes guia {
+  50% {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+/* Beside the edge arrow it is placed in device pixels, already toward the middle of the screen. */
+.flecha-texto[hidden] {
+  display: none;
+}
+
+/* Someone of the house speaking, over their head. */
+.globo-figura-caja {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  width: max-content;
+  max-width: min(320px, 80vw);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 10px 10px 10px 16px;
+  border-radius: 20px;
+  background: var(--tarjeta);
+  box-shadow: var(--sombra-alta);
+  pointer-events: auto;
+  animation: aparecer var(--rapido) both;
+}
+
+.globo-figura-caja::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -8px;
+  border: 8px solid transparent;
+  border-bottom: 0;
+  border-top-color: var(--tarjeta);
+  transform: translateX(-50%);
+}
+
+.globo-quien {
+  flex-basis: 100%;
+  color: var(--tinta-suave);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.globo-figura-caja p {
+  margin: 0;
+  flex: 1;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+/* The answers: one row at the bottom, in reach of the thumb (GDD §12). */
+.respuestas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 11;
+  margin: 0 auto;
+  width: min(calc(100% - 2 * 84px), 720px); /* clear of the controls on the left and Opciones on the right */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  animation: aparecer var(--rapido) both;
+}
+
+.respuesta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgb(251 246 238 / 0.9);
+  box-shadow: var(--sombra-alta);
+}
+
+.respuesta .boton {
+  min-height: 56px;
+  font-size: 18px;
+}
+
+.lectura-sencilla .globo-figura-caja p,
+.lectura-sencilla .respuesta .boton {
+  font-size: 22px;
+}
+
+.lectura-sencilla .letrero span {
+  font-size: 18px;
 }

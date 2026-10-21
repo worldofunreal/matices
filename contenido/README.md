@@ -1,52 +1,33 @@
 # Contenido
 
-Texto de los sucesos y de las actividades. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.1.0` (borrador, sin revisión clínica).
+Texto de las situaciones y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.2.0` (borrador, sin revisión clínica).
 
 | Archivo | Qué es |
 | --- | --- |
-| `cuentos/E00.yaml` … `cuentos/E14.yaml` | Los 15 sucesos para completar |
-| `sobre-mi.yaml` | Las 24 frases de los gemelos Tito y Tita |
-| `escena-para-describir.yaml` | La escena ambigua del día 2 |
-| `panel-cpe.yaml` | Opciones del panel cuerpo / pensamiento / entorno |
+| `situaciones.yaml` | Las situaciones cotidianas (GDD §9): quién reacciona, qué dice y las respuestas con su código |
 | `figuras.yaml` | Las figuras para armar la casa y si son adultos, menores o mascotas |
-| `actividades.yaml` | Cuándo y dónde pasan el dibujo libre, la escena para describir, Sobre mí y conocer a La Cuentera |
-| `textos.yaml` | Textos fijos: creación de personaje, los 40 nombres, mundo, cuento y actividades |
+| `textos.yaml` | Textos fijos: creación de personaje, los 40 nombres, casa, mundo, letreros de las salidas |
 
-## Forma de un suceso
+## Forma de una situación
 
 ```yaml
-id: E01                      # único
-titulo: La fiebre
-dia: 3                       # 1, 2 o 3
-intensidad: media            # baja | media (no existe alta)
-lugar: casa.recamara
-hora: noche                  # manana | tarde | noche
-area_principal: necesidades_fisicas
-areas: [apoyo_emocional, supervision]
-inicio: "Es de noche. {nombre} tiene fiebre…"
-pasos:
-  - id: quien_llega
-    pregunta: "¿Quién llega?"
-    personas: [casa, vecino, nadie, solo]   # tarjetas de personas
-  - id: que_hace
-    pregunta: "¿Qué hace {quien}?"
-    opciones:                               # [CÓDIGO, texto]
-      - [PROTEGE, "Le toma la temperatura y se queda"]
-    opciones_solo:                          # si eligió "nadie" o "solo"
-      - [AUTOSUFICIENTE, "{nombre} busca la medicina sin ayuda"]
-  - id: carita                              # cinco caritas + panel cuerpo/pensamiento/entorno
+- id: S01                    # único
+  nombre: Correr en la casa
+  lugar: casa                # un mapa de public/mapas/
+  cuando: correr             # lo que hace el niño: correr
+  quien: adulto_cerca        # quién reacciona: la persona adulta de la casa más cerca del niño
+  areas: [conducta]
+  aviso: "¡No corras dentro de la casa!"            # la primera vez
+  pregunta: "Te dije que no corrieras dentro…"      # la segunda; después vuelve el aviso
+  respuestas:                                       # [CÓDIGO, texto]
+    - [DESAFIA, "Me vale pito"]
 ```
 
 ## Reglas
 
-- Toda opción lleva un código de `docs/clinico/codigos-y-eventos.md`. Una opción sin código o con un código que no existe rompe la compilación.
-- `OTRA` (dibujarla) y `NO_SE` se agregan solos a cada lista. "Ahora no" siempre está disponible.
-- `{nombre}` es el nombre del personaje; `{quien}` es la persona elegida en el paso anterior.
-- `personas`: `casa` (figuras que el niño puso), `casa_adultos` (solo adultos de la casa), `escuela`, `vecino`, `nadie`, `solo`.
-- `solo_si`: el paso solo aparece si en el paso anterior se eligió uno de esos códigos.
-- Si en "¿Quién llega?" se eligió "Nadie" o "lo resuelve sin ayuda", cada paso siguiente que tenga `opciones_solo` las usa (un "¿Y luego?" con una opción de hacer algo "juntos" debe tenerlas; la compilación lo revisa); si no las tiene y su pregunta habla de `{quien}`, se salta. Con "No sé" también se salta todo paso que pregunte por `{quien}`.
-- Si la casa no tiene a nadie que pueda llegar (o, con `casa_adultos`, ningún adulto), las tarjetas de la casa se cambian por "un vecino o vecina" y "nadie".
-- `lugar`: `<lugar>.<zona>` o solo `<lugar>`. El lugar es un mapa de `public/mapas/` (o un grupo de mapas, como `escuela`) y la zona, un cuarto o una zona de ese mapa. La compilación revisa que exista.
-- Textos a nivel de 3.º de primaria, en español de México, sin violencia explícita.
-- Textos sin género: las mismas opciones las ve una niña, un niño o quien prefirió no elegir, y quien llega puede ser mamá o papá. "Sin ayuda", no "solo"; "de mal humor", no "enojado"; "saca a {nombre}", no "lo saca". La compilación rechaza los casos comunes.
+- Toda respuesta lleva un código de `docs/clinico/codigos-y-eventos.md`. Una respuesta sin código o con un código que no existe rompe la compilación.
+- `IGNORA` (alejarse sin contestar) se agrega solo; no se escribe.
+- Respuestas de dos o tres palabras; tres por situación como máximo, para que quepan abajo en una fila.
+- Las áreas son las de `docs/clinico/marco-clinico.md`.
+- Textos a nivel de 3.º de primaria, en español de México, sin violencia explícita y sin género (quien reacciona puede ser mamá o papá).
 - Cambiar un texto sube la versión del contenido; los reportes guardan la versión que vio cada niño.

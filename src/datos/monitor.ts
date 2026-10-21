@@ -2,7 +2,7 @@
 import { registrar } from "./eventos";
 
 let anterior: string | null = null;
-let detalle: string | null = null; // a story, drawing or landing open over the screen
+let detalle: string | null = null; // the drawing sheet, open over the screen
 const PAUSA = 30_000; // a pause this long is recorded as inactividad
 
 // Every screen the child opens, with the one before it (funnels and drop-off).

@@ -7,7 +7,7 @@
 # cuadros de 48 × 64 (anchos para que quepa el cabello abultado); la derecha es la izquierda volteada, pies en la misma fila de píxeles en todos los cuadros. Es el único que camina:
 # los personajes fijos son un solo cuadro de 48 × 64, de pie y de frente. Las figuras de la casa son un solo cuadro
 # de 48 × 80, con los pies abajo y la altura de su edad (herramientas/arte.ts, FIGURAS); no tienen retrato aparte:
-# las tarjetas muestran su cabeza.
+# la repisa muestra su cabeza.
 
 # Piel, cabello, ropa, tenis y extras llevan los colores "clave" de su rampa (de claro a sombra; la piel lleva 5).
 # El juego cambia esos colores por los del tono o color elegido. Los colores clave son los de la variante 1.
@@ -154,17 +154,6 @@ grupos:
       perro: Perro
       gato: Gato
 
-  - carpeta: figuras
-    tipo: retrato
-    medida: [96, 96]
-    colores: [piel, cabello]
-    piezas:
-      retrato_vecino: Un vecino o vecina (tarjeta de "¿Quién llega?")
-      retrato_maestra: La maestra (tarjeta de "¿Quién llega?" en la escuela)
-      retrato_companero: Un compañero (tarjeta de "¿Quién llega?" en la escuela)
-      retrato_conserje: El conserje (tarjeta de "¿Quién llega?" en la escuela)
-      retrato_directora: La directora (tarjeta de "¿Quién llega?" en la escuela)
-
   - carpeta: personajes
     tipo: hoja
     medida: [48, 64]
@@ -183,21 +172,6 @@ grupos:
       vecino_2: Vecina genérica
       vecino_3: Vecino genérico
       vecino_4: Vecina genérica
-
-  - carpeta: personajes
-    tipo: retrato
-    medida: [96, 96]
-    expresiones: [contento, neutral]
-    piezas:
-      retrato_cuentera: La Cuentera
-
-  - carpeta: personajes
-    tipo: retrato
-    medida: [96, 96]
-    expresiones: [neutral]
-    piezas:
-      retrato_tito: Tito, gatito con moño azul
-      retrato_tita: Tita, la misma gatita con moño amarillo
 
   # Lugares: el fondo es el lugar vacío (piso y muros); cada mueble va aparte en objetos.
   - carpeta: lugares/casa
@@ -312,35 +286,3 @@ grupos:
       librero: {que: Librero, medida: [64, 64]}
       mesa_lectura: {que: Mesa de lectura, medida: [96, 48]}
       sillon_cuentera: {que: Sillón de La Cuentera, medida: [48, 48]}
-
-  # Interfaz: los marcos, paneles, tarjetas y botones los hace el juego en HTML y CSS; aquí solo van iconos.
-  - carpeta: interfaz
-    tipo: icono
-    medida: [32, 32]
-    piezas:
-      carita_1: Muy mal
-      carita_2: Mal
-      carita_3: Más o menos
-      carita_4: Bien
-      carita_5: Muy bien
-      persona_nadie: Tarjeta "Nadie"
-      persona_solo: Tarjeta "lo resuelve solo"
-      no_se: Tarjeta "No sé"
-
-  # Un icono por cada código de docs/clinico/codigos-y-eventos.md. "Lastima" y "regaña" con
-  # símbolos (nube oscura, rayo pequeño), nunca con la acción.
-  - carpeta: iconos
-    tipo: icono
-    medida: [24, 24]
-    desde: codigos
-
-  # Un icono por cada opción de contenido/panel-cpe.yaml.
-  - carpeta: panel
-    tipo: icono
-    medida: [24, 24]
-    desde: panel-cpe
-
-  - carpeta: ilustraciones
-    tipo: ilustracion
-    piezas:
-      escena_d01: {que: Escena para describir; lo que muestra está en contenido/escena-para-describir.yaml, medida: [320, 240]}

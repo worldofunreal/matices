@@ -5,10 +5,10 @@ Lo que falta, por quién lo decide. Nada de esto detiene el desarrollo.
 ## Psicólogos
 
 - [ ] Confirmar las 13 áreas de `clinico/marco-clinico.md`, o quitar y agregar.
-- [ ] Revisar el código de cada opción de los 15 sucesos (`contenido/cuentos`).
-- [ ] Revisar las 24 frases de Sobre mí (`contenido/sobre-mi.yaml`).
-- [ ] Elegir la consigna del dibujo y el método para leerlo.
-- [ ] Revisar que los sucesos encajen con familias mexicanas (familia extensa, abuelos que crían, hermanos que cuidan) y con palabras de cada región.
+- [ ] Revisar las situaciones y el código de cada respuesta (GDD §9, `contenido/situaciones.yaml`).
+- [ ] Cómo observar síntomas emocionales sin preguntar (hoy ninguna situación lo cubre).
+- [ ] Elegir el método para leer el dibujo libre.
+- [ ] Revisar que las situaciones encajen con familias mexicanas (familia extensa, abuelos que crían, hermanos que cuidan) y con palabras de cada región.
 - [ ] Escribir las reglas de revisión.
 - [ ] Cuántos niños atiende un psicólogo por sesión.
 - [ ] En cuánto tiempo se lee un reporte marcado "revisar pronto".
@@ -25,10 +25,9 @@ Lo que falta, por quién lo decide. Nada de esto detiene el desarrollo.
 ## Creativo (Omar y Dayana)
 
 - [ ] Interior de la casa, parque, tiendita y biblioteca de la colonia (sin referencia aún).
-- [ ] Diseño de La Cuentera y de los gemelos Tito y Tita.
 - [ ] Familia para armar la casa (15 figuras, adultos en al menos 3 tonos de piel).
 - [ ] Aprobar los ajustes de `arte/direccion-de-arte.md` (edad, uniforme, tonos, capas).
-- [ ] Voz de La Cuentera: actriz o actor de doblaje.
+- [ ] Voces de la familia y de la escuela: actrices y actores de doblaje.
 - [ ] Música por zona.
 
 ## Técnico (Claude)
