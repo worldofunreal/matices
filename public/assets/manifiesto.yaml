@@ -3,23 +3,24 @@
 # mismo nombre y la misma medida; el juego no compila si una medida no cuadra.
 # Reglas de dibujo y entrega: docs/arte/direccion-de-arte.md.
 #
-# Hojas de personaje: 5 columnas (quieto, paso 1 a 4) × 4 filas (abajo, izquierda, derecha, arriba),
-# cuadros de 32 × 48, pies en la misma fila de píxeles en todos los cuadros.
+# Hojas del protagonista: 5 columnas (quieto, paso 1 a 4) × 3 filas (abajo, izquierda, arriba),
+# cuadros de 48 × 64 (anchos para que quepa el cabello abultado); la derecha es la izquierda volteada, pies en la misma fila de píxeles en todos los cuadros. Es el único que camina:
+# las figuras de la casa y los personajes fijos son un solo cuadro de 48 × 64, de pie y de frente.
 
-# Piel, cabello y mochila se dibujan con los colores "clave" (claro, medio, sombra). El juego cambia
+# Piel, cabello y mochila se dibujan con los colores "clave" (de claro a sombra; la piel lleva 5). El juego cambia
 # esos tres colores por los del tono o color elegido. Los colores clave son los de la variante 1.
 colores:
   piel:
-    clave: ["#f6d7bd", "#e2b896", "#c4936f"]
+    clave: ["#ffead4", "#f6d7bd", "#e2b896", "#c4936f", "#af7954"]
     variantes:
-      - ["#f6d7bd", "#e2b896", "#c4936f"]
-      - ["#efc6a2", "#d9a87f", "#b9845c"]
-      - ["#e2b088", "#c9946b", "#a6714b"]
-      - ["#d19c6e", "#b78055", "#93603b"]
-      - ["#bd8458", "#a06a42", "#7d4f2d"]
-      - ["#a26b42", "#865532", "#663d21"]
-      - ["#81512f", "#683f23", "#4c2c17"]
-      - ["#5e3a22", "#4b2c19", "#341d10"]
+      - ["#ffead4", "#f6d7bd", "#e2b896", "#c4936f", "#af7954"]
+      - ["#fcd8b7", "#efc6a2", "#d9a87f", "#b9845c", "#a36b44"]
+      - ["#f1c199", "#e2b088", "#c9946b", "#a6714b", "#8e5835"]
+      - ["#e1ad7d", "#d19c6e", "#b78055", "#93603b", "#7a4a29"]
+      - ["#ce9465", "#bd8458", "#a06a42", "#7d4f2d", "#643c1e"]
+      - ["#b3784c", "#a26b42", "#865532", "#663d21", "#502c15"]
+      - ["#905c36", "#81512f", "#683f23", "#4c2c17", "#381f0f"]
+      - ["#694227", "#5e3a22", "#4b2c19", "#341d10", "#24120a"]
   cabello:
     clave: ["#4a3426", "#33231a", "#21160f"]
     variantes:
@@ -40,10 +41,10 @@ colores:
 grupos:
   - carpeta: personaje
     tipo: hoja
-    medida: [160, 192]
+    medida: [240, 192]
     colores: [piel, cabello]
     piezas:
-      cuerpo_nina: Cuerpo base de niña, 8 a 12 años, ropa interior lisa; piel con los colores clave
+      cuerpo_nina: Cuerpo base de niña, 8 a 12 años, playera y short ajustados gris claro, descalza y sin cabello; piel con los colores clave
       cuerpo_nino: Cuerpo base de niño, igual que el de niña
       cuerpo_neutro: Cuerpo base neutro para "prefiero no elegir"
       cabello_01: Largo lacio
@@ -71,7 +72,7 @@ grupos:
     tipo: retrato
     medida: [96, 96]
     colores: [piel, cabello]
-    expresiones: [contento, neutral, triste, enojado, asustado]
+    expresiones: [neutral]
     piezas:
       retrato_cara_nina: Cara y hombros de la niña
       retrato_cara_nino: Cara y hombros del niño
@@ -100,7 +101,7 @@ grupos:
 
   - carpeta: figuras
     tipo: hoja
-    medida: [160, 192]
+    medida: [48, 64]
     colores: [piel, cabello]
     piezas:
       abuela: Abuela
@@ -153,11 +154,9 @@ grupos:
 
   - carpeta: personajes
     tipo: hoja
-    medida: [160, 192]
+    medida: [48, 64]
     piezas:
       cuentera: La Cuentera. Señora mayor, rebozo, lentes, un libro grande
-      tito: Tito, gatito con moño azul
-      tita: Tita, la misma gatita con moño amarillo
       lucia: Lucía, la maestra
       nico: Nico, compañero
       clara: Clara, la bibliotecaria
@@ -175,15 +174,17 @@ grupos:
   - carpeta: personajes
     tipo: retrato
     medida: [96, 96]
-    expresiones: [contento, neutral, triste, enojado, asustado]
+    expresiones: [contento, neutral]
     piezas:
       retrato_cuentera: La Cuentera
-      retrato_tito: Tito
-      retrato_tita: Tita
-      retrato_lucia: Lucía
-      retrato_nico: Nico
-      retrato_clara: Clara
-      retrato_don_chuy: Don Chuy
+
+  - carpeta: personajes
+    tipo: retrato
+    medida: [96, 96]
+    expresiones: [neutral]
+    piezas:
+      retrato_tito: Tito, gatito con moño azul
+      retrato_tita: Tita, la misma gatita con moño amarillo
 
   # Lugares: el fondo es el lugar vacío (piso y muros); cada mueble va aparte en objetos.
   - carpeta: lugares/casa
@@ -197,7 +198,6 @@ grupos:
     tipo: objeto
     piezas:
       mesa: {que: Mesa del comedor, medida: [64, 48]}
-      silla: {que: Silla, medida: [32, 32]}
       sillon: {que: Sillón de la sala, medida: [64, 32]}
       television: {que: Televisión con mueble, medida: [64, 48]}
       refrigerador: {que: Refrigerador, medida: [32, 64]}
@@ -217,16 +217,11 @@ grupos:
   - carpeta: lugares/calle
     tipo: fondo
     piezas:
-      fondo: {que: Calle de la colonia con banquetas, cruce peatonal y entradas a la casa, la tiendita, la escuela, el parque y la biblioteca, medida: [1920, 544]}
+      fondo: {que: Calle de la colonia con banquetas y cruce peatonal; las fachadas de la casa (con tinaco), la tiendita, la escuela (portón), el parque (reja) y la biblioteca van pintadas en el fondo, medida: [1920, 544]}
 
   - carpeta: lugares/calle
     tipo: objeto
     piezas:
-      fachada_casa: {que: Fachada de la casa del personaje, con tinaco en la azotea, medida: [160, 160]}
-      fachada_tiendita: {que: Fachada de la tiendita de la esquina, medida: [128, 128]}
-      fachada_biblioteca: {que: Fachada de la biblioteca moderna, medida: [256, 160]}
-      entrada_escuela: {que: Portón de la escuela, medida: [128, 96]}
-      entrada_parque: {que: Reja de entrada del parque, medida: [128, 96]}
       arbol: {que: Árbol de banqueta, medida: [64, 96]}
       poste: {que: Poste de luz, medida: [16, 96]}
       banca: {que: Banca, medida: [64, 32]}
@@ -305,22 +300,7 @@ grupos:
       mesa_lectura: {que: Mesa de lectura, medida: [96, 48]}
       sillon_cuentera: {que: Sillón de La Cuentera, medida: [48, 48]}
 
-  # Interfaz: los marcos, paneles y tarjetas los hace el juego en CSS; aquí solo van iconos.
-  - carpeta: interfaz
-    tipo: boton
-    medida: [32, 32]
-    piezas:
-      boton_mi_libro: Mi libro
-      boton_quiero_hablar: Quiero hablar con alguien (dos globos de diálogo)
-      boton_ahora_no: Ahora no
-      boton_volver_a_escuchar: Volver a escuchar
-      boton_opciones: Opciones
-      boton_listo: Listo
-      boton_flecha_izq: Anterior
-      boton_flecha_der: Siguiente
-      boton_borrar: Goma del dibujo
-      boton_deshacer: Deshacer del dibujo
-
+  # Interfaz: los marcos, paneles, tarjetas y botones los hace el juego en HTML y CSS; aquí solo van iconos.
   - carpeta: interfaz
     tipo: icono
     medida: [32, 32]

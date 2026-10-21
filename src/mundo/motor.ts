@@ -3,7 +3,7 @@
 // stays sharp. The rules (doors, hours, stories) live in pantallas/Mundo.tsx.
 import type { Hora } from "../datos/guardado";
 import { piezaYa, CUADRO } from "../lienzo/arte";
-import { capas, coloresDe, DIRECCIONES, type Apariencia, type Direccion } from "../personaje/apariencia";
+import { capas, coloresDe, filaDe, type Apariencia, type Direccion } from "../personaje/apariencia";
 import { TILE, celdaDe, libre, libreCerca, rutaA, visible, type Mapa, type Punto } from "./mapa";
 
 const VELOCIDAD = 90; // game pixels per second
@@ -350,12 +350,12 @@ export class Motor {
       if (hoja) cosas.push({ y: f.y, dibujar: () => this.cuadro(hoja, 0, 0, f.x, f.y) });
     }
     const a = this.o.apariencia;
-    const fila = DIRECCIONES.indexOf(this.dir);
+    const { fila, voltear } = filaDe(this.dir);
     const columna = this.moviendo ? 1 + (Math.floor(this.tPaso / PASO_MS) % 4) : 0;
     const capasListas = capas(a)
       .map((id) => piezaYa(id, coloresDe(a)))
       .filter((hoja): hoja is HTMLCanvasElement => !!hoja);
-    cosas.push({ y: this.y, dibujar: () => capasListas.forEach((hoja) => this.cuadro(hoja, columna, fila, this.x, this.y)) });
+    cosas.push({ y: this.y, dibujar: () => capasListas.forEach((hoja) => this.cuadro(hoja, columna, fila, this.x, this.y, voltear)) });
     cosas.sort((p, q) => p.y - q.y).forEach((cosa) => cosa.dibujar());
 
     const luz = LUZ[this.o.hora];
@@ -421,8 +421,14 @@ export class Motor {
     ctx.restore();
   }
 
-  // One frame of a 5 × 4 character sheet (32 × 48), standing with its feet on (x, y).
-  private cuadro(hoja: HTMLCanvasElement, columna: number, fila: number, x: number, y: number) {
-    this.ctx.drawImage(hoja, columna * CUADRO.ancho, fila * CUADRO.alto, CUADRO.ancho, CUADRO.alto, Math.round(x - CUADRO.ancho / 2), Math.round(y - CUADRO.alto), CUADRO.ancho, CUADRO.alto);
+  // One frame of a 5 × 3 character sheet (48 × 64), standing with its feet on (x, y); mirrored for "der".
+  private cuadro(hoja: HTMLCanvasElement, columna: number, fila: number, x: number, y: number, voltear = false) {
+    const sx = columna * CUADRO.ancho, sy = fila * CUADRO.alto, dx = Math.round(x - CUADRO.ancho / 2), dy = Math.round(y - CUADRO.alto);
+    if (!voltear) return this.ctx.drawImage(hoja, sx, sy, CUADRO.ancho, CUADRO.alto, dx, dy, CUADRO.ancho, CUADRO.alto);
+    this.ctx.save();
+    this.ctx.translate(dx + CUADRO.ancho, dy);
+    this.ctx.scale(-1, 1);
+    this.ctx.drawImage(hoja, sx, sy, CUADRO.ancho, CUADRO.alto, 0, 0, CUADRO.ancho, CUADRO.alto);
+    this.ctx.restore();
   }
 }

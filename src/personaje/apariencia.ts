@@ -1,6 +1,8 @@
 // How the child's character looks (GDD §6) and which art layers draw it.
 export type Direccion = "abajo" | "izq" | "der" | "arriba";
-export const DIRECCIONES: Direccion[] = ["abajo", "izq", "der", "arriba"];
+// Rows of a character sheet. "der" has no row: it is "izq" mirrored.
+const FILAS: Direccion[] = ["abajo", "izq", "arriba"];
+export const filaDe = (d: Direccion) => ({ fila: FILAS.indexOf(d === "der" ? "izq" : d), voltear: d === "der" });
 export type Expresion = "contento" | "neutral" | "triste" | "enojado" | "asustado";
 export type Extra = "lentes" | "aretes" | "gorra" | "mochila";
 

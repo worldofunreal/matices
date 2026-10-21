@@ -1,13 +1,14 @@
 import { useEffect, useRef } from "react";
 import { pieza, CUADRO } from "./arte";
-import { capas, capasRetrato, coloresDe, DIRECCIONES, type Apariencia, type Direccion, type Expresion } from "../personaje/apariencia";
+import { capas, capasRetrato, coloresDe, filaDe, type Apariencia, type Direccion, type Expresion } from "../personaje/apariencia";
 
 // Draws stacked layers on a small canvas; CSS enlarges it with sharp pixels.
-async function dibujar(c: HTMLCanvasElement, ids: string[], a: Apariencia, cuadro?: { x: number; y: number }) {
+async function dibujar(c: HTMLCanvasElement, ids: string[], a: Apariencia, cuadro?: { x: number; y: number; voltear?: boolean }) {
   const lienzos = await Promise.all(ids.map((id) => pieza(id, coloresDe(a))));
   const ctx = c.getContext("2d")!;
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, c.width, c.height);
+  ctx.setTransform(cuadro?.voltear ? -1 : 1, 0, 0, 1, cuadro?.voltear ? c.width : 0, 0);
   for (const l of lienzos) {
     if (cuadro) ctx.drawImage(l, cuadro.x, cuadro.y, CUADRO.ancho, CUADRO.alto, 0, 0, CUADRO.ancho, CUADRO.alto);
     else ctx.drawImage(l, 0, 0);
@@ -19,15 +20,15 @@ export function Personaje({ a, escala, direccion = "abajo", camina = false }: { 
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const c = ref.current!;
-    const fila = DIRECCIONES.indexOf(direccion);
+    const { fila, voltear } = filaDe(direccion);
     const ids = capas(a);
     let paso = 0;
     let vivo = true;
-    void dibujar(c, ids, a, { x: 0, y: fila * CUADRO.alto });
+    void dibujar(c, ids, a, { x: 0, y: fila * CUADRO.alto, voltear });
     if (!camina) return;
     const t = setInterval(() => {
       paso = (paso % 4) + 1;
-      if (vivo) void dibujar(c, ids, a, { x: paso * CUADRO.ancho, y: fila * CUADRO.alto });
+      if (vivo) void dibujar(c, ids, a, { x: paso * CUADRO.ancho, y: fila * CUADRO.alto, voltear });
     }, 140);
     return () => {
       vivo = false;

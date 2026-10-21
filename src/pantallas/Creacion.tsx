@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import contenido from "virtual:contenido";
 import { Personaje, Retrato } from "../lienzo/Personaje";
-import { precargar, idsDe, queEs, colorMedio, cuantos } from "../lienzo/arte";
+import { precargar, idsDe, queEs, colorMedio, cuantos, CUADRO } from "../lienzo/arte";
 import { Bocina } from "../ui/Bocina";
 import { Icono } from "../ui/iconos";
 import { estado, cambiarEstado } from "../datos/guardado";
@@ -27,7 +27,7 @@ function useEscala(caja: React.RefObject<HTMLElement | null>) {
   const [escala, setEscala] = useState(4);
   useLayoutEffect(() => {
     const el = caja.current!;
-    const medir = () => setEscala(Math.max(2, Math.floor(Math.min((el.clientHeight * 0.82) / 48, (el.clientWidth * 0.42) / 32))));
+    const medir = () => setEscala(Math.max(2, Math.floor(Math.min((el.clientHeight * 0.82) / CUADRO.alto, (el.clientWidth * 0.42) / CUADRO.ancho))));
     medir();
     const o = new ResizeObserver(medir);
     o.observe(el);

@@ -35,7 +35,7 @@ function caja(ctx: Ctx, w: number, h: number, color: string, texto: string) {
   etiqueta(ctx, texto, w / 2, h / 2, w - 6);
 }
 
-// One 32×48 frame. dir: 0 down, 1 left, 2 right, 3 up. paso: 0 still, 1..4 walk.
+// One 32×48 figure, drawn at the bottom of a 48×64 frame. dir: 0 down, 1 left, 2 right, 3 up. paso: 0 still, 1..4 walk.
 function figura(ctx: Ctx, ox: number, oy: number, dir: number, paso: number, capa: string, m: Manifiesto, nombre: string) {
   const [pc, pm, ps] = m.colores.piel.clave;
   const [cc, cm] = m.colores.cabello.clave;
@@ -98,8 +98,9 @@ function capaDe(p: Pieza) {
 
 function hoja(ctx: Ctx, p: Pieza, m: Manifiesto) {
   const capa = capaDe(p);
-  for (let dir = 0; dir < 4; dir++)
-    for (let paso = 0; paso < 5; paso++) figura(ctx, paso * 32, dir * 48, dir, paso, capa, m, p.id);
+  const filas = [0, 1, 3]; // abajo, izquierda, arriba (derecha is izquierda mirrored)
+  for (let fila = 0; fila < p.medida[1] / 64; fila++)
+    for (let paso = 0; paso < p.medida[0] / 48; paso++) figura(ctx, paso * 48 + 8, fila * 64 + 16, filas[fila], paso, capa, m, p.id);
 }
 
 function retrato(ctx: Ctx, p: Pieza, m: Manifiesto) {

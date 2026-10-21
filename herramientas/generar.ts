@@ -1,0 +1,210 @@
+// Asks Codex ($imagegen, with the owner's ChatGPT login) for each layer of the protagonist, editing
+// every pose of the base body, and checks each result before keeping it
+// (docs/arte/direccion-de-arte.md, "Cómo pedirlo a un generador").
+// Run: node herramientas/generar.ts <cuerpo> <capa> [<capa> ...]
+//   cuerpo: cuerpo_nina (its poses are in ARTE/personaje/cuerpo_nina)
+//   capa: a piece of the personaje group, e.g. cabello_01. Results go to ARTE/personaje/<cuerpo>/<capa>/.
+// With --lista it only prints what is missing (reference to attach, where to save it, exact prompt),
+// so it can also be made by hand with any image generator; the next run checks those files too.
+// Then: node herramientas/acomodar.ts personaje/<capa> ARTE/personaje/<cuerpo>/<capa> ARTE/personaje/<cuerpo>
+import { spawn } from "node:child_process";
+import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
+import { homedir, tmpdir } from "node:os";
+import { join } from "node:path";
+import { createCanvas, loadImage } from "@napi-rs/canvas";
+
+export const ARTE = join(homedir(), ".local/share/matices/arte");
+const A_LA_VEZ = 4; // Codex runs at once
+const INTENTOS = 3;
+
+const VERDE = "bright green with darker green shadows and lighter green highlights; nothing else in the image is green";
+
+// What each layer adds, in the generator's language. `verde`: the game recolors it, so it is drawn green.
+// `cabeza`: it sits on the head or the shoulders, which do not move while walking, so only the standing poses are
+// asked for and every step reuses them exactly (acomodar.ts); hair never changes between frames.
+const CAPAS: Record<string, { que: string; verde?: boolean; cabeza?: boolean }> = {
+  cabello_01: { que: "long straight hair that falls past the shoulders to the middle of the back, center part", verde: true, cabeza: true },
+  cabello_02: { que: "long curly hair that falls past the shoulders, full volume", verde: true, cabeza: true },
+  cabello_03: { que: "two long braids, one on each side, falling over the shoulders, center part", verde: true, cabeza: true },
+  cabello_04: { que: "two pigtails tied high on each side of the head, center part", verde: true, cabeza: true },
+  cabello_05: { que: "a ponytail tied at the back of the head, hair pulled back from the face", verde: true, cabeza: true },
+  cabello_06: { que: "short straight hair that covers the ears, simple side part", verde: true, cabeza: true },
+  cabello_07: { que: "short curly hair close to the head", verde: true, cabeza: true },
+  cabello_08: { que: "a very short buzz cut, a thin even layer of hair over the scalp", verde: true, cabeza: true },
+  cabello_09: { que: "a round afro hairstyle, big and soft", verde: true, cabeza: true },
+  cabello_10: { que: "shoulder-length straight hair with straight bangs over the forehead", verde: true, cabeza: true },
+  ropa_uniforme_arriba: { que: "a plain royal-blue long-sleeve school sweater over a white polo shirt, the white polo collar showing at the neck. Only the upper body: the gray shorts, legs and bare feet stay exactly as they are" },
+  ropa_uniforme_pantalon: { que: "navy-blue long school trousers covering both legs down to the ankles. Only the trousers: the gray t-shirt, arms and bare feet stay exactly as they are" },
+  ropa_uniforme_falda: { que: "a navy-blue pleated school skirt down to the knees. Only the skirt: the gray t-shirt, arms, lower legs and bare feet stay exactly as they are" },
+  ropa_casa_arriba: { que: "a plain dark-teal short-sleeve t-shirt. Only the t-shirt: the gray shorts, arms, legs and bare feet stay exactly as they are" },
+  ropa_casa_abajo: { que: "dark-gray sweatpants covering both legs down to the ankles. Only the sweatpants: the t-shirt, arms and bare feet stay exactly as they are" },
+  calzado_tenis: { que: "white sneakers with light-gray soles on both feet. Only the shoes: everything above the ankles stays exactly as it is" },
+  extra_lentes: { que: "simple round dark-frame glasses", cabeza: true },
+  extra_aretes: { que: "small round gold stud earrings", cabeza: true },
+  extra_gorra: { que: "a plain red baseball cap worn forward", cabeza: true },
+  extra_mochila: { que: "a school backpack worn on both shoulders, with its straps visible", verde: true, cabeza: true },
+};
+
+// Each pose of the base body, as the generator should read it.
+const POSES: Record<string, string> = {
+  abajo_quieta: "standing still, facing the viewer",
+  abajo_paso: "walking toward the viewer, one leg stepping forward",
+  izq_quieta: "standing still, facing the left side of the image in profile",
+  izq_paso1: "walking toward the left side of the image in profile",
+  izq_paso2: "walking toward the left side of the image in profile, the other leg in front",
+  arriba_quieta: "standing still, seen from behind",
+  arriba_paso: "walking away from the viewer, seen from behind, one leg stepping forward",
+};
+
+// A head layer already made from the front is attached too, so the other views draw the same thing.
+const deFrente = (destino: string, pose: string, capa: string) => {
+  const f = CAPAS[capa].cabeza && pose !== "abajo_quieta" && archivo(destino, "abajo_quieta");
+  return f ? join(destino, f) : null;
+};
+
+const prompt = (pose: string, capa: string, conFrente = false) => {
+  const c = CAPAS[capa];
+  return [
+    `The attached image is a pixel art game character ${POSES[pose]}, on a flat magenta background.`,
+    conFrente ? "A second attached image shows the same character from the front already wearing this item: draw exactly the same item (same shape, length, volume and colors), only seen from this other side." : "",
+    `Edit ${conFrente ? "the first attached image" : "it"}: add ${c.que}.`,
+    c.verde ? `The ${capa.startsWith("cabello") ? "hair" : "backpack"} is ${VERDE}.` : "",
+    capa.startsWith("cabello") && pose.startsWith("arriba")
+      ? "The character is seen from BEHIND: we see the back of the head, not the face. The hair covers the whole back of the head, from the top down to the nape, with no bald or skin-colored area on the head; draw the hairstyle as it looks from behind (no bangs, no face)."
+      : "",
+    `Keep everything else identical: the same body, the same pose, the head in the same size and position on the canvas,${pose.startsWith("arriba") ? "" : " the same face,"} skin color, pixel size and dark outline.`,
+    "Create ONE image the same size as the attached one, with ONLY ONE character. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.",
+  ].filter(Boolean).join(" ");
+};
+
+const archivo = (carpeta: string, n: string) => readdirSync(carpeta).find((a) => a.replace(/\.(png|jpe?g|webp)$/, "") === n);
+
+// The edit is kept only if the body stayed where it was: most of the base figure is still figure in
+// the edit, and the head did not move. Green layers must show green; hair must cover the top of the
+// head (from behind, the whole head).
+async function revisar(base: string, hecho: string, capa: string, pose: string): Promise<string | null> {
+  const datos = async (r: string) => {
+    const im = await loadImage(r);
+    const c = createCanvas(400, 400);
+    c.getContext("2d").drawImage(im, 0, 0, 400, 400);
+    return c.getContext("2d").getImageData(0, 0, 400, 400).data;
+  };
+  const [ia, ib] = [await loadImage(base), await loadImage(hecho)];
+  // A smaller copy is fine (it is scaled up when cut); only the shape must match.
+  if (ia.width * ib.height !== ia.height * ib.width) return `mide ${ib.width} × ${ib.height} y debe ser cuadrada como la imagen que se sube`;
+  const [a, b] = [await datos(base), await datos(hecho)];
+  const fig = (d: Uint8ClampedArray, i: number) => Math.hypot(d[i] - 255, d[i + 1], d[i + 2] - 255) > 115;
+  const verde = (d: Uint8ClampedArray, i: number) => fig(d, i) && d[i + 1] > 60 && d[i + 1] > d[i] * 1.3 && d[i + 1] > d[i + 2] * 1.3;
+  let enBase = 0, siguen = 0, verdes = 0, arriba = 400, abajo = 0;
+  for (let i = 0; i < a.length; i += 4) {
+    if (fig(a, i)) { enBase++; if (fig(b, i)) siguen++; const y = i / 1600 | 0; arriba = Math.min(arriba, y); abajo = Math.max(abajo, y); }
+    if (verde(b, i)) verdes++;
+  }
+  if (siguen / enBase < 0.85) return `el cuerpo se movió (${Math.round((siguen / enBase) * 100)}% en su lugar)`;
+  if (CAPAS[capa].verde && verdes < 300) return "no salió verde";
+  if (capa.startsWith("cabello")) {
+    const H = abajo - arriba;
+    let x0 = 400, x1 = 0;
+    for (let i = 0; i < a.length; i += 4) {
+      const y = i / 1600 | 0, x = (i / 4) % 400;
+      if (y < arriba + H * 0.2 && fig(a, i)) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); }
+    }
+    // From behind, the middle of the head must be all hair (the generator tends to leave a bald,
+    // face-shaped patch there); from the front or side, the top of the head.
+    const atras = pose.startsWith("arriba");
+    const [ya, yb, xa, xb] = atras
+      ? [arriba + H * 0.05, arriba + H * 0.28, x0 + (x1 - x0) * 0.3, x1 - (x1 - x0) * 0.3]
+      : [arriba, arriba + H * 0.15, 0, 400];
+    let cabeza = 0, cubierta = 0;
+    for (let i = 0; i < a.length; i += 4) {
+      const y = i / 1600 | 0, x = (i / 4) % 400;
+      if (y < ya || y > yb || x < xa || x > xb || (!atras && !fig(a, i))) continue;
+      cabeza++;
+      if (verde(b, i)) cubierta++;
+    }
+    if (cubierta / cabeza < (atras ? 0.85 : 0.45)) return `el cabello no cubre la cabeza (${Math.round((cubierta / cabeza) * 100)}%)`;
+  }
+  return null;
+}
+
+// Runs Codex once. Returns when Codex may be used again if the plan's usage limit was hit.
+function codex(dir: string, entradas: string[], texto: string): Promise<Date | null> {
+  return new Promise((ok) => {
+    const p = spawn("timeout", ["900", "codex", "exec", "--skip-git-repo-check", "-m", "gpt-5.6-terra", "-c", 'model_reasoning_effort="low"',
+      "-s", "workspace-write", "-C", dir, ...entradas.flatMap((e) => ["-i", e]), "--", `$imagegen ${texto} Save the result as salida.png in the current folder.`], { stdio: ["ignore", "pipe", "pipe"] });
+    let salida = "";
+    p.stdout.on("data", (d) => (salida += d));
+    p.stderr.on("data", (d) => (salida += d));
+    p.on("exit", () => {
+      const m = /usage limit.*?try again at (\d+):(\d+) ?([AP]M)/is.exec(salida);
+      if (!/usage limit/i.test(salida)) return ok(null);
+      const t = new Date();
+      if (m) {
+        t.setHours((+m[1] % 12) + (m[3].toUpperCase() === "PM" ? 12 : 0), +m[2] + 1, 0, 0);
+        if (t < new Date()) t.setDate(t.getDate() + 1);
+      } else t.setMinutes(t.getMinutes() + 30);
+      ok(t);
+    });
+  });
+}
+
+// When the plan's limit is hit, every worker waits until Codex can be used again.
+let pausa: Promise<void> | null = null;
+function esperar(hasta: Date) {
+  pausa ??= new Promise<void>((ok) => {
+    console.log(`límite de uso de Codex: sigue a las ${hasta.toLocaleTimeString()}`);
+    setTimeout(() => { pausa = null; ok(); }, hasta.getTime() - Date.now());
+  });
+  return pausa;
+}
+
+async function una(base: string, destino: string, pose: string, capa: string) {
+  const entrada = join(base, archivo(base, pose)!);
+  for (let i = 1; i <= INTENTOS; i++) {
+    if (pausa) await pausa;
+    if (archivo(destino, pose)) return console.log(`${capa}/${pose}: ya está (hecha a mano)`);
+    const dir = mkdtempSync(join(tmpdir(), "matices-"));
+    const frente = deFrente(destino, pose, capa);
+    const limite = await codex(dir, frente ? [entrada, frente] : [entrada], prompt(pose, capa, !!frente));
+    if (limite) { rmSync(dir, { recursive: true }); await esperar(limite); i--; continue; } // not a failed attempt
+    const salida = join(dir, "salida.png");
+    const mal = existsSync(salida) ? await revisar(entrada, salida, capa, pose) : "no generó imagen";
+    if (!mal) {
+      copyFileSync(salida, join(destino, `${pose}.png`));
+      rmSync(dir, { recursive: true });
+      return console.log(`${capa}/${pose}: listo (intento ${i})`);
+    }
+    console.log(`${capa}/${pose}: ${mal}, intento ${i}`);
+    rmSync(dir, { recursive: true });
+  }
+  console.log(`${capa}/${pose}: FALLÓ`);
+}
+
+async function main() {
+  const lista = process.argv.includes("--lista");
+  const [cuerpo, ...capas] = process.argv.slice(2).filter((a) => a !== "--lista");
+  const base = join(ARTE, "personaje", cuerpo);
+  if (!cuerpo || !capas.length || !existsSync(base)) throw new Error("uso: node herramientas/generar.ts <cuerpo> <capa> [<capa> ...]");
+  const cola: (() => Promise<void>)[] = [];
+  for (const capa of capas) {
+    if (!CAPAS[capa]) throw new Error(`no hay instrucciones para ${capa}`);
+    const destino = join(base, capa);
+    mkdirSync(destino, { recursive: true });
+    for (const pose of Object.keys(POSES)) {
+      if (CAPAS[capa].cabeza && !pose.endsWith("quieta")) continue;
+      const hecho = archivo(destino, pose);
+      // What is already there passes the same check again; a failure is asked for again.
+      const mal = hecho && (await revisar(join(base, archivo(base, pose)!), join(destino, hecho), capa, pose));
+      // With --lista nothing is deleted: it only says what is wrong.
+      if (mal) console.log(lista ? `\n> ${capa}/${pose}: ${mal}` : `${capa}/${pose}: ${mal}, se pide de nuevo`);
+      if (mal && !lista) rmSync(join(destino, hecho));
+      if (!(!hecho || mal)) continue;
+      const frente = deFrente(destino, pose, capa);
+      if (lista) console.log(`\n## ${capa} · ${pose}\n- Adjuntar: ${join(base, archivo(base, pose)!)}${frente ? `\n- Adjuntar también (segunda imagen): ${frente}` : ""}\n- Guardar como: ${join(destino, pose + ".png")}\n\n\`\`\`\n${prompt(pose, capa, !!frente)}\n\`\`\``);
+      else cola.push(() => una(base, destino, pose, capa));
+    }
+  }
+  await Promise.all(Array.from({ length: A_LA_VEZ }, async () => { for (let t; (t = cola.shift()); ) await t(); }));
+}
+
+await main();

@@ -3,7 +3,7 @@
 import arte from "virtual:arte";
 
 export type Colores = { piel?: number; cabello?: number; mochila?: number };
-export const CUADRO = { ancho: 32, alto: 48 }; // one frame of a character sheet
+export const CUADRO = { ancho: 48, alto: 64 }; // one frame of a character sheet (wide enough for big hair)
 
 const piezas = new Map(arte.piezas.map((p) => [p.id, p]));
 const imagenes = new Map<string, Promise<HTMLImageElement>>();
