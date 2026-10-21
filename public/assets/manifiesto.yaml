@@ -46,7 +46,6 @@ grupos:
     piezas:
       cuerpo_nina: Cuerpo base de niña, 8 a 12 años, playera y short ajustados gris claro, descalza y sin cabello; piel con los colores clave
       cuerpo_nino: Cuerpo base de niño, igual que el de niña
-      cuerpo_neutro: Cuerpo base neutro para "prefiero no elegir"
       cabello_01: Largo lacio
       cabello_02: Largo chino
       cabello_03: Trenzas
@@ -76,7 +75,6 @@ grupos:
     piezas:
       retrato_cara_nina: Cara y hombros de la niña
       retrato_cara_nino: Cara y hombros del niño
-      retrato_cara_neutro: Cara y hombros del cuerpo neutro
 
   - carpeta: personaje
     tipo: retrato

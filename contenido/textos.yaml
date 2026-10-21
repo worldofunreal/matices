@@ -20,7 +20,6 @@ creacion:
   cuerpo:
     nina: "Niña"
     nino: "Niño"
-    neutro: "Prefiero no elegir"
   ropa:
     uniforme_pantalon: "Uniforme con pantalón"
     uniforme_falda: "Uniforme con falda"

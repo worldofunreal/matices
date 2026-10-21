@@ -7,7 +7,7 @@ export type Expresion = "contento" | "neutral" | "triste" | "enojado" | "asustad
 export type Extra = "lentes" | "aretes" | "gorra" | "mochila";
 
 export interface Apariencia {
-  cuerpo: "nina" | "nino" | "neutro";
+  cuerpo: "nina" | "nino";
   piel: number; // index into colores.piel.variantes
   cabello: string; // "01".."10"
   colorCabello: number; // index into colores.cabello.variantes
@@ -17,13 +17,18 @@ export interface Apariencia {
   colorMochila: number; // index into colores.mochila.variantes
 }
 
+// Each body starts with its usual look; hair and clothes stay free for both (GDD §6).
+export const LOOK: Record<Apariencia["cuerpo"], Pick<Apariencia, "cabello" | "abajo">> = {
+  nina: { cabello: "01", abajo: "falda" },
+  nino: { cabello: "06", abajo: "pantalon" },
+};
+
 export const APARIENCIA_INICIAL: Apariencia = {
-  cuerpo: "neutro",
+  cuerpo: "nina",
   piel: 0,
-  cabello: "06",
+  ...LOOK.nina,
   colorCabello: 0,
   ropa: "uniforme",
-  abajo: "pantalon",
   extras: [],
   colorMochila: 0,
 };

@@ -6,7 +6,7 @@ import { Bocina } from "../ui/Bocina";
 import { Icono } from "../ui/iconos";
 import { estado, cambiarEstado } from "../datos/guardado";
 import { registrar } from "../datos/eventos";
-import type { Apariencia, Extra } from "../personaje/apariencia";
+import { LOOK, type Apariencia, type Extra } from "../personaje/apariencia";
 import "./creacion.css";
 
 const T = contenido.textos.creacion;
@@ -113,9 +113,9 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
 
         <div className={`opciones ${pestana}`} key={pestana}>
           {listo && pestana === "cuerpo" &&
-            (["nina", "nino", "neutro"] as const).map((c) => (
-              <button key={c} className="opcion" aria-pressed={a.cuerpo === c} aria-label={T.cuerpo[c]} onClick={() => cambiar({ cuerpo: c })}>
-                <Personaje a={{ ...a, cuerpo: c }} escala={2} />
+            (["nina", "nino"] as const).map((c) => (
+              <button key={c} className="opcion" aria-pressed={a.cuerpo === c} aria-label={T.cuerpo[c]} onClick={() => a.cuerpo !== c && cambiar({ cuerpo: c, ...LOOK[c] })}>
+                <Personaje a={a.cuerpo === c ? a : { ...a, cuerpo: c, ...LOOK[c] }} escala={2} />
                 <span className="pie">{T.cuerpo[c]}</span>
               </button>
             ))}

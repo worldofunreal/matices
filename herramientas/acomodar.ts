@@ -266,6 +266,31 @@ function igualarA(px: Uint8ClampedArray, ref: Uint8ClampedArray, propio: (r: num
   }
 }
 
+// The uniform is drawn blue so it stands out from the body's gray clothes when it is cut, and is then
+// tinted to its real colors: a dark sweater and gray trousers or skirt. Each blue becomes the shade with
+// the same lightness relative to the most common blue; near-black blue is the outline.
+const TINTE: Record<string, number[][]> = {
+  ropa_uniforme_arriba: [[78, 78, 86], [60, 60, 68], [46, 46, 54]],
+  ropa_uniforme_pantalon: [[150, 150, 156], [122, 122, 130], [98, 98, 106]],
+  ropa_uniforme_falda: [[150, 150, 156], [122, 122, 130], [98, 98, 106]],
+};
+
+function tenir(px: Uint8ClampedArray, tonos: number[][]) {
+  const azules: number[] = [];
+  for (let i = 0; i < px.length; i += 4) if (px[i + 3] && px[i + 2] > px[i] + 25 && px[i + 2] > px[i + 1] + 15) azules.push(i);
+  if (!azules.length) return;
+  const cuenta = new Map<number, number>();
+  for (const i of azules) {
+    const l = Math.round(luz(px[i], px[i + 1], px[i + 2]) / 6);
+    cuenta.set(l, (cuenta.get(l) ?? 0) + 1);
+  }
+  const comun = [...cuenta].reduce((a, b) => (b[1] > a[1] ? b : a))[0] * 6;
+  for (const i of azules) {
+    const r = luz(px[i], px[i + 1], px[i + 2]) / comun;
+    px.set(r < 0.45 ? CONTORNO : tonos[r >= 0.9 ? 0 : r >= 0.7 ? 1 : 2], i);
+  }
+}
+
 // Green pixels (hair, backpack) become the key shades: the most common green is the light key and
 // darker greens the shadow keys. Near-black green is the outline and becomes the body's outline.
 function verdeAClave(px: Uint8ClampedArray, clave: string[]) {
@@ -468,6 +493,8 @@ async function main() {
       if (/_(pantalon|falda|abajo)$/.test(pieza.id)) final.fill(0, 0, corte * ANCHO * 4); // and legwear below it
       const propio = PROPIO[pieza.id.split("/")[1]!];
       if (propio && col > 0) igualarA(final, quieta, propio);
+      const tinte = TINTE[pieza.id.split("/")[1]!];
+      if (tinte) tenir(final, tinte);
       for (const r of ["cabello", "mochila"] as const) if (pieza.colores.includes(r)) verdeAClave(final, m.colores[r].clave);
       const d = ctx.createImageData(ANCHO, ALTO);
       d.data.set(final);

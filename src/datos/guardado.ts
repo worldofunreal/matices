@@ -1,7 +1,7 @@
 // Saved game: where the child is and how their character looks. Saved every few seconds and when
 // the app goes to the background, so closing it at any point resumes there.
 import { leer, guardar } from "./almacen";
-import { APARIENCIA_INICIAL, type Apariencia, type Direccion } from "../personaje/apariencia";
+import { APARIENCIA_INICIAL, LOOK, type Apariencia, type Direccion } from "../personaje/apariencia";
 
 export interface Estado {
   lugar: string;
@@ -68,6 +68,8 @@ const escribir = () => leido && void guardar("estado", actual);
 
 export async function cargarEstado(): Promise<Estado> {
   actual = { ...NUEVO, ...(await leer<Estado>("estado")) };
+  // Games saved while the neutral body existed (removed 2026-10-21) continue as the girl's body.
+  if (!(actual.apariencia.cuerpo in LOOK)) actual.apariencia = { ...actual.apariencia, cuerpo: "nina" };
   leido = true;
   return actual;
 }
