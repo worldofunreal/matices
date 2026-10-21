@@ -9,11 +9,16 @@
 // Then: node herramientas/acomodar.ts personaje/<capa> ARTE/personaje/<cuerpo>/<capa> ARTE/personaje/<cuerpo>
 // Another body (node herramientas/generar.ts cuerpo_nina cuerpo_nino) goes to ARTE/personaje/cuerpo_nino; then
 //   node herramientas/acomodar.ts personaje/cuerpo_nino ARTE/personaje/cuerpo_nino --igual-a ARTE/personaje/cuerpo_nina
+// Figures of the house: node herramientas/generar.ts figuras [<id> ...] (all of FIGURAS in arte.ts without ids) draws
+// each one from the protagonist's front pose, to ARTE/figuras/<id>/quieta.png; then
+//   node herramientas/acomodar.ts figuras/<id> ARTE/figuras/<id>
 import { spawn } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
 import { homedir, tmpdir } from "node:os";
 import { join } from "node:path";
 import { createCanvas, loadImage } from "@napi-rs/canvas";
+import { writeFileSync } from "node:fs";
+import { FIGURAS } from "./arte.ts";
 
 export const ARTE = join(homedir(), ".local/share/matices/arte");
 const A_LA_VEZ = 4; // Codex runs at once
@@ -82,6 +87,59 @@ const prompt = (pose: string, capa: string, conFrente = false) => {
     "Create ONE image the same size as the attached one, with ONLY ONE character. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.",
   ].filter(Boolean).join(" ");
 };
+
+// A figure of the house, drawn from the protagonist so it has the same style. The child in the reference is
+// shrunk (baseFigura) so an adult fits above it; acomodar.ts cuts each figure to its height anyway.
+const promptFigura = (id: string) => {
+  const { que, alto } = FIGURAS[id];
+  const veces = alto / 60;
+  const tam = veces > 1.04 ? `taller than the child: about ${veces.toFixed(2)} times the child's height, with the head about the same size as the child's and a longer body` : veces < 0.96 ? `smaller than the child: about ${veces.toFixed(2)} times the child's height` : "about as tall as the child";
+  const animal = id === "perro" || id === "gato";
+  return [
+    "The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background.",
+    `Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading${animal ? ", the same cute rounded shapes" : ", the same chibi proportions, the same kind of face and eyes, and the same skin color"}.`,
+    `The new character: ${que}. ${animal ? "" : "Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. "}It is ${tam}, standing on the same floor line as the child.`,
+    animal ? "" : "Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color.",
+    "Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.",
+  ].filter(Boolean).join(" ");
+};
+
+// The front pose of the body, shrunk to 70% with its feet on the same line, so a taller figure fits above it.
+async function baseFigura(cuerpo: string) {
+  const dir = join(ARTE, "figuras", "_base");
+  const destino = join(dir, `${cuerpo}.png`);
+  if (existsSync(destino)) return destino;
+  mkdirSync(dir, { recursive: true });
+  const origen = join(ARTE, "personaje", cuerpo);
+  const im = await loadImage(join(origen, archivo(origen, "abajo_quieta")!));
+  const L = Math.max(im.width, 1600); // a small drawing is enlarged with sharp pixels
+  const c = createCanvas(L, L), ctx = c.getContext("2d");
+  ctx.imageSmoothingEnabled = false;
+  ctx.fillStyle = "#ff00ff";
+  ctx.fillRect(0, 0, L, L);
+  ctx.drawImage(im, L * 0.15, L * 0.28, L * 0.7, L * 0.7);
+  writeFileSync(destino, c.toBuffer("image/png"));
+  return destino;
+}
+
+// A figure is kept if it has the reference's shape, there is one figure and nothing touches the edge.
+async function revisarFigura(base: string, hecho: string): Promise<string | null> {
+  const [ia, ib] = [await loadImage(base), await loadImage(hecho)];
+  if (ia.width * ib.height !== ia.height * ib.width) return `mide ${ib.width} × ${ib.height} y debe ser cuadrada como la imagen que se sube`;
+  const c = createCanvas(400, 400);
+  c.getContext("2d").drawImage(ib, 0, 0, 400, 400);
+  const d = c.getContext("2d").getImageData(0, 0, 400, 400).data;
+  let n = 0, orilla = 0;
+  for (let i = 0; i < d.length; i += 4) {
+    if (Math.hypot(d[i] - 255, d[i + 1], d[i + 2] - 255) <= 115) continue;
+    n++;
+    const x = (i / 4) % 400, y = (i / 1600) | 0;
+    if (x < 2 || y < 2 || x > 397 || y > 397) orilla++;
+  }
+  if (n < 2000) return "no hay figura";
+  if (orilla > 20) return "la figura toca la orilla de la imagen";
+  return null;
+}
 
 const archivo = (carpeta: string, n: string) => readdirSync(carpeta).find((a) => a.replace(/\.(png|jpe?g|webp)$/, "") === n);
 
@@ -184,16 +242,17 @@ function esperar(hasta: Date) {
 }
 
 async function una(base: string, destino: string, pose: string, capa: string) {
-  const entrada = join(base, archivo(base, pose)!);
+  const fig = !!FIGURAS[capa] && !CAPAS[capa];
+  const entrada = fig ? base : join(base, archivo(base, pose)!);
   for (let i = 1; i <= INTENTOS; i++) {
     if (pausa) await pausa;
     if (archivo(destino, pose)) return console.log(`${capa}/${pose}: ya está (hecha a mano)`);
     const dir = mkdtempSync(join(tmpdir(), "matices-"));
-    const frente = deFrente(destino, pose, capa);
-    const limite = await codex(dir, frente ? [entrada, frente] : [entrada], prompt(pose, capa, !!frente));
+    const frente = fig ? null : deFrente(destino, pose, capa);
+    const limite = await codex(dir, frente ? [entrada, frente] : [entrada], fig ? promptFigura(capa) : prompt(pose, capa, !!frente));
     if (limite) { rmSync(dir, { recursive: true }); await esperar(limite); i--; continue; } // not a failed attempt
     const salida = join(dir, "salida.png");
-    const mal = existsSync(salida) ? await revisar(entrada, salida, capa, pose) : "no generó imagen";
+    const mal = !existsSync(salida) ? "no generó imagen" : fig ? await revisarFigura(entrada, salida) : await revisar(entrada, salida, capa, pose);
     if (!mal) {
       copyFileSync(salida, join(destino, `${pose}.png`));
       rmSync(dir, { recursive: true });
@@ -208,9 +267,25 @@ async function una(base: string, destino: string, pose: string, capa: string) {
 async function main() {
   const lista = process.argv.includes("--lista");
   const [cuerpo, ...capas] = process.argv.slice(2).filter((a) => a !== "--lista");
-  const base = join(ARTE, "personaje", cuerpo);
-  if (!cuerpo || !capas.length || !existsSync(base)) throw new Error("uso: node herramientas/generar.ts <cuerpo> <capa> [<capa> ...]");
   const cola: (() => Promise<void>)[] = [];
+  const correr = () => Promise.all(Array.from({ length: A_LA_VEZ }, async () => { for (let t; (t = cola.shift()); ) await t(); }));
+  if (cuerpo === "figuras") {
+    for (const id of capas.length ? capas : Object.keys(FIGURAS)) {
+      if (!FIGURAS[id]) throw new Error(`no hay instrucciones para la figura ${id}`);
+      const base = await baseFigura(FIGURAS[id].base), destino = join(ARTE, "figuras", id);
+      mkdirSync(destino, { recursive: true });
+      const hecho = archivo(destino, "quieta");
+      const mal = hecho && (await revisarFigura(base, join(destino, hecho)));
+      if (mal) console.log(lista ? `\n> ${id}: ${mal}` : `${id}: ${mal}, se pide de nuevo`);
+      if (mal && !lista) rmSync(join(destino, hecho));
+      if (hecho && !mal) continue;
+      if (lista) console.log(`\n## ${id} · quieta\n- Adjuntar: ${base}\n- Guardar como: ${join(destino, "quieta.png")}\n- Después: node herramientas/acomodar.ts figuras/${id} ${destino}\n\n\`\`\`\n${promptFigura(id)}\n\`\`\``);
+      else cola.push(() => una(base, destino, "quieta", id));
+    }
+    return void (await correr());
+  }
+  const base = join(ARTE, "personaje", cuerpo);
+  if (!cuerpo || !capas.length || !existsSync(base)) throw new Error("uso: node herramientas/generar.ts <cuerpo> <capa> [<capa> ...] | figuras [<id> ...]");
   for (const capa of capas) {
     if (!CAPAS[capa]) throw new Error(`no hay instrucciones para ${capa}`);
     // Another body lives next to this one (ARTE/personaje/cuerpo_nino), a layer inside it.
@@ -234,7 +309,7 @@ async function main() {
       else cola.push(() => una(base, destino, pose, capa));
     }
   }
-  await Promise.all(Array.from({ length: A_LA_VEZ }, async () => { for (let t; (t = cola.shift()); ) await t(); }));
+  await correr();
 }
 
 await main();

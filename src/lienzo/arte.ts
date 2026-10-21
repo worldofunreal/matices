@@ -72,6 +72,7 @@ export const precargar = (ids: string[]) => Promise.all(ids.map(imagen));
 
 export const idsDe = (prefijo: string) => arte.piezas.filter((p) => p.id.startsWith(prefijo)).map((p) => p.id);
 export const queEs = (id: string) => piezas.get(id)?.que ?? id;
+export const medidaDe = (id: string) => piezas.get(id)!.medida;
 // The ramp a piece of clothing or an extra is recolored with (skin and hair aside).
 export const rampaDe = (id: string) => piezas.get(id)?.colores.find((r) => r !== "piel" && r !== "cabello");
 export const colorMedio = (rampa: Rampa, i: number) => arte.colores[rampa].variantes[i][1];

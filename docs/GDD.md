@@ -127,7 +127,7 @@ Cuando el niño llega al punto de un suceso:
 
 1. El mundo baja de volumen, la cámara encuadra la escena y aparece el libro en el borde inferior.
 2. La Cuentera narra el inicio (voz + texto). Animación corta con los sprites del personaje y su familia.
-3. **¿Quién llega?** Tarjetas con el retrato de cada figura de la casa (o de la escuela, si es ahí) + "Nadie" + "[Nombre] lo resuelve sin ayuda" + "No sé". Orden aleatorio.
+3. **¿Quién llega?** Tarjetas con la cara de cada figura de la casa (o el retrato de la gente de la escuela, si es ahí) + "Nadie" + "[Nombre] lo resuelve sin ayuda" + "No sé". Orden aleatorio.
 4. **¿Qué hace?** Tarjetas ilustradas con icono y voz. Siempre las mismas formas de responder (cuida, se da cuenta pero no hace nada, regaña, lastima, se va) escritas para cada suceso, más "Otra cosa" (abre el lienzo para dibujarla).
 5. **¿Y luego?** Un paso más.
 6. **¿Cómo se siente [nombre]?** Cinco caritas en pixel art + panel opcional cuerpo / pensamiento / entorno.

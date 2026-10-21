@@ -347,7 +347,7 @@ export class Motor {
     }
     for (const f of this.o.figuras) {
       const hoja = piezaYa(`figuras/${f.id}`, { piel: f.piel });
-      if (hoja) cosas.push({ y: f.y, dibujar: () => this.cuadro(hoja, 0, 0, f.x, f.y) });
+      if (hoja) cosas.push({ y: f.y, dibujar: () => ctx.drawImage(hoja, Math.round(f.x - hoja.width / 2), Math.round(f.y - hoja.height)) });
     }
     const a = this.o.apariencia;
     const { fila, voltear } = filaDe(this.dir);

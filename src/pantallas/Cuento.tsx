@@ -3,7 +3,7 @@
 // chooses: the chosen card lights up for a moment and the story goes on by itself (GDD §12).
 import { useEffect, useRef, useState } from "react";
 import contenido, { type Paso, type Opcion } from "virtual:contenido";
-import { Imagen } from "../lienzo/Personaje";
+import { Imagen, Cara } from "../lienzo/Personaje";
 import { Bocina } from "../ui/Bocina";
 import { estado, cambiarEstado, type Pagina } from "../datos/guardado";
 import { personasDeCasa, nombreDe, codigoDe } from "../datos/casa";
@@ -31,6 +31,7 @@ export interface Carta {
   codigo: string;
   etiqueta: string;
   imagen?: string;
+  figura?: string; // a person of the house: the card shows the head of its figure
   piel?: number;
 }
 type Fase = { tipo: "paso"; i: number } | { tipo: "carita" } | { tipo: "panel" } | { tipo: "cierre" };
@@ -75,7 +76,7 @@ export function Cuento({ id, alCerrar }: { id: string; alCerrar: (estadoCuerpo: 
           const gente = personasDeCasa(t === "casa_adultos");
           // An empty house offers a neighbor and nobody instead (GDD §7).
           if (!gente.length) return ["vecino", "nadie"].forEach(agregar);
-          for (const f of gente) lista.push({ codigo: codigoDe(f), etiqueta: nombreDe(f), imagen: `figuras/retrato_${f.figura}`, piel: f.piel });
+          for (const f of gente) lista.push({ codigo: codigoDe(f), etiqueta: nombreDe(f), figura: f.figura, piel: f.piel });
         } else if (t === "escuela") ESCUELA.forEach((e) => lista.push({ codigo: `ESCUELA:${e}`, etiqueta: T.escuela[e], imagen: `figuras/retrato_${e}` }));
         else if (t === "vecino") lista.push({ codigo: "VECINO", etiqueta: T.vecino, imagen: "figuras/retrato_vecino" });
         else if (t === "nadie") lista.push({ codigo: "NADIE", etiqueta: T.nadie, imagen: "interfaz/persona_nadie" });
@@ -236,7 +237,7 @@ export function Cuento({ id, alCerrar }: { id: string; alCerrar: (estadoCuerpo: 
                   onClick={() => elegirCarta(carta)}
                   onKeyDown={(e) => e.key === "Enter" && elegirCarta(carta)}
                 >
-                  {carta.imagen && <Imagen id={carta.imagen} piel={carta.piel} tam={carta.imagen.startsWith("figuras/") ? 96 : 48} />}
+                  {carta.figura ? <Cara id={`figuras/${carta.figura}`} piel={carta.piel} tam={96} /> : carta.imagen && <Imagen id={carta.imagen} piel={carta.piel} tam={carta.imagen.startsWith("figuras/") ? 96 : 48} />}
                   <span>{carta.etiqueta}</span>
                   <Bocina clave={`cuentos.${id}.${carta.codigo}`} texto={carta.etiqueta} />
                 </div>

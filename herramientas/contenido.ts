@@ -7,7 +7,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { parse } from "yaml";
 import type { Plugin } from "vite";
-import { ROOT, MANIFIESTO, DOC_CODIGOS, PANEL_CPE, codigosValidos, panelCpe, leerManifiesto, medidaPng, RAMPAS } from "./arte.ts";
+import { ROOT, MANIFIESTO, DOC_CODIGOS, PANEL_CPE, codigosValidos, panelCpe, leerManifiesto, medidaPng, RAMPAS, FIGURAS } from "./arte.ts";
 
 const DIR = join(ROOT, "contenido");
 const CUENTOS = join(DIR, "cuentos");
@@ -148,12 +148,15 @@ export function validar() {
   for (const p of leerManifiesto().piezas)
     if (/^personaje\/(ropa_|calzado_)/.test(p.id) && !textos.creacion?.color_de?.[p.id.split("/")[1]]) err("textos creacion.color_de", `falta ${p.id.split("/")[1]}`);
 
-  // Figures: each one needs its sheet and portrait; rooms named in the texts must exist in the house map.
+  // Figures: each one needs its figure and its art (FIGURAS); rooms named in the texts must exist in the house map.
   const { figuras: listaFiguras } = parse(readFileSync(join(DIR, "figuras.yaml"), "utf8")) as { figuras: [string, string, string][] };
-  const piezas = new Set(leerManifiesto().piezas.map((p) => p.id));
+  const manifiesto = leerManifiesto();
+  const piezas = new Set(manifiesto.piezas.map((p) => p.id));
   const figuras = listaFiguras.map(([id, tipo, nombre]) => {
     if (!["adulto", "menor", "mascota"].includes(tipo)) err(`figuras ${id}`, `tipo inválido ${tipo}`);
-    for (const pieza of [`figuras/${id}`, `figuras/retrato_${id}`]) if (!piezas.has(pieza)) err(`figuras ${id}`, `falta ${pieza} en el manifiesto`);
+    if (!piezas.has(`figuras/${id}`)) err(`figuras ${id}`, `falta figuras/${id} en el manifiesto`);
+    if (!FIGURAS[id]) err(`figuras ${id}`, "falta en FIGURAS (herramientas/arte.ts)");
+    if (FIGURAS[id] && FIGURAS[id].alto > (manifiesto.piezas.find((p) => p.id === `figuras/${id}`)?.medida[1] ?? 0) - 2) err(`figuras ${id}`, "no cabe en su cuadro");
     texto(`figuras ${id}`, nombre, false);
     return { id, tipo, nombre };
   });

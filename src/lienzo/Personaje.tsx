@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { pieza, CUADRO } from "./arte";
+import { pieza, medidaDe, CUADRO } from "./arte";
 import { capas, coloresDe, filaDe, type Apariencia, type Direccion } from "../personaje/apariencia";
 
 // Draws stacked layers on a small canvas; CSS enlarges it with sharp pixels.
@@ -45,19 +45,40 @@ export function Cabeza({ a, escala }: { a: Apariencia; escala: number }) {
   return <canvas ref={ref} className="pixel" width={CABEZA.ancho} height={CABEZA.alto} style={{ width: CABEZA.ancho * escala, height: CABEZA.alto * escala }} />;
 }
 
-// One still frame of any character sheet (figures, fixed characters), facing down.
+// A figure of the house: one still frame, facing the viewer, at its own size (feet at the bottom).
 export function Hoja({ id, piel = 0, escala }: { id: string; piel?: number; escala: number }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const [w, h] = medidaDe(id);
   useEffect(() => {
     void pieza(id, { piel }).then((l) => {
       const ctx = ref.current?.getContext("2d");
       if (!ctx) return; // the picture left the screen before it loaded
       ctx.imageSmoothingEnabled = false;
-      ctx.clearRect(0, 0, CUADRO.ancho, CUADRO.alto);
-      ctx.drawImage(l, 0, 0, CUADRO.ancho, CUADRO.alto, 0, 0, CUADRO.ancho, CUADRO.alto);
+      ctx.clearRect(0, 0, w, h);
+      ctx.drawImage(l, 0, 0);
+    });
+  }, [id, piel, w, h]);
+  return <canvas ref={ref} className="pixel" width={w} height={h} style={{ width: w * escala, height: h * escala }} />;
+}
+
+// The head of a figure of the house, as its portrait on cards: the same art as the figure, so a person
+// looks the same in the house and on the cards. Found from the top of the figure (each age is a different height).
+export function Cara({ id, piel = 0, tam }: { id: string; piel?: number; tam: number }) {
+  const ref = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    void pieza(id, { piel }).then((l) => {
+      const c = ref.current;
+      if (!c) return; // the picture left the screen before it loaded
+      const d = l.getContext("2d")!.getImageData(0, 0, l.width, l.height).data;
+      let arriba = 0;
+      while (arriba < l.height && ![...Array(l.width).keys()].some((x) => d[(arriba * l.width + x) * 4 + 3])) arriba++;
+      const ctx = c.getContext("2d")!;
+      ctx.imageSmoothingEnabled = false;
+      ctx.clearRect(0, 0, c.width, c.height);
+      ctx.drawImage(l, (l.width - CABEZA.ancho) / 2, Math.max(0, arriba - 1), CABEZA.ancho, CABEZA.ancho, 0, 0, CABEZA.ancho, CABEZA.ancho);
     });
   }, [id, piel]);
-  return <canvas ref={ref} className="pixel" width={CUADRO.ancho} height={CUADRO.alto} style={{ width: CUADRO.ancho * escala, height: CUADRO.alto * escala }} />;
+  return <canvas ref={ref} className="pixel" width={CABEZA.ancho} height={CABEZA.ancho} style={{ width: tam, height: tam }} />;
 }
 
 // A single image piece (portrait, icon) with optional skin color.

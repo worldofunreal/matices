@@ -4,7 +4,7 @@
 import { mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { createCanvas, type SKRSContext2D } from "@napi-rs/canvas";
-import { ASSETS, ROOT, leerManifiesto, marcarProvisional, esProvisional, type Pieza, type Manifiesto } from "./arte.ts";
+import { ASSETS, ROOT, FIGURAS, leerManifiesto, marcarProvisional, esProvisional, type Pieza, type Manifiesto } from "./arte.ts";
 
 type Ctx = SKRSContext2D;
 const FUENTE = "Adwaita Sans, sans-serif";
@@ -96,7 +96,34 @@ function capaDe(p: Pieza) {
   return "figura";
 }
 
+// A figure of the house: a simple person (or a round pet) as tall as its age, feet at the bottom.
+function persona(ctx: Ctx, p: Pieza, m: Manifiesto) {
+  const n = nombre(p), { alto } = FIGURAS[n], [w, h] = p.medida;
+  const pie = h - 2, cabeza = Math.round(alto * (alto < 40 ? 0.5 : 26 / alto + 0.04));
+  const r = (x: number, y: number, ancho: number, a: number, c: string) => {
+    ctx.fillStyle = c;
+    ctx.fillRect(Math.round(w / 2 - ancho / 2 + x), Math.round(y), ancho, Math.round(a));
+  };
+  const [pc, pm, ps] = m.colores.piel.clave;
+  if (n === "perro" || n === "gato") {
+    r(0, pie - alto * 0.55, alto * 0.75, alto * 0.55, tono(n, 55));
+    r(0, pie - alto, alto * 0.6, alto * 0.5, tono(n, 62));
+    return;
+  }
+  const top = pie - alto, cuerpo = alto - cabeza;
+  r(0, top, cabeza * 0.8, cabeza * 0.25, tono(n, 30)); // hair
+  r(0, top + cabeza * 0.25, cabeza * 0.8, cabeza * 0.75, pc); // face
+  r(-cabeza * 0.15, top + cabeza * 0.55, 2, 2, "#1d1a24");
+  r(cabeza * 0.15, top + cabeza * 0.55, 2, 2, "#1d1a24");
+  r(0, top + cabeza, cabeza * 0.9, cuerpo * 0.5, tono(n, 55)); // torso
+  r(-cabeza * 0.55, top + cabeza + 1, 3, cuerpo * 0.42, ps); // arms
+  r(cabeza * 0.55, top + cabeza + 1, 3, cuerpo * 0.42, ps);
+  r(-cabeza * 0.2, top + cabeza + cuerpo * 0.5, cabeza * 0.32, cuerpo * 0.5, pm); // legs
+  r(cabeza * 0.2, top + cabeza + cuerpo * 0.5, cabeza * 0.32, cuerpo * 0.5, pm);
+}
+
 function hoja(ctx: Ctx, p: Pieza, m: Manifiesto) {
+  if (p.id.startsWith("figuras/")) return persona(ctx, p, m);
   const capa = capaDe(p);
   const filas = [0, 1, 3]; // abajo, izquierda, arriba (derecha is izquierda mirrored)
   for (let fila = 0; fila < p.medida[1] / 64; fila++)

@@ -43,7 +43,7 @@ Estilo: pixel art en vista de tres cuartos, ambientado en una colonia urbana de 
 | --- | --- |
 | Pantalla | El mundo llena la pantalla en cualquier orientación, en pixel art ampliado en enteros. Menús, libro, tarjetas y botones son interfaz en HTML y CSS, no pixel art: marcos, tarjetas y botones no se dibujan |
 | Tile | 32 × 32 |
-| Sprite de personaje | 48 × 64 (el cuerpo mide unos 27 × 60 por dentro; el resto del ancho es para cabellos abultados, como el afro o las coletas, que nunca deben tocar la orilla). El protagonista: 3 direcciones (abajo, izquierda, arriba; la derecha es la izquierda volteada), quieto (1 cuadro) y caminata (4 cuadros) por dirección. No hay diagonales: el personaje camina en 4 direcciones. Figuras de la casa y personajes fijos: un solo cuadro, de pie y de frente |
+| Sprite de personaje | 48 × 64 (el cuerpo mide unos 27 × 60 por dentro; el resto del ancho es para cabellos abultados, como el afro o las coletas, que nunca deben tocar la orilla). El protagonista: 3 direcciones (abajo, izquierda, arriba; la derecha es la izquierda volteada), quieto (1 cuadro) y caminata (4 cuadros) por dirección. No hay diagonales: el personaje camina en 4 direcciones. Personajes fijos: un solo cuadro, de pie y de frente. Figuras de la casa: un solo cuadro de 48 × 80, de pie y de frente, con los pies abajo y la altura de su edad (un adulto es más alto que el niño) |
 | Capas de sprite | cuerpo/piel, ropa inferior, ropa superior, calzado, cabello, extras; mismo lienzo y misma posición |
 | Retrato | 96 × 96; una expresión, neutral (La Cuentera también contenta) |
 | Paleta | Un máximo de 48 colores para todo el juego, definidos en `paleta.png` (pendiente) |
@@ -72,7 +72,7 @@ Cualquier pieza se puede entregar en cualquier momento: el juego ya funciona con
 - **Se reemplaza el archivo provisional** en `public/assets/` por el arte final, con el mismo nombre y la misma medida. No se cambia nada más. Si la medida no cuadra, el juego no compila y dice cuál.
 - PNG con fondo transparente. Recortes, mapas y zonas por donde no se camina los arma el desarrollo.
 - **Lugares:** el fondo es el lugar vacío (piso y muros); cada mueble u objeto va en su propio PNG. Así el personaje puede pasar detrás de una mesa o un árbol.
-- **Hojas del protagonista:** 5 columnas (quieto, paso 1 a 4) por 3 filas (abajo, izquierda, arriba), cuadros de 48 × 64, pies a la misma altura en todos. Las figuras de la casa y los personajes fijos son un solo cuadro de 48 × 64.
+- **Hojas del protagonista:** 5 columnas (quieto, paso 1 a 4) por 3 filas (abajo, izquierda, arriba), cuadros de 48 × 64, pies a la misma altura en todos. Los personajes fijos son un solo cuadro de 48 × 64; las figuras de la casa, uno de 48 × 80.
 - **Capas del protagonista:** cada pieza (cuerpo, cabello, ropa, calzado, extras) en su hoja, dibujada en la misma posición que el cuerpo base.
 - **Piel, cabello, ropa, tenis y extras:** se dibujan una sola vez. El juego los cambia a los colores de su rampa en `manifiesto.yaml` conservando las sombras; no se dibuja una versión por color. A mano se usan los colores clave de su rampa; con generador, la regla de color de abajo y `acomodar.ts` los pasa a la clave.
 - **Retratos:** un PNG por expresión (`_neutral`, y `_contento` en La Cuentera). El protagonista no tiene.
@@ -93,7 +93,7 @@ Con el protagonista esto ya es automático: `herramientas/generar.ts` le pide ca
 - Todo lo demás, en sus colores reales.
 
 **Plantillas** (en `plantillas/`, se suben junto con el prompt):
-- [figura-de-pie.png](plantillas/figura-de-pie.png): un solo cuadro, para figuras de la casa y personajes fijos.
+- [figura-de-pie.png](plantillas/figura-de-pie.png): un solo cuadro, para personajes fijos.
 - Lugares: el provisional de `public/assets/lugares/<lugar>/fondo.png` es el plano. Los bloques oscuros sueltos dentro de los cuartos marcan dónde va un mueble y en el fondo se pintan como piso.
 
 **Bloque de estilo** (va al inicio de todos los prompts de personajes):
@@ -121,13 +121,15 @@ Con el protagonista esto ya es automático: `herramientas/generar.ts` le pide ca
 
    El protagonista no tiene retrato: la creación muestra su cabeza con las mismas capas del sprite.
 
-**Figuras de la casa y personajes fijos** (un cuadro de pie, con la plantilla de figura):
+**Figuras de la casa** (abuelos, padres, tíos, hermanos, bebé, primos, otra persona, perro y gato): cada una es un dibujo propio, hecho a partir de la figura de frente de la niña o del niño, para que tenga el mismo estilo. `generar.ts figuras` pide cada una y `generar.ts --lista figuras` da la imagen que se sube, el prompt y dónde se guarda. Quién es cada una, de qué cuerpo sale y cuánto mide en el juego está en `FIGURAS` (`herramientas/arte.ts`); el protagonista mide 60. `acomodar.ts figuras/<id> <carpeta>` la deja exactamente de esa altura, con los pies abajo, así que un adulto siempre queda más alto que el niño aunque el generador lo dibuje de otro tamaño. Las personas llevan piel clara natural, que el juego cambia; el cabello va en su color real; perro y gato no cambian de color.
+
+No tienen retrato aparte: las tarjetas y la repisa muestran la cabeza de su figura, así cada persona se ve igual en la casa y en las tarjetas.
+
+**Personajes fijos** (un cuadro de pie, con la plantilla de figura):
 > [estilo] One single standing sprite, 384×512 px, following the attached template: head top and feet on the guide lines, centered, facing the viewer, standing still. SUBJECT: [quién es, de `manifiesto.yaml`], everyday Mexican clothes.
 
-Su retrato (96 × 96, se pide a 768 × 768):
+Su retrato y los de la escuela y el vecino (96 × 96, se piden a 768 × 768):
 > [estilo, cambiando la primera frase por: Pixel art character portrait, bust and shoulders, front 3/4 view] SUBJECT: the same character as the attached image, with its clothes and hair, neutral calm expression, centered, the head filling the upper two thirds.
-
-Las figuras de la casa llevan piel clara natural; el cabello va en su color real.
 
 **Fondos de lugares** (con su plano):
 > Pixel art, top-down 3/4 view RPG map, cozy Mexican city neighborhood, soft daylight, crisp square pixels, no anti-aliasing. Follow the attached floor plan EXACTLY: dark areas are walls, light areas are floor, gaps in the walls are doorways; keep every wall and doorway in the same place and size. 32-pixel tiles. Empty place: floor and walls only, no furniture, no people, no text. SUBJECT: [lo que dice `manifiesto.yaml` del fondo].

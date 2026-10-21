@@ -3,13 +3,15 @@
 // Run: node herramientas/acomodar.ts <pieza> <carpeta> [<carpeta del cuerpo>]
 //   hoja of the protagonist: abajo_quieta, abajo_paso, izq_quieta, izq_paso1, izq_paso2, arriba_quieta,
 //   arriba_paso (.png/.jpg). abajo and arriba take their second step as the first one mirrored.
-//   single figure (48 × 64): quieta.
+//   single figure (fixed character, 48 × 64): quieta. A figure of the house (figuras/<id>, 48 × 80): quieta, cut to its
+//   height (FIGURAS in arte.ts); generar.ts figuras makes it.
 //   A layer (hair, clothes, extras) is each body pose edited by the generator (herramientas/generar.ts):
 //   with the body's folder, the layer keeps only the pixels that changed, framed like the body.
-import { readdirSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createCanvas, loadImage } from "@napi-rs/canvas";
-import { ASSETS, leerManifiesto, type Pieza } from "./arte.ts";
+import { parse } from "yaml";
+import { ASSETS, ROOT, FIGURAS, leerManifiesto, type Manifiesto, type Pieza } from "./arte.ts";
 
 const ANCHO = 48, ALTO = 64, CABEZA_Y = 2, FIGURA = 60; // figure height inside the frame
 
@@ -141,12 +143,13 @@ function ancla(a: Img) {
 // frame. Edits of the base keep its scale, so one `k` serves every pose. Each pixel averages the
 // middle of its patch only, so it rarely straddles two of the generator's blocks (blends at edges
 // are gray specks).
-function cuadro(a: Img, k: number, { arriba, centro } = ancla(a)): Uint8ClampedArray {
-  const out = new Uint8ClampedArray(ANCHO * ALTO * 4);
+// `marco`: another frame height and head row (a figure of the house).
+function cuadro(a: Img, k: number, { arriba, centro } = ancla(a), marco = { alto: ALTO, y: CABEZA_Y }): Uint8ClampedArray {
+  const out = new Uint8ClampedArray(ANCHO * marco.alto * 4);
   const lado = 1 / k;
-  for (let y = 0; y < ALTO; y++)
+  for (let y = 0; y < marco.alto; y++)
     for (let x = 0; x < ANCHO; x++) {
-      const sx0 = centro + (x - ANCHO / 2 + MEDIO) * lado, sy0 = arriba + (y - CABEZA_Y + MEDIO) * lado;
+      const sx0 = centro + (x - ANCHO / 2 + MEDIO) * lado, sy0 = arriba + (y - marco.y + MEDIO) * lado;
       let n = 0, t = 0, r = 0, g = 0, b = 0;
       for (let sy = Math.floor(sy0); sy < sy0 + lado * (1 - 2 * MEDIO); sy++)
         for (let sx = Math.floor(sx0); sx < sx0 + lado * (1 - 2 * MEDIO); sx++) {
@@ -446,6 +449,24 @@ function cuello(px: Uint8ClampedArray) {
   return mejor;
 }
 
+// A figure of the house: one standing figure (quieta), cut to the height of its age (FIGURAS) with its feet
+// on the frame's last rows and its head centered, so every adult stands taller than the child however big the
+// generator drew it. People take the skin key colors (the house can change their skin); pets keep their fur.
+async function figura(pieza: Pieza, carpeta: string, m: Manifiesto) {
+  const [w, h] = pieza.medida, n = pieza.id.split("/")[1]!;
+  const { figuras } = parse(readFileSync(join(ROOT, "contenido/figuras.yaml"), "utf8")) as { figuras: [string, string, string][] };
+  const [[img]] = await poses(carpeta, 1, 1);
+  const an = ancla(img), { alto } = FIGURAS[n];
+  const px = cuadro(img, alto / (an.abajo - an.arriba), an, { alto: h, y: h - 2 - alto });
+  if (figuras.find((f) => f[0] === n)?.[1] !== "mascota") pielAClave(px, m.colores.piel.clave);
+  for (let y = 0; y < h; y++) for (const x of [0, w - 1]) if (px[(y * w + x) * 4 + 3]) throw new Error(`${pieza.id}: toca la orilla del cuadro y se cortaría`);
+  const c = createCanvas(w, h), d = c.getContext("2d").createImageData(w, h);
+  d.data.set(px);
+  c.getContext("2d").putImageData(d, 0, 0);
+  writeFileSync(join(ASSETS, pieza.archivo), c.toBuffer("image/png"));
+  console.log(`${pieza.archivo}: ${w} × ${h}, ${alto} de alto`);
+}
+
 async function main() {
   // --igual-a <carpeta>: a body made from another one (the boy from the girl) is lined up and framed
   // exactly like it, so every layer made for that body fits this one too.
@@ -455,6 +476,7 @@ async function main() {
   const m = leerManifiesto();
   const pieza = m.piezas.find((p) => p.id === id) as Pieza | undefined;
   if (!pieza || !carpeta) throw new Error("uso: node herramientas/acomodar.ts <pieza> <carpeta> [<carpeta del cuerpo>] [--igual-a <carpeta de otro cuerpo>]");
+  if (pieza.id.startsWith("figuras/")) return figura(pieza, carpeta, m);
   const [w, h] = pieza.medida;
   const filas = h / ALTO, columnas = w / ANCHO;
   const hoja = await poses(carpeta, filas, columnas);

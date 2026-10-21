@@ -81,14 +81,14 @@
 
 /* ---- Stage */
 
-.escenario {
+.creacion .escenario {
   position: relative;
   display: grid;
   place-items: center;
   min-height: 0;
 }
 
-.escenario .foco {
+.creacion .escenario .foco {
   position: absolute;
   width: min(80%, 72vmin);
   aspect-ratio: 1;
@@ -98,13 +98,13 @@
 }
 
 /* A few soft shapes floating around the character, in the step's color and its neighbours. */
-.figuras {
+.creacion .escenario .flotantes {
   position: absolute;
   inset: 0;
   pointer-events: none;
 }
 
-.figuras span {
+.creacion .escenario .flotantes span {
   position: absolute;
   border-radius: 50%;
   background: var(--acento);
@@ -113,13 +113,13 @@
   transition: background var(--suave);
 }
 
-.figuras span:nth-child(1) { left: 14%; top: 18%; width: 18px; height: 18px; }
-.figuras span:nth-child(2) { right: 16%; top: 12%; width: 12px; height: 12px; background: #ffd27a; animation-delay: -2s; }
-.figuras span:nth-child(3) { right: 10%; top: 52%; width: 24px; height: 24px; background: #90d9c9; animation-delay: -4s; }
-.figuras span:nth-child(4) { left: 9%; top: 62%; width: 10px; height: 10px; background: #a9c8ff; animation-delay: -1s; }
-.figuras span:nth-child(5) { left: 24%; bottom: 10%; width: 14px; height: 14px; border-radius: 4px; transform: rotate(18deg); background: #c7b3fb; animation-delay: -3s; }
-.figuras span:nth-child(6) { right: 26%; bottom: 14%; width: 9px; height: 9px; background: #ffb4d2; animation-delay: -5s; }
-.figuras span:nth-child(7) { left: 46%; top: 5%; width: 8px; height: 8px; background: #ffb4a1; animation-delay: -6s; }
+.creacion .escenario .flotantes span:nth-child(1) { left: 14%; top: 18%; width: 18px; height: 18px; }
+.creacion .escenario .flotantes span:nth-child(2) { right: 16%; top: 12%; width: 12px; height: 12px; background: #ffd27a; animation-delay: -2s; }
+.creacion .escenario .flotantes span:nth-child(3) { right: 10%; top: 52%; width: 24px; height: 24px; background: #90d9c9; animation-delay: -4s; }
+.creacion .escenario .flotantes span:nth-child(4) { left: 9%; top: 62%; width: 10px; height: 10px; background: #a9c8ff; animation-delay: -1s; }
+.creacion .escenario .flotantes span:nth-child(5) { left: 24%; bottom: 10%; width: 14px; height: 14px; border-radius: 4px; transform: rotate(18deg); background: #c7b3fb; animation-delay: -3s; }
+.creacion .escenario .flotantes span:nth-child(6) { right: 26%; bottom: 14%; width: 9px; height: 9px; background: #ffb4d2; animation-delay: -5s; }
+.creacion .escenario .flotantes span:nth-child(7) { left: 46%; top: 5%; width: 8px; height: 8px; background: #ffb4a1; animation-delay: -6s; }
 
 @keyframes flotar {
   50% {
@@ -128,19 +128,19 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .figuras span {
+  .creacion .escenario .flotantes span {
     animation: none;
   }
 }
 
 /* The character stands on a small round stage. */
-.figura {
+.creacion .escenario .tarima {
   position: relative;
   display: grid;
   place-items: center;
 }
 
-.figura::before {
+.creacion .escenario .tarima::before {
   content: "";
   position: absolute;
   left: 50%;
@@ -153,12 +153,12 @@
   transition: background var(--suave);
 }
 
-.escenario canvas {
+.creacion .escenario canvas {
   position: relative;
   filter: drop-shadow(0 8px 6px rgb(43 34 51 / 0.12));
 }
 
-.nombre-escenario {
+.creacion .nombre-escenario {
   position: absolute;
   bottom: 3%;
   padding: 6px 20px;
@@ -171,7 +171,7 @@
 
 /* ---- Workshop */
 
-.taller {
+.creacion .taller {
   min-height: 0;
   display: flex;
   flex-direction: column;
@@ -180,7 +180,7 @@
 }
 
 /* The tabs are the path: every step shows its color, the current one fills it. */
-.pestanas {
+.creacion .pestanas {
   display: flex;
   gap: 4px;
   padding: 10px 8px 8px;
@@ -188,7 +188,7 @@
   scrollbar-width: none;
 }
 
-.pestana {
+.creacion .pestana {
   flex: 1 1 0;
   min-width: 0;
   min-height: var(--toque);
@@ -208,7 +208,7 @@
   transition: background var(--rapido), color var(--rapido);
 }
 
-.icono-paso {
+.creacion .icono-paso {
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -219,23 +219,23 @@
   transition: background var(--rapido), color var(--rapido), transform var(--rapido);
 }
 
-.icono-paso svg {
+.creacion .icono-paso svg {
   width: 20px;
   height: 20px;
 }
 
-.pestana[aria-selected="true"] {
+.creacion .pestana[aria-selected="true"] {
   color: var(--acento-oscuro);
 }
 
-.pestana[aria-selected="true"] .icono-paso {
+.creacion .pestana[aria-selected="true"] .icono-paso {
   background: var(--acento);
   color: #fff;
   transform: scale(1.1);
   box-shadow: 0 3px 0 var(--acento-oscuro);
 }
 
-.pregunta {
+.creacion .pregunta {
   margin: 4px 12px 0;
   padding: 10px 10px 10px 16px;
   border-radius: 18px;
@@ -247,13 +247,13 @@
   transition: background var(--suave);
 }
 
-.pregunta h2 {
+.creacion .pregunta h2 {
   margin: 0;
   font-size: clamp(19px, 2.6vmin, 23px);
   font-weight: 800;
 }
 
-.opciones {
+.creacion .opciones {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
@@ -313,14 +313,14 @@
   border-color: var(--acento);
 }
 
-.opciones.cuerpo .opcion,
-.opciones.ropa .opcion {
+.creacion .opciones.cuerpo .opcion,
+.creacion .opciones.ropa .opcion {
   padding: 12px 6px 10px;
 }
 
 /* Three full-body choices always fit in one row. */
-.opciones.cuerpo,
-.opciones.ropa {
+.creacion .opciones.cuerpo,
+.creacion .opciones.ropa {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 116px));
   grid-auto-rows: max-content; /* rows never shrink below the character when the color rows add height */
@@ -328,12 +328,12 @@
   justify-content: center;
 }
 
-.opciones.cuerpo {
+.creacion .opciones.cuerpo {
   grid-template-columns: repeat(2, minmax(0, 116px));
 }
 
 /* A row of colors sits on its own soft strip, named when a tab has several. */
-.fila-colores {
+.creacion .fila-colores {
   flex-basis: 100%;
   grid-column: 1 / -1; /* a full row in the clothes grid too */
   min-width: 0;
@@ -346,7 +346,7 @@
   background: #fbf6f0;
 }
 
-.nombre-fila {
+.creacion .nombre-fila {
   flex-basis: 100%;
   text-align: center;
   font-size: 0.9rem;
@@ -355,24 +355,24 @@
 }
 
 /* One row of colors, so the hair and backpack choices below start on screen. */
-.fila-colores .muestra {
+.creacion .fila-colores .muestra {
   flex: 0 1 var(--toque);
   min-width: 0;
   height: auto;
   aspect-ratio: 1;
 }
 
-.opciones.piel {
+.creacion .opciones.piel {
   align-content: center;
   gap: 16px;
 }
 
-.opciones.piel .muestra {
+.creacion .opciones.piel .muestra {
   width: 64px;
   height: 64px;
 }
 
-.escribir {
+.creacion .escribir {
   flex-basis: 100%;
   display: flex;
   align-items: center;
@@ -380,25 +380,25 @@
   color: var(--acento-oscuro);
 }
 
-.escribir svg {
+.creacion .escribir svg {
   width: 24px;
   height: 24px;
   flex: none;
 }
 
-.escribir .campo {
+.creacion .escribir .campo {
   flex: 1;
   min-width: 0;
 }
 
-.nombres {
+.creacion .nombres {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
 }
 
-.opcion .pie {
+.creacion .opcion .pie {
   max-width: 86px;
   text-align: center;
   line-height: 1.15;
@@ -406,35 +406,35 @@
 
 /* ---- Footer: back, and the button that leads to the next step (Listo on the last). */
 
-.pie-taller {
+.creacion .pie-taller {
   padding: 12px 16px;
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
 
-.pie-taller .boton.principal {
+.creacion .pie-taller .boton.principal {
   min-width: 160px;
   background: var(--acento-oscuro);
   box-shadow: 0 6px 0 color-mix(in srgb, var(--acento-oscuro) 70%, #000), var(--sombra);
 }
 
-.pie-taller .boton.principal:active {
+.creacion .pie-taller .boton.principal:active {
   box-shadow: 0 3px 0 color-mix(in srgb, var(--acento-oscuro) 70%, #000), var(--sombra);
 }
 
-.pie-taller .boton svg {
+.creacion .pie-taller .boton svg {
   width: 22px;
   height: 22px;
 }
 
-.pie-taller .boton.secundario[aria-label] {
+.creacion .pie-taller .boton.secundario[aria-label] {
   padding: 0;
   width: var(--toque);
 }
 
 @media (orientation: portrait) {
-  .pie-taller .boton.principal {
+  .creacion .pie-taller .boton.principal {
     flex: 1;
   }
 }

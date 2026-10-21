@@ -120,13 +120,13 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
     <main className="pantalla creacion" data-paso={pestana}>
       <div className="escenario" ref={escenario}>
         <div className="foco" />
-        <div className="figuras" aria-hidden="true">
+        <div className="flotantes" aria-hidden="true">
           {[...Array(7).keys()].map((i) => (
             <span key={i} />
           ))}
         </div>
         {listo && (
-          <div className="figura">
+          <div className="tarima">
             <Personaje a={a} escala={escala} camina />
           </div>
         )}

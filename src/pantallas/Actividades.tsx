@@ -3,7 +3,7 @@
 // speaker is the only voice (GDD §12).
 import { useEffect, useRef, useState } from "react";
 import contenido from "virtual:contenido";
-import { Imagen } from "../lienzo/Personaje";
+import { Imagen, Cara } from "../lienzo/Personaje";
 import { Bocina } from "../ui/Bocina";
 import { estado } from "../datos/guardado";
 import { personasDeCasa, nombreDe, codigoDe } from "../datos/casa";
@@ -24,6 +24,7 @@ interface Carta {
   codigo: string;
   etiqueta: string;
   imagen?: string;
+  figura?: string; // a person of the house: the card shows the head of its figure
   piel?: number;
 }
 
@@ -85,7 +86,7 @@ function Describir({ cerrar, t0 }: { cerrar: (como: Como) => void; t0: { current
   const [rng] = useState(() => azar(`${semilla()}-${E.id}`));
   const [cartas] = useState<Carta[][]>(() => {
     const noSe: Carta = { codigo: "NO_SE", etiqueta: T.no_se, imagen: "interfaz/no_se" };
-    const casa: Carta[] = E.platos.includes("casa") ? personasDeCasa().map((f) => ({ codigo: codigoDe(f), etiqueta: nombreDe(f), imagen: `figuras/retrato_${f.figura}`, piel: f.piel })) : [];
+    const casa: Carta[] = E.platos.includes("casa") ? personasDeCasa().map((f) => ({ codigo: codigoDe(f), etiqueta: nombreDe(f), figura: f.figura, piel: f.piel })) : [];
     return [
       [...rng.barajar(E.titulos.map(([codigo, t]) => ({ codigo, etiqueta: t, imagen: `iconos/${codigo.toLowerCase()}` }))), noSe],
       E.emociones.map((e) => ({ codigo: e.toUpperCase(), etiqueta: A.describir.emociones[e], imagen: e === "no_se" ? "interfaz/no_se" : undefined })),
@@ -132,7 +133,7 @@ function Describir({ cerrar, t0 }: { cerrar: (como: Como) => void; t0: { current
         <div className="tarjetas">
           {cartas[paso].map((c) => (
             <div key={c.codigo} role="button" tabIndex={0} className={`tarjeta${elegida === c.codigo ? " elegida" : ""}`} onClick={() => elegir(c)}>
-              {c.imagen && <Imagen id={c.imagen} piel={c.piel} tam={c.imagen.startsWith("figuras/") ? 96 : 48} />}
+              {c.figura ? <Cara id={`figuras/${c.figura}`} piel={c.piel} tam={96} /> : c.imagen && <Imagen id={c.imagen} piel={c.piel} tam={c.imagen.startsWith("figuras/") ? 96 : 48} />}
               <span>{c.etiqueta}</span>
               <Bocina clave={`escena.carta.${c.codigo}`} texto={c.etiqueta} />
             </div>

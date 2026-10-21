@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type PointerEvent as PE } from "react";
 import contenido from "virtual:contenido";
-import { Hoja, Imagen, Personaje } from "../lienzo/Personaje";
+import { Hoja, Cara, Personaje } from "../lienzo/Personaje";
 import { precargar, idsDe, cuantos } from "../lienzo/arte";
 import { Bocina } from "../ui/Bocina";
 import { Icono } from "../ui/iconos";
@@ -353,10 +353,12 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
                       {Icono.lapiz}
                       {T.renombrar}
                     </button>
-                    <button className="boton" onClick={() => cambiarPiel(enMenu.inst)}>
-                      {Icono.piel}
-                      {T.piel}
-                    </button>
+                    {tipoDe(enMenu.figura) !== "mascota" && (
+                      <button className="boton" onClick={() => cambiarPiel(enMenu.inst)}>
+                        {Icono.piel}
+                        {T.piel}
+                      </button>
+                    )}
                     <button className="boton" onClick={() => quitar(enMenu.inst)}>
                       {Icono.quitar}
                       {T.quitar}
@@ -377,7 +379,7 @@ export function ArmarCasa({ alTerminar }: { alTerminar: () => void }) {
           {listo &&
             contenido.figuras.map((f) => (
               <button key={f.id} className="opcion figura" aria-pressed={!!elegida && "figura" in elegida && elegida.figura === f.id} aria-label={f.nombre} onPointerDown={empezar({ figura: f.id })}>
-                <Imagen id={`figuras/retrato_${f.id}`} tam={52} />
+                <Cara id={`figuras/${f.id}`} tam={52} />
                 <span className="pie">{f.nombre}</span>
               </button>
             ))}

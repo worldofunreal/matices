@@ -5,7 +5,9 @@
 #
 # Hojas del protagonista: 5 columnas (quieto, paso 1 a 4) × 3 filas (abajo, izquierda, arriba),
 # cuadros de 48 × 64 (anchos para que quepa el cabello abultado); la derecha es la izquierda volteada, pies en la misma fila de píxeles en todos los cuadros. Es el único que camina:
-# las figuras de la casa y los personajes fijos son un solo cuadro de 48 × 64, de pie y de frente.
+# los personajes fijos son un solo cuadro de 48 × 64, de pie y de frente. Las figuras de la casa son un solo cuadro
+# de 48 × 80, con los pies abajo y la altura de su edad (herramientas/arte.ts, FIGURAS); no tienen retrato aparte:
+# las tarjetas muestran su cabeza.
 
 # Piel, cabello, ropa, tenis y extras llevan los colores "clave" de su rampa (de claro a sombra; la piel lleva 5).
 # El juego cambia esos colores por los del tono o color elegido. Los colores clave son los de la variante 1.
@@ -130,8 +132,8 @@ grupos:
 
   - carpeta: figuras
     tipo: hoja
-    medida: [48, 64]
-    colores: [piel, cabello]
+    medida: [48, 80]
+    colores: [piel]
     piezas:
       abuela: Abuela
       abuelo: Abuelo
@@ -157,24 +159,6 @@ grupos:
     medida: [96, 96]
     colores: [piel, cabello]
     piezas:
-      retrato_abuela: Abuela
-      retrato_abuelo: Abuelo
-      retrato_mama: Mamá
-      retrato_papa: Papá
-      retrato_tia: Tía
-      retrato_tio: Tío
-      retrato_madrastra: Madrastra
-      retrato_padrastro: Padrastro
-      retrato_hermano_mayor: Hermano mayor
-      retrato_hermana_mayor: Hermana mayor
-      retrato_hermano_menor: Hermano menor
-      retrato_hermana_menor: Hermana menor
-      retrato_bebe: Bebé
-      retrato_primo: Primo
-      retrato_prima: Prima
-      retrato_otra_persona: Otra persona adulta
-      retrato_perro: Perro
-      retrato_gato: Gato
       retrato_vecino: Un vecino o vecina (tarjeta de "¿Quién llega?")
       retrato_maestra: La maestra (tarjeta de "¿Quién llega?" en la escuela)
       retrato_companero: Un compañero (tarjeta de "¿Quién llega?" en la escuela)
