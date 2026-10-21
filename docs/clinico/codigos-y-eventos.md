@@ -9,9 +9,8 @@ El juego guarda eventos con hora exacta, no conclusiones. Cada respuesta de cada
 | `DESAFIA` | Rechaza el límite | "No me importa" |
 | `PROMETE` | Promete no repetirlo | "No lo vuelvo a hacer" |
 | `SE_DISCULPA` | Pide perdón | "Perdón" |
-| `IGNORA` | Se aleja sin contestar | — |
 
-`IGNORA` se agrega solo a toda situación que pide respuesta; no se escribe en los archivos de contenido.
+Cuando le hablan para contestar, el mundo espera hasta que elija una respuesta: no hay forma de irse sin contestar.
 
 ## Quién reacciona
 

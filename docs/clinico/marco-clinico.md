@@ -11,14 +11,14 @@ El juego observa 13 áreas agrupadas en tres familias, alineadas con instrumento
 | Negligencia | Supervisión | `supervision` | Quién está en la casa que armó, quién está cerca de noche, quién cuida a los hermanos | MNBS-CR; escala de Dubowitz |
 | Negligencia | Escuela y aprendizaje | `escuela_aprendizaje` | Si hace la tarea, cuándo, y si pide ayuda con ella | MNBS-CR (área cognitiva) |
 | SDQ | Síntomas emocionales | `sintomas_emocionales` | Por ahora no hay situación que lo observe sin preguntar; pendiente con los psicólogos | SDQ, CBCL (internalizante) |
-| SDQ | Conducta | `conducta` | Qué hace ante un límite de un adulto: lo respeta, contesta, desafía, ignora, y si cumple lo que dijo | SDQ, CBCL (externalizante) |
+| SDQ | Conducta | `conducta` | Qué hace ante un límite de un adulto: desafía, promete o se disculpa, y si cumple lo que dijo | SDQ, CBCL (externalizante) |
 | SDQ | Compañeros | `companeros` | Situaciones de recreo: alguien solo, alguien que le quita algo | SDQ |
 | SDQ | Prosocial | `prosocial` | Si el personaje ayuda, comparte o consuela | SDQ |
 | SDQ | Atención durante el juego | `atencion` | Ritmo de juego y pausas. Solo para saber cuánto pesan las demás respuestas. No es un indicador clínico | SDQ (hiperactividad), sin uso diagnóstico |
 | Vínculo | Representación de los adultos | `representacion_adultos` | A quién pone en la casa y qué tan cerca, y a quién busca cuando necesita algo | SSAP: seguridad, inseguridad, evitación defensiva, desorganización |
 | Vínculo | Pedir ayuda | `pedir_ayuda` | Cuántas veces y a quién busca el niño en las situaciones | SSAP; observación en juego terapéutico |
 | Vínculo | Cuidar de más | `cuidar_de_mas` | Si va con un hermano que llora antes que un adulto, o en lugar de avisarle | Parentificación (entrevista clínica) |
-| Vínculo | A quién culpa | `a_quien_culpa` | Cuando algo se rompe: dice que fue él, culpa a otro (al perro), no sabe o se va | Atribución de culpa (entrevista clínica) |
+| Vínculo | A quién culpa | `a_quien_culpa` | Cuando algo se rompe: dice que fue él, culpa a otro (al perro) o no sabe | Atribución de culpa (entrevista clínica) |
 
 ## De dónde sale cada mecánica
 
@@ -33,7 +33,7 @@ El juego observa 13 áreas agrupadas en tres familias, alineadas con instrumento
 
 | Decisión de diseño | Razón clínica |
 | --- | --- |
-| Nada detiene el juego para preguntar | Un niño interrumpido con preguntas contesta para quitárselas de encima, o deja de jugar |
+| Casi nunca se le pregunta | Un niño interrumpido con preguntas contesta para quitárselas de encima, o deja de jugar. Solo pregunta un adulto del mundo cuando el niño repite algo, y espera la respuesta |
 | Se registra lo que hace, no solo lo que dice | Lo que dice ("No lo vuelvo a hacer") comparado con lo que hace después dice más que cualquiera de los dos solo |
 | Los adultos reaccionan siempre igual | Si el castigo creciera o el juego premiara, el niño aprendería la respuesta "correcta" |
 | Ninguna respuesta premiada | Un niño que se siente evaluado contesta lo que cree que el adulto quiere oír |

@@ -19,7 +19,7 @@ const eventos = [
   ev("a", "situacion", 11000, { situacion: "S01", paso: "pregunta", quien: "FIGURA:abuela", veces: 2 }),
   ev("a", "situacion", 12000, { situacion: "S01", paso: "respuesta", quien: "FIGURA:abuela", elegida: "PROMETE", ms_decidir: 4100 }),
   ev("a", "situacion", 13000, { situacion: "S01", paso: "repite", quien: "FIGURA:abuela", veces: 3, tras: "PROMETE" }),
-  ev("b", "situacion", 1000, { situacion: "S01", paso: "respuesta", quien: "FIGURA:papa", elegida: "IGNORA", ms_decidir: 2000 }),
+  ev("b", "situacion", 1000, { situacion: "S01", paso: "respuesta", quien: "FIGURA:papa", elegida: "SE_DISCULPA", ms_decidir: 2000 }),
   ev("b", "tramo", 2000, { dia: 2, hora: "manana" }),
 ];
 
@@ -27,7 +27,7 @@ test("cuenta por participante, por área, la referencia de todos y lo que hizo d
   const g = porParticipante(eventos);
   const r = resumen("a", g.get("a")!);
   assert.equal(r.respuestas, 1);
-  assert.equal(resumen("b", g.get("b")!).ignora, 1);
+  assert.equal(resumen("b", g.get("b")!).respuestas, 1);
   assert.equal(r.ultimaPantalla, "mundo");
   const a = codigosPorArea(g.get("a")!, C);
   assert.equal(a.get("conducta")!.get("PROMETE")!.n, 1);

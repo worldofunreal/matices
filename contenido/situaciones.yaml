@@ -1,5 +1,5 @@
 # Situaciones cotidianas (GDD §9). Formato y reglas en contenido/README.md; códigos en
-# docs/clinico/codigos-y-eventos.md. IGNORA (alejarse sin contestar) se agrega solo.
+# docs/clinico/codigos-y-eventos.md.
 situaciones:
   - id: S01
     nombre: Correr en la casa

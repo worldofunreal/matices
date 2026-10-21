@@ -11,7 +11,7 @@
 | M1. Personaje | Creación de personaje (GDD §6) con las reglas de experiencia (GDD §12) | El owner aprueba cómo se ve; ese estilo sigue en todo lo demás |
 | M2. Armar la casa | Figuras a los cuartos, renombrar, quitar (GDD §7) | Funciona igual en vertical y en horizontal |
 | M3. Mundo | El mapa en el lienzo, botones encima en HTML; los nueve lugares, puertas, días y horas, vecinos, objetos, espejo | Se recorren los tres días como antes de la migración |
-| M4. Situaciones | Correr, el perro, letreros en las salidas y las situaciones de GDD §9, una por una; dibujo libre en Mi libro | Cada situación se juega sin detener el mundo y deja sus eventos |
+| M4. Situaciones | Correr, el perro, letreros en las salidas y las situaciones de GDD §9, una por una; dibujo libre en Mi libro | Cada situación se juega dentro del mundo y deja sus eventos; una pregunta espera su respuesta |
 | H7. Siempre a la mano | "Quiero hablar con alguien", Mi libro, opciones (GDD §13, §15) | Se alcanzan desde cualquier pantalla con una mano |
 | H8. Datos | El juego envía sus eventos a un servidor propio en IONOS; tablero con cuenta de admin: perfil de cada participante y vista de todos (PRD F9 a F17) | Una partida jugada en matices.online aparece en el tablero; el perfil muestra cada parte de `clinico/reporte.md` |
 | P1. Prueba de la experiencia | Vueltas de jugar, juzgar con los tres pilares (intuitivo, fácil, simple), corregir y volver a jugar; con niños cuando jueguen (`investigacion/plan-piloto.md`, fase 1) | Una vuelta completa no encuentra nada importante en ningún pilar |
@@ -24,5 +24,5 @@ Una grabación en `public/assets/voz/` suena sola; sin grabación, la voz del na
 - [ ] Ninguna pantalla muestra puntos, resultados ni "bien hecho".
 - [ ] "Quiero hablar con alguien" visible en todas las pantallas y probado sin red.
 - [ ] Todas las respuestas tienen voz y código.
-- [ ] Nada detiene el mundo para preguntar.
+- [ ] No hay cuestionarios: solo pregunta un adulto del mundo cuando el niño repite algo, y el mundo espera su respuesta.
 - [ ] Ningún dato sale del aparato con nombre.

@@ -29,7 +29,7 @@ La referencia es el mismo conteo entre todos los participantes: cuántos son, el
 Corrió en la casa 4 veces. La primera, la abuela le dijo que no corriera.
 La segunda, la abuela le habló y contestó "No lo vuelvo a hacer" (PROMETE) en 4 segundos.
 Después de contestar, corrió 2 veces más en la casa; la abuela le volvió a hablar y contestó
-"Perdón" (SE_DISCULPA) y luego se fue sin contestar (IGNORA).
+"Perdón" (SE_DISCULPA) y luego "No me importa" (DESAFIA).
 ```
 
 ## Reglas de escritura

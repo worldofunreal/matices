@@ -14,7 +14,7 @@ El juego **observa**, el psicólogo **interpreta**. El juego nunca diagnostica, 
 | Pilar | Qué significa en el diseño |
 | --- | --- |
 | Se juega, no se lee | Casi todo pasa en el mundo, con dibujos y movimiento. El texto es corto: una línea de quien habla y respuestas de dos o tres palabras |
-| Nada detiene el juego | Ninguna pregunta congela el mundo. Contestar es opcional: el niño puede irse caminando, y eso también es una respuesta |
+| Casi nada detiene el juego | El niño anda libre. Solo cuando un adulto le habla para contestar, el mundo espera a que elija una respuesta; no se puede ignorar |
 | Mi colonia, mi casa | El mundo se parece al del niño: calles, tinacos en las azoteas, la tiendita, la primaria, el parque. La casa y quién vive en ella las pone él |
 | Ninguna respuesta es la correcta | Sin puntos, insignias ni regaños del juego. Lo que pasa después no cambia según lo que contestó |
 | Siempre puedo parar | "Quiero hablar con alguien" siempre visible |
@@ -30,7 +30,7 @@ La versión 0.1 convertía la técnica de los cuentos para completar en un exame
 | Caritas, panel cuerpo / pensamiento / entorno, estados del cuerpo | **Se quitan** | Preguntar cómo se siente cada vez era lo más intrusivo |
 | Sobre mí con los gemelos, escena para describir | **Se quitan** | Preguntaban por la vida real o pedían leer y elegir |
 | Presentación de La Cuentera y aterrizaje de cada noche | **Se quitan** | Eran pantallas para leer antes y después de jugar |
-| "Ahora no", "Otra cosa", "No sé" | **Se quitan**: irse caminando ya es no contestar | Nada pregunta, así que no hace falta salir de una pregunta |
+| "Ahora no", "Otra cosa", "No sé" | **Se quitan** | Solo pregunta un adulto del mundo, con tres respuestas cortas; las respuestas ya cubren lo que el niño haría |
 | Dibujo libre en una hora fija | En Mi libro, cuando el niño quiera | Dibujar es juego, no tarea |
 | Personaje, casa, mundo, exploración, Mi libro, "Quiero hablar con alguien" | **Se conservan** | Ya eran juego |
 
@@ -50,7 +50,7 @@ El tiempo no avanza solo: la mañana termina al salir de la escuela, la tarde al
 Andar libre (caminar, correr, tocar cosas, jugar con el perro, saludar)
    → hace algo que toca una regla o una necesidad de todos los días
       → alguien del mundo reacciona (una línea corta, con voz)
-         → si lo vuelve a hacer, le habla y le deja contestar: 3 respuestas o irse
+         → si lo vuelve a hacer, le habla y el mundo espera su respuesta: una de 3
             → el juego sigue; cada vez que lo repite se registra contra lo que dijo y le vuelve a preguntar
 ```
 
@@ -107,19 +107,19 @@ Cada puerta lleva un letrero con el nombre del lugar al que lleva ("Calle", "Esc
 
 ## 9. Situaciones cotidianas
 
-Cada situación nace de algo que el niño hace o necesita en el mundo, nunca de un aviso. El juego no detiene nada: quien reacciona habla en un globo encima de su cabeza y, cuando toca contestar, aparecen botones grandes abajo. Si el niño se aleja, cuenta como ignorar.
+Cada situación nace de algo que el niño hace o necesita en el mundo, nunca de un aviso. Quien reacciona habla en un globo encima de su cabeza. Cuando toca contestar, aparecen botones grandes abajo y el mundo se queda quieto hasta que el niño elige uno: no se puede ignorar ni irse sin contestar.
 
 Lo que se registra en cada una: qué hizo, quién reaccionó (o que no había nadie), qué contestó y en cuánto tiempo, y si después hizo lo mismo y cuántas veces, comparado con lo que contestó. Las líneas y los códigos están en `contenido/situaciones.yaml`.
 
 | Situación | Qué pasa | Áreas (`clinico/marco-clinico.md`) | Estado |
 | --- | --- | --- | --- |
-| S01 Correr en la casa | El perro de la casa sigue al niño y a ratos sale corriendo; para alcanzarlo hay que correr. La primera vez, el adulto más cercano dice "¡No corras dentro de la casa!". Desde la segunda, cada vez le habla ("Te dije que no corrieras dentro de la casa…") y el niño contesta "No me importa", "No lo vuelvo a hacer" o "Perdón", o se va. Seguir corriendo después del regaño cuenta como otra vez | Conducta; a quién culpa (más adelante, con S04) | Hecha |
+| S01 Correr en la casa | El perro de la casa sigue al niño y a ratos sale corriendo; para alcanzarlo hay que correr. La primera vez, el adulto más cercano dice "¡No corras dentro de la casa!". Desde la segunda, cada vez le habla ("Te dije que no corrieras dentro de la casa…") y el niño contesta "No me importa", "No lo vuelvo a hacer" o "Perdón". Seguir corriendo después del regaño cuenta como otra vez | Conducta; a quién culpa (más adelante, con S04) | Hecha |
 | S02 Hambre | En la mañana suena la panza. Puede ir al refri, ir con alguien de la casa o seguir jugando | Necesidades físicas; pedir ayuda | Por hacer |
 | S03 La tarea | De noche la mochila tiene tarea. Puede hacerla en la mesa, pedir ayuda a alguien o dejarla | Escuela y aprendizaje; supervisión | Por hacer |
-| S04 Se rompe algo | Si corre cerca de la mesa, se cae un vaso. Llega alguien: "¿Qué pasó?". "Fui yo", "Fue el perro", "No sé" o irse | A quién culpa; conducta | Por hacer |
+| S04 Se rompe algo | Si corre cerca de la mesa, se cae un vaso. Llega alguien: "¿Qué pasó?". "Fui yo", "Fue el perro" o "No sé" | A quién culpa; conducta | Por hacer |
 | S05 Alguien llora | Si en la casa hay un bebé o un hermano menor, a ratos llora. Puede ir con él, avisar a un adulto o seguir en lo suyo | Cuidar de más; prosocial | Por hacer |
 | S06 Recreo | Un compañero está solo en una banca. Puede ir con él, invitarlo a jugar o seguir | Compañeros; prosocial | Por hacer |
-| S07 La pelota | Un compañero le quita la pelota. Puede pedirla, decirle a la maestra, quitársela o irse | Conducta; compañeros; pedir ayuda | Por hacer |
+| S07 La pelota | Un compañero le quita la pelota. Puede pedirla, decirle a la maestra o quitársela | Conducta; compañeros; pedir ayuda | Por hacer |
 | S08 Se raspa | Si corre en el parque, se cae y se raspa. Puede ir a casa con alguien, decirle a un adulto o seguir jugando | Apoyo emocional; pedir ayuda | Por hacer |
 
 Reglas de todas:
@@ -147,13 +147,13 @@ Pixel art en vista de tres cuartos, paleta cálida, llena la pantalla en horizon
 
 | Aparato | Moverse | Correr | Interactuar | Contestar |
 | --- | --- | --- | --- | --- |
-| Tableta | Tocar el suelo para caminar ahí | Botón de tenis (se queda prendido) | Tocar el objeto o persona | Tocar la respuesta, o alejarse |
-| Computadora | Flechas o WASD, o clic en el suelo | Mayúsculas, o el botón | Clic o barra espaciadora | Clic o números 1 a 3, o alejarse |
+| Tableta | Tocar el suelo para caminar ahí | Botón de tenis (se queda prendido) | Tocar el objeto o persona | Tocar la respuesta |
+| Computadora | Flechas o WASD, o clic en el suelo | Mayúsculas, o el botón | Clic o barra espaciadora | Clic o números 1 a 3 |
 
 Reglas de experiencia:
 
 - **Un toque elige.** Lo elegido se ilumina un momento y el juego sigue solo.
-- **Nada congela el mundo.** Solo Mi libro, Opciones y "Quiero hablar con alguien" cubren la pantalla, y solo cuando el niño los abre.
+- **Casi nada congela el mundo.** Solo Mi libro, Opciones y "Quiero hablar con alguien" cubren la pantalla, y solo cuando el niño los abre. Una pregunta de un adulto deja el mundo quieto hasta que contesta (§9).
 - **La voz.** Cada línea tiene un botón de bocina. Las grabaciones reales suenan solas; la voz sintética, solo si el niño toca la bocina.
 - **Dibujos en lugar de texto.** Colores como muestras, peinados y ropa como dibujos, personas como su dibujo. El texto se limita a la línea de quien habla, las respuestas y los letreros de las salidas.
 - **Vertical y horizontal, cada uno diseñado.** Las respuestas quedan abajo, al alcance del pulgar.
@@ -181,7 +181,7 @@ Voz siempre disponible, texto a nivel de 3.º de primaria, tamaño de letra ajus
 
 ## 16. Lo que el juego nunca hace
 
-Mostrar golpes, abuso, armas o muerte; premiar o corregir lo que hace el niño; enseñarle qué es lo correcto; mostrar resultados; preguntar por su vida real; detener el juego para preguntar; bloquear la ayuda; poner personajes que pregunten "¿estás bien?" por su cuenta.
+Mostrar golpes, abuso, armas o muerte; premiar o corregir lo que hace el niño; enseñarle qué es lo correcto; mostrar resultados; preguntar por su vida real; hacer cuestionarios; bloquear la ayuda; poner personajes que pregunten "¿estás bien?" por su cuenta.
 
 ## 17. Pendientes de diseño
 

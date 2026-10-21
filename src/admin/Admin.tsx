@@ -155,13 +155,13 @@ function Todos({ eventos }: { eventos: Evento[] }) {
         <p className="nota">Toca una fila para ver su perfil.</p>
         <table>
           <thead>
-            <tr><th>Código</th><th>Primera vez</th><th>Última vez</th><th className="num">Sesiones</th><th className="num">Min</th><th className="num">Día</th><th className="num">Respuestas</th><th className="num">Se fue sin contestar</th><th className="num">Quiero hablar</th><th>Aparato</th><th className="num">Errores</th><th>Se quedó en</th></tr>
+            <tr><th>Código</th><th>Primera vez</th><th>Última vez</th><th className="num">Sesiones</th><th className="num">Min</th><th className="num">Día</th><th className="num">Respuestas</th><th className="num">Quiero hablar</th><th>Aparato</th><th className="num">Errores</th><th>Se quedó en</th></tr>
           </thead>
           <tbody>
             {resumenes.map((r) => (
               <tr key={r.nino} className="fila-clic" onClick={() => ir(r.nino)}>
                 <td><code>{r.nino}</code></td><td>{fecha(r.primera)}</td><td>{fecha(r.ultima)}</td><td className="num">{r.sesiones}</td><td className="num">{r.minutos}</td>
-                <td className="num">{r.termino ? "fin" : r.dia || "—"}</td><td className="num">{r.respuestas}</td><td className="num">{r.ignora}</td><td className="num">{r.quiereHablar || ""}</td>
+                <td className="num">{r.termino ? "fin" : r.dia || "—"}</td><td className="num">{r.respuestas}</td><td className="num">{r.quiereHablar || ""}</td>
                 <td>{r.aparato}</td><td className="num">{r.errores || ""}</td><td>{r.ultimaPantalla}</td>
               </tr>
             ))}

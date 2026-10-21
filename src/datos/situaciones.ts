@@ -1,6 +1,6 @@
 // Everyday situations (GDD §9, contenido/situaciones.yaml). The child does something; the first time,
-// someone says a line; every time after, they ask and the child answers or walks away (IGNORA). A repeat
-// after an answer is logged against the last one, and the question comes again. Nothing here stops the world.
+// someone says a line; every time after, they ask and the world waits for one of the answers. A repeat
+// after an answer is logged against the last one, and the question comes again.
 import contenido, { type Opcion } from "virtual:contenido";
 import { estado, cambiarEstado } from "./guardado";
 import { registrar, semilla } from "./eventos";
@@ -27,7 +27,7 @@ export function ocurre(id: string, quien: string): Reaccion | null {
   return { situacion: id, texto: s.pregunta, clave: `situaciones.${id}.pregunta`, respuestas };
 }
 
-// The answer (or IGNORA, walking away), with the time since the answers appeared.
+// The answer, with the time since the answers appeared.
 export function responder(r: Reaccion, quien: string, codigo: string, ms: number) {
   registrar("situacion", { situacion: r.situacion, paso: "respuesta", quien, opciones: r.respuestas?.map((o) => o[0]), elegida: codigo, ms_decidir: Math.round(ms) });
   const antes = estado().situaciones[r.situacion];

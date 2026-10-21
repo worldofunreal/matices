@@ -65,7 +65,7 @@ function participante(i: number) {
         } else {
           const opciones = x.respuestas.map((r) => r[0]).sort(() => Math.random() - 0.5);
           ev("situacion", { situacion: x.id, paso: "pregunta", quien, veces: v, opciones });
-          respuesta = Math.random() < 0.25 ? "IGNORA" : azar(opciones);
+          respuesta = azar(opciones);
           ev("situacion", { situacion: x.id, paso: "respuesta", quien, opciones, elegida: respuesta, ms_decidir: entre(1500, 9000) });
         }
       }

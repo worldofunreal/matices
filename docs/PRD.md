@@ -8,7 +8,7 @@ Los psicólogos que atienden niños en México atienden a muchos niños con poco
 
 ## 2. Propuesta
 
-Un videojuego que el niño juega solo o en grupo, en el lugar y las sesiones que defina la institución. El niño anda libre por su casa, la escuela y la colonia; el juego registra lo que hace en situaciones de todos los días (GDD §9), sin detenerlo para preguntarle. El psicólogo recibe un reporte descriptivo por niño, con marcas que él mismo define para decidir a quién atender primero.
+Un videojuego que el niño juega solo o en grupo, en el lugar y las sesiones que defina la institución. El niño anda libre por su casa, la escuela y la colonia; el juego registra lo que hace en situaciones de todos los días (GDD §9), sin cuestionarios: solo le pregunta un adulto del mundo cuando repite algo. El psicólogo recibe un reporte descriptivo por niño, con marcas que él mismo define para decidir a quién atender primero.
 
 El juego recoge. El psicólogo interpreta. El juego no diagnostica.
 
@@ -47,7 +47,7 @@ Sugerencias para la llamada, válidas solo si la institución las aprueba: tres 
 - F1. El juego no pide datos ni permisos y no pone candados ni avisos: lo legal se resuelve fuera del producto antes de entregarlo. Cada participante es anónimo; más adelante un token liga la sesión con la identidad del niño.
 - F2. Creación de personaje y armar la casa (GDD §6 y §7).
 - F3. Mundo explorable: casa, calle, escuela, parque, tiendita, biblioteca.
-- F4. Situaciones cotidianas según `contenido/situaciones.yaml` (GDD §9): ninguna detiene el juego y siempre se puede no contestar alejándose.
+- F4. Situaciones cotidianas según `contenido/situaciones.yaml` (GDD §9): cuando un adulto le habla para contestar, el mundo espera a que elija una respuesta; no se puede ignorar.
 - F5. Dibujo libre en Mi libro, cuando el niño quiera.
 - F6. "Quiero hablar con alguien" en toda pantalla.
 - F7. Voz en toda línea y respuesta; letreros en cada salida; opciones de accesibilidad.

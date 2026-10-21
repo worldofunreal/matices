@@ -15,7 +15,6 @@ const README = join(DIR, "README.md");
 
 const MODULOS: Record<string, () => unknown> = { "virtual:contenido": validar, "virtual:arte": validarArte };
 
-const AUTOMATICOS = new Set(["IGNORA"]);
 // What the child does that starts a situation, and who reacts (GDD §9).
 const CUANDO = new Set(["correr"]);
 const QUIEN = new Set(["adulto_cerca"]);
@@ -51,7 +50,6 @@ export function validar() {
   };
   const codigo = (donde: string, c: unknown) => {
     if (typeof c !== "string" || !codigos.has(c)) err(donde, `código inexistente ${String(c)}`);
-    else if (AUTOMATICOS.has(c)) err(donde, `${c} se agrega solo; no se escribe`);
   };
   const area = (donde: string, a: unknown) => {
     if (typeof a !== "string" || !areas.has(a)) err(donde, `área inexistente ${String(a)}`);

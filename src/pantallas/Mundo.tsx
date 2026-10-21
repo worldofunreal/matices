@@ -22,7 +22,6 @@ const M = contenido.textos.mundo;
 const CAIDA = 6; // the walker's body center sits 6 game pixels above the feet
 const CORRER_MS = 500; // running this long in the house counts as running (S01)
 const ENTRE_VECES_MS = 4000; // and a new time (a new run or running on) only this long after the last one
-const ALEJARSE = 48; // game pixels the child walks away from a question to leave it unanswered (IGNORA)
 
 const dentro = (r: { x: number; y: number; w: number; h: number }, x: number, y: number) => x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h;
 
@@ -86,7 +85,7 @@ async function cargarArte(m: Mapa, e: Estado) {
 }
 
 // Someone of the house speaking to the child, over their head; with answers, they wait for one.
-type Habla = { r: Reaccion; f: FiguraPuesta; quien: string; t0: number; x0: number; y0: number };
+type Habla = { r: Reaccion; f: FiguraPuesta; quien: string; t0: number };
 
 export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const lienzo = useRef<HTMLCanvasElement>(null);
@@ -108,15 +107,17 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const hablaRef = useRef<Habla | null>(null);
   hablaRef.current = habla;
 
+  // A question waits for its answer: the world stands still until the child picks one (GDD §9).
+  const pregunta = !!habla?.r.respuestas;
   useEffect(() => {
-    motorRef.current?.pausar(superpuesto);
-  }, [superpuesto]);
+    motorRef.current?.pausar(superpuesto || pregunta);
+  }, [superpuesto, pregunta]);
 
   useEffect(() => {
     if (motorRef.current) motorRef.current.corriendo = corriendo;
   }, [corriendo]);
 
-  // The answer to a question, or walking away from it (IGNORA).
+  // The answer to a question.
   const contestar = (codigo: string) => {
     const h = hablaRef.current;
     if (!h?.r.respuestas) return;
@@ -196,7 +197,6 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     const cruzar = (p: Puerta) => {
       const no = bloqueo(lugarActual, p.horas);
       if (no) return mostrar(`mundo.${no}`, M[no]);
-      if (hablaRef.current?.r.respuestas) contestar("IGNORA");
       activo?.pausar(true);
       cambiarEstado({ lugar: p.destino, llegada: p.llegada, x: null, y: null }, true);
       revisarHora(p.destino, lugarActual);
@@ -212,7 +212,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       if (!r || !f) return;
       if (r.respuestas) motor.parar();
       sonarSiGrabada(r.clave, r.texto);
-      setHabla({ r, f, quien, t0: performance.now(), x0: motor.x, y0: motor.y });
+      setHabla({ r, f, quien, t0: performance.now() });
     };
 
     void cargarMapa(lugarActual).then(async (m) => {
@@ -250,14 +250,13 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
             registrar("corre", { lugar: lugarActual, ms: Math.round(ahora - corriendoDesde) });
             corriendoDesde = 0;
           }
-          // Running on after being told counts again, so does a new run; an open question waits for its answer.
-          if (lugarActual === "casa" && corriendoDesde && ahora - corriendoDesde > CORRER_MS && ahora - ultimaVez > ENTRE_VECES_MS && !hablaRef.current?.r.respuestas) {
+          // Running on after being told counts again, so does a new run. The wait starts over after a question
+          // (or anything that stood the world still), so the child is not asked again right after answering.
+          if (motor.pausado) ultimaVez = ahora;
+          if (lugarActual === "casa" && corriendoDesde && ahora - corriendoDesde > CORRER_MS && ahora - ultimaVez > ENTRE_VECES_MS) {
             ultimaVez = ahora;
             correrEnCasa(motor);
           }
-          // Walking away from a question leaves it unanswered.
-          const h = hablaRef.current;
-          if (h?.r.respuestas && Math.hypot(motor.x - h.x0, motor.y - h.y0) > ALEJARSE) contestar("IGNORA");
         },
       });
       motor.corriendo = corriendo;
@@ -285,7 +284,6 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       vivo = false;
       accion.current = null;
       clearTimeout(temporizador.current);
-      if (hablaRef.current?.r.respuestas) contestar("IGNORA");
       if (activo) {
         activo.detener();
         registrar("explora", { lugar: lugarActual, ms: Math.round(performance.now() - t0), visitas });

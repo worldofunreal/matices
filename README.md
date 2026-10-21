@@ -19,7 +19,7 @@ Abre la dirección que aparece. Si se agrega una pieza a `public/assets/manifies
 
 ## Cómo se juega, en corto
 
-El niño crea a su personaje, arma su casa con las personas que quiera y recorre su colonia, la escuela y el parque durante tres días del juego, que se pueden jugar en las sesiones que haga falta. Ahí pasan cosas de todos los días: el perro lo sigue, un adulto le dice que no corra, tiene hambre, hay tarea. El niño hace lo que quiera; el juego registra qué hizo, qué contestó y si después hizo lo que dijo. Nada detiene el juego para preguntar y ninguna respuesta es la correcta.
+El niño crea a su personaje, arma su casa con las personas que quiera y recorre su colonia, la escuela y el parque durante tres días del juego, que se pueden jugar en las sesiones que haga falta. Ahí pasan cosas de todos los días: el perro lo sigue, un adulto le dice que no corra, tiene hambre, hay tarea. El niño hace lo que quiera; el juego registra qué hizo, qué contestó y si después hizo lo que dijo. No hay cuestionarios: solo pregunta un adulto del mundo, el mundo espera la respuesta y ninguna respuesta es la correcta.
 
 ## Documentos
 

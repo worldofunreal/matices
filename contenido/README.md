@@ -26,7 +26,6 @@ Texto de las situaciones y del resto del juego. El juego lee estos archivos tal 
 ## Reglas
 
 - Toda respuesta lleva un código de `docs/clinico/codigos-y-eventos.md`. Una respuesta sin código o con un código que no existe rompe la compilación.
-- `IGNORA` (alejarse sin contestar) se agrega solo; no se escribe.
 - Respuestas de dos o tres palabras; tres por situación como máximo, para que quepan abajo en una fila.
 - Las áreas son las de `docs/clinico/marco-clinico.md`.
 - Textos a nivel de 3.º de primaria, en español de México, sin violencia explícita y sin género (quien reacciona puede ser mamá o papá).
