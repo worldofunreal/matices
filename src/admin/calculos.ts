@@ -1,4 +1,4 @@
-// From events to what the dashboard shows (docs/clinico/reporte.md). Pure functions: the content comes in as
+// From events to what the dashboard shows. Pure functions: the content comes in as
 // a parameter, so `npm test` runs them without the game.
 import type { Apariencia } from "../personaje/apariencia";
 
@@ -140,7 +140,7 @@ export function referencia(todos: Map<string, Map<string, { n: number }>>[], are
   return { N: cuentas.length, mediana: mediana(cuentas), min: cuentas.length ? Math.min(...cuentas) : 0, max: cuentas.length ? Math.max(...cuentas) : 0 };
 }
 
-// Each situation as it happened (docs/clinico/reporte.md, part 3): how many times, who reacted, what the child
+// Each situation as it happened: how many times, who reacted, what the child
 // answered each time it was asked and how fast, and how many times they did it again after answering.
 export function situaciones(evs: Evento[]) {
   const m = new Map<string, { veces: number; quien: string[]; respuestas: { codigo: string; segundos: number }[]; despues: number }>();

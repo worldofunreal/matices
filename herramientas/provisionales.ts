@@ -174,7 +174,7 @@ const rehacer = process.argv.includes("--rehacer");
 const m = leerManifiesto();
 let creados = 0;
 // Until the boy's body is drawn, his placeholder is the girl's body: both share the same silhouette, so
-// every hair, garment and extra already fits him (docs/arte/direccion-de-arte.md).
+// every hair, garment and extra already fits him.
 const COPIA: Record<string, string> = { "personaje/cuerpo_nino": "personaje/cuerpo_nina.png" };
 
 for (const p of m.piezas) {

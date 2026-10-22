@@ -1,5 +1,5 @@
-// Event log (docs/clinico/codigos-y-eventos.md). Every event is encrypted on the device with a key
-// that never leaves it, and sent to the server (docs/tecnico/arquitectura.md) when there is a network.
+// Event log (contenido/codigos.md). Every event is encrypted on the device with a key
+// that never leaves it, and sent to the server when there is a network.
 import contenido from "virtual:contenido";
 import { leer, guardar, agregarEvento, eventosDesde } from "./almacen";
 

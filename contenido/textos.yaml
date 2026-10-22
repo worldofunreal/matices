@@ -166,7 +166,7 @@ mundo:
     biblioteca_planta_baja: "Planta baja"
 
 # Mi libro (GDD §10): los dibujos del niño. La consigna está pendiente de revisión clínica y la puede
-# cambiar el psicólogo (docs/PENDIENTES.md).
+# cambiar el psicólogo.
 libro:
   titulo: "Mi libro"
   dibujar: "Dibujar"

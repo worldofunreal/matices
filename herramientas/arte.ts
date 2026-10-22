@@ -7,11 +7,11 @@ import { crc32 } from "node:zlib";
 import { parse } from "yaml";
 
 export const ROOT = resolve(import.meta.dirname, "..");
-// Where the generator images live, outside the repository (docs/arte/direccion-de-arte.md).
+// Where the generator images live, outside the repository.
 export const ARTE = join(homedir(), ".local/share/matices/arte");
 export const ASSETS = join(ROOT, "public/assets");
 export const MANIFIESTO = join(ASSETS, "manifiesto.yaml");
-export const DOC_CODIGOS = join(ROOT, "docs/clinico/codigos-y-eventos.md");
+export const DOC_CODIGOS = join(ROOT, "contenido/codigos.md");
 
 export type Tipo = "hoja" | "fondo" | "objeto";
 // Color ramps the game can swap (manifiesto.yaml `colores`). One list, used by the build check and the game.

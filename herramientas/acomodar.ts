@@ -1,5 +1,5 @@
 // Turns generator images into a manifest piece. Each pose is one figure on a flat magenta (#FF00FF)
-// background (docs/arte/direccion-de-arte.md, "Cómo pedirlo a un generador").
+// background.
 // Run: node herramientas/acomodar.ts <pieza> <carpeta> [<carpeta del cuerpo>]
 //   hoja of the protagonist: abajo_quieta, abajo_paso, izq_quieta, izq_paso1, izq_paso2, arriba_quieta,
 //   arriba_paso (.png/.jpg). abajo and arriba take their second step as the first one mirrored.

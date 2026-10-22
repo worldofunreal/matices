@@ -1,6 +1,5 @@
 // Asks Codex ($imagegen, with the owner's ChatGPT login) for each layer of the protagonist, editing
 // every pose of the base body, and checks each result before keeping it
-// (docs/arte/direccion-de-arte.md, "Cómo pedirlo a un generador").
 // Run: node herramientas/generar.ts <cuerpo> <capa> [<capa> ...]
 //   cuerpo: cuerpo_nina (its poses are in ARTE/personaje/cuerpo_nina)
 //   capa: a piece of the personaje group, e.g. cabello_01. Results go to ARTE/personaje/<cuerpo>/<capa>/.

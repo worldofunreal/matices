@@ -1,4 +1,4 @@
-// Event server and admin API (docs/tecnico/arquitectura.md). One file, Node 24, no libraries.
+// Event server and admin API. One file, Node 24, no libraries.
 //   node servidor/servidor.ts --dev       local: admin password "admin", database in servidor/dev.sqlite
 //   node servidor/servidor.ts --hash <c>  prints MATICES_CLAVE_HASH for a password
 // In production it reads MATICES_PUERTO, MATICES_BASE, MATICES_CLAVE_HASH and MATICES_SECRETO, and refuses to start without them.

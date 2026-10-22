@@ -1,50 +1,26 @@
-# Matices
+# Conecta Challenge 2026
 
-Videojuego de pixel art para niñas y niños de 8 a 12 años, pensado para México, que registra sus elecciones en situaciones cotidianas para que un psicólogo las lea.
+Nombre por definir. Un juego de mundo abierto para adolescentes de secundaria en Jalisco que, mientras juegan libres, mide cómo se comportan con métodos que no se pueden fingir, para que los especialistas de Salud y Educación vean lo que su tamizaje no alcanza a ver.
 
-**El juego recoge. El psicólogo interpreta. El juego no diagnostica.**
-
-> Estado: esqueleto del juego (casa provisional caminable, sin arte). Repositorio privado. Versión en línea: https://matices.online
-
-## Correr el juego
-
-```bash
-npm install
-npm run dev
-```
-
-Abre la dirección que aparece. Si se agrega una pieza a `public/assets/manifiesto.yaml`, `npm run provisionales` le crea su provisional. Con `?debug` al final se ven los choques y los objetos del mapa. `npm run build` deja el juego listo en `dist/` y se detiene si algún contenido no es válido.
-
-`npm run dev` levanta también el servidor de eventos en local. El tablero está en `/admin.html` (clave local: `admin`). `npm run simular` le manda 20 participantes inventados, `npm test` prueba sus cálculos y `?nuevo` empieza un participante nuevo en el mismo aparato. En línea, el tablero es `matices.online/admin`.
-
-## Cómo se juega, en corto
-
-El niño crea a su personaje, arma su casa con las personas que quiera y recorre su colonia, la escuela y el parque durante tres días del juego, que se pueden jugar en las sesiones que haga falta. Ahí pasan cosas de todos los días: el perro lo sigue, un adulto le dice que no corra, tiene hambre, hay tarea. El niño hace lo que quiera; el juego registra qué hizo, qué contestó y si después hizo lo que dijo. No hay cuestionarios: solo pregunta un adulto del mundo, el mundo espera la respuesta y ninguna respuesta es la correcta.
+**Estado: marco teórico.** Nada está validado; todo es hipótesis hasta probarlo (`docs/validacion.md`). Estos documentos son la única fuente de verdad del proyecto.
 
 ## Documentos
 
-| Documento | Para qué |
+| Documento | De qué trata |
 | --- | --- |
-| [docs/GDD.md](docs/GDD.md) | Diseño del juego: mundo, personajes, mecánicas, interfaz, audio |
-| [docs/PRD.md](docs/PRD.md) | Requisitos del producto: usuarios, contexto de uso por confirmar, objetivos, requisitos, riesgos |
-| [docs/MVP.md](docs/MVP.md) | Hitos para tener el juego completo con arte provisional y criterios para probarlo |
-| [docs/arte/direccion-de-arte.md](docs/arte/direccion-de-arte.md) | Estilo visual, ajustes, especificaciones, lista de arte, orden y forma de entrega |
-| [docs/tecnico/arquitectura.md](docs/tecnico/arquitectura.md) | Cómo funciona por dentro: el juego en el aparato, el servidor y el tablero |
-| [docs/clinico/marco-clinico.md](docs/clinico/marco-clinico.md) | Áreas que observa y de qué herramienta clínica sale cada mecánica |
-| [docs/clinico/codigos-y-eventos.md](docs/clinico/codigos-y-eventos.md) | Códigos de cada opción y lo que se registra |
-| [docs/clinico/reporte.md](docs/clinico/reporte.md) | Reporte para el psicólogo y reglas de revisión |
-| [Acuerdo de confidencialidad (Word)](docs/legal/acuerdo-de-confidencialidad.docx) | Plantilla editable para firmar antes de dar acceso; [texto fuente](docs/legal/acuerdo-de-confidencialidad.md) |
-| [docs/investigacion/plan-piloto.md](docs/investigacion/plan-piloto.md) | Fases del piloto y qué se mide |
-| [docs/LENGUAJE.md](docs/LENGUAJE.md) | Palabras que se usan y palabras que no, en el juego y en los documentos |
-| [docs/DECISIONES.md](docs/DECISIONES.md) | Cambios frente al GDD original y por qué |
-| [docs/PENDIENTES.md](docs/PENDIENTES.md) | Lo que falta decidir: clínico, creativo, técnico |
-| [docs/REFERENCIAS.md](docs/REFERENCIAS.md) | Fuentes consultadas |
-| [contenido/](contenido/) | Texto de las situaciones, las figuras y los textos fijos |
+| [contexto.md](docs/contexto.md) | El reto, quién está detrás, qué necesita cada quien y qué ofrecemos |
+| [metodologia.md](docs/metodologia.md) | Cómo se mide sin que se pueda fingir: el principio, las reglas, qué se mide y qué reciben los especialistas |
+| [diseno.md](docs/diseno.md) | El juego: premisa, controles, arte, mundo, consecuencias |
+| [validacion.md](docs/validacion.md) | Hipótesis, fases de prueba y qué se necesita de las instituciones |
+| [decisiones.md](docs/decisiones.md) | Cada decisión, con su razón |
 
-## Autoría y revisión
+## Pendientes
 
-- Autores intelectuales: Dayana Analy Pacheco Bañuelos y Omar Hernández Salmerón.
-- Apoyo de herramientas de IA: documentación y diseño.
-- Revisión clínica: psicólogos del conglomerado (pendiente).
-
-Licencia: [privativa provisional](LICENSE.md). No es una licencia de código abierto.
+- [ ] **Qué instrumento usaron en su tamizaje** y qué mide cada parte (Omar lo pregunta). Mientras tanto, la metodología se organiza como la mayoría de los tamizajes para adolescentes y se empareja después.
+- [ ] Pedir la sesión con especialistas de CESMA y Psicopedagogía (una semana de anticipación).
+- [ ] Fecha de entrega de la propuesta.
+- [ ] Si los resultados del tamizaje de los alumnos del piloto se podrán comparar con el juego (`docs/validacion.md`).
+- [ ] Cuántas sesiones habrá, de cuánto tiempo, y si hay audífonos.
+- [ ] Si la IA tiene un papel del lado de los especialistas (su herramienta, en línea), no del jugador.
+- [ ] Cómo cubre el juego la parte de promoción que pide el reto: que el adolescente se dé cuenta de lo que le pasa, por qué y de dónde viene, sin que el juego sea la autoridad y sin romper la metodología.
+- [ ] Nombre del proyecto.

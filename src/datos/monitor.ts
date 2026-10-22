@@ -35,7 +35,7 @@ export function vigilar(sesion: number) {
   addEventListener("error", (e) => registrar("error", { mensaje: e.message, donde: `${e.filename}:${e.lineno}` }));
   addEventListener("unhandledrejection", (e) => registrar("error", { mensaje: String(e.reason) }));
 
-  // A tap on nothing that answers taps: buttons that are not understood (docs/clinico/codigos-y-eventos.md).
+  // A tap on nothing that answers taps: buttons that are not understood (contenido/codigos.md).
   // Anything else that answers a tap carries data-toque.
   document.addEventListener("pointerup", (e) => {
     if ((e.target as Element).closest?.("button, a, input, select, textarea, label, canvas, [role=button], [data-toque]")) return;

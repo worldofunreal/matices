@@ -1,4 +1,4 @@
-// The dashboard (docs/clinico/reporte.md): one admin account sees every participant and all of them together.
+// The dashboard: one admin account sees every participant and all of them together.
 import { useEffect, useMemo, useRef, useState } from "react";
 import contenido from "virtual:contenido";
 import { Personaje } from "../lienzo/Personaje";
@@ -12,7 +12,7 @@ const nombreDe = new Map(contenido.situaciones.map((x) => [x.id, x.nombre]));
 const figuraDe = new Map(contenido.figuras.map((f) => [f.id, f.nombre]));
 const cuartoDe = (c: string) => contenido.textos.casa.cuartos[c] ?? c;
 
-// FIGURA:tia#2 → "Tía (2)"; other codes stay as written in codigos-y-eventos.md.
+// FIGURA:tia#2 → "Tía (2)"; other codes stay as written in contenido/codigos.md.
 function etiqueta(codigo: string) {
   const [tipo, resto] = codigo.split(":");
   if (tipo === "FIGURA" && resto) {

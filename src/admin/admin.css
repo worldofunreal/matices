@@ -1,4 +1,4 @@
-/* The dashboard (docs/clinico/reporte.md): the game's colors and buttons, but a page that scrolls and lets text be copied. */
+/* The dashboard: the game's colors and buttons, but a page that scrolls and lets text be copied. */
 body.tablero {
   overflow: auto;
   user-select: text;

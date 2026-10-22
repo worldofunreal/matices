@@ -1,8 +1,8 @@
 // Loads contenido/*.yaml and public/assets/manifiesto.yaml, validates them and exposes them as
 // `virtual:contenido` and `virtual:arte`. Any error stops the build: content without a valid code
 // and art with a missing file or a wrong size never ship.
-// Sources of truth: codes in docs/clinico/codigos-y-eventos.md, area ids in
-// docs/clinico/marco-clinico.md, version in contenido/README.md, art in public/assets/manifiesto.yaml.
+// Sources of truth: codes in contenido/codigos.md, area ids in
+// contenido/areas.md, version in contenido/README.md, art in public/assets/manifiesto.yaml.
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { parse } from "yaml";
@@ -10,7 +10,7 @@ import type { Plugin } from "vite";
 import { ROOT, MANIFIESTO, DOC_CODIGOS, codigosValidos, leerManifiesto, medidaPng, RAMPAS, FIGURAS } from "./arte.ts";
 
 const DIR = join(ROOT, "contenido");
-const DOC_AREAS = join(ROOT, "docs/clinico/marco-clinico.md");
+const DOC_AREAS = join(ROOT, "contenido/areas.md");
 const README = join(DIR, "README.md");
 
 const MODULOS: Record<string, () => unknown> = { "virtual:contenido": validar, "virtual:arte": validarArte };
@@ -19,7 +19,7 @@ const MODULOS: Record<string, () => unknown> = { "virtual:contenido": validar, "
 const CUANDO = new Set(["correr"]);
 const QUIEN = new Set(["adulto_cerca"]);
 
-// The 13 areas, from the table in docs/clinico/marco-clinico.md (the only place they are written).
+// The 13 areas, from the table in contenido/areas.md (the only place they are written).
 function areasDelMarco(): { id: string; nombre: string; familia: string }[] {
   const doc = readFileSync(DOC_AREAS, "utf8");
   return [...doc.matchAll(/^\| ([^|]+?) \| ([^|]+?) \| `([a-z_]+)` \|/gm)].map((m) => ({ familia: m[1], nombre: m[2], id: m[3] }));

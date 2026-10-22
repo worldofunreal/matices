@@ -1,7 +1,6 @@
 # Lista de todo el arte del juego. Cada pieza es un PNG en esta carpeta con el nombre y la medida
 # que dice aquí. Para poner el arte final, se reemplaza el archivo provisional por otro con el
 # mismo nombre y la misma medida; el juego no compila si una medida no cuadra.
-# Reglas de dibujo y entrega: docs/arte/direccion-de-arte.md.
 #
 # Hojas del protagonista: 5 columnas (quieto, paso 1 a 4) × 3 filas (abajo, izquierda, arriba),
 # cuadros de 48 × 64 (anchos para que quepa el cabello abultado); la derecha es la izquierda volteada, pies en la misma fila de píxeles en todos los cuadros. Es el único que camina:

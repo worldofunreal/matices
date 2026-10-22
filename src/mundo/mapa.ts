@@ -1,4 +1,4 @@
-// A map from public/mapas, in Tiled's format (docs/tecnico/arquitectura.md): walls (muros), doors,
+// A map from public/mapas, in Tiled's format: walls (muros), doors,
 // arrival points, objects and people. Positions are game pixels; a tile is TILE × TILE.
 import type { Hora } from "../datos/guardado";
 

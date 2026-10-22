@@ -26,7 +26,7 @@ export function Siempre({ pantalla, children }: { pantalla: string; children: Re
 
   const alternar = (c: "libro" | "opciones") => setCapa(capa === c ? null : c);
 
-  // The record goes to the device's log with the screen and the time (docs/clinico/codigos-y-eventos.md).
+  // The record goes to the device's log with the screen and the time (contenido/codigos.md).
   // The card is the only thing on screen that says someone was called.
   const quieroHablar = () => {
     registrar("quiero_hablar", { pantalla: capa === "libro" || capa === "opciones" ? capa : (detalleActual() ?? pantalla) });

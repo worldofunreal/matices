@@ -1,4 +1,4 @@
-/* The world: the canvas fills the screen and the HTML sits over it (docs/tecnico/arquitectura.md). */
+/* The world: the canvas fills the screen and the HTML sits over it. */
 .mundo {
   position: fixed;
   inset: 0;
