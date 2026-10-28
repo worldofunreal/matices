@@ -1,19 +1,212 @@
-// The story (contenido/escenas.yaml): which scene starts where the child is, and what it leaves behind.
-// A scene starts once, when its place, its moment and its marks match; then it never starts again.
+// The story (contenido/escenas.yaml): which scene starts where the child is, what it leaves behind,
+// and where the active mission guides the child next.
 import contenido, { type Escena } from "virtual:contenido";
-import { estado, cambiarEstado } from "./guardado";
+import { estado, cambiarEstado, type Hora } from "./guardado";
 
 const cumple = (lista: string[] | undefined, marcas: string[], que: boolean) => (lista ?? []).every((m) => marcas.includes(m) === que);
+
+const ALIAS_OBJETO: Record<string, string> = {
+  mama: "mesa",
+  papa: "sillon",
+};
+
+export interface Objetivo {
+  lugar: string;
+  objeto?: string;
+  puertaDestino?: string;
+  mision: string;
+  etiqueta: string;
+}
+
+// Self-heals out-of-sync saves and keeps the top mission banner aligned with the current story step.
+export function sincronizarHistoria(): Objetivo {
+  const e = estado();
+  const h = e.historia.hechas;
+  let dia = e.dia;
+  let hora: Hora = e.hora;
+
+  if (!h.includes("T09") || !h.includes("R02-leo")) {
+    dia = 1;
+    hora = "manana";
+  } else if (dia === 2 && hora !== "manana" && !h.includes("R05")) {
+    hora = "manana";
+  } else if (dia === 3 && !h.includes("E2-04")) {
+    dia = 2;
+    hora = "noche";
+  }
+
+  if (dia !== e.dia || hora !== e.hora) {
+    cambiarEstado({ dia, hora }, true);
+  }
+
+  const obj = objetivoActual();
+  if (estado().historia.mision !== obj.mision) {
+    cambiarEstado({ historia: { ...estado().historia, mision: obj.mision } }, true);
+  }
+  return obj;
+}
+
+// Returns the exact current goal (place, target object/person or door, mission banner and guide badge).
+export function objetivoActual(): Objetivo {
+  const { dia, hora, historia } = estado();
+  const h = historia.hechas;
+
+  // Día 1 — Mañana
+  if (dia === 1 && hora === "manana") {
+    if (!h.includes("T03")) {
+      return { lugar: "casa", mision: "Despertar en tu habitación", etiqueta: "Casa" };
+    }
+    if (!h.includes("T05")) {
+      return { lugar: "casa", objeto: "mama", mision: "Hablar con mamá en el comedor", etiqueta: "Hablar con Mamá" };
+    }
+    if (!h.includes("T06")) {
+      return { lugar: "casa", objeto: "refrigerador", mision: "Sacar los huevos del refrigerador en la cocina", etiqueta: "Refrigerador" };
+    }
+    if (!h.includes("T07")) {
+      return { lugar: "casa", objeto: "estufa", mision: "Preparar el desayuno en la estufa", etiqueta: "Estufa" };
+    }
+    if (!h.includes("T08")) {
+      return { lugar: "casa", objeto: "ropero", mision: "Elegir tu ropa en el ropero de tu habitación", etiqueta: "Ropero" };
+    }
+    if (!h.includes("T09")) {
+      return { lugar: "casa", puertaDestino: "calle", mision: "Salir de casa rumbo a la escuela", etiqueta: "Salir a la calle" };
+    }
+    if (!h.includes("U01a") && !h.includes("U01b")) {
+      return { lugar: "escuela_planta_baja", mision: "Ir a la escuela y entrar a los salones", etiqueta: "Salones" };
+    }
+    if (!h.includes("R01")) {
+      return { lugar: "escuela_patio", mision: "Salir al patio de la escuela para el recreo", etiqueta: "Patio" };
+    }
+    if (!h.includes("R02-valeria")) {
+      return { lugar: "escuela_patio", objeto: "companero_1", mision: "Hablar con Valeria en el patio de la escuela", etiqueta: "Valeria" };
+    }
+    if (!h.includes("R02-leo")) {
+      return { lugar: "escuela_patio", objeto: "companero_2", mision: "Hablar con Leo en el patio de la escuela", etiqueta: "Leo" };
+    }
+    if (!h.includes("R02-sam")) {
+      return { lugar: "escuela_planta_baja", objeto: "companero_3", mision: "Hablar con Sam en los salones de la planta baja", etiqueta: "Sam" };
+    }
+    return { lugar: "calle", mision: "Salir de la escuela a la calle para volver a casa", etiqueta: "Salir a la calle" };
+  }
+
+  // Día 1 — Tarde y Noche
+  if (dia === 1 && hora === "tarde") {
+    if (!h.includes("C03")) {
+      return { lugar: "calle", mision: "Salir a la calle para ayudar con las compras", etiqueta: "Calle" };
+    }
+    return { lugar: "casa", mision: "Regresar a casa para descansar", etiqueta: "Casa" };
+  }
+  if (dia === 1 && hora === "noche") {
+    return { lugar: "casa", objeto: "cama", mision: "Ir a tu cama para dormir", etiqueta: "A dormir" };
+  }
+
+  // Día 2 — Mañana
+  if (dia === 2 && hora === "manana") {
+    if (!h.includes("X01")) {
+      return { lugar: "escuela_planta_baja", mision: "Ir a los salones de la escuela para el examen", etiqueta: "Salones" };
+    }
+    if (!h.includes("R05")) {
+      return { lugar: "escuela_patio", objeto: "companero_2", mision: "Hablar con Leo en el patio de la escuela", etiqueta: "Leo" };
+    }
+    return { lugar: "calle", mision: "Salir de la escuela para regresar a casa", etiqueta: "Salir a la calle" };
+  }
+
+  // Día 2 — Tarde y Noche
+  if (dia === 2 && hora === "tarde") {
+    return { lugar: "casa", mision: "Regresar a casa después de clases", etiqueta: "Casa" };
+  }
+  if (dia === 2 && hora === "noche") {
+    if (!h.includes("E2-01")) {
+      return { lugar: "casa", objeto: "cama", mision: "Ir a tu cama para dibujar un rato", etiqueta: "Dibujar" };
+    }
+    if (!h.includes("E2-02")) {
+      return { lugar: "casa", objeto: "papa", mision: "Enseñar el dibujo a papá en la sala", etiqueta: "Hablar con Papá" };
+    }
+    if (!h.includes("E2-04")) {
+      return { lugar: "casa", objeto: "cama", mision: "Regresar a tu cama en tu habitación", etiqueta: "Ir a la cama" };
+    }
+    return { lugar: "casa", objeto: "cama", mision: "Dormir en tu cama para descansar", etiqueta: "A dormir" };
+  }
+
+  // Día 3 — Mañana
+  if (dia === 3 && hora === "manana") {
+    if (!h.includes("E2-05")) {
+      return { lugar: "escuela_patio", objeto: "companero_2", mision: "Ir al patio de la escuela para hablar con Leo", etiqueta: "Leo" };
+    }
+    if (!h.includes("O01")) {
+      return { lugar: "escuela_planta_baja", objeto: "orientadora", mision: "Hablar con la orientadora en la planta baja", etiqueta: "Orientadora" };
+    }
+    if (!h.includes("C02")) {
+      return { lugar: "escuela_planta_baja", mision: "Preparar el proyecto en parejas en el salón", etiqueta: "Salones" };
+    }
+    return { lugar: "calle", mision: "Salir de la escuela para regresar a casa", etiqueta: "Salir a la calle" };
+  }
+
+  // Día 3 — Tarde y Noche
+  if (dia === 3 && hora === "tarde") {
+    return { lugar: "casa", mision: "Regresar a casa", etiqueta: "Casa" };
+  }
+  return { lugar: "casa", objeto: "cama", mision: "Dormir en tu cama para terminar la historia", etiqueta: "A dormir" };
+}
+
+// Friendly hint if the child tries to leave a place before finishing its required step or taps a tutorial step out of order.
+export function pistaPaso(lugar: string, al: string): string | null {
+  const { dia, hora, historia } = estado();
+  const h = historia.hechas;
+
+  if (lugar === "casa" && dia === 1 && hora === "manana") {
+    if (al === "salir:calle" && !h.includes("T08")) {
+      if (!h.includes("T05")) return "Primero voy a hablar con mamá en el comedor para ver qué hay de desayunar.";
+      if (!h.includes("T06")) return "Primero voy a buscar los huevos en el refrigerador de la cocina.";
+      if (!h.includes("T07")) return "Primero voy a preparar mi desayuno en la estufa.";
+      return "Primero voy a elegir mi ropa en el ropero de mi habitación antes de salir.";
+    }
+    if (al === "refrigerador" && !h.includes("T05")) {
+      return "Mamá está en el comedor; primero voy a preguntarle qué dejó para desayunar.";
+    }
+    if (al === "estufa" && !h.includes("T06")) {
+      if (!h.includes("T05")) return "Primero voy a hablar con mamá en el comedor.";
+      return "Primero tengo que sacar los huevos del refrigerador que está aquí al lado.";
+    }
+    if (al === "ropero" && !h.includes("T07")) {
+      return "Primero voy a desayunar en la cocina y luego elijo mi ropa.";
+    }
+  }
+
+  if (lugar === "escuela_patio" && al === "salir:calle" && hora === "manana") {
+    if (dia === 1) {
+      if (!h.includes("U01a") && !h.includes("U01b")) return "Acabo de llegar a la escuela; primero entro a los salones.";
+      if (!h.includes("R02-leo")) return "Todavía es hora del recreo; voy a hablar con mis compañeros en el patio antes de irme.";
+    }
+    if (dia === 2) {
+      if (!h.includes("X01")) return "Primero tengo que entrar a los salones para presentar el examen.";
+      if (!h.includes("R05")) return "Antes de irme a casa, voy a platicar con Leo aquí en el patio.";
+    }
+    if (dia === 3) {
+      if (!h.includes("E2-05")) return "Primero voy a hablar con Leo aquí en el patio.";
+      if (!h.includes("O01") || !h.includes("C02")) return "Antes de irme, tengo que entrar a los salones de la planta baja.";
+    }
+  }
+
+  if (lugar === "casa" && al === "cama" && dia === 2 && hora === "noche") {
+    if (h.includes("E2-01") && !h.includes("E2-02")) {
+      return "Antes de dormir, quiero enseñarle mi dibujo a papá en la sala.";
+    }
+  }
+
+  return null;
+}
 
 // The scene that starts now at `al` (a place: "entrar" or "salir:<lugar>"; or an object or a person touched), or null.
 export function escenaPara(lugar: string, al: string): Escena | null {
   const { dia, hora, historia } = estado();
+  const objetivo = ALIAS_OBJETO[al] ?? al;
   return (
     contenido.escenas.find((x) => {
       const tras = ([] as string[]).concat(x.tras ?? []);
       return (
         x.donde === lugar &&
-        x.al === al &&
+        x.al === objetivo &&
         (x.dia === undefined || x.dia === dia) &&
         (x.hora === undefined || x.hora === hora) &&
         !historia.hechas.includes(x.id) &&
@@ -41,4 +234,5 @@ export function mision(texto: string) {
 export function terminarEscena(id: string, hecha: boolean) {
   const h = estado().historia;
   if (hecha && !h.hechas.includes(id)) cambiarEstado({ historia: { ...h, hechas: [...h.hechas, id] } }, true);
+  sincronizarHistoria();
 }

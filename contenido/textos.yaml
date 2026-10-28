@@ -87,11 +87,15 @@ mundo:
     clara: ["Bienvenido a la biblioteca.", "Los libros de cuentos están arriba."]
     cuentera: ["Hola. Aquí vengo a leer.", "Qué gusto verte."]
     orientadora: ["Buenos días.", "Mi oficina está en la planta baja."]
+    mama: ["Buenos días.", "En la cocina dejé lo necesario."]
+    papa: ["Ahora estoy descansando.", "Más tarde platicamos."]
     vecino_generico: ["Buenos días.", "Hola.", "Buenas tardes.", "Qué buen día hace."]
     gato: ["¡Miau!", "El gato se estira.", "El gato ronronea al verte.", "¡Miau!"]
     perro: ["¡Guau!", "El perro mueve la cola.", "¡Guau, guau!"]
   # El nombre en la placa de cada personaje fijo.
   nombres:
+    mama: Mamá
+    papa: Papá
     vecino_generico: Vecino
     perro: Perro
     gato: Gato

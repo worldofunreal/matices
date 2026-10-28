@@ -8,7 +8,7 @@ import { pieza } from "../lienzo/arte";
 import { capas, coloresDe } from "../personaje/apariencia";
 import { estado, cambiarEstado, type Estado } from "../datos/guardado";
 import { bloqueo, revisarHora, dormir } from "../datos/dia";
-import { escenaPara } from "../datos/escenas";
+import { escenaPara, objetivoActual, pistaPaso, sincronizarHistoria } from "../datos/escenas";
 import { Escena as EscenaEnCurso } from "./Escena";
 import { registrar } from "../datos/eventos";
 import { Bocina } from "../ui/Bocina";
@@ -45,24 +45,51 @@ function primerPaso(desde: string, meta: string): string | null {
 // The sign over a door: where it leads. Inside the same building a place has its inside name ("Patio").
 export const nombreSalida = (desde: string, destino: string) => (desde.split("_")[0] === destino.split("_")[0] && M.lugares_dentro[destino]) || M.lugares[destino];
 
-// Where the day goes next: the school in the morning, home in the afternoon, bed at night.
-// The ring sits on the active mission target or door toward it (or on the bed), and its sign and the edge arrow say its name.
+// Syncs family members in the house with the current story step (Mamá leaves after T05; Papá is in the living room on Day 2 night).
+function sincronizarFamiliaEnCasa(m: Mapa) {
+  if (m.lugar !== "casa") return;
+  const e = estado();
+  const piel = e.apariencia.colores.piel ?? 0;
+  m.puntos = m.puntos.filter((p) => p.nombre !== "mama" && p.nombre !== "papa");
+  if (e.dia === 1 && e.hora === "manana" && !e.historia.hechas.includes("T05")) {
+    m.puntos.push({ nombre: "mama", tipo: "npc", x: 248, y: 416, arte: "figuras/mama", piel });
+  }
+  if (e.dia === 2 && e.hora === "noche") {
+    m.puntos.push({ nombre: "papa", tipo: "npc", x: 144, y: 480, arte: "figuras/papa", piel });
+  }
+}
+
+// Where the story guides the child right now: the active object/person in this map, or the next door toward the active map.
 function guiaDe(m: Mapa): { x: number; y: number; nombre: string; puerta: string | null } | null {
+  const obj = objetivoActual();
+
+  if (m.lugar === obj.lugar) {
+    if (obj.puertaDestino) {
+      const puerta = m.puertas.find((p) => p.destino === obj.puertaDestino);
+      if (puerta) return { x: puerta.x + puerta.w / 2, y: puerta.y + puerta.h / 2, nombre: obj.etiqueta, puerta: puerta.nombre };
+    }
+    if (obj.objeto) {
+      const respaldo = obj.objeto === "mama" ? "mesa" : obj.objeto === "papa" ? "sillon" : null;
+      const p = m.puntos.find((x) => x.nombre === obj.objeto) ?? (respaldo ? m.puntos.find((x) => x.nombre === respaldo) : undefined);
+      if (p) return { x: p.x, y: p.y - 16, nombre: obj.etiqueta, puerta: null };
+    }
+  }
+
   for (const p of m.puntos) {
-    if (escenaPara(m.lugar, p.nombre)) {
+    if (p.nombre !== "calendario" && escenaPara(m.lugar, p.nombre)) {
       return { x: p.x, y: p.y - 16, nombre: M.nombres[p.nombre] ?? M.objetos[m.lugar]?.[p.nombre] ?? M.objetos.comun[p.nombre] ?? p.nombre, puerta: null };
     }
   }
-  const { hora } = estado();
-  const meta = hora === "manana" ? "escuela_patio" : "casa";
-  if (hora === "manana" && m.lugar.startsWith("escuela")) return null;
-  if (m.lugar === meta) {
-    const cama = m.puntos.find((p) => p.nombre === "cama");
-    return hora === "noche" && cama ? { x: cama.x, y: cama.y - 16, nombre: M.a_dormir, puerta: null } : null;
+
+  if (m.lugar !== obj.lugar) {
+    const paso = primerPaso(m.lugar, obj.lugar);
+    const puerta = m.puertas.find((p) => p.destino === paso);
+    if (puerta) {
+      return { x: puerta.x + puerta.w / 2, y: puerta.y + puerta.h / 2, nombre: nombreSalida(m.lugar, puerta.destino), puerta: puerta.nombre };
+    }
   }
-  const paso = primerPaso(m.lugar, meta);
-  const puerta = m.puertas.find((p) => p.destino === paso);
-  return puerta ? { x: puerta.x + puerta.w / 2, y: puerta.y + puerta.h / 2, nombre: nombreSalida(m.lugar, puerta.destino), puerta: puerta.nombre } : null;
+
+  return null;
 }
 
 // Where the child starts: the arrival of a door, or where they stopped, or where they put their
@@ -79,10 +106,12 @@ function inicioDe(m: Mapa, e: Estado) {
 
 // Everything the place draws is read before the first frame, so the loop never waits.
 async function cargarArte(m: Mapa, e: Estado, figuras: Figura[]) {
+  const piel = e.apariencia.colores.piel ?? 0;
   await Promise.all([
     pieza(`lugares/${m.lugar}/fondo`),
     ...m.puntos.map((p) => (p.piel !== undefined ? pieza(p.arte, { piel: p.piel }) : pieza(p.arte))),
     ...figuras.map((f) => pieza(`figuras/${f.id}`, { piel: f.piel })),
+    ...(m.lugar === "casa" ? [pieza("figuras/mama", { piel }), pieza("figuras/papa", { piel })] : []),
     ...capas(e.apariencia).map((id) => pieza(id, coloresDe(e.apariencia))),
     pieza("figuras/perro_lado"),
   ]);
@@ -106,7 +135,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const [corriendo, setCorriendo] = useState(false);
   // A scene of the story is on: the world stands still under it, and the mission shows once it is over.
   const [escena, setEscena] = useState<{ escena: Escena; alFin: () => void } | null>(null);
-  const [mision, setMision] = useState(estado().historia.mision);
+  const [mision, setMision] = useState<string | null>(() => sincronizarHistoria().mision);
 
   useEffect(() => {
     motorRef.current?.pausar(superpuesto || !!escena);
@@ -118,15 +147,18 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
 
   // One place per run of this effect: a door, a new day or a return from the mirror starts it again.
   useEffect(() => {
+    sincronizarHistoria();
     const e0 = estado();
     const lugarActual = e0.lugar;
     const visitas = (e0.visitas[lugarActual] ?? 0) + 1;
     const t0 = performance.now();
     let vivo = true;
     let activo: Motor | null = null;
+    let mapaActual: Mapa | null = null;
     let puerta: string | null = null;
     let corriendoDesde = 0; // when the current run started
     setBurbuja(null);
+    setMision(e0.historia.mision);
 
     const mostrar = (clave: string, texto: string) => {
       setBurbuja({ id: Date.now(), clave, texto });
@@ -134,18 +166,33 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       temporizador.current = window.setTimeout(() => setBurbuja(null), Math.max(3500, texto.length * 70));
     };
 
-    // Going to bed: a line, then the next day (or the closing card after the last one).
-    // A scene starts over the world. When it is over, a changed look is drawn again and then `alFin` goes on
-    // (a door crossing waits for its scene).
+    const refrescarGuia = () => {
+      sincronizarHistoria();
+      setMision(estado().historia.mision);
+      if (!mapaActual) return;
+      sincronizarFamiliaEnCasa(mapaActual);
+      const g = guiaDe(mapaActual);
+      if (activo) activo.guia = g;
+      setGuia(g);
+      setMapa({ ...mapaActual, puntos: [...mapaActual.puntos] });
+    };
+
+    // A scene starts over the world. When it is over, the mission, family presence and yellow guide update immediately,
+    // a changed look is drawn again, any chained "entrar" scene starts, and `alFin` goes on.
     const iniciarEscena = (e: Escena, alFin: () => void = () => {}) => {
       const antes = estado().apariencia;
       setEscena({
         escena: e,
         alFin: () => {
           setEscena(null);
-          setMision(estado().historia.mision);
+          refrescarGuia();
           if (estado().apariencia !== antes) setRecarga((r) => r + 1);
-          alFin();
+          const siguienteEntrar = escenaPara(lugarActual, "entrar");
+          if (siguienteEntrar) {
+            iniciarEscena(siguienteEntrar, alFin);
+          } else {
+            alFin();
+          }
         },
       });
     };
@@ -156,6 +203,8 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       window.setTimeout(() => {
         const dia = dormir();
         if (dia === null) return setCartel({ texto: M.fin });
+        sincronizarHistoria();
+        setMision(estado().historia.mision);
         setCartel({ texto: M.dia.replace("{n}", String(dia)) });
         window.setTimeout(() => {
           setCartel(null);
@@ -167,16 +216,20 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     const usar = (p: Punto) => {
       const e = escenaPara(lugarActual, p.nombre);
       if (e) return iniciarEscena(e);
+      const pista = pistaPaso(lugarActual, p.nombre);
+      if (pista) return mostrar(`mundo.pista.${p.nombre}`, pista);
       registrar("explora", { lugar: lugarActual, objeto: p.nombre });
       if (p.nombre === "espejo") return alEspejoRef.current();
       if (p.nombre === "cama" && estado().hora === "noche") return dormirse();
       mostrar(`mundo.objetos.${lugarActual}.${p.nombre}`, M.objetos[lugarActual]?.[p.nombre] ?? M.objetos.comun[p.nombre]);
     };
 
-    // Fixed people only greet with neutral lines; the line changes with each visit.
+    // Fixed people greet or start their story scene.
     const saludar = (p: Punto) => {
       const e = escenaPara(lugarActual, p.nombre);
       if (e) return iniciarEscena(e);
+      const pista = pistaPaso(lugarActual, p.nombre);
+      if (pista) return mostrar(`mundo.pista.${p.nombre}`, pista);
       registrar("explora", { lugar: lugarActual, persona: p.nombre });
       const saludos = M.saludos[p.nombre] ?? M.saludos.vecino_generico ?? ["Buenos días.", "Hola."];
       const i = (estado().visitas[lugarActual] ?? 0) % saludos.length;
@@ -194,6 +247,11 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     const cruzar = (p: Puerta) => {
       const no = bloqueo(lugarActual, p.horas);
       if (no) return mostrar(`mundo.${no}`, M[no]);
+      const pista = pistaPaso(lugarActual, `salir:${p.destino}`);
+      if (pista) {
+        activo?.parar();
+        return mostrar(`mundo.pista.salir.${p.destino}`, pista);
+      }
       const e = escenaPara(lugarActual, `salir:${p.destino}`);
       if (e) return iniciarEscena(e, () => irse(p));
       irse(p);
@@ -203,27 +261,24 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       activo?.pausar(true);
       cambiarEstado({ lugar: p.destino, llegada: p.llegada, x: null, y: null }, true);
       revisarHora(p.destino, lugarActual);
+      sincronizarHistoria();
+      setMision(estado().historia.mision);
       setCubierto(true);
       window.setTimeout(() => setRecarga((r) => r + 1), 220);
     };
 
     const figuras: Figura[] = [];
-    if (lugarActual === "casa") {
-      if (e0.dia === 1 && e0.hora === "manana" && !e0.historia.hechas.includes("T05")) {
-        figuras.push({ id: "mama", x: 248, y: 416, piel: e0.apariencia.colores.piel ?? 0 });
-      }
-      if (e0.dia === 2 && e0.hora === "noche") {
-        figuras.push({ id: "papa", x: 144, y: 480, piel: e0.apariencia.colores.piel ?? 0 });
-      }
-    } else if (lugarActual === "calle" || lugarActual === "parque") {
+    if (lugarActual === "calle" || lugarActual === "parque") {
       figuras.push({ id: "perro", x: 260, y: 460, piel: 0 });
     }
 
-    void cargarMapa(lugarActual, e0.semilla, e0.dia, e0.hora).then(async (m) => {
-      quitarAusentes(m, e0.hora);
-      await cargarArte(m, e0, figuras);
+    void cargarMapa(lugarActual, e0.semilla, estado().dia, estado().hora).then(async (m) => {
+      mapaActual = m;
+      sincronizarFamiliaEnCasa(m);
+      quitarAusentes(m, estado().hora);
+      await cargarArte(m, estado(), figuras);
       if (!vivo) return;
-      const inicio = inicioDe(m, e0);
+      const inicio = inicioDe(m, estado());
       puerta = m.puertas.find((d) => dentro(d, inicio.x, inicio.y - CAIDA))?.nombre ?? null;
       cambiarEstado({ llegada: null, x: Math.round(inicio.x), y: Math.round(inicio.y), visitas: { ...estado().visitas, [lugarActual]: visitas } });
       const motor = new Motor({
@@ -231,10 +286,10 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         mapa: m,
         x: inicio.x,
         y: inicio.y,
-        dir: e0.direccion,
-        apariencia: e0.apariencia,
+        dir: estado().direccion,
+        apariencia: estado().apariencia,
         figuras,
-        hora: e0.hora,
+        hora: estado().hora,
         alTocar: (cx, cy) => accion.current?.tocar(cx, cy),
         alCuadro: () => {
           if (motor.moviendo) cambiarEstado({ x: Math.round(motor.x), y: Math.round(motor.y), direccion: motor.dir });
@@ -253,13 +308,13 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         },
       });
       motor.corriendo = corriendo;
+      activo = motor;
+      motorRef.current = motor;
       const alEntrar = escenaPara(lugarActual, "entrar");
       if (alEntrar) iniciarEscena(alEntrar);
       const g = guiaDe(m);
       motor.guia = g;
       motor.pausar(superpuesto);
-      activo = motor;
-      motorRef.current = motor;
       accion.current = {
         tocar: (cx, cy) => {
           if (motor.pausado) return;
@@ -316,6 +371,12 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           </div>
         );
       })}
+      {/* Floating yellow badge over the active mission object or person in this room. */}
+      {guia && !guia.puerta && !escena && (
+        <div className="letrero guia" data-mundo-x={guia.x} data-mundo-y={guia.y - 26} aria-hidden="true">
+          <span>{guia.nombre}</span>
+        </div>
+      )}
       <div className="letrero guia flecha-texto" data-flecha hidden aria-hidden="true">
         <span>{guia?.nombre}</span>
       </div>

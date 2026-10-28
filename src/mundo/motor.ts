@@ -245,7 +245,7 @@ export class Motor {
       const img = p.tipo === "npc" && p.piel !== undefined ? piezaYa(p.arte, { piel: p.piel }) : piezaYa(p.arte);
       const w = p.tipo === "npc" && p.piel === undefined ? CUADRO.ancho : (img?.width ?? 0);
       const h = p.tipo === "npc" && p.piel === undefined ? CUADRO.alto : (img?.height ?? 0);
-      if (x >= p.x - w / 2 && x <= p.x + w / 2 && y >= p.y - h && y <= p.y && (!mejor || p.y > mejor.y)) mejor = p;
+      if (x >= p.x - w / 2 - 6 && x <= p.x + w / 2 + 6 && y >= p.y - h - 18 && y <= p.y + 6 && (!mejor || p.y > mejor.y)) mejor = p;
     }
     return mejor;
   }

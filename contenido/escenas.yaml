@@ -10,7 +10,7 @@ escenas:
     areas: [necesidades_fisicas]
     pasos:
       - {de: pensamiento, texto: "Tengo hambre... creo que no he desayunado. ¿Habrá algo en la cocina?"}
-      - {mision: "Buscar algo para desayunar"}
+      - {mision: "Hablar con mamá en el comedor"}
 
   - id: T04
     nombre: El calendario de pared
@@ -41,6 +41,7 @@ escenas:
           - [PIDE_AYUDA, "¿Podrías ayudarme antes de irte?", "Hoy ya no alcanzo. Dejé lo necesario en la cocina."]
           - [EXPRESA_MALESTAR, "No tengo muchas ganas de cocinar.", "Hay algo sencillo que puedes preparar. Luego hablamos."]
       - {de: pensamiento, texto: "Últimamente siempre tiene mucha prisa."}
+      - {mision: "Sacar los huevos del refrigerador en la cocina"}
 
   - id: T06
     nombre: El refrigerador
@@ -53,6 +54,7 @@ escenas:
     pasos:
       - {minijuego: refri}
       - {de: sistema, texto: "¡Encontraste los huevos! Ahora puedes preparar el desayuno."}
+      - {mision: "Preparar el desayuno en la estufa"}
 
   - id: T07
     nombre: Preparar el desayuno
@@ -67,6 +69,7 @@ escenas:
       - {de: pensamiento, texto: "Qué raro... hoy tampoco alcanzó a desayunar conmigo."}
       - {de: pensamiento, texto: "Bueno, mejor termino. No quiero llegar tarde."}
       - {de: sistema, texto: "Suena la alarma del reloj: hora de alistarte para la escuela."}
+      - {mision: "Elegir tu ropa en el ropero de tu habitación"}
 
   - id: T08
     nombre: Elegir la ropa
@@ -78,6 +81,7 @@ escenas:
     areas: [conducta, escuela_aprendizaje]
     pasos:
       - {minijuego: ropero}
+      - {mision: "Salir de casa rumbo a la escuela"}
 
   - id: T09
     nombre: Salir de casa
@@ -90,6 +94,7 @@ escenas:
     pasos:
       - {de: pensamiento, texto: "Espero que hoy sea un buen día."}
       - {de: sistema, texto: "Tutorial completado. Ya puedes explorar, hablar con otras personas y descubrir nuevas actividades."}
+      - {mision: "Ir a la escuela y entrar a los salones"}
 
   - id: U01a
     nombre: Revisión del uniforme, con ropa de deporte
@@ -102,6 +107,7 @@ escenas:
     areas: [escuela_aprendizaje, conducta]
     pasos:
       - {de: lucia, texto: "Buenos días. ¡Qué bien, vienes list{o} para educación física!"}
+      - {mision: "Salir al patio de la escuela para el recreo"}
 
   - id: U01b
     nombre: Revisión del uniforme, con otra ropa
@@ -118,6 +124,7 @@ escenas:
           - [ACEPTA, "Sí, quiero participar.", "Perfecto. Te explico cómo."]
           - [PREGUNTA, "¿Qué puedo hacer sin cambiarme?", "Puedes ayudar a contar y a pasar el balón."]
           - [EVITA, "Prefiero quedarme en mi lugar.", "Está bien. Te aviso cuando empiece."]
+      - {mision: "Salir al patio de la escuela para el recreo"}
 
   - id: R01
     nombre: Primer recreo
@@ -205,6 +212,7 @@ escenas:
       - {minijuego: tienda}
       - {de: sistema, texto: "Regresaste con las compras."}
       - {marca: compras}
+      - {mision: "Regresar a casa para descansar"}
 
   - id: X01
     nombre: ¡Hoy toca examen!
@@ -222,6 +230,7 @@ escenas:
           - [EXPRESA_MALESTAR, "Debí estudiar un poco más.", "Puedes hacer lo que sepas."]
           - [ACEPTA, "Bueno, haré lo que pueda.", "Eso es todo lo que se pide."]
       - {minijuego: examen}
+      - {mision: "Hablar con Leo en el patio de la escuela"}
 
   - id: R05
     nombre: Amistad que crece
@@ -239,6 +248,7 @@ escenas:
           - [COMPARTE, "Prefiero conversar.", "Claro, aquí nos sentamos."]
           - [EVITA, "No tengo muchas ganas de hablar.", "Está bien. Aquí estoy si cambias de idea."]
           - [EXPRESA_MALESTAR, "Hay algo que me preocupa.", "Cuéntame, te escucho."]
+      - {mision: "Salir de la escuela para regresar a casa"}
 
   - id: E2-01
     nombre: Un momento tranquilo
@@ -251,7 +261,7 @@ escenas:
       - {minijuego: dibujo}
       - {de: sistema, texto: "¡Dibujo terminado!"}
       - {de: pensamiento, texto: "Me gustó cómo quedó. Tal vez pueda enseñárselo a alguien."}
-      - {mision: "Enseñar el dibujo"}
+      - {mision: "Enseñar el dibujo a papá en la sala"}
 
   - id: E2-02
     nombre: Encuentro con el padre
@@ -284,6 +294,7 @@ escenas:
       - {efecto: intensidad}
       - {de: papa, texto: "Con todo lo que hago por ti, al menos podrías agradecerme que intente corregirte."}
       - {marca: visto_papa}
+      - {mision: "Regresar a tu cama en tu habitación"}
 
   - id: E2-04
     nombre: Consecuencia emocional
@@ -302,6 +313,7 @@ escenas:
           - [EXPRESA_AGRADO, "Colgarlo en la pared.", null]
           - [EXPRESA_AGRADO, "Continuar trabajando en él.", null]
           - [COMPARTE, "Enseñárselo a un compañero.", null]
+      - {mision: "Dormir en tu cama para descansar"}
 
   - id: E2-05
     nombre: Reconocimiento y apoyo
@@ -316,6 +328,7 @@ escenas:
       - {de: leo, texto: "¡Oye, qué bien te quedó! ¿Lo hiciste tú?"}
       - {de: yo, texto: "Sí, aunque en mi casa no les gustó mucho."}
       - {de: leo, texto: "Bueno, no tiene que gustarle a todo el mundo. Lo importante es que disfrutes hacerlo."}
+      - {mision: "Hablar con la orientadora en la planta baja de la escuela"}
 
   - id: O01
     nombre: Hablar con la orientadora
@@ -338,6 +351,7 @@ escenas:
           - [SE_RETIRA, "Mejor después.", "Está bien. Aquí estaré."]
       - {de: orientadora, texto: "Lo que cuentas importa. Juntos pensamos a quién más podemos avisarle."}
       - {marca: hablo_orientadora}
+      - {mision: "Preparar el proyecto en parejas en el salón"}
 
   - id: C02
     nombre: Un proyecto entre dos
@@ -355,3 +369,4 @@ escenas:
           - [PROPONE, "Prefiero otra idea.", "A ver, cuéntame."]
           - [PROPONE, "¿Y si combinamos las dos?", "Me gusta. Hagámoslo así."]
       - {marca: proyecto_pareja}
+      - {mision: "Salir de la escuela para regresar a casa"}
