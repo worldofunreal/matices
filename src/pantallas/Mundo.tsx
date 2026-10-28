@@ -2,7 +2,7 @@
 // the rules: doors and their hours with a sign on each one, the bed, the mirror and what a tap says.
 import { useEffect, useRef, useState } from "react";
 import contenido, { type Escena } from "virtual:contenido";
-import { cargarMapa, quitarAusentes, visible, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
+import { cargarMapa, libre, quitarAusentes, visible, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
 import { Motor, type Figura } from "../mundo/motor";
 import { pieza } from "../lienzo/arte";
 import { capas, coloresDe } from "../personaje/apariencia";
@@ -69,7 +69,11 @@ function guiaDe(m: Mapa): { x: number; y: number; nombre: string; puerta: string
 // character in the house.
 function inicioDe(m: Mapa, e: Estado) {
   if (e.llegada && m.llegadas[e.llegada]) return m.llegadas[e.llegada];
-  if (e.x !== null && e.y !== null) return { x: e.x, y: e.y };
+  if (e.x !== null && e.y !== null) {
+    const tx = Math.floor(e.x / 32);
+    const ty = Math.floor((e.y - CAIDA) / 32);
+    if (libre(m, tx, ty)) return { x: e.x, y: e.y };
+  }
   return m.inicio;
 }
 
@@ -206,10 +210,10 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     const figuras: Figura[] = [];
     if (lugarActual === "casa") {
       if (e0.dia === 1 && e0.hora === "manana" && !e0.historia.hechas.includes("T05")) {
-        figuras.push({ id: "mama", x: 208, y: 416, piel: e0.apariencia.colores.piel ?? 0 });
+        figuras.push({ id: "mama", x: 248, y: 416, piel: e0.apariencia.colores.piel ?? 0 });
       }
       if (e0.dia === 2 && e0.hora === "noche") {
-        figuras.push({ id: "papa", x: 112, y: 480, piel: e0.apariencia.colores.piel ?? 0 });
+        figuras.push({ id: "papa", x: 144, y: 480, piel: e0.apariencia.colores.piel ?? 0 });
       }
     } else if (lugarActual === "calle" || lugarActual === "parque") {
       figuras.push({ id: "perro", x: 260, y: 460, piel: 0 });

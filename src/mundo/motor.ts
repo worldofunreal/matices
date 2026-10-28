@@ -86,6 +86,13 @@ export class Motor {
     this.y = o.y;
     this.dir = o.dir;
     this.ctx = o.canvas.getContext("2d")!;
+    if (this.bloquea(this.x, this.y)) {
+      const c = libreCerca(o.mapa, Math.floor(this.x / TILE), Math.floor((this.y - PIE.alto / 2) / TILE));
+      if (c) {
+        this.x = c.tx * TILE + TILE / 2;
+        this.y = c.ty * TILE + TILE;
+      }
+    }
     const f = o.figuras.find((x) => x.id === "perro");
     if (f) this.perro = { f, modo: "quieto", cola: [], ruta: [], hasta: 0, izq: false, anda: false, suelto: false };
   }
