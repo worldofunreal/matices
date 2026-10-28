@@ -513,6 +513,21 @@ grupos:
           destino: lugares/casa/lavadero.png
           despues: avisar
           orden: 30
+      maceta_2:
+        que: Maceta, variante 2
+        medida:
+          - 32
+          - 32
+      maceta_3:
+        que: Maceta, variante 3
+        medida:
+          - 32
+          - 32
+      maceta_4:
+        que: Maceta, variante 4
+        medida:
+          - 32
+          - 32
       maceta:
         que: Maceta
         medida:
@@ -1007,6 +1022,26 @@ grupos:
           destino: lugares/biblioteca_interior/librero.png
           despues: avisar
           orden: 49
+      librero_2:
+        que: Librero, variante 2
+        medida:
+          - 64
+          - 64
+      librero_3:
+        que: Librero, variante 3
+        medida:
+          - 64
+          - 64
+      librero_4:
+        que: Librero, variante 4
+        medida:
+          - 64
+          - 64
+      librero_5:
+        que: Librero, variante 5
+        medida:
+          - 64
+          - 64
       mesa_lectura:
         que: Mesa de lectura
         medida:

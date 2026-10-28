@@ -7,6 +7,8 @@ export const TILE = 32;
 // Places where animals wander in by chance: each partida gets its own, from its seed.
 const LUGARES_CON_FAUNA = ["calle", "parque", "escuela_patio", "tiendita", "biblioteca_planta_baja"];
 const GATOS = ["gato_blanco", "gato_calico", "gato_ginger_dormido", "gato_kitten", "gato_negro", "gato_persa", "gato_siames"];
+// Things drawn in several pictures so the places don't look the same: the first is the piece itself, the rest are _2, _3…
+const VARIANTES: Record<string, number> = { "lugares/biblioteca_interior/librero": 5, "lugares/casa/maceta": 4 };
 const PERSONAS_FONDO = [
   "abuela", "abuelo", "tia", "madrastra", "padrastro", "otra_persona",
   "hermano_mayor", "hermana_mayor", "hermano_menor", "hermana_menor",
@@ -97,12 +99,20 @@ export async function cargarMapa(lugar: string, semilla: string, dia = 1, hora: 
         tipo: o.type === "npc" ? ("npc" as const) : ("objeto" as const),
         x: o.x,
         y: o.y,
-        arte: o.type === "npc" ? `personajes/${o.name}` : (propiedad(o, "arte") ?? `lugares/${lugar}/${o.name}`),
+        arte: o.type === "npc" ? `personajes/${o.name}` : variante(propiedad(o, "arte") ?? `lugares/${lugar}/${o.name}`, `${semilla}:${lugar}:${o.x},${o.y}`),
         horas: propiedad(o, "horas"),
       })),
   };
   m.puntos.push(...vidaProcedural(m, semilla, lugar, dia, hora));
   return m;
+}
+
+// Which picture of a thing with variants: the same seed and place always give the same one.
+function variante(arte: string, semilla: string) {
+  const n = VARIANTES[arte];
+  if (!n) return arte;
+  const k = 1 + Math.floor(azar(semilla).frac() * n);
+  return k === 1 ? arte : `${arte}_${k}`;
 }
 
 // Procedural life: cats, dogs, background people and street vehicles.
