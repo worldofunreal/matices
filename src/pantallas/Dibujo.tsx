@@ -1,4 +1,4 @@
-// The drawing sheet (GDD §10): 12 colors, 3 sizes, eraser and undo. Opened from Mi libro, whenever the child
+// The drawing sheet: 12 colors, 3 sizes, eraser and undo. Opened from Mi libro, whenever the child
 // wants. Every stroke keeps its timing; the drawing is the only free content.
 import { useEffect, useRef, useState } from "react";
 import contenido from "virtual:contenido";

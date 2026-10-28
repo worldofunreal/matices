@@ -1,0 +1,325 @@
+# Escenas del demo: el guion de Dayana (RPG_Salud_Mental_Guiones_Arte.pdf) hecho datos. Formato y
+# reglas en contenido/README.md; códigos de las opciones en contenido/codigos.md.
+escenas:
+  - id: T03
+    nombre: Despertar en la habitación
+    donde: casa
+    al: entrar
+    dia: 1
+    hora: manana
+    pasos:
+      - {de: pensamiento, texto: "Tengo hambre... creo que no he desayunado. ¿Habrá algo en la cocina?"}
+      - {mision: "Buscar algo para desayunar"}
+
+  - id: T05
+    nombre: Conversación con la madre
+    donde: casa
+    al: mesa
+    dia: 1
+    hora: manana
+    tras: T03
+    pasos:
+      - {de: madre, texto: "¡Buenos días! Ya despertaste. Se me hizo un poco tarde y tengo que salir a trabajar."}
+      - {de: yo, texto: "Buenos días, mamá. ¿Hay algo para desayunar?"}
+      - {de: madre, texto: "Hay huevos en el refrigerador. Hoy no alcancé a preparar el desayuno, pero puedes hacerte algo con lo que dejé. Tengo que irme."}
+      - opciones:
+          - [ACEPTA, "Está bien, mamá. Que te vaya bien.", "Gracias. Nos vemos más tarde."]
+          - [PREGUNTA, "¿Mañana podemos desayunar juntos?", "Voy a intentar organizarme, ¿sí?"]
+          - [PIDE_AYUDA, "¿Podrías ayudarme antes de irte?", "Hoy ya no alcanzo. Dejé lo necesario en la cocina."]
+          - [EXPRESA_MALESTAR, "No tengo muchas ganas de cocinar.", "Hay algo sencillo que puedes preparar. Luego hablamos."]
+      - {de: pensamiento, texto: "Últimamente siempre tiene mucha prisa."}
+
+  - id: T06
+    nombre: El refrigerador
+    donde: casa
+    al: refrigerador
+    dia: 1
+    hora: manana
+    tras: T05
+    pasos:
+      - {minijuego: refri}
+      - {de: sistema, texto: "¡Encontraste los huevos! Ahora puedes preparar el desayuno."}
+
+  - id: T07
+    nombre: Preparar el desayuno
+    donde: casa
+    al: estufa
+    dia: 1
+    hora: manana
+    tras: T06
+    pasos:
+      - {minijuego: estufa}
+      - {de: pensamiento, texto: "Qué raro... hoy tampoco alcanzó a desayunar conmigo."}
+      - {de: pensamiento, texto: "Bueno, mejor termino. No quiero llegar tarde."}
+      - {de: sistema, texto: "Suena la alarma del reloj: hora de alistarte para la escuela."}
+
+  - id: T08
+    nombre: Elegir la ropa
+    donde: casa
+    al: ropero
+    dia: 1
+    hora: manana
+    tras: T07
+    pasos:
+      - {minijuego: ropero}
+
+  - id: T09
+    nombre: Salir de casa
+    donde: casa
+    al: salir:calle
+    dia: 1
+    hora: manana
+    tras: T08
+    pasos:
+      - {de: pensamiento, texto: "Espero que hoy sea un buen día."}
+      - {de: sistema, texto: "Tutorial completado. Ya puedes explorar, hablar con otras personas y descubrir nuevas actividades."}
+
+  - id: U01a
+    nombre: Revisión del uniforme, con ropa de deporte
+    donde: escuela_planta_baja
+    al: entrar
+    dia: 1
+    hora: manana
+    tras: T09
+    si: [ropa_deporte]
+    pasos:
+      - {de: lucia, texto: "Buenos días. ¡Qué bien, vienes list{o} para educación física!"}
+
+  - id: U01b
+    nombre: Revisión del uniforme, con otra ropa
+    donde: escuela_planta_baja
+    al: entrar
+    dia: 1
+    hora: manana
+    tras: T09
+    no: [ropa_deporte]
+    pasos:
+      - {de: lucia, texto: "Buenos días. Hoy toca educación física. Puedes participar aunque no traigas ropa de deporte."}
+      - opciones:
+          - [ACEPTA, "Sí, quiero participar.", "Perfecto. Te explico cómo."]
+          - [PREGUNTA, "¿Qué puedo hacer sin cambiarme?", "Puedes ayudar a contar y a pasar el balón."]
+          - [EVITA, "Prefiero quedarme en mi lugar.", "Está bien. Te aviso cuando empiece."]
+
+  - id: R01
+    nombre: Primer recreo
+    donde: escuela_patio
+    al: entrar
+    dia: 1
+    hora: manana
+    tras: [U01a, U01b]
+    pasos:
+      - {de: pensamiento, texto: "Todavía no conozco bien a todos. Tal vez pueda hablar con alguien."}
+      - {mision: "Conocer a tus compañeros"}
+
+  - id: R02-valeria
+    nombre: Valeria y la cuerda
+    donde: escuela_patio
+    al: companero_1
+    dia: 1
+    hora: manana
+    tras: R01
+    pasos:
+      - {de: valeria, texto: "¡Hola! Estamos buscando a alguien más para jugar. ¿Te animas?"}
+      - opciones:
+          - [ACEPTA, "¡Claro! ¿Qué están jugando?", "Saltar la cuerda. ¿Entras?"]
+          - [ACEPTA, "No soy muy bueno, pero puedo intentarlo.", "No importa. Entras y ya."]
+          - [POSPONE, "Tal vez después.", "Está bien. Aquí andamos."]
+      - {minijuego: cuerda}
+      - {de: valeria, texto: "¡Estuvo divertido! ¿Quieres jugar conmigo en el próximo recreo?"}
+      - opciones:
+          - [ACEPTA, "Sí, me gustaría.", "¡Genial! Te busco."]
+          - [PROPONE, "Podemos intentar otro juego.", "Buena idea, ¿cuál?"]
+          - [EVITA, "A veces prefiero hacer otras cosas, pero podemos hablar.", "Claro, cuando quieras."]
+      - {marca: conocio_valeria}
+      - {de: sistema, texto: "Has conocido mejor a Valeria."}
+
+  - id: R02-leo
+    nombre: Leo y el dibujo
+    donde: escuela_patio
+    al: companero_2
+    dia: 1
+    hora: manana
+    tras: R01
+    pasos:
+      - {de: leo, texto: "Estoy intentando terminar este dibujo. ¿Quieres ayudarme?"}
+      - opciones:
+          - [ACEPTA, "Sí, me gusta dibujar.", "¡Genial! Empieza con el cielo."]
+          - [PREGUNTA, "¿Qué estás haciendo?", "Un paisaje del patio, con la cancha al fondo."]
+          - [EVITA, "Prefiero seguir explorando.", "Está bien. Aquí sigo."]
+      - {minijuego: dibujo}
+      - {marca: conocio_leo}
+
+  - id: R02-sam
+    nombre: Sam y la libreta perdida
+    donde: escuela_planta_baja
+    al: companero_3
+    dia: 1
+    hora: manana
+    tras: R01
+    pasos:
+      - {de: sam, texto: "Encontré algo raro en el patio. Creo que alguien perdió una libreta."}
+      - opciones:
+          - [ACEPTA, "Vamos a investigar.", "¡Vamos! Busquemos juntos."]
+          - [PREGUNTA, "¿Dónde la encontraste?", "Cerca de la jardinera, junto al aro de básquet."]
+          - [EVITA, "Ahora tengo otras cosas que hacer.", "Te aviso si encuentro algo más."]
+      - {minijuego: pistas}
+      - {marca: conocio_sam}
+
+  - id: C03
+    nombre: ¿Me ayudas con las compras?
+    donde: calle
+    al: entrar
+    dia: 1
+    hora: tarde
+    tras: T09
+    pasos:
+      - {de: madre, texto: "Oye, ¿me ayudas con algo? Nos faltan unas cosas para la comida. ¿Puedes ir a la tienda de la esquina?"}
+      - opciones:
+          - [ACEPTA, "¡Claro! ¿Qué necesitas?", "Aquí tienes la lista y el dinero."]
+          - [PREGUNTA, "¿Puedo ir después de terminar mi tarea?", "Sí, pero no tardes."]
+          - [PIDE_AYUDA, "Está bien, pero necesito la lista.", "Aquí la tienes. Regresa pronto."]
+      - {minijuego: tienda}
+      - {de: sistema, texto: "Regresaste con las compras."}
+      - {marca: compras}
+
+  - id: X01
+    nombre: ¡Hoy toca examen!
+    donde: escuela_planta_baja
+    al: entrar
+    dia: 2
+    hora: manana
+    pasos:
+      - {de: lucia, texto: "Buenos días. Recuerden que hoy tenemos el examen que estuvimos preparando. Guarden sus materiales, por favor."}
+      - {de: pensamiento, texto: "¡Cierto! El examen... Espero acordarme de lo que estudié."}
+      - opciones:
+          - [ACEPTA, "¡Estoy list{o}!", "Muy bien. Suerte."]
+          - [EXPRESA_MALESTAR, "Me siento algo nervios{o}.", "Respira. Son preguntas sencillas."]
+          - [EXPRESA_MALESTAR, "Debí estudiar un poco más.", "Puedes hacer lo que sepas."]
+          - [ACEPTA, "Bueno, haré lo que pueda.", "Eso es todo lo que se pide."]
+      - {minijuego: examen}
+
+  - id: R05
+    nombre: Amistad que crece
+    donde: escuela_patio
+    al: companero_2
+    dia: 2
+    hora: manana
+    tras: R02-leo
+    pasos:
+      - {de: leo, texto: "Oye, ¿te acuerdas del dibujo que hicimos? Pensé que podríamos terminarlo hoy."}
+      - {de: leo, texto: "Te noto algo distraído. ¿Quieres jugar o prefieres que nos sentemos un rato?"}
+      - opciones:
+          - [ACEPTA, "Sí, vamos a jugar.", "¡Vamos!"]
+          - [COMPARTE, "Prefiero conversar.", "Claro, aquí nos sentamos."]
+          - [EVITA, "No tengo muchas ganas de hablar.", "Está bien. Aquí estoy si cambias de idea."]
+          - [EXPRESA_MALESTAR, "Hay algo que me preocupa.", "Cuéntame, te escucho."]
+
+  - id: E2-01
+    nombre: Un momento tranquilo
+    donde: casa
+    al: cama
+    dia: 2
+    hora: noche
+    pasos:
+      - {minijuego: dibujo}
+      - {de: sistema, texto: "¡Dibujo terminado!"}
+      - {de: pensamiento, texto: "Me gustó cómo quedó. Tal vez pueda enseñárselo a alguien."}
+      - {mision: "Enseñar el dibujo"}
+
+  - id: E2-02
+    nombre: Encuentro con el padre
+    donde: casa
+    al: sillon
+    dia: 2
+    hora: noche
+    tras: E2-01
+    delicada: true
+    saltable: true
+    pasos:
+      - {efecto: inquietud}
+      - {de: yo, texto: "Papá, mira lo que hice."}
+      - {de: papa, texto: "¿Otra vez perdiendo el tiempo con eso?"}
+      - {de: yo, texto: "Lo hice en mi tiempo libre."}
+      - {de: papa, texto: "Deberías hacer algo más útil. Con tantas cosas que tienes que mejorar, siempre estás entretenid{o} con tonterías."}
+      - opciones:
+          - [EXPRESA_AGRADO, "A mí me gusta dibujar.", null]
+          - [COMPARTE, "Solo quería enseñártelo.", null]
+          - [PREGUNTA, "¿Por qué siempre dices eso?", null]
+          - [CALLA, "Guardar silencio.", null]
+      - {de: papa, texto: "Cuando aprendas a hacer algo bien, entonces podrás venir a presumirme tus cosas."}
+      - {de: papa, texto: "Y no pongas esa cara. Te digo estas cosas por tu bien."}
+      - opciones:
+          - [EXPRESA_MALESTAR, "Me hace sentir mal que hables así.", null]
+          - [DESACUERDO, "No estoy de acuerdo.", null]
+          - [EVITA, "No quiero discutir.", null]
+          - [SE_RETIRA, "Retirarme sin contestar.", null]
+      - {efecto: intensidad}
+      - {de: papa, texto: "Con todo lo que hago por ti, al menos podrías agradecerme que intente corregirte."}
+      - {marca: visto_papa}
+
+  - id: E2-04
+    nombre: Consecuencia emocional
+    donde: casa
+    al: cama
+    dia: 2
+    hora: noche
+    tras: E2-02
+    pasos:
+      - {efecto: acompanamiento}
+      - {de: pensamiento, texto: "Estaba content{o} con lo que hice."}
+      - {de: pensamiento, texto: "Ahora ya no sé si quiero enseñárselo a alguien."}
+      - opciones:
+          - [EVITA, "Guardar el dibujo.", null]
+          - [EXPRESA_AGRADO, "Colgarlo en la pared.", null]
+          - [EXPRESA_AGRADO, "Continuar trabajando en él.", null]
+          - [COMPARTE, "Enseñárselo a un compañero.", null]
+
+  - id: E2-05
+    nombre: Reconocimiento y apoyo
+    donde: escuela_patio
+    al: companero_2
+    dia: 3
+    hora: manana
+    tras: E2-04
+    pasos:
+      - {efecto: alegria}
+      - {de: leo, texto: "¡Oye, qué bien te quedó! ¿Lo hiciste tú?"}
+      - {de: yo, texto: "Sí, aunque en mi casa no les gustó mucho."}
+      - {de: leo, texto: "Bueno, no tiene que gustarle a todo el mundo. Lo importante es que disfrutes hacerlo."}
+
+  - id: O01
+    nombre: Hablar con la orientadora
+    donde: escuela_planta_baja
+    al: orientadora
+    dia: 3
+    hora: manana
+    tras: E2-05
+    delicada: true
+    saltable: true
+    pasos:
+      - {efecto: acompanamiento}
+      - {de: yo, texto: "¿Puedo hablar con usted un momento?"}
+      - {de: orientadora, texto: "Claro. Puedes contarme con calma."}
+      - opciones:
+          - [CUENTA, "Me pasa algo en mi casa.", "Gracias por contarme. Vamos paso a paso."]
+          - [PREGUNTA, "¿Qué puedo hacer?", "Podemos buscar a alguien de confianza para hablar."]
+          - [EVITA, "No sé cómo explicarlo.", "No tienes que explicarlo todo hoy."]
+          - [SE_RETIRA, "Mejor después.", "Está bien. Aquí estaré."]
+      - {de: orientadora, texto: "Lo que cuentas importa. Juntos pensamos a quién más podemos avisarle."}
+      - {marca: hablo_orientadora}
+
+  - id: C02
+    nombre: Un proyecto entre dos
+    donde: escuela_planta_baja
+    al: entrar
+    dia: 3
+    hora: manana
+    tras: O01
+    pasos:
+      - {de: lucia, texto: "Para la próxima clase prepararán un proyecto en parejas. Pueden escoger con quién trabajar. Tendrán que investigar y presentar sus resultados."}
+      - {de: valeria, texto: "Creo que quedaría mejor si lo hacemos así. ¿Tú qué opinas?"}
+      - opciones:
+          - [ACEPTA, "Acepto tu propuesta.", "Perfecto. Empezamos mañana."]
+          - [PROPONE, "Prefiero otra idea.", "A ver, cuéntame."]
+          - [PROPONE, "¿Y si combinamos las dos?", "Me gusta. Hagámoslo así."]
+      - {marca: proyecto_pareja}

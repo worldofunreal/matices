@@ -4,7 +4,7 @@ import { Icono } from "./iconos";
 import { registrar } from "../datos/eventos";
 import { dondeEsta } from "../datos/monitor";
 
-// The voice only plays when the child asks for it (GDD §12).
+// The voice only plays when the child asks for it.
 export function Bocina({ clave, texto, etiqueta = "Escuchar" }: { clave: string; texto: string; etiqueta?: string }) {
   const [sonando, setSonando] = useState(false);
   return (

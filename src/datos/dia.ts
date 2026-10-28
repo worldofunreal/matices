@@ -1,4 +1,4 @@
-// Days and times of day (GDD §4). Time never moves by itself: it moves when the child reaches
+// Days and times of day. Time never moves by itself: it moves when the child reaches
 // the place that closes each part of the day.
 //   morning → afternoon: leaving the school for the street
 //   afternoon → night: being at home

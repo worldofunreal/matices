@@ -1,4 +1,4 @@
-/* Siempre a la mano (GDD §13): the three corner buttons, the mark for the adult and the card that says
+/* Siempre a la mano: the three corner buttons, the mark for the adult and the card that says
    someone was called. Only the buttons take taps; the rest of the screen stays usable. */
 .siempre {
   position: fixed;
@@ -30,7 +30,7 @@
   bottom: max(var(--barra-margen), env(safe-area-inset-bottom));
 }
 
-/* The mark for the adult: small, with no words, in the bottom-left corner (GDD §10). */
+/* The mark for the adult: small, with no words, in the bottom-left corner. */
 .siempre-senal {
   position: fixed;
   z-index: 55;

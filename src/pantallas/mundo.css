@@ -39,7 +39,7 @@
   justify-content: flex-start;
 }
 
-/* The run button lights up while it is on (GDD §12). */
+/* The run button lights up while it is on. */
 .mundo-controles .correr[aria-pressed="true"] {
   background: var(--girasol);
   color: var(--tinta);
@@ -61,7 +61,7 @@
   z-index: 7;
 }
 
-/* A sign on each door: where it leads (GDD §8). */
+/* A sign on each door: where it leads. */
 .letrero span {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -151,7 +151,7 @@
   line-height: 1.3;
 }
 
-/* The answers: one row at the bottom, in reach of the thumb (GDD §12). */
+/* The answers: one row at the bottom, in reach of the thumb. */
 .respuestas {
   position: absolute;
   left: 0;
@@ -189,4 +189,21 @@
 
 .lectura-sencilla .letrero span {
   font-size: 18px;
+}
+
+/* The mission of the story, under the top controls. */
+.mision-mundo {
+  position: absolute;
+  top: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  margin: 0;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--tarjeta);
+  box-shadow: var(--sombra-alta);
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
 }

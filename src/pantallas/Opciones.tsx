@@ -1,4 +1,4 @@
-// Opciones (GDD §13, §14): the child's settings, over the world like Mi libro. Each change is saved at
+// Opciones: the child's settings, over the world like Mi libro. Each change is saved at
 // once. The voice (ui/voz.ts) and the ambient effects (Mundo) use them now; music, effects, text speed and
 // simple reading are saved for when they exist.
 import { useState, type ReactNode } from "react";
@@ -38,7 +38,7 @@ export function Opciones({ alCerrar }: { alCerrar: () => void }) {
     aplicarLectura(nuevas.lectura);
   };
 
-  // Five bars; the voice starts at one so it never goes silent (GDD §15).
+  // Five bars; the voice starts at one so it never goes silent.
   const nivel = (clave: "voz" | "musica" | "efectos", minimo: number) => (
     <div className="preferencia-control">
       <button className="boton redondo" aria-label={O.bajar} disabled={o[clave] <= minimo} onClick={() => cambiar(clave, o[clave] - 1)}>

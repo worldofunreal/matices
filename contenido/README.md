@@ -1,32 +1,48 @@
 # Contenido
 
-Texto de las situaciones y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.2.0` (borrador, sin revisión clínica).
+Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.3.0` (borrador, sin revisión clínica).
 
 | Archivo | Qué es |
 | --- | --- |
-| `situaciones.yaml` | Las situaciones cotidianas (GDD §9): quién reacciona, qué dice y las respuestas con su código |
-| `figuras.yaml` | Las figuras para armar la casa y si son adultos, menores o mascotas |
-| `textos.yaml` | Textos fijos: creación de personaje, los 40 nombres, casa, mundo, letreros de las salidas |
+| `escenas.yaml` | Las escenas del demo (guion de Dayana): dónde y cuándo empiezan, sus líneas, opciones, minijuegos y marcas |
+| `figuras.yaml` | La familia que aparece en la casa (mamá, papá, tío) |
+| `textos.yaml` | Textos fijos: creación de personaje, los 40 nombres, cuadro de diálogo, mundo, letreros de las salidas |
+| `codigos.md` | Los códigos de las opciones y los eventos que guarda el juego |
+| `areas.md` | Las áreas de las escenas |
 
-## Forma de una situación
+## Forma de una escena
 
 ```yaml
-- id: S01                    # único
-  nombre: Correr en la casa
-  lugar: casa                # un mapa de public/mapas/
-  cuando: correr             # lo que hace el niño: correr
-  quien: adulto_cerca        # quién reacciona: la persona adulta de la casa más cerca del niño
-  areas: [conducta]
-  aviso: "¡No corras dentro de la casa!"            # la primera vez
-  pregunta: "Te dije que no corrieras dentro…"      # desde la segunda, cada vez
-  respuestas:                                       # [CÓDIGO, texto]
-    - [DESAFIA, "No me importa"]
+- id: T05                              # único: letras, números y guion
+  nombre: Conversación con la madre    # solo para el tablero
+  donde: casa                          # un mapa de public/mapas/
+  al: mesa                             # entrar | salir:<lugar> | un objeto o persona de ese mapa
+  dia: 1                               # 1 a 3
+  hora: manana                         # manana | tarde | noche
+  tras: T03                            # opcional: una escena o una lista (cualquiera de ellas)
+  si: [ropa_deporte]                   # opcional: marcas que tienen que estar
+  no: [ropa_deporte]                   # opcional: marcas que no pueden estar
+  areas: [pedir_ayuda]                 # opcional
+  delicada: true                       # opcional: siempre con saltable
+  saltable: true                       # se puede saltar
+  pasos:
+    - {de: madre, texto: "¡Buenos días! Ya despertaste."}
+    - opciones:                        # de 2 a 4; cada una: [CÓDIGO, texto, respuesta o null]
+        - [ACEPTA, "Está bien, mamá.", "Gracias. Nos vemos más tarde."]
+        - [PIDE_AYUDA, "¿Podrías ayudarme?", null]
+    - {minijuego: refri}               # refri, estufa, ropero, cuerda, dibujo, pistas, examen, tienda
+    - {marca: conocio_valeria}         # una marca que otras escenas pueden pedir con si y no
+    - {mision: "Buscar algo para desayunar"}
+    - {de: sistema, texto: "Has conocido mejor a Valeria."}
 ```
+
+Cada paso hace una sola cosa: una línea (`de`), unas opciones, un minijuego, una marca, una misión o un efecto (`inquietud`, `miedo`, `intensidad`, `acompanamiento` o `alegria`; la intensidad la gradúa Efectos en Opciones).
 
 ## Reglas
 
-- Toda respuesta lleva un código de `contenido/codigos.md`. Una respuesta sin código o con un código que no existe rompe la compilación.
-- Respuestas de dos o tres palabras; tres por situación como máximo, para que quepan abajo en una fila.
-- Las áreas son las de `contenido/areas.md`.
-- Textos a nivel de 3.º de primaria, en español de México, sin violencia explícita y sin género (quien reacciona puede ser mamá o papá).
+- Toda opción lleva un código de `codigos.md`. Una opción sin código o con un código que no existe rompe la compilación.
+- Una escena `delicada` siempre es `saltable`: el niño puede pausarla, saltarla y pedir ayuda en cualquier momento.
+- Las respuestas (`null` o texto) solo van cuando quien responde ya habló antes en la escena.
+- Un género no se escribe fijo. Donde una palabra cambia con el cuerpo del niño se escribe con la marca `{o}`: `list{o}` sale "listo" o "lista". Sin otras marcas en el texto.
+- Textos para secundaria, en español de México, sin violencia explícita, sin groserías. Puede ser ruda en el tono, nunca grosera en las palabras.
 - Cambiar un texto sube la versión del contenido; los reportes guardan la versión que vio cada niño.

@@ -105,11 +105,6 @@ function persona(ctx: Ctx, p: Pieza, m: Manifiesto) {
     ctx.fillRect(Math.round(w / 2 - ancho / 2 + x), Math.round(y), ancho, Math.round(a));
   };
   const [pc, pm, ps] = m.colores.piel.clave;
-  if (n === "perro" || n === "gato") {
-    r(0, pie - alto * 0.55, alto * 0.75, alto * 0.55, tono(n, 55));
-    r(0, pie - alto, alto * 0.6, alto * 0.5, tono(n, 62));
-    return;
-  }
   const top = pie - alto, cuerpo = alto - cabeza;
   r(0, top, cabeza * 0.8, cabeza * 0.25, tono(n, 30)); // hair
   r(0, top + cabeza * 0.25, cabeza * 0.8, cabeza * 0.75, pc); // face
@@ -123,16 +118,6 @@ function persona(ctx: Ctx, p: Pieza, m: Manifiesto) {
 }
 
 function hoja(ctx: Ctx, p: Pieza, m: Manifiesto) {
-  // The dog's side walk: its sitting placeholder in each frame.
-  if (p.id === "figuras/perro_lado") {
-    for (let i = 0; i < p.medida[0] / 48; i++) {
-      ctx.save();
-      ctx.translate(i * 48, 0);
-      persona(ctx, { ...p, id: "figuras/perro", medida: [48, p.medida[1]] }, m);
-      ctx.restore();
-    }
-    return;
-  }
   if (p.id.startsWith("figuras/")) return persona(ctx, p, m);
   const capa = capaDe(p);
   const filas = [0, 1, 3]; // abajo, izquierda, arriba (derecha is izquierda mirrored)

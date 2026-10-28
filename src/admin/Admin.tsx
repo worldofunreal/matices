@@ -6,11 +6,10 @@ import { pintarHoja, HOJA, type Trazo } from "../pantallas/Dibujo";
 import * as K from "./calculos";
 import type { Evento } from "./calculos";
 
-const C: K.Contenido = { situaciones: contenido.situaciones, areas: contenido.areas, objetos: contenido.objetos };
+const C: K.Contenido = { escenas: contenido.escenas, areas: contenido.areas, objetos: contenido.objetos };
 const nombreArea = new Map(contenido.areas.map((a) => [a.id, a.nombre]));
-const nombreDe = new Map(contenido.situaciones.map((x) => [x.id, x.nombre]));
+const nombreDe = new Map(contenido.escenas.map((x) => [x.id, x.nombre]));
 const figuraDe = new Map(contenido.figuras.map((f) => [f.id, f.nombre]));
-const cuartoDe = (c: string) => contenido.textos.casa.cuartos[c] ?? c;
 
 // FIGURA:tia#2 → "Tía (2)"; other codes stay as written in contenido/codigos.md.
 function etiqueta(codigo: string) {
@@ -22,7 +21,7 @@ function etiqueta(codigo: string) {
   return resto ?? codigo;
 }
 const fecha = (ms: number | null | undefined) => (ms ? new Date(ms).toLocaleString("es-MX", { dateStyle: "short", timeStyle: "short" }) : "—");
-const situacion = (id: string) => `${id} ${nombreDe.get(id) ?? ""}`.trim();
+const escena = (id: string) => `${id} ${nombreDe.get(id) ?? ""}`.trim();
 
 function descargar(nombre: string, texto: string, tipo: string) {
   const a = document.createElement("a");
@@ -145,7 +144,7 @@ function Todos({ eventos }: { eventos: Evento[] }) {
           <div className="cifra"><strong>{resumenes.length}</strong><span>participantes</span></div>
           <div className="cifra"><strong>{resumenes.filter((r) => r.termino).length}</strong><span>terminaron los 3 días</span></div>
           <div className="cifra"><strong>{K.mediana(resumenes.map((r) => r.minutos))}</strong><span>minutos jugados (del medio)</span></div>
-          <div className="cifra"><strong>{resumenes.reduce((a, r) => a + r.respuestas, 0)}</strong><span>respuestas en situaciones</span></div>
+          <div className="cifra"><strong>{resumenes.reduce((a, r) => a + r.respuestas, 0)}</strong><span>elecciones en escenas</span></div>
           <div className="cifra"><strong>{resumenes.reduce((a, r) => a + r.errores, 0)}</strong><span>errores</span></div>
         </div>
       </section>
@@ -206,7 +205,7 @@ function Todos({ eventos }: { eventos: Evento[] }) {
 
       <section>
         <h2>Por área, entre todos</h2>
-        <p className="nota">Cuántas veces salió cada respuesta en las situaciones de cada área.</p>
+        <p className="nota">Cuántas veces se eligió cada código en las escenas de cada área.</p>
         <table>
           <thead><tr><th>Área</th><th>Códigos</th></tr></thead>
           <tbody>
@@ -232,9 +231,9 @@ function Perfil({ nino, todos }: { nino: string; todos: Evento[] }) {
   const quiere = evs.filter((e) => e.tipo === "quiero_hablar");
   const cal = K.calidad(evs);
   const ap = K.aparienciaDe(evs);
-  const casa = K.casa(evs);
   const areas = K.codigosPorArea(evs, C);
-  const sits = K.situaciones(evs);
+  const esc = K.escenas(evs);
+  const juegos = K.minijuegos(evs);
   const dibujos = evs.filter((e) => e.tipo === "dibujo" && e.imagen);
   const explora = K.exploracion(evs, C);
   const recorrido = evs.filter((e) => e.tipo === "pantalla");
@@ -261,26 +260,13 @@ function Perfil({ nino, todos }: { nino: string; todos: Evento[] }) {
       </section>
 
       <section>
-        <h2>Su personaje y su casa</h2>
-        <div className="perfil-arriba">
-          {ap ? <Personaje a={ap} escala={4} /> : <p className="nota">No terminó su personaje.</p>}
-          {casa ? (
-            <table style={{ width: "auto", flex: 1 }}>
-              <thead><tr><th>Cuarto</th><th>Quién</th></tr></thead>
-              <tbody>
-                {[...casa.cuartos].map(([c, fs]) => (
-                  <tr key={c}><td>{cuartoDe(c)}</td><td>{fs.map((f) => `${etiqueta(f.figura)}${f.renombrada ? " (le puso nombre)" : ""} · a ${f.distancia} cuadros`).join(" · ")}</td></tr>
-                ))}
-                <tr><td>Su personaje</td><td>{casa.protaCuarto ? cuartoDe(casa.protaCuarto) : "no lo puso"}</td></tr>
-              </tbody>
-            </table>
-          ) : <p className="nota">No terminó su casa.</p>}
-        </div>
+        <h2>Su personaje</h2>
+        {ap ? <Personaje a={ap} escala={4} /> : <p className="nota">No terminó su personaje.</p>}
       </section>
 
       <section>
         <h2>Por área</h2>
-        <p className="nota">Como un examen de laboratorio, pero sin rangos inventados: la referencia es el mismo conteo entre todos los participantes que contestaron en una situación de esa área. Sin colores de alto o bajo hasta tener 120 o más niños por grupo de edad.</p>
+        <p className="nota">Como un examen de laboratorio, pero sin rangos inventados: la referencia es el mismo conteo entre todos los participantes que eligieron en una escena de esa área. Sin colores de alto o bajo hasta tener 120 o más niños por grupo de edad.</p>
         <table>
           <thead><tr><th>Área</th><th>Resultado</th><th>De dónde sale</th><th>Referencia de todos</th></tr></thead>
           <tbody>
@@ -291,7 +277,7 @@ function Perfil({ nino, todos }: { nino: string; todos: Evento[] }) {
                   <tr key={a.id + codigo}>
                     <td>{i === 0 ? nombreArea.get(a.id) : ""}</td>
                     <td>{etiqueta(codigo)}: {f.n}</td>
-                    <td>{[...f.situaciones].map(situacion).join(", ")}</td>
+                    <td>{[...f.escenas].map(escena).join(", ")}</td>
                     <td>N = {r.N} · del medio {r.mediana} · de {r.min} a {r.max}</td>
                   </tr>
                 );
@@ -302,18 +288,28 @@ function Perfil({ nino, todos }: { nino: string; todos: Evento[] }) {
       </section>
 
       <section>
-        <h2>Situaciones</h2>
-        <p className="nota">Qué hizo, quién reaccionó, qué contestó cada vez (en orden, con los segundos que tardó) y cuántas veces lo volvió a hacer después de contestar.</p>
-        {sits.size ? (
+        <h2>Escenas</h2>
+        <p className="nota">Qué pasó en cada escena: cuántas veces empezó, si la saltó o la pausó, y cada elección en orden, con quién hablaba y los segundos que tardó en elegir.</p>
+        {esc.size ? (
           <table>
-            <thead><tr><th>Situación</th><th className="num">Veces</th><th>Quién reaccionó</th><th>Contestó</th><th className="num">Lo hizo después</th></tr></thead>
+            <thead><tr><th>Escena</th><th className="num">Veces</th><th className="num">Saltada</th><th className="num">Pausada</th><th>Elecciones</th></tr></thead>
             <tbody>
-              {[...sits].map(([id, f]) => (
-                <tr key={id}><td>{situacion(id)}</td><td className="num">{f.veces}</td><td>{f.quien.map(etiqueta).join(", ")}</td><td>{f.respuestas.map((r) => `${r.codigo} (${r.segundos} s)`).join(" → ") || "—"}</td><td className="num">{f.respuestas.length ? f.despues : ""}</td></tr>
+              {[...esc].map(([id, f]) => (
+                <tr key={id}><td>{escena(id)}</td><td className="num">{f.veces}</td><td className="num">{f.saltada || ""}</td><td className="num">{f.pausada || ""}</td><td>{f.elecciones.map((r) => `${r.codigo} (${r.de}, ${r.segundos} s)`).join(" → ") || "—"}</td></tr>
               ))}
             </tbody>
           </table>
         ) : <p className="nota">Todavía ninguna.</p>}
+
+        <h2>Minijuegos</h2>
+        {juegos.length ? (
+          <table>
+            <thead><tr><th>Minijuego</th><th>Resultado</th><th className="num">Segundos</th><th>Elección</th></tr></thead>
+            <tbody>
+              {juegos.map((j, i) => <tr key={i}><td>{j.minijuego}</td><td>{j.resultado}</td><td className="num">{j.segundos}</td><td>{j.codigo || "—"}</td></tr>)}
+            </tbody>
+          </table>
+        ) : <p className="nota">Todavía ninguno.</p>}
       </section>
 
       {dibujos.length > 0 && (

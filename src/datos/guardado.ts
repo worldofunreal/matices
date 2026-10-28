@@ -10,26 +10,24 @@ export interface Estado {
   direccion: Direccion;
   apariencia: Apariencia;
   creado: boolean; // finished character creation
+  semilla: string; // random once per partida: decides the animals and crowd of the background
   nombre: string; // stays on the device; never goes into an event
-  casa: FiguraPuesta[]; // who the child put in the house (GDD §7)
-  casaLista: boolean;
-  protaCasa: { x: number; y: number } | null; // where the child put their own character
   dia: number; // 1 to 3
   hora: Hora;
   llegada: string | null; // arrival point after crossing a door
   visitas: Record<string, number>;
-  situaciones: Record<string, Situacion>; // what has happened in each everyday situation (GDD §9)
+  historia: Historia; // the scenes of the story (contenido/escenas.yaml)
   libro: Pagina[]; // "Mi libro": the child's drawings
-  opciones: Opciones; // the child's settings (GDD §13); saved at once when changed
+  opciones: Opciones; // the child's settings; saved at once when changed
 }
 
-// Levels go from 0 to 5. The voice never goes silent, so it starts at 1 (GDD §15).
+// Levels go from 0 to 5. The voice never goes silent, so it starts at 1.
 export interface Opciones {
   voz: number;
   musica: number;
   efectos: number;
   velocidad: "lenta" | "normal" | "rapida";
-  lectura: boolean; // lectura sencilla (GDD §13)
+  lectura: boolean; // lectura sencilla
 }
 
 const OPCIONES_INICIALES: Opciones = { voz: 5, musica: 3, efectos: 3, velocidad: "normal", lectura: false };
@@ -39,24 +37,15 @@ export interface Pagina {
   cuando: number; // ms since epoch
 }
 
-export interface Situacion {
-  veces: number; // how many times the child did it
-  respuesta: string | null; // the code of the answer, once given
+export interface Historia {
+  hechas: string[]; // scenes done or skipped: they never start again
+  marcas: string[]; // what the child has lived or chosen; scenes ask for them with si and no
+  mision: string | null; // the mission on screen
 }
 
 export type Hora = "manana" | "tarde" | "noche";
 
-export interface FiguraPuesta {
-  inst: string; // figure id, or id#2, id#3 when placed more than once
-  figura: string; // id in contenido/figuras.yaml
-  cuarto: string;
-  x: number;
-  y: number;
-  nombre: string | null; // the child's own name for it; stays on the device
-  piel: number;
-}
-
-const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, nombre: "", casa: [], casaLista: false, protaCasa: null, dia: 1, hora: "manana", llegada: null, visitas: {}, situaciones: {}, libro: [], opciones: OPCIONES_INICIALES };
+const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, semilla: "", nombre: "", dia: 1, hora: "manana", llegada: null, visitas: {}, historia: { hechas: [], marcas: [], mision: null }, libro: [], opciones: OPCIONES_INICIALES };
 
 let actual: Estado = NUEVO;
 let leido = false; // never write before the saved game was read, or it would be overwritten
@@ -64,6 +53,8 @@ const escribir = () => leido && void guardar("estado", actual);
 
 export async function cargarEstado(): Promise<Estado> {
   actual = { ...NUEVO, ...(await leer<Estado>("estado")) };
+  // Games saved before the background was procedural get a seed now, and keep it from then on.
+  if (!actual.semilla) actual.semilla = crypto.randomUUID();
   // Games saved before 2026-10-21: the neutral body continues as the girl's, and the three separate
   // colors (skin, hair, backpack) move into `colores`.
   const vieja = actual.apariencia as Apariencia & { piel?: number; colorCabello?: number; colorMochila?: number };
@@ -72,6 +63,12 @@ export async function cargarEstado(): Promise<Estado> {
     const { piel, colorCabello, colorMochila, ...resto } = vieja;
     actual.apariencia = { ...resto, colores: { piel: piel ?? 0, cabello: colorCabello ?? 0, mochila: colorMochila ?? 0 } };
   }
+  // The old concept (before the story of 2026-10-27) is gone: its everyday situations and the house to arm.
+  const anterior = actual as Estado & { situaciones?: unknown; casa?: unknown; casaLista?: unknown; protaCasa?: unknown };
+  delete anterior.situaciones;
+  delete anterior.casa;
+  delete anterior.casaLista;
+  delete anterior.protaCasa;
   // Games saved before 2026-10-21 (version 0.1): the story pages keep only their drawings.
   const v01 = actual as Estado & { cuentos?: unknown };
   delete v01.cuentos;

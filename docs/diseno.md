@@ -1,80 +1,94 @@
 # Diseño del juego
 
-El juego al servicio de la metodología (`metodologia.md`). Si algo aquí choca con una regla de la metodología, gana la metodología.
+Dirección creativa: la propuesta de Dayana (*Videojuego de salud mental: guiones, situaciones y diseño narrativo*, 27-oct-2026). Los objetivos de abajo mandan: si algo de la propuesta choca con uno de ellos, se ajusta. La medición y sus reglas están en `metodologia.md`; el juego las sigue en lo que no choque con la historia.
+
+## Los tres objetivos
+
+1. **Información útil para orientar el acompañamiento y la evaluación profesional.** Observaciones contextualizadas sobre decisiones, necesidades y búsqueda de apoyo. No es un diagnóstico.
+2. **Reconocer necesidades, negligencia y abuso, con herramientas de manejo emocional y búsqueda de ayuda.** El jugador identifica señales, emociones, límites y vías seguras. Nunca se le atribuye responsabilidad por el daño que hace otra persona.
+3. **Una experiencia divertida, sencilla, intuitiva e inmersiva.** Si no es interesante, nadie explora las escenas. Los efectos audiovisuales son graduales y regulables.
 
 ## La premisa
 
-**Eres un extraño en un mundo virtual. Aquí puedes hacer lo que quieras. El objetivo es entretenerte.**
+RPG narrativo 2D de vida cotidiana para estudiantes de secundaria (12 a 18 años; edad exacta y tono por definir con especialistas). El protagonista, con nombre y apariencia que elige, recorre escenarios, interactúa con personas, hace amistades, presenta exámenes, hace tareas, va de compras y juega minijuegos.
 
-- Nadie le pregunta nada, nadie lo califica, nadie le dice qué está bien. Cómo decide entretenerse es lo que se observa: lo más entretenido para cada quien muestra quién es.
-- Ser un extraño, y no él mismo, baja la defensa; lo de adentro sale igual.
-- La filosofía: el resultado más probable es el más entretenido. Lo que cada quien elige para entretenerse es lo más cercano a quien es.
-- **Tiene que ser un juego que querrían jugar aunque no estuvieran en clase.** Los adolescentes con problemas usan los videojuegos para anestesiarse; si este huele a tarea o a prueba, se ponen a la defensiva y se pierde.
-- **El gancho:** la libertad tipo GTA, que la mayoría de los alumnos de escuelas públicas solo ha visto jugar en YouTube porque no tiene dónde jugarlo.
-- Referencias: la libertad de GTA, los saludos o provocaciones de Red Dead Redemption 2, las formas de ayudar de Fable y Undertale, que recuerda todo sin mostrarlo. De ninguno se toma su marcador.
+Algunas escenas reflejan negligencia y abuso emocional o sexual. La experiencia **no es una sucesión de escenas trágicas**: la vida diaria ocupa casi todo el tiempo.
 
-## Casi sin leer
+## Tres experiencias que conviven
 
-A los adolescentes no les gusta leer, y a los que traen problemas menos. Todo se entiende con imagen, voz y movimiento; el texto es mínimo y lo hablado aparece también escrito.
+- **Vida cotidiana:** exámenes, tareas, compras, juegos, dibujo, actividades escolares, exploración y pequeñas aventuras.
+- **Relaciones:** amistades con compañeros, cooperación, desacuerdos, redes de apoyo.
+- **Experiencias emocionales:** momentos agradables, frustraciones ordinarias y situaciones familiares difíciles. No todas las misiones enseñan una lección explícita.
 
-## Género y controles
+## Estructura
 
-Mundo visto desde arriba, como Pokémon, Stardew Valley o Animal Crossing: el género más universal y la puerta de entrada de quien nunca ha jugado.
+La historia tiene una línea central con secuencias obligatorias. Entre una y otra, el jugador explora libremente y decide cuándo seguir: puede visitar lugares, hablar con personas, aceptar misiones secundarias o no hacer nada.
 
-- Clic o toque para caminar; clic o toque sobre algo para usarlo. Teclado opcional.
-- Sin combos ni reflejos para avanzar, para que el que juega mucho no tenga ventaja (regla 8 de la metodología).
+Bucle: **evento principal → ventana de libertad → exploración, minijuego o persona → registro de decisiones → nueva misión principal.**
+
+La propuesta organiza la historia en seis capítulos. Son una guía de escenas, no un reemplazo de capítulos ya desarrollados:
+
+| Capítulo | Tema |
+| --- | --- |
+| 1 · Un día como cualquier otro | Tutorial doméstico, llegada a la escuela, primeros compañeros; señales familiares discretas |
+| 2 · Pequeñas cosas que cambian | Examen, tarea, ir a la tienda, explorar; ver las rutinas sin convertirlas en tragedia |
+| 3 · Palabras que pesan | Crítica, humillación y chantaje emocional de la figura paterna, junto a la vida escolar normal |
+| 4 · Personas en quienes confiar | Profundizar amistades, cooperación, ferias o actividades; conocer adultos seguros |
+| 5 · Un secreto que no debería existir | Visita de un tío, transgresión de límites. Fase posterior, después de validar el storyboard |
+| 6 · No resolverlo todo a solas | Comunicar necesidades, alternativas de protección y acompañamiento |
+
+## Protagonista
+
+Nombre y apariencia los elige el jugador: cuerpo, piel, cabello, ropa, extras, tenis, y colores de cada prenda. El avatar se dibuja con las hojas de referencia del guion (pixel art juvenil, el mismo lenguaje visual del resto del juego).
+
+## Personas
+
+- **Familia:** madre (trabaja, sale temprano), padre (minimiza, presiona y chantajea emocionalmente), tío (visita; fuera del demo). La familia es fija; el jugador no la arma.
+- **Escuela:** profesora (revisa el uniforme; no castiga la falta de uniforme con exclusión), compañeros Valeria, Leo y Sam, con actividades distintas; orientadora (adulto seguro de la escuela).
+- **Barrio:** vecinos, la encargada de la tienda, la bibliotecaria.
+
+Los personajes fijos solo saludan con líneas neutras. Quien tiene un papel en la historia habla por escenas.
+
+## Mundo
+
+Casa (sala y comedor, cocina, recámaras, baño, patio), escuela (patio, cancha, aulas, pasillos, gimnasio, dirección), biblioteca, parque, tienda del vecindario y calle. Los mapas viven en `public/mapas/`.
+
+El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tienda, parque) y noche (a dormir). El demo cubre tres días.
 
 ## Arte y aparato
 
 - Las Chromebooks escolares son de gama baja: el arte es **2D** (pixel art o ilustración plana), sin efectos pesados. 3D queda fuera.
 - Corre en el navegador y funciona sin conexión; los datos se envían cuando hay red.
-- Todo lo hablado aparece también escrito.
+- Todo lo hablado aparece también escrito. El texto es mínimo: a los adolescentes no les gusta leer, y a los que traen problemas menos.
 
-## El mundo
+## Inmersión y efectos
 
-Lugares de la vida diaria: calle, tienda, parque, escuela, un lugar donde dormir. Gente que vive su vida, con quien puede hablar, a quien puede saludar, provocar, ayudar o ignorar. Cada interacción es una microdecisión.
+| Momento | Efecto |
+| --- | --- |
+| Inquietud | Cambio breve en el ambiente y en la animación del personaje |
+| Miedo | Respiración del personaje y acercamiento suave de cámara |
+| Mayor intensidad | Efecto breve, con posibilidad de pausa |
+| Acompañamiento | Recuperación gradual del ambiente, con el control en manos del jugador |
+| Alegría | Luz cálida, animación de celebración, música amable |
 
-## Una línea suave de objetivos
+- Los efectos se pueden reducir o desactivar con **Efectos** en Opciones. Con 0, no salen.
+- La historia se entiende sin efectos.
+- No se usan movimientos bruscos ni repetitivos de cámara como recurso principal.
 
-Sin objetivo nada, el que no juega se pierde en 5 minutos y se va. Hay una línea de cosas por hacer, que se puede seguir o ignorar: conseguir algo, conocer a alguien, llegar a un lugar. Seguirla o no también dice algo.
+## Escenas, decisiones y registro
 
-## Libertad y consecuencias
-
-- **Simetría:** por cada forma de dañar hay una de ayudar y una de no meterse (regla 3).
-- **Sin matar.** Se puede empujar, molestar, romper, robar y mentir. Querer dañar a alguien y poder hacerlo basta para el perfil: antes de que llegue a más, interviene la policía.
-- **La policía y la cárcel:** si lo detienen, pasa un rato encerrado y lo sueltan. Lo que importa es qué hace después: si vuelve a hacerlo, cuándo y si se esconde.
-- **Consecuencias naturales, sin moraleja:** la gente lo recuerda y lo trata distinto. Nadie le explica por qué estuvo mal.
-
-## Momentos vacíos
-
-Ratos sin nada que hacer, a propósito: esperar algo que tarda, un lugar donde no pasa nada. Ahí se ve qué hace cada quien con el aburrimiento.
-
-## Momentos fuertes
-
-Pocos sucesos de la historia que mueven algo: alguien con quien hizo amistad se va, ve una pelea, pierde algo. Las mismas situaciones aparecen antes y después, para ver si cambia (regla 5). Cuáles y cómo se muestran se decide con los especialistas.
-
-## Necesidades del personaje
-
-El personaje se cansa y tiene hambre, como en Los Sims. Dormir, comer o no hacerlo es su elección; nada lo obliga. Así se observan el sueño y la comida, que están en la lista de problemas del reto.
-
-## El celular del juego
-
-El personaje tiene un celular con cosas que hacer. El tiempo que pasa en él, si lo revisa sin motivo y si lo usa de noche en lugar de dormir, son indicadores. Es un objeto del mundo, no una IA.
-
-## Tareas con otra vista
-
-Las tareas conocidas de la metodología salen como actividades: puesto de feria, máquina de dulces, minijuego de reflejos, trabajos que pagan distinto, repartir, prestar. Algunas se juegan con otra vista (de lado, de cerca), para que el juego no sea siempre igual.
-
-## Sesiones
-
-Se juega en clase. Debe caber en sesiones de unos 40 minutos y retomar donde se quedó. Jugar más de una sesión deja ver si las señales se repiten.
+- Una escena tiene una línea de alguien, y a veces opciones. Las opciones aparecen en un orden distinto para cada niño.
+- Cada opción lleva un código que **describe** lo que hizo. El código no dice si fue bueno o malo.
+- Una escena delicada siempre permite pausar, saltar la secuencia sensible y pedir ayuda. La ruta de protección no depende de elegir bien una opción.
+- Elegir callar, obedecer o retirarse nunca se presenta como responsabilidad del protagonista.
+- Las escenas de abuso sugieren la transgresión y cortan a negro. No se muestra violencia sexual. Lo que se nombra en lenguaje claro, según la edad, lo revisan los especialistas.
 
 ## Lo que el juego nunca hace
 
-- Preguntarle algo sobre él.
+- Preguntarle al jugador algo sobre sí mismo. Los personajes de la historia sí hablan con su personaje.
 - Mostrar un marcador, una calificación, un premio o un castigo por lo que se mide.
 - Poner un reloj en pantalla.
-- Explicarle qué estuvo bien o mal, ni advertirle de riesgos: el adolescente ve el riesgo como un límite para probar.
-- Usar mecánicas adictivas para retenerlo. Engancharlo con premios constantes no le sirve a nadie y ensucia la medida.
-- Dejar que alguien muera.
+- Decirle al jugador si lo que eligió estuvo bien o mal.
+- Usar mecánicas adictivas para retenerlo.
+- Matar a alguien o dejar que alguien muera.
 - Usar groserías o palabras vulgares.

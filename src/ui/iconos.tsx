@@ -104,7 +104,7 @@ export const Icono = {
     </>,
   ),
   volver: svg(<path d="M15 5l-7 7 7 7" />),
-  // A sneaker with speed lines: the run button (GDD §12).
+  // A sneaker with speed lines: the run button.
   correr: svg(
     <>
       <path d="M8 8h3l2 3 5 1.5c1.5.5 2.5 1.5 2.5 3V17H8z" />

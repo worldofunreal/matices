@@ -1,4 +1,4 @@
-// How the child's character looks (GDD §6) and which art layers draw it.
+// How the child's character looks and which art layers draw it.
 export type Direccion = "abajo" | "izq" | "der" | "arriba";
 // Rows of a character sheet. "der" has no row: it is "izq" mirrored.
 const FILAS: Direccion[] = ["abajo", "izq", "arriba"];
@@ -16,7 +16,7 @@ export interface Apariencia {
   colores: Colores;
 }
 
-// Each body starts with its usual look; hair and clothes stay free for both (GDD §6).
+// Each body starts with its usual look; hair and clothes stay free for both.
 export const LOOK: Record<Apariencia["cuerpo"], Pick<Apariencia, "cabello" | "abajo">> = {
   nina: { cabello: "01", abajo: "falda" },
   nino: { cabello: "06", abajo: "pantalon" },

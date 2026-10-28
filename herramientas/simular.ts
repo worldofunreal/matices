@@ -23,7 +23,6 @@ function participante(i: number) {
     eventos.push({ ...datos, nino, id: ++id, sesion, contenido: C.version, juego: "sim", entorno: "simulado", semilla: i, t_ms: t, cuando: inicio + t, tipo });
   };
   const pantalla = (p: string, anterior: string | null) => ev("pantalla", { pantalla: p, anterior }, 500);
-  const figuras = [...C.figuras].sort(() => Math.random() - 0.5).slice(0, entre(1, 5));
   const llega = Math.random(); // how far this one gets
 
   ev("aparato", { navegador: azar(APARATOS), pantalla: [390, 844] }, 0);
@@ -31,12 +30,8 @@ function participante(i: number) {
   pantalla("creacion", null);
   ev("personaje", { momento: "inicio", cuerpo: azar(["nina", "nino"]), tono: entre(1, 8), cabello: azar(["01", "02", "03", "04", "05", "06"]), color_cabello: entre(1, 6), ropa: azar(["uniforme_pantalon", "uniforme_falda", "casa"]), extras: Math.random() < 0.4 ? ["mochila"] : [], color_mochila: 2, colores: { sueter: entre(1, 5), uniforme_abajo: entre(1, 4), playera: entre(1, 6), pants: entre(1, 4), tenis: entre(1, 4) }, nombre_de_lista: Math.random() < 0.6, toques: entre(8, 30), ms: entre(40, 180) * 1000 }, entre(40, 180) * 1000);
   if (llega < 0.05) return eventos;
-  pantalla("casa", "creacion");
-  const cuartos = Object.keys(C.textos.casa.cuartos);
-  ev("casa_lista", { figuras: figuras.map((f) => ({ figura: `FIGURA:${f.id}`, clase: f.tipo, cuarto: azar(cuartos), distancia: entre(1, 12), renombrada: Math.random() < 0.2, tono: entre(1, 8) })), prota_cuarto: azar(cuartos), toques: entre(10, 40), ms: entre(60, 300) * 1000 }, entre(60, 300) * 1000);
-  if (Math.random() < 0.3) ev("toque_sin_efecto", { pantalla: "casa", x: Math.random(), y: Math.random() });
   if (llega < 0.12) return eventos;
-  pantalla("mundo", "casa");
+  pantalla("mundo", "creacion");
   for (const dia of [1, 2, 3]) {
     if (dia > 1) {
       sesion++;
@@ -51,26 +46,23 @@ function participante(i: number) {
       ev("explora", { lugar, ms: entre(20, 200) * 1000, visitas: entre(1, 3) });
       if (Math.random() < 0.25) ev("toque_sin_efecto", { pantalla: "mundo", x: Math.random(), y: Math.random() });
     }
-    // S01, the way GDD §9 plays it: running in the house, a line, a question, an answer or walking away, repeats.
-    for (const x of C.situaciones) {
-      const adulto = figuras.find((f) => f.tipo === "adulto");
-      const quien = adulto ? `FIGURA:${adulto.id}` : "NADIE";
-      const veces = entre(0, 5);
-      let respuesta: string | null = null;
-      for (let v = 1; v <= veces; v++) {
-        ev("corre", { lugar: x.lugar, ms: entre(800, 6000) });
-        if (respuesta) ev("situacion", { situacion: x.id, paso: "repite", quien, veces: v, tras: respuesta });
-        if (v === 1 || quien === "NADIE") {
-          if (!respuesta) ev("situacion", { situacion: x.id, paso: "aviso", quien, veces: v });
-        } else {
-          const opciones = x.respuestas.map((r) => r[0]).sort(() => Math.random() - 0.5);
-          ev("situacion", { situacion: x.id, paso: "pregunta", quien, veces: v, opciones });
-          respuesta = azar(opciones);
-          ev("situacion", { situacion: x.id, paso: "respuesta", quien, opciones, elegida: respuesta, ms_decidir: entre(1500, 9000) });
+    // The story: each scene of this day, the choices in the order shown, the minigames, sometimes skipped.
+    for (const x of C.escenas.filter((x) => x.dia === undefined || x.dia === dia)) {
+      if (Math.random() < 0.3) continue;
+      ev("escena", { escena: x.id, paso: "inicio" }, 500);
+      let saltada = false;
+      for (const p of x.pasos) {
+        if (p.opciones) {
+          const opciones = p.opciones.map((o) => o[0]).sort(() => Math.random() - 0.5);
+          ev("escena", { escena: x.id, paso: "opcion", de: "yo", opciones, elegida: azar(opciones), ms_decidir: entre(1500, 9000) });
         }
+        if (p.minijuego) ev("minijuego", { minijuego: p.minijuego, resultado: "completado", ms: entre(5, 60) * 1000, ...(p.minijuego === "ropero" ? { codigo: azar(["ELIGE_UNIFORME", "ELIGE_DEPORTE", "ELIGE_CASUAL"]) } : {}) });
+        if (x.saltable && Math.random() < 0.2) { saltada = true; break; }
       }
-      if (Math.random() < 0.15) ev("inactividad", { pantalla: "mundo", ms: entre(30, 120) * 1000 });
+      ev("escena", { escena: x.id, paso: "fin", ...(saltada ? { saltada: true } : {}) });
+      if (Math.random() < 0.1) ev("quiero_hablar", { pantalla: "mundo" });
     }
+    if (Math.random() < 0.15) ev("inactividad", { pantalla: "mundo", ms: entre(30, 120) * 1000 });
     ev("rendimiento", { fps: entre(30, 60), memoria_mb: entre(60, 140) });
     if (Math.random() < 0.03) ev("quiero_hablar", { pantalla: "mundo" });
     if (llega < 0.12 + dia * 0.25) return eventos;

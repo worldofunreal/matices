@@ -11,13 +11,13 @@
 // Figures of the house: node herramientas/generar.ts figuras [<id> ...] (all of FIGURAS in arte.ts without ids) draws
 // each one from the protagonist's front pose, to ARTE/figuras/<id>.png, all in one folder; then
 //   node herramientas/acomodar.ts figuras   (every figure found there)
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import { writeFileSync } from "node:fs";
-import { ARTE, FIGURAS } from "./arte.ts";
+import { ARTE, ASSETS, FIGURAS, ROOT, esProvisional, leerManifiesto, type Pieza } from "./arte.ts";
 
 const A_LA_VEZ = 4; // Codex runs at once
 const INTENTOS = 3;
@@ -92,12 +92,11 @@ const promptFigura = (id: string) => {
   const { que, alto } = FIGURAS[id];
   const veces = alto / 60;
   const tam = veces > 1.04 ? `taller than the child: about ${veces.toFixed(2)} times the child's height, with the head about the same size as the child's and a longer body` : veces < 0.96 ? `smaller than the child: about ${veces.toFixed(2)} times the child's height` : "about as tall as the child";
-  const animal = id === "perro" || id === "gato";
   return [
     "The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background.",
-    `Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading${animal ? ", the same cute rounded shapes" : ", the same chibi proportions, the same kind of face and eyes, and the same skin color"}.`,
-    `The new character: ${que}. ${animal ? "" : "Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. "}It is ${tam}, standing on the same floor line as the child.`,
-    animal ? "" : "Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color.",
+    "Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color.",
+    `The new character: ${que}. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is ${tam}, standing on the same floor line as the child.`,
+    "Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color.",
     "Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.",
   ].filter(Boolean).join(" ");
 };
@@ -216,9 +215,12 @@ function codex(dir: string, entradas: string[], texto: string): Promise<Date | n
     let salida = "";
     p.stdout.on("data", (d) => (salida += d));
     p.stderr.on("data", (d) => (salida += d));
-    p.on("exit", () => {
+    p.on("exit", (code, signal) => {
       const m = /usage limit.*?try again at (\d+):(\d+) ?([AP]M)/is.exec(salida);
-      if (!/usage limit/i.test(salida)) return ok(null);
+      if (!/usage limit/i.test(salida)) {
+        if (code !== 0) console.error(`codex terminó con ${code ?? signal}: ${salida.slice(-3000)}`);
+        return ok(null);
+      }
       const t = new Date();
       if (m) {
         t.setHours((+m[1] % 12) + (m[3].toUpperCase() === "PM" ? 12 : 0), +m[2] + 1, 0, 0);
@@ -237,6 +239,97 @@ function esperar(hasta: Date) {
     setTimeout(() => { pausa = null; ok(); }, hasta.getTime() - Date.now());
   });
   return pausa;
+}
+
+function referenciasDe(pieza: Pieza) {
+  const g = pieza.generacion;
+  if (!g || !g.prompt.trim() || !g.referencias.length || !g.destino) throw new Error(`${pieza.id}: faltan prompt, referencias o destino`);
+  if (isAbsolute(g.destino) || resolve(ARTE, g.destino).startsWith(`${resolve(ARTE)}${sep}`) === false)
+    throw new Error(`${pieza.id}: destino fuera de ARTE: ${g.destino}`);
+  return g.referencias.map((r) => {
+    if (isAbsolute(r) || resolve(ARTE, r).startsWith(`${resolve(ARTE)}${sep}`) === false)
+      throw new Error(`${pieza.id}: referencia fuera de ARTE: ${r}`);
+    const f = join(ARTE, r);
+    if (!existsSync(f)) throw new Error(`${pieza.id}: no existe la referencia ${f}`);
+    return f;
+  });
+}
+
+async function revisarPieza(pieza: Pieza, salida: string, referencias: string[]): Promise<string | null> {
+  let imagen;
+  try { imagen = await loadImage(salida); } catch { return "el resultado no es una imagen legible"; }
+  const referencia = await loadImage(referencias[0]);
+  const esperado = pieza.tipo === "fondo" ? pieza.medida[0] / pieza.medida[1] : referencia.width / referencia.height;
+  const real = imagen.width / imagen.height;
+  if (Math.abs(real - esperado) / esperado > 0.035) return `proporción ${imagen.width} × ${imagen.height}; se esperaba ${esperado.toFixed(3)}`;
+  if (pieza.tipo !== "fondo") {
+    const c = createCanvas(4, 4), ctx = c.getContext("2d");
+    ctx.drawImage(imagen, 0, 0, 4, 4);
+    const d = ctx.getImageData(0, 0, 4, 4).data;
+    for (const i of [0, 12, 48, 60]) {
+      if (d[i + 3] < 250 || Math.hypot(d[i] - 255, d[i + 1], d[i + 2] - 255) > 125)
+        return "el fondo no es magenta opaco en las esquinas";
+    }
+  }
+  return null;
+}
+
+async function unaPieza(pieza: Pieza, referencias: string[], destino: string) {
+  for (let intento = 1; intento <= INTENTOS; intento++) {
+    if (pausa) await pausa;
+    if (existsSync(destino)) return console.log(`${pieza.id}: existe, no se reemplaza`);
+    const dir = mkdtempSync(join(tmpdir(), "matices-arte-"));
+    const limite = await codex(dir, referencias, pieza.generacion!.prompt);
+    if (limite) { rmSync(dir, { recursive: true }); await esperar(limite); intento--; continue; }
+    const salida = join(dir, "salida.png");
+    const mal = !existsSync(salida) ? "no generó imagen" : await revisarPieza(pieza, salida, referencias);
+    if (!mal) {
+      mkdirSync(join(destino, ".."), { recursive: true });
+      copyFileSync(salida, destino);
+      rmSync(dir, { recursive: true });
+      return console.log(`${pieza.id}: lista`);
+    }
+    console.log(`${pieza.id}: ${mal}, intento ${intento}`);
+    rmSync(dir, { recursive: true });
+  }
+  return console.log(`${pieza.id}: FALLÓ después de ${INTENTOS} intentos`);
+}
+
+async function artePendiente(ids: string[], lista: boolean) {
+  const piezas = leerManifiesto().piezas.filter((p) => p.generacion && (!ids.length || ids.includes(p.id))).sort((a, b) => a.generacion!.orden - b.generacion!.orden);
+  if (ids.some((id) => !piezas.some((p) => p.id === id))) throw new Error(`no hay arte de generación para: ${ids.filter((id) => !piezas.some((p) => p.id === id)).join(", ")}`);
+  if (!piezas.length) throw new Error("el manifiesto no tiene imágenes pendientes configuradas");
+  const trabajos = piezas.map((pieza) => ({ pieza, referencias: referenciasDe(pieza), destino: join(ARTE, pieza.generacion!.destino) }));
+  if (lista) {
+    for (const { pieza, referencias, destino } of trabajos) {
+      console.log(["", `## ${pieza.id}`, `- Adjuntar: ${referencias.join(", ")}`, `- Guardar como: ${destino}`, `- Después: ${pieza.generacion!.despues}`, "", "```", pieza.generacion!.prompt, "```"].join("\n"));
+    }
+    return;
+  }
+  const cola = trabajos.filter((t) => !existsSync(t.destino));
+  for (const t of trabajos) if (existsSync(t.destino)) console.log(`${t.pieza.id}: existe, se omite`);
+  await Promise.all(Array.from({ length: A_LA_VEZ }, async () => {
+    for (let t; (t = cola.shift()); ) await unaPieza(t.pieza, t.referencias, t.destino);
+  }));
+  for (const { pieza, destino } of trabajos) {
+    if (pieza.generacion!.despues !== "acomodar" || !existsSync(destino)) continue;
+    const asset = join(ASSETS, pieza.archivo);
+    if (existsSync(asset) && !esProvisional(pieza.archivo)) {
+      console.log(`${pieza.id}: arte del juego existente, no se reemplaza`);
+      continue;
+    }
+    const dir = relative(ARTE, destino).replace(/\/[^/]+$/, "");
+    const r = spawnSync(process.execPath, [join(ROOT, "herramientas/acomodar.ts"), pieza.id, join(ARTE, dir)], { cwd: ROOT, stdio: "inherit" });
+    if (r.status !== 0) console.error(`${pieza.id}: no se pudo acomodar en el juego (código ${r.status})`);
+  }
+  const fallidas = trabajos.filter(({ pieza, destino }) => {
+    if (!existsSync(destino)) return true;
+    if (pieza.generacion!.despues !== "acomodar") return false;
+    const asset = join(ASSETS, pieza.archivo);
+    return !existsSync(asset) || esProvisional(pieza.archivo);
+  });
+  console.log(`Resumen: ${trabajos.length - fallidas.length}/${trabajos.length} listas; ${fallidas.length} pendientes.`);
+  for (const { pieza } of fallidas) console.log(`Pendiente: ${pieza.id}`);
 }
 
 async function una(base: string, destino: string, pose: string, capa: string) {
@@ -265,6 +358,7 @@ async function una(base: string, destino: string, pose: string, capa: string) {
 async function main() {
   const lista = process.argv.includes("--lista");
   const [cuerpo, ...capas] = process.argv.slice(2).filter((a) => a !== "--lista");
+  if (cuerpo === "arte") return void (await artePendiente(capas, lista));
   const cola: (() => Promise<void>)[] = [];
   const correr = () => Promise.all(Array.from({ length: A_LA_VEZ }, async () => { for (let t; (t = cola.shift()); ) await t(); }));
   if (cuerpo === "figuras") {

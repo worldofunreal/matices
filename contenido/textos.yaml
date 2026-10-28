@@ -1,7 +1,6 @@
-# Textos fijos del juego (los de las situaciones están en situaciones.yaml). Cada texto tiene voz; una grabación en
+# Textos fijos del juego (las escenas están en escenas.yaml). Cada texto tiene voz; una grabación en
 # public/assets/voz/<clave>.mp3 reemplaza a la voz del navegador (ej. voz/creacion.pasos.cuerpo.mp3).
 # {nombre}: nombre del personaje.
-# {figura}: nombre de una figura de la casa. {cuarto}: nombre de un cuarto.
 
 
 creacion:
@@ -45,26 +44,25 @@ creacion:
   escribir_nombre: "Escribir otro nombre"
   nombres: [Ana, Sofía, Valeria, Camila, Ximena, Regina, Fernanda, Daniela, Mariana, Lupita, Itzel, Renata, Paola, Andrea, Jimena, Naomi, Alma, Citlali, Abril, Luz, Diego, Santiago, Mateo, Emiliano, Leonardo, Juan, José, Luis, Ángel, Miguel, Iker, Tadeo, Gael, Kevin, Brayan, Alexis, Sam, Alex, Dani, Cris]
 
-casa:
-  inicio: "Esta es tu casa. Toca a alguien de abajo y luego un cuarto."
-  instruccion: "Puedes poner a varias personas, o a nadie. También puedes arrastrarlas."
-  elegida: "{figura}. Ahora toca un cuarto."
-  puesta: "{figura} en {cuarto}."
-  quitar: "Quitar"
-  renombrar: "Cambiar nombre"
-  piel: "Color de piel"
-  mover: "Mover"
-  cerrar: "Cerrar"
-  listo: "Listo"
-  cuartos:
-    sala: "la sala y el comedor"
-    cocina: "la cocina"
-    recamara: "la recámara"
-    recamara_adulto: "la otra recámara"
-    bano: "el baño"
-    patio: "el patio"
+# Escenas (contenido/escenas.yaml): quién habla y los botones del cuadro de diálogo.
+escena:
+  hablantes:
+    yo: "{nombre}"
+    madre: "Mamá"
+    papa: "Papá"
+    lucia: "Maestra Lucía"
+    valeria: "Valeria"
+    leo: "Leo"
+    sam: "Sam"
+    orientadora: "Orientadora"
+    pensamiento: "Pensamiento"
+    sistema: "Sistema"
+  seguir: "Seguir"
+  saltar: "Saltar"
+  pausar: "Pausar"
+  mision: "Misión"
 
-# Mundo (GDD §8, §10). Los personajes fijos solo saludan y dicen cosas neutras: nunca preguntan
+# Mundo. Los personajes fijos solo saludan y dicen cosas neutras: nunca preguntan
 # "¿estás bien?" ni ofrecen ayuda. Los objetos: una frase neutra del personaje al tocarlos.
 mundo:
   cerrado: "Está cerrado."
@@ -87,6 +85,7 @@ mundo:
     don_chuy: ["Buenas.", "Llegaron paletas nuevas."]
     clara: ["Bienvenido a la biblioteca.", "Los libros de cuentos están arriba."]
     cuentera: ["Hola. Aquí vengo a leer.", "Qué gusto verte."]
+    orientadora: ["Buenos días.", "Mi oficina está en la planta baja."]
   # El nombre en la placa de cada personaje fijo.
   nombres:
     vecino_1: Vecino
@@ -96,13 +95,14 @@ mundo:
     lucia: Maestra Lucía
     nico: Nico
     conserje: Conserje
-    companero_1: Compañero
-    companero_2: Compañera
-    companero_3: Compañero
+    companero_1: Valeria
+    companero_2: Leo
+    companero_3: Sam
     companero_4: Compañera
     don_chuy: Don Chuy
     clara: Clara
     cuentera: La Cuentera
+    orientadora: Orientadora
   objetos:
     comun:
       arbol: "Un árbol."
@@ -150,7 +150,7 @@ mundo:
       sillon_cuentera: "Un sillón para leer."
   correr: "Correr"
   a_dormir: "A dormir"
-  # Letreros de las puertas (GDD §8): a dónde lleva cada una. Dentro del mismo edificio, su nombre de adentro.
+  # Letreros de las puertas: a dónde lleva cada una. Dentro del mismo edificio, su nombre de adentro.
   lugares:
     casa: "Casa"
     calle: "Calle"
@@ -165,16 +165,15 @@ mundo:
     escuela_patio: "Patio"
     biblioteca_planta_baja: "Planta baja"
 
-# Mi libro (GDD §10): los dibujos del niño. La consigna está pendiente de revisión clínica y la puede
+# Mi libro: los dibujos del niño. La consigna está pendiente de revisión clínica y la puede
 # cambiar el psicólogo.
 libro:
   titulo: "Mi libro"
   dibujar: "Dibujar"
-  consigna: "Dibuja a todas las personas de tu casa haciendo algo."
+  consigna: "Dibuja lo que quieras."
   listo: "Listo"
 
-# Siempre a la mano (GDD §13): los botones de todas las pantallas. Lo que dice la frase es fijo
-# (GDD §10).
+# Siempre a la mano: los botones de todas las pantallas. Lo que dice la frase es fijo.
 siempre:
   mi_libro: "Mi libro"
   quiero_hablar: "Quiero hablar con alguien"
@@ -182,7 +181,7 @@ siempre:
   aviso: "Ya le avisamos al adulto que te acompaña. Puedes seguir jugando o esperar aquí."
   seguir: "Seguir jugando"
 
-# Opciones (GDD §13, §14). Música, efectos, velocidad del texto y lectura sencilla se guardan y
+# Opciones. Música, efectos, velocidad del texto y lectura sencilla se guardan y
 # quedan listos para conectarse cuando existan.
 opciones:
   titulo: "Opciones"

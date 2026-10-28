@@ -37,7 +37,7 @@ function useEscala(caja: React.RefObject<HTMLElement | null>) {
   return escala;
 }
 
-// Character creation (GDD §6): everything on one screen, one tap per choice, the character changes
+// Character creation: everything on one screen, one tap per choice, the character changes
 // as the child chooses, and each step leads to the next. Also opened from the mirror in the house (modo "espejo").
 export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTerminar: () => void }) {
   const [a, setA] = useState<Apariencia>(() => structuredClone(estado().apariencia));
@@ -84,7 +84,7 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
       setTimeout(() => setVacila(false), 400);
       return;
     }
-    // The name never goes into an event (GDD §6).
+    // The name never goes into an event.
     registrar("personaje", {
       momento: modo,
       cuerpo: a.cuerpo,

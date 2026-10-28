@@ -1,0 +1,99 @@
+/* The story over the world: the line being read at the top, the options at the bottom (as .respuestas). */
+.escena {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.escena > * {
+  pointer-events: auto;
+}
+
+.escena-caja {
+  position: absolute;
+  top: 76px; /* under the row of Saltar and Pausar */
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(calc(100% - 32px), 640px);
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: var(--tarjeta);
+  box-shadow: var(--sombra-alta);
+  animation: aparecer var(--rapido) both;
+}
+
+.escena-caja p {
+  margin: 4px 0 10px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.escena-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.escena-controles {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.escena-numero {
+  display: inline-grid;
+  place-items: center;
+  width: 1.4em;
+  height: 1.4em;
+  margin-right: 4px;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.12);
+  font-size: 0.8em;
+}
+
+/* The effects of a scene: a soft tint and vignette over the world and the text, at the strength chosen in Opciones (--fuerza). */
+.escena > .escena-efecto {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--fuerza);
+}
+
+.escena-efecto.inquietud {
+  background: radial-gradient(ellipse at center, transparent 50%, rgb(20 30 70 / 0.5));
+}
+
+.escena-efecto.miedo {
+  background: radial-gradient(ellipse at center, transparent 35%, rgb(0 0 0 / 0.8));
+  animation: respirar 6s ease-in-out infinite;
+}
+
+.escena-efecto.intensidad {
+  background: rgb(230 60 40 / 0.18);
+}
+
+.escena-efecto.acompanamiento {
+  background: radial-gradient(ellipse at center, rgb(255 210 140 / 0.25), transparent 70%);
+}
+
+.escena-efecto.alegria {
+  background: radial-gradient(ellipse at center, rgb(255 225 150 / 0.45), transparent 75%);
+}
+
+@keyframes respirar {
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .escena-efecto {
+    animation: none;
+  }
+}

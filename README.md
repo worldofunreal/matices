@@ -1,6 +1,6 @@
 # Conecta Challenge 2026
 
-Nombre por definir. Un juego de mundo abierto para adolescentes de secundaria en Jalisco que, mientras juegan libres, mide cómo se comportan con métodos que no se pueden fingir, para que los especialistas de Salud y Educación vean lo que su tamizaje no alcanza a ver.
+Nombre por definir. Un RPG narrativo 2D de vida diaria para adolescentes de secundaria en Jalisco. Mientras juegan la historia y exploran, se mide cómo se comportan con métodos que no se pueden fingir, para que los especialistas de Salud y Educación vean lo que su tamizaje no alcanza a ver.
 
 **Estado: marco teórico.** Nada está validado; todo es hipótesis hasta probarlo (`docs/validacion.md`). Estos documentos son la única fuente de verdad del proyecto.
 
@@ -22,5 +22,12 @@ Nombre por definir. Un juego de mundo abierto para adolescentes de secundaria en
 - [ ] Si los resultados del tamizaje de los alumnos del piloto se podrán comparar con el juego (`docs/validacion.md`).
 - [ ] Cuántas sesiones habrá, de cuánto tiempo, y si hay audífonos.
 - [ ] Si la IA tiene un papel del lado de los especialistas (su herramienta, en línea), no del jugador.
-- [ ] Cómo cubre el juego la parte de promoción que pide el reto: que el adolescente se dé cuenta de lo que le pasa, por qué y de dónde viene, sin que el juego sea la autoridad y sin romper la metodología.
+- [ ] Preguntas de preproducción de la guía de Dayana (`RPG_Salud_Mental_Guiones_Arte.pdf`):
+  - [ ] ¿Qué edad precisa tendrá el protagonista y qué actividades domésticas son plausibles y seguras para ella?
+  - [ ] ¿Qué capacidad de personalización resulta viable con las hojas de sprites originales?
+  - [ ] ¿Cuántos mapas y NPC se producirán en el primer demo?
+  - [ ] ¿Qué escenas se consideran imprescindibles y qué misiones secundarias son opcionales?
+  - [ ] ¿Qué sucede en términos narrativos exactos durante el corte a negro, sin necesidad de representarlo?
+  - [ ] ¿Qué adulto seguro se presentará desde el inicio y cómo será la ruta de protección?
+  - [ ] ¿Qué método de evaluación de jugabilidad y validación profesional se utilizará antes de tratar la información como herramienta de orientación?
 - [ ] Nombre del proyecto.

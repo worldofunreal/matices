@@ -1,4 +1,4 @@
-/* Matices · interface style. Calm, warm and readable for kids 8-12 (GDD §2, §12, §15).
+/* Matices · interface style. Calm, warm and readable for kids 8-12.
    Pixel art lives only on canvases (world, characters); everything else is crisp HTML. */
 
 @import "@fontsource-variable/nunito";
@@ -140,7 +140,7 @@ canvas.pixel {
   opacity: 0.45;
 }
 
-/* Zoom buttons: a row, right-aligned, unless a screen places the group (casa.css, mundo.css). */
+/* Zoom buttons: a row, right-aligned, unless a screen places the group (mundo.css). */
 .controles {
   display: flex;
   justify-content: flex-end;
@@ -289,9 +289,9 @@ canvas.pixel {
   flex: none;
 }
 
-/* ---- The world (GDD §8, §13) */
+/* ---- The world */
 
-/* A line over the world. Only the speaker plays it (GDD §12). */
+/* A line over the world. Only the speaker plays it. */
 .globo {
   position: fixed;
   z-index: 15;
@@ -323,7 +323,7 @@ canvas.pixel {
   flex: 1;
 }
 
-/* Full-screen card between days (GDD §4). */
+/* Full-screen card between days. */
 .cartel {
   position: fixed;
   inset: 0;
@@ -343,7 +343,7 @@ canvas.pixel {
   text-align: center;
 }
 
-/* Lectura sencilla (GDD §13, Opciones): bigger letters and more air for the text the child reads.
+/* Lectura sencilla: bigger letters and more air for the text the child reads.
    The root class is set by aplicarLectura (pantallas/Opciones.tsx). */
 .lectura-sencilla .boton {
   font-size: 21px;
@@ -375,7 +375,7 @@ canvas.pixel {
 }
 
 /* The nameplate under each person, pet and the child, in the house and in the world, so it is clear who is
-   who (GDD §7, §8). It hangs under its holder's feet; the text stays crisp at any zoom. */
+   who. It hangs under its holder's feet; the text stays crisp at any zoom. */
 .placa {
   position: absolute;
   top: calc(100% + 4px);

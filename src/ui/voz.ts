@@ -4,7 +4,7 @@ import { estado } from "../datos/guardado";
 
 const grabadas = new Set(arte.voces);
 let audio: HTMLAudioElement | null = null;
-const volumen = () => estado().opciones.voz / 5; // the child's level in Opciones (GDD §13)
+const volumen = () => estado().opciones.voz / 5; // the child's level in Opciones
 
 const vozDelNavegador = () => speechSynthesis.getVoices().find((v) => v.lang === "es-MX") ?? speechSynthesis.getVoices().find((v) => v.lang.startsWith("es"));
 
@@ -43,7 +43,7 @@ export function hablar(clave: string, texto: string): Promise<void> {
   });
 }
 
-// A line someone says in the world: a recording plays on its own; the browser voice only from the speaker (GDD §12).
+// A line someone says in the world: a recording plays on its own; the browser voice only from the speaker.
 export function sonarSiGrabada(clave: string, texto: string) {
   if (grabadas.has(clave)) void hablar(clave, texto);
 }

@@ -1,6 +1,6 @@
-// The walking world (GDD §8, §12): the child's character walks over the map and around its walls,
+// The walking world: the child's character walks over the map and around its walls,
 // the camera follows, and everything is drawn on a canvas at a whole-number zoom so the pixel art
-// stays sharp. The house dog follows the child (GDD §10). HTML over the canvas (door signs, speech) is
+// stays sharp. HTML over the canvas (door signs, speech) is
 // placed here every frame from its world point. The rules (doors, hours, situations) live in pantallas/Mundo.tsx.
 import type { Hora } from "../datos/guardado";
 import { piezaYa, CUADRO } from "../lienzo/arte";
@@ -9,9 +9,6 @@ import { TILE, celdaDe, libre, libreCerca, rutaA, visible, type Mapa, type Punto
 
 const VELOCIDAD = 90; // game pixels per second
 const CORRER = 165; // running
-const PERRO_CORRE = 130; // the dog runs off faster than walking and slower than running: to catch it, run
-const PERRO_CERCA = 22; // how close the child must pass to the dog to be followed, or to catch it
-const PERRO_PASO_MS = 120; // one frame of the dog's side walk
 const PASO_MS = 140; // time per walking frame
 const LADO_CORTO = 360; // the short side of the screen shows about this many game pixels
 const ZOOM_MAX = 4; // the closest the child can zoom, in whole steps
@@ -30,9 +27,6 @@ export interface Figura {
   piel: number;
 }
 
-// The dog's state: standing where the child put it, following, running off, or waiting to be caught.
-type Perro = { f: Figura; modo: "quieto" | "sigue" | "escapa" | "espera"; cola: { x: number; y: number }[]; ruta: { x: number; y: number }[]; hasta: number; izq: boolean; anda: boolean; suelto: boolean };
-
 export interface OpcionesMotor {
   canvas: HTMLCanvasElement;
   mapa: Mapa;
@@ -44,7 +38,6 @@ export interface OpcionesMotor {
   hora: Hora;
   alCuadro: () => void; // after every frame, for the rules
   alTocar: (cx: number, cy: number) => void; // a tap on the screen, not the end of a drag
-  alPerro?: (que: "sigue" | "escapa" | "alcanza") => void;
 }
 
 export class Motor {
@@ -53,7 +46,7 @@ export class Motor {
   dir: Direccion;
   moviendo = false;
   pausado = false;
-  corriendo = false; // the run button (GDD §12); Shift also runs while held
+  corriendo = false; // the run button; Shift also runs while held
   guia: { x: number; y: number } | null = null;
   private o: OpcionesMotor;
   private ctx: CanvasRenderingContext2D;
@@ -71,7 +64,6 @@ export class Motor {
   private arrastre: { id: number; x: number; y: number; cam: { x: number; y: number }; movio: boolean } | null = null;
   private acumulado = 0; // wheel movement not yet turned into a zoom step
   private shift = false;
-  private perro: Perro | null = null;
 
   constructor(o: OpcionesMotor) {
     this.o = o;
@@ -79,8 +71,6 @@ export class Motor {
     this.y = o.y;
     this.dir = o.dir;
     this.ctx = o.canvas.getContext("2d")!;
-    const f = o.figuras.find((x) => x.id === "perro");
-    if (f) this.perro = { f, modo: "quieto", cola: [], ruta: [], hasta: 0, izq: false, anda: false, suelto: false };
   }
 
   // Running right now: moving with the run button on or Shift held.
@@ -227,7 +217,7 @@ export class Motor {
     const { x, y } = this.aMundo(cx, cy);
     let mejor: Punto | null = null;
     for (const p of this.o.mapa.puntos) {
-      if (!visible(p, this.o.hora)) continue;
+      if (!visible(p, this.o.hora) || p.tipo === "fauna") continue;
       const img = p.tipo === "npc" ? null : piezaYa(p.arte);
       const w = p.tipo === "npc" ? CUADRO.ancho : (img?.width ?? 0);
       const h = p.tipo === "npc" ? CUADRO.alto : (img?.height ?? 0);
@@ -323,83 +313,6 @@ export class Motor {
     if (vx || vy) this.dir = Math.abs(vx) > Math.abs(vy) ? (vx > 0 ? "der" : "izq") : vy > 0 ? "abajo" : "arriba";
     // Running plays the same steps faster.
     this.tPaso = this.moviendo ? this.tPaso + dt * 1000 * (Math.hypot(vx, vy) / VELOCIDAD) : 0;
-    if (this.perro && !this.pausado) this.moverPerro(dt);
-  }
-
-  // The dog (GDD §10): passing by it makes it follow along the child's own steps; after a while it runs
-  // off to another spot and waits there until the child reaches it, which takes running.
-  private moverPerro(dt: number) {
-    const p = this.perro!;
-    const f = p.f;
-    const lejos = () => Math.hypot(this.x - f.x, this.y - f.y);
-    // Walks a list of points with this frame's distance, never further; `basta` stops it early.
-    const avanzar = (lista: { x: number; y: number }[], v: number, basta = () => false) => {
-      let resto = v * dt;
-      while (lista.length && resto > 0 && !basta()) {
-        const meta = lista[0];
-        const d = Math.hypot(meta.x - f.x, meta.y - f.y);
-        if (Math.abs(meta.x - f.x) > 0.5) p.izq = meta.x < f.x;
-        p.anda = true;
-        if (d <= resto) {
-          f.x = meta.x;
-          f.y = meta.y;
-          resto -= d;
-          lista.shift();
-        } else {
-          f.x += ((meta.x - f.x) / d) * resto;
-          f.y += ((meta.y - f.y) / d) * resto;
-          resto = 0;
-        }
-      }
-    };
-    p.anda = false;
-    if (p.modo === "quieto" || p.modo === "espera") {
-      if (lejos() >= PERRO_CERCA) return;
-      this.o.alPerro?.(p.modo === "quieto" ? "sigue" : "alcanza");
-      p.modo = "sigue";
-      p.cola = [];
-      p.hasta = this.tiempo + 6000 + Math.random() * 5000;
-      return;
-    }
-    if (p.modo === "sigue") {
-      const ultimo = p.cola.at(-1);
-      if (!ultimo || Math.hypot(ultimo.x - this.x, ultimo.y - this.y) > 2) p.cola.push({ x: this.x, y: this.y });
-      // It walks the child's own steps (never through a wall), staying a little behind.
-      const v = p.cola.length > 25 ? CORRER : this.rapido ? CORRER : VELOCIDAD;
-      avanzar(p.cola, v, () => lejos() <= PERRO_CERCA - 4);
-      if (this.tiempo > p.hasta && !this.rapido) {
-        const destino = this.lugarParaPerro();
-        if (destino) {
-          p.ruta = rutaA(this.o.mapa, celdaDe(f.x, f.y - 2), destino).map((c) => ({ x: c.tx * TILE + TILE / 2, y: c.ty * TILE + TILE / 2 + 6 }));
-          p.modo = "escapa";
-          p.suelto = false;
-          this.o.alPerro?.("escapa");
-        } else p.hasta = this.tiempo + 3000;
-      }
-      return;
-    }
-    // Running off along a route over free tiles. Once it got away, reaching it catches it.
-    if (lejos() > PERRO_CERCA * 2) p.suelto = true;
-    if (p.suelto && lejos() < PERRO_CERCA) {
-      p.modo = "espera";
-      return;
-    }
-    avanzar(p.ruta, PERRO_CORRE);
-    if (!p.ruta.length) p.modo = "espera";
-  }
-
-  // A free tile 3 to 7 tiles away from the dog, reachable on foot.
-  private lugarParaPerro() {
-    const { f } = this.perro!;
-    const desde = celdaDe(f.x, f.y - 2);
-    for (let intento = 0; intento < 20; intento++) {
-      const a = Math.random() * Math.PI * 2;
-      const r = 3 + Math.random() * 4;
-      const tx = Math.round(desde.tx + Math.cos(a) * r);
-      const ty = Math.round(desde.ty + Math.sin(a) * r);
-      if (libre(this.o.mapa, tx, ty) && rutaA(this.o.mapa, desde, { tx, ty }).length) return { tx, ty };
-    }
-    return null;
   }
 
   // Whether the feet box at (x, y) touches a blocked tile (outside the map counts as blocked).
@@ -460,26 +373,7 @@ export class Motor {
     for (const f of this.o.figuras) {
       const hoja = piezaYa(`figuras/${f.id}`, { piel: f.piel });
       if (!hoja) continue;
-      // The dog walks from the side (drawn facing left: standing, step, standing, step) and looks the way
-      // it goes; without that art it hops with its sitting figure.
-      const perro = this.perro?.f === f ? this.perro : null;
-      const lado = perro?.anda ? piezaYa("figuras/perro_lado") : undefined;
-      const salto = perro?.anda && !lado ? Math.round(Math.abs(Math.sin(this.tiempo / 70)) * 2) : 0;
-      const img = lado ?? hoja, w = lado ? CUADRO.ancho : hoja.width;
-      const col = lado ? [0, 1, 0, 2][Math.floor(this.tiempo / PERRO_PASO_MS) % 4] : 0;
-      const voltear = lado ? !perro!.izq : !!perro?.izq;
-      cosas.push({
-        y: f.y,
-        dibujar: () => {
-          const x = Math.round(f.x - w / 2);
-          const y = Math.round(f.y - img.height) - salto;
-          ctx.save();
-          ctx.translate(voltear ? x + w : x, y);
-          if (voltear) ctx.scale(-1, 1);
-          ctx.drawImage(img, col * w, 0, w, img.height, 0, 0, w, img.height);
-          ctx.restore();
-        },
-      });
+      cosas.push({ y: f.y, dibujar: () => ctx.drawImage(hoja, Math.round(f.x - hoja.width / 2), Math.round(f.y - hoja.height)) });
     }
     const a = this.o.apariencia;
     const { fila, voltear } = filaDe(this.dir);
@@ -516,7 +410,7 @@ export class Motor {
   }
 
   // HTML over the world: every element with data-mundo-x / data-mundo-y sits on that world point, one with
-  // data-mundo-sigue on the feet of who moves ("prota", "perro"); the one with data-flecha sits beside the
+  // data-mundo-sigue on the feet of the child ("prota"); the one with data-flecha sits beside the
   // edge arrow, and hides when there is no arrow.
   private ponerHtml(flecha: { x: number; y: number } | null) {
     const c = this.o.canvas;
@@ -524,7 +418,7 @@ export class Motor {
     const raiz = c.parentElement;
     if (!raiz) return;
     for (const el of raiz.querySelectorAll<HTMLElement>("[data-mundo-x], [data-mundo-sigue]")) {
-      const sigue = el.dataset.mundoSigue === "prota" ? this : el.dataset.mundoSigue === "perro" ? this.perro?.f : null;
+      const sigue = el.dataset.mundoSigue === "prota" ? this : null;
       const x = (((sigue?.x ?? Number(el.dataset.mundoX)) - this.cam.x) * this.z) / dpr;
       const y = (((sigue?.y ?? Number(el.dataset.mundoY)) - this.cam.y) * this.z) / dpr;
       el.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;

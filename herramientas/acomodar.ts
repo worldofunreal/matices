@@ -8,11 +8,10 @@
 //   (or <id>_quieta), anywhere under ARTE/figuras, cut to its height (FIGURAS in arte.ts).
 //   A layer (hair, clothes, extras) is each body pose edited by the generator (herramientas/generar.ts):
 //   with the body's folder, the layer keeps only the pixels that changed, framed like the body.
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createCanvas, loadImage } from "@napi-rs/canvas";
-import { parse } from "yaml";
-import { ARTE, ASSETS, ROOT, FIGURAS, leerManifiesto, type Manifiesto, type Pieza } from "./arte.ts";
+import { ARTE, ASSETS, FIGURAS, leerManifiesto, type Manifiesto, type Pieza } from "./arte.ts";
 
 const ANCHO = 48, ALTO = 64, CABEZA_Y = 2, FIGURA = 60; // figure height inside the frame
 
@@ -452,17 +451,15 @@ function cuello(px: Uint8ClampedArray) {
 
 // A figure of the house: one standing figure (quieta), cut to the height of its age (FIGURAS) with its feet
 // on the frame's last rows and its head centered, so every adult stands taller than the child however big the
-// generator drew it. People take the skin key colors (the house can change their skin); pets keep their fur.
+// generator drew it. Every figure takes the skin key colors.
 async function figura(pieza: Pieza, m: Manifiesto) {
   const [w, h] = pieza.medida, n = pieza.id.split("/")[1]!;
-  if (n === "perro_lado") return perroLado(pieza);
-  const { figuras } = parse(readFileSync(join(ROOT, "contenido/figuras.yaml"), "utf8")) as { figuras: [string, string, string][] };
   const f = buscarFigura(n);
   if (!f) return false;
   const img = await leer(f);
   const an = ancla(img), { alto } = FIGURAS[n];
   const px = cuadro(img, alto / (an.abajo - an.arriba), an, { alto: h, y: h - 2 - alto });
-  if (figuras.find((f) => f[0] === n)?.[1] !== "mascota") pielAClave(px, m.colores.piel.clave);
+  pielAClave(px, m.colores.piel.clave);
   guardarFigura(pieza, [px]);
   console.log(`${pieza.archivo}: ${w} × ${h}, ${alto} de alto`);
   return true;
@@ -486,29 +483,6 @@ function guardarFigura(pieza: Pieza, cuadros: Uint8ClampedArray[]) {
     ctx.putImageData(d, i * ANCHO, 0);
   });
   writeFileSync(join(ASSETS, pieza.archivo), c.toBuffer("image/png"));
-}
-
-// The dog walking from the side, facing left: standing and two steps, one frame each. Every image is first
-// brought to the standing one's size (the generator saves some bigger) and shares its scale, so a step keeps
-// its real height (the head dips). Each frame lines up by the head, which hardly moves while walking, with the
-// standing body centered; the feet stand on the frame's last rows.
-const PERRO_LADO = ["perro_lado", "perro_lado_paso_1", "perro_lado_paso_2"], PERRO_LADO_ALTO = 30;
-async function perroLado(pieza: Pieza) {
-  const rutas = PERRO_LADO.map(buscarFigura);
-  if (rutas.some((r) => !r)) return false;
-  const [ref, ...pasos] = await Promise.all(rutas.map((r) => leer(r!)));
-  const imgs = [ref, ...pasos.map((p) => (p.w === ref.w && p.h === ref.h ? p : redimensionar(p, ref.w, ref.h)))];
-  const a0 = ancla(ref), k = PERRO_LADO_ALTO / (a0.abajo - a0.arriba);
-  let x0 = ref.w, x1 = 0;
-  for (let i = 0; i < ref.fg.length; i++) if (ref.fg[i]) { x0 = Math.min(x0, i % ref.w); x1 = Math.max(x1, i % ref.w); }
-  const corrimiento = (x0 + x1) / 2 - a0.centro;
-  const h = pieza.medida[1];
-  guardarFigura(pieza, imgs.map((img) => {
-    const an = ancla(img);
-    return cuadro(img, k, { ...an, centro: an.centro + corrimiento }, { alto: h, y: h - 2 - Math.round((an.abajo - an.arriba) * k) });
-  }));
-  console.log(`${pieza.archivo}: ${PERRO_LADO.length} cuadros, ${PERRO_LADO_ALTO} de alto`);
-  return true;
 }
 
 async function main() {

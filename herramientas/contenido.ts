@@ -15,11 +15,14 @@ const README = join(DIR, "README.md");
 
 const MODULOS: Record<string, () => unknown> = { "virtual:contenido": validar, "virtual:arte": validarArte };
 
-// What the child does that starts a situation, and who reacts (GDD §9).
-const CUANDO = new Set(["correr"]);
-const QUIEN = new Set(["adulto_cerca"]);
+// What each minigame leaves behind: the marks it sets in the child's story. Scenes can ask for them (si, no).
+const MINIJUEGOS: Record<string, string[]> = { refri: [], estufa: [], ropero: ["ropa_uniforme", "ropa_deporte", "ropa_casual"], cuerda: [], dibujo: [], pistas: [], examen: [], tienda: [] };
+// The effects a scene can set on screen, as the story asks for them (src/pantallas/escena.css); Opciones scales them.
+const EFECTOS = new Set(["inquietud", "miedo", "intensidad", "acompanamiento", "alegria"]);
+const HORAS = new Set(["manana", "tarde", "noche"]);
+const DIAS = 3; // as in src/datos/dia.ts
 
-// The 13 areas, from the table in contenido/areas.md (the only place they are written).
+// The areas, from the table in contenido/areas.md (the only place they are written).
 function areasDelMarco(): { id: string; nombre: string; familia: string }[] {
   const doc = readFileSync(DOC_AREAS, "utf8");
   return [...doc.matchAll(/^\| ([^|]+?) \| ([^|]+?) \| `([a-z_]+)` \|/gm)].map((m) => ({ familia: m[1], nombre: m[2], id: m[3] }));
@@ -33,8 +36,8 @@ function version(): string {
 }
 
 // Words that change with gender. The same lines are shown to every child, and who reacts can be anyone
-// of the house, so no text carries a gender (GDD §6).
-const CON_GENERO = /(^|[«"¡¿ ])(?:lo|la) (?=levanta|lleva|regaña|saca|abraza|felicita|jala|ve |manda|llevan|castiga)|\b(soy (?:un|una)|solos?|solas?|enojad[oa]s?|cansad[oa]s?|sentad[oa]s?|asustad[oa]s?|preocupad[oa]s?|nervios[oa]s?|content[oa]s?)\b/i;
+// of the house, so no text carries a gender.
+const CON_GENERO = /(^|[«"¡¿ ])(?:lo|la) (?=levanta|lleva|regaña|saca|abraza|felicita|jala|ve |manda|llevan|castiga)|\b(soy (?:un|una)|enojad[oa]s?|cansad[oa]s?|sentad[oa]s?|asustad[oa]s?|preocupad[oa]s?|nervios[oa]s?|content[oa]s?)\b/i;
 
 export function validar() {
   const codigos = codigosValidos();
@@ -42,11 +45,12 @@ export function validar() {
   const errores: string[] = [];
   const err = (donde: string, msg: string) => errores.push(`${donde}: ${msg}`);
 
+  // The gender mark {o} is the only one allowed in a line: "list{o}" is "listo" or "lista" by the child's body.
   const texto = (donde: string, t: unknown) => {
     if (typeof t !== "string" || !t.trim()) return err(donde, "texto vacío");
     const genero = t.match(CON_GENERO);
-    if (genero) err(donde, `"${genero[0]}" cambia con el género; se escribe sin género ("sin ayuda", "de mal humor")`);
-    for (const m of t.match(/\{[^}]*\}/g) ?? []) err(donde, `marca desconocida ${m}`);
+    if (genero) err(donde, `"${genero[0]}" cambia con el género; se escribe con la marca {o} ("list{o}")`);
+    for (const m of t.match(/\{[^}]*\}/g) ?? []) if (m !== "{o}") err(donde, `marca desconocida ${m}`);
   };
   const codigo = (donde: string, c: unknown) => {
     if (typeof c !== "string" || !codigos.has(c)) err(donde, `código inexistente ${String(c)}`);
@@ -56,7 +60,7 @@ export function validar() {
   };
 
   const textos = parse(readFileSync(join(DIR, "textos.yaml"), "utf8"));
-  const marcasTextos = new Set(["{nombre}", "{n}", "{figura}", "{cuarto}", "{paso}"]);
+  const marcasTextos = new Set(["{nombre}", "{n}", "{paso}"]);
   const recorrer = (v: unknown, donde: string): void => {
     if (typeof v === "string") {
       if (!v.trim()) err(donde, "texto vacío");
@@ -73,28 +77,23 @@ export function validar() {
   for (const p of leerManifiesto().piezas)
     if (/^personaje\/(ropa_|calzado_)/.test(p.id) && !textos.creacion?.color_de?.[p.id.split("/")[1]]) err("textos creacion.color_de", `falta ${p.id.split("/")[1]}`);
 
-  // Figures: each one needs its figure and its art (FIGURAS); rooms named in the texts must exist in the house map.
+  // Family figures: each one needs its figure and its art (FIGURAS).
   const { figuras: listaFiguras } = parse(readFileSync(join(DIR, "figuras.yaml"), "utf8")) as { figuras: [string, string, string][] };
   const manifiesto = leerManifiesto();
   const piezas = new Set(manifiesto.piezas.map((p) => p.id));
   const figuras = listaFiguras.map(([id, tipo, nombre]) => {
-    if (!["adulto", "menor", "mascota"].includes(tipo)) err(`figuras ${id}`, `tipo inválido ${tipo}`);
+    if (tipo !== "adulto") err(`figuras ${id}`, `tipo inválido ${tipo}`);
     if (!piezas.has(`figuras/${id}`)) err(`figuras ${id}`, `falta figuras/${id} en el manifiesto`);
     if (!FIGURAS[id]) err(`figuras ${id}`, "falta en FIGURAS (herramientas/arte.ts)");
     if (FIGURAS[id] && FIGURAS[id].alto > (manifiesto.piezas.find((p) => p.id === `figuras/${id}`)?.medida[1] ?? 0) - 2) err(`figuras ${id}`, "no cabe en su cuadro");
     texto(`figuras ${id}`, nombre);
     return { id, tipo, nombre };
   });
-  const mapaCasa = JSON.parse(readFileSync(join(ROOT, "public/mapas/casa.json"), "utf8"));
-  const cuartosMapa = new Set<string>(mapaCasa.layers.find((l: { name: string }) => l.name === "cuartos")?.objects.map((o: { name: string }) => o.name) ?? []);
-  for (const c of Object.keys(textos.casa?.cuartos ?? {})) if (!cuartosMapa.has(c)) err("textos casa.cuartos", `${c} no está en mapas/casa.json`);
-  for (const c of cuartosMapa) if (!textos.casa?.cuartos?.[c]) err("textos casa.cuartos", `falta el nombre del cuarto ${c}`);
 
   // Maps: one per place with art (lugares/<lugar>/fondo); doors lead to a place and an arrival point
   // that exist; every person and object has its art and its phrase.
   const lugares = [...piezas].filter((id) => /^lugares\/[^/]+\/fondo$/.test(id)).map((id) => id.split("/")[1]);
   const mapas = Object.fromEntries(lugares.map((l) => [l, leerMapa(l)]));
-  const HORAS = new Set(["manana", "tarde", "noche"]);
   const mundo = textos.mundo ?? {};
   for (const [lugar, mapa] of Object.entries(mapas)) {
     if (!mapa) {
@@ -160,39 +159,70 @@ export function validar() {
     }
   }
 
-  // Situations (GDD §9): what starts each one, who reacts, its lines and its answers with their codes.
-  const { situaciones } = parse(readFileSync(join(DIR, "situaciones.yaml"), "utf8")) as { situaciones: { id: string; nombre: string; lugar: string; cuando: string; quien: string; areas: string[]; aviso: string; pregunta: string; respuestas: [string, string][] }[] };
+  // Scenes (contenido/escenas.yaml): where and when each one starts, its lines and its options. A delicate
+  // scene must be skippable, so the child is never held in one; the validator refuses it otherwise.
+  const hablantes = new Set(Object.keys(textos.escena?.hablantes ?? {}));
+  const { escenas } = parse(readFileSync(join(DIR, "escenas.yaml"), "utf8")) as { escenas: Escena[] };
   const ids = new Set<string>();
-  for (const x of situaciones) {
-    const d = `situaciones ${x.id}`;
-    if (!/^S\d\d$/.test(x.id) || ids.has(x.id)) err(d, "id repetido o no es S01, S02…");
+  const marcasDelJuego = new Set([...escenas.flatMap((x) => x.pasos.flatMap((p) => (p.marca ? [p.marca] : []))), ...Object.values(MINIJUEGOS).flat()]);
+  for (const x of escenas) {
+    const d = `escenas ${x.id}`;
+    if (!/^[A-Za-z0-9-]+$/.test(x.id) || ids.has(x.id)) err(d, "id repetido o inválido");
     ids.add(x.id);
     texto(`${d} nombre`, x.nombre);
-    if (!mapas[x.lugar]) err(d, `el lugar ${x.lugar} no es un mapa`);
-    if (!CUANDO.has(x.cuando)) err(d, `cuando desconocido ${x.cuando}`);
-    if (!QUIEN.has(x.quien)) err(d, `quien desconocido ${x.quien}`);
-    if (!x.areas?.length) err(d, "sin áreas");
+    if (!mapas[x.donde]) err(d, `donde: ${x.donde} no es un mapa`);
+    if (x.al.startsWith("salir:")) {
+      if (!mapas[x.al.slice("salir:".length)]) err(d, `al: ${x.al} lleva a un lugar que no existe`);
+    } else if (x.al !== "entrar") {
+      const m = mapas[x.donde];
+      if (m && !objetosDe(m).some((o) => (o.type === "objeto" || o.type === "npc") && o.name === x.al)) err(d, `al: ${x.al} no es un objeto ni una persona de ${x.donde}`);
+    }
+    if (x.dia !== undefined && !(Number.isInteger(x.dia) && x.dia >= 1 && x.dia <= DIAS)) err(d, `dia debe ser de 1 a ${DIAS}`);
+    if (x.hora !== undefined && !HORAS.has(x.hora)) err(d, `hora inválida ${x.hora}`);
+    for (const t of ([] as string[]).concat(x.tras ?? [])) if (!escenas.some((y) => y.id === t)) err(d, `tras: ${t} no es una escena`);
+    for (const m of [...(x.si ?? []), ...(x.no ?? [])]) if (!marcasDelJuego.has(m)) err(d, `la marca ${m} nunca se da`);
     (x.areas ?? []).forEach((a) => area(`${d} areas`, a));
-    texto(`${d} aviso`, x.aviso);
-    texto(`${d} pregunta`, x.pregunta);
-    if (!Array.isArray(x.respuestas) || !x.respuestas.length || x.respuestas.length > 3) err(d, "de 1 a 3 respuestas");
-    (x.respuestas ?? []).forEach((r, i) => {
-      if (!Array.isArray(r) || r.length !== 2) return err(`${d} respuestas[${i}]`, "debe ser [CÓDIGO, texto]");
-      codigo(`${d} respuestas[${i}]`, r[0]);
-      texto(`${d} respuestas[${i}]`, r[1]);
+    if (x.delicada && !x.saltable) err(d, "una escena delicada debe ser saltable: pausar, saltar y pedir ayuda siempre a la mano");
+    if (!x.pasos?.length) err(d, "sin pasos");
+    let ultimo: string | null = null; // who spoke last: the answer to an option comes from them
+    x.pasos.forEach((p, i) => {
+      const dp = `${d} paso ${i + 1}`;
+      const clases = ["de", "opciones", "marca", "mision", "minijuego", "efecto"].filter((k) => k in p);
+      if (clases.length !== 1) return err(dp, "cada paso es una sola cosa: de, opciones, marca, mision, minijuego o efecto");
+      if (p.de !== undefined) {
+        if (!hablantes.has(p.de)) err(dp, `no se sabe quién habla: ${p.de}`);
+        texto(dp, p.texto);
+        ultimo = p.de;
+      } else if (p.opciones) {
+        if (p.opciones.length < 2 || p.opciones.length > 4) err(dp, "de 2 a 4 opciones");
+        if (!ultimo) err(dp, "las opciones necesitan una línea antes");
+        p.opciones.forEach((o, j) => {
+          if (!Array.isArray(o) || o.length !== 3) return err(`${dp} opción ${j + 1}`, "debe ser [CÓDIGO, texto, respuesta]");
+          codigo(`${dp} opción ${j + 1}`, o[0]);
+          texto(`${dp} opción ${j + 1}`, o[1]);
+          if (o[2] !== null) texto(`${dp} opción ${j + 1} respuesta`, o[2]);
+        });
+      } else if (p.marca !== undefined) {
+        if (!/^[a-z_]+$/.test(p.marca)) err(dp, `marca inválida ${p.marca}`);
+      } else if (p.mision !== undefined) {
+        texto(dp, p.mision);
+      } else if (p.minijuego !== undefined) {
+        if (!(p.minijuego in MINIJUEGOS)) err(dp, `minijuego desconocido ${p.minijuego}`);
+      } else if (p.efecto !== undefined) {
+        if (!EFECTOS.has(p.efecto)) err(dp, `efecto desconocido ${p.efecto}`);
+      }
     });
   }
-  // Every door needs its sign (GDD §8).
-  for (const [lugar, m] of Object.entries(mapas))
-    for (const o of m ? objetosDe(m).filter((x) => x.type === "puerta") : []) if (!mundo.lugares?.[propiedades(o).destino]) err(`mapas/${lugar}.json ${o.name}`, `falta el letrero de ${propiedades(o).destino} en textos mundo.lugares`);
-
   if (errores.length) throw new Error(`Contenido inválido:\n- ${errores.join("\n- ")}`);
   // Doors: the places each place leads to. The world's guide walks this graph toward where the day goes next.
   const conexiones = Object.fromEntries(Object.entries(mapas).map(([l, m]) => [l, m ? objetosDe(m).filter((o) => o.type === "puerta").map((o) => propiedades(o).destino) : []]));
   // What can be touched in each place (the dashboard's "never touched").
   const objetos = Object.fromEntries(Object.entries(mapas).map(([l, m]) => [l, m ? objetosDe(m).filter((o) => o.type === "objeto").map((o) => o.name) : []]));
-  return { version: version(), situaciones, textos, figuras, lugares, conexiones, objetos, areas: areasDelMarco() };
+  return { version: version(), escenas, textos, figuras, lugares, conexiones, objetos, areas: areasDelMarco() };
 }
+
+type Paso = { de?: string; texto?: string; opciones?: [string, string, string | null][]; marca?: string; mision?: string; minijuego?: string; efecto?: string };
+type Escena = { id: string; nombre: string; donde: string; al: string; dia?: number; hora?: string; tras?: string | string[]; si?: string[]; no?: string[]; areas?: string[]; delicada?: boolean; saltable?: boolean; pasos: Paso[] };
 
 type ObjetoMapa = { name: string; type: string; properties?: { name: string; value: string }[] };
 type Mapa = { width: number; height: number; layers: { name: string; objects?: ObjetoMapa[] }[] };
@@ -239,7 +269,7 @@ export function contenido(): Plugin {
     load(id) {
       const nombre = id.slice(1);
       if (!id.startsWith("\0") || !(nombre in MODULOS)) return;
-      const vigilar = [DOC_CODIGOS, DOC_AREAS, README, MANIFIESTO, join(DIR, "textos.yaml"), join(DIR, "figuras.yaml"), join(DIR, "situaciones.yaml"), ...readdirSync(join(ROOT, "public/mapas")).map((f) => join(ROOT, "public/mapas", f))];
+      const vigilar = [DOC_CODIGOS, DOC_AREAS, README, MANIFIESTO, join(DIR, "textos.yaml"), join(DIR, "figuras.yaml"), join(DIR, "escenas.yaml"), ...readdirSync(join(ROOT, "public/mapas")).map((f) => join(ROOT, "public/mapas", f))];
       for (const f of vigilar) this.addWatchFile(f);
       return `export default ${JSON.stringify(MODULOS[nombre]())};`;
     },

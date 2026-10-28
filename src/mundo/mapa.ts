@@ -1,8 +1,12 @@
 // A map from public/mapas, in Tiled's format: walls (muros), doors,
 // arrival points, objects and people. Positions are game pixels; a tile is TILE × TILE.
 import type { Hora } from "../datos/guardado";
+import { azar } from "../datos/azar";
 
 export const TILE = 32;
+// Places where animals wander in by chance: each partida gets its own, from its seed.
+const LUGARES_CON_FAUNA = ["calle", "parque", "escuela_patio", "tiendita"];
+const GATOS = ["gato_blanco", "gato_calico", "gato_ginger_dormido", "gato_kitten", "gato_negro", "gato_persa", "gato_siames"];
 const VECINOS = [
   [1, 0],
   [-1, 0],
@@ -29,7 +33,7 @@ export interface Puerta extends Zona {
 // Something the child can tap: an object (x, y at its base) or a fixed person (x, y at the feet).
 export interface Punto {
   nombre: string;
-  tipo: "objeto" | "npc";
+  tipo: "objeto" | "npc" | "fauna"; // fauna: an animal that only walks by, never tapped
   x: number;
   y: number;
   arte: string;
@@ -61,14 +65,14 @@ interface ObjetoTiled {
 const propiedad = (o: ObjetoTiled, nombre: string) => o.properties?.find((p) => p.name === nombre)?.value;
 
 // Reads public/mapas/<lugar>.json. Read again on every visit, so the walls always start whole.
-export async function cargarMapa(lugar: string): Promise<Mapa> {
+export async function cargarMapa(lugar: string, semilla: string): Promise<Mapa> {
   const json = await (await fetch(`mapas/${lugar}.json`)).json();
   const capa = (nombre: string) => json.layers.find((l: { name: string }) => l.name === nombre);
   const objetos: ObjetoTiled[] = capa("objetos").objects;
   const llegadas: Record<string, { x: number; y: number }> = {};
   for (const o of objetos) if (o.type === "llegada") llegadas[o.name] = { x: o.x, y: o.y };
   const inicio = objetos.find((o) => o.name === "inicio") ?? objetos.find((o) => o.type === "llegada")!;
-  return {
+  const m: Mapa = {
     lugar,
     ancho: json.width * json.tilewidth,
     alto: json.height * json.tileheight,
@@ -91,6 +95,25 @@ export async function cargarMapa(lugar: string): Promise<Mapa> {
         horas: propiedad(o, "horas"),
       })),
   };
+  if (LUGARES_CON_FAUNA.includes(lugar)) m.puntos.push(...fauna(m, `${semilla}:${lugar}`));
+  return m;
+}
+
+// Some cats on free floor, not on doors or things. The same seed always puts them in the same places.
+function fauna(m: Mapa, semilla: string): Punto[] {
+  const r = azar(semilla);
+  const cuantos = 2 + Math.floor(r.frac() * 3);
+  const gatos = r.barajar(GATOS);
+  const ocupadas = new Set([...m.puntos.map((p) => celdaDe(p.x, p.y)), ...m.puertas.map((d) => celdaDe(d.x, d.y))].map((c) => `${c.tx},${c.ty}`));
+  const sitios: Punto[] = [];
+  for (let i = 0; i < 200 && sitios.length < cuantos; i++) {
+    const tx = Math.floor(r.frac() * m.columnas), ty = Math.floor(r.frac() * m.filas);
+    if (!libre(m, tx, ty) || ocupadas.has(`${tx},${ty}`)) continue;
+    ocupadas.add(`${tx},${ty}`);
+    const nombre = gatos[sitios.length];
+    sitios.push({ nombre, tipo: "fauna", x: tx * TILE + TILE / 2, y: ty * TILE + TILE - 1, arte: `fauna/${nombre}` });
+  }
+  return sitios;
 }
 
 export const visible = (p: Punto, hora: Hora) => !p.horas || p.horas.split(",").includes(hora);

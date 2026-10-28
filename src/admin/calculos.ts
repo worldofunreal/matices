@@ -5,7 +5,7 @@ import type { Apariencia } from "../personaje/apariencia";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Evento = { nino: string; id: number; tipo: string; sesion: number; t_ms: number; cuando?: number; [k: string]: any };
 export interface Contenido {
-  situaciones: { id: string; nombre: string; areas: string[] }[];
+  escenas: { id: string; nombre: string; areas?: string[] }[];
   areas: { id: string; nombre: string }[];
   objetos: Record<string, string[]>; // what can be touched in each place
 }
@@ -43,7 +43,7 @@ export function minutos(evs: Evento[]) {
 
 export function resumen(nino: string, evs: Evento[]) {
   const horas = evs.map((e) => e.cuando).filter((x): x is number => typeof x === "number");
-  const respuestas = de(evs, "situacion").filter((e) => e.paso === "respuesta");
+  const elecciones = de(evs, "escena").filter((e) => e.paso === "opcion");
   const tramos = de(evs, "tramo");
   return {
     nino,
@@ -53,7 +53,8 @@ export function resumen(nino: string, evs: Evento[]) {
     minutos: minutos(evs),
     dia: tramos.length ? Math.max(...tramos.map((t) => t.dia)) : 0,
     termino: tramos.some((t) => t.hora === "fin"),
-    respuestas: respuestas.length,
+    respuestas: elecciones.length,
+    minijuegos: de(evs, "minijuego").length,
     quiereHablar: de(evs, "quiero_hablar").length,
     aparato: aparatoDe(ultimo(evs, "aparato")?.navegador),
     errores: de(evs, "error").length,
@@ -66,7 +67,6 @@ export type Resumen = ReturnType<typeof resumen>;
 export function avance(grupos: Map<string, Evento[]>) {
   const pasos: [string, (evs: Evento[]) => boolean][] = [
     ["Personaje", (evs) => evs.some((e) => e.tipo === "personaje")],
-    ["Casa", (evs) => evs.some((e) => e.tipo === "casa_lista")],
     ["Mundo", (evs) => evs.some((e) => e.tipo === "pantalla" && e.pantalla === "mundo")],
     ["Día 2", (evs) => evs.some((e) => e.tipo === "tramo" && e.dia >= 2)],
     ["Día 3", (evs) => evs.some((e) => e.tipo === "tramo" && e.dia >= 3)],
@@ -119,42 +119,44 @@ export function fpsPorAparato(grupos: Map<string, Evento[]>) {
   return [...m].filter(([, f]) => f.length).map(([aparato, f]) => ({ aparato, fps: Math.round(mediana(f)), medidas: f.length }));
 }
 
-// For each area, how many times each answer code came up in the situations that cover it, and from which ones.
+// For each area, how many times each code was chosen in the scenes that cover it, and from which ones.
 export function codigosPorArea(evs: Evento[], c: Contenido) {
-  const areasDe = new Map(c.situaciones.map((x) => [x.id, x.areas]));
-  const m = new Map<string, Map<string, { n: number; situaciones: Set<string> }>>();
-  for (const e of de(evs, "situacion").filter((x) => x.paso === "respuesta")) {
-    for (const area of areasDe.get(e.situacion) ?? []) {
+  const areasDe = new Map(c.escenas.map((x) => [x.id, x.areas ?? []]));
+  const m = new Map<string, Map<string, { n: number; escenas: Set<string> }>>();
+  for (const e of de(evs, "escena").filter((x) => x.paso === "opcion")) {
+    for (const area of areasDe.get(e.escena) ?? []) {
       const codigos = m.get(area) ?? (m.set(area, new Map()), m.get(area)!);
-      const f = codigos.get(e.elegida) ?? (codigos.set(e.elegida, { n: 0, situaciones: new Set() }), codigos.get(e.elegida)!);
+      const f = codigos.get(e.elegida) ?? (codigos.set(e.elegida, { n: 0, escenas: new Set() }), codigos.get(e.elegida)!);
       f.n++;
-      f.situaciones.add(e.situacion);
+      f.escenas.add(e.escena);
     }
   }
   return m;
 }
 
-// The same count among everyone who answered in a situation of that area: how many, the middle one, lowest, highest.
+// The same count among everyone who chose in a scene of that area: how many, the middle one, lowest, highest.
 export function referencia(todos: Map<string, Map<string, { n: number }>>[], area: string, codigo: string) {
   const cuentas = todos.filter((m) => m.has(area)).map((m) => m.get(area)!.get(codigo)?.n ?? 0);
   return { N: cuentas.length, mediana: mediana(cuentas), min: cuentas.length ? Math.min(...cuentas) : 0, max: cuentas.length ? Math.max(...cuentas) : 0 };
 }
 
-// Each situation as it happened: how many times, who reacted, what the child
-// answered each time it was asked and how fast, and how many times they did it again after answering.
-export function situaciones(evs: Evento[]) {
-  const m = new Map<string, { veces: number; quien: string[]; respuestas: { codigo: string; segundos: number }[]; despues: number }>();
-  for (const e of de(evs, "situacion")) {
-    const f = m.get(e.situacion) ?? (m.set(e.situacion, { veces: 0, quien: [], respuestas: [], despues: 0 }), m.get(e.situacion)!);
-    if (e.paso !== "respuesta") {
-      f.veces = Math.max(f.veces, e.veces ?? 0);
-      if (!f.quien.includes(e.quien)) f.quien.push(e.quien);
-    }
-    if (e.paso === "respuesta") f.respuestas.push({ codigo: e.elegida, segundos: Math.round(e.ms_decidir / 100) / 10 });
-    if (e.paso === "repite") f.despues++;
+// Each scene as it went: how many times it started, how many times it was skipped or paused, and every choice in
+// order with who spoke and how many seconds it took to choose. Only what happened, never what it means.
+export function escenas(evs: Evento[]) {
+  const m = new Map<string, { veces: number; saltada: number; pausada: number; elecciones: { codigo: string; de: string; segundos: number }[] }>();
+  const fila = (id: string) => m.get(id) ?? (m.set(id, { veces: 0, saltada: 0, pausada: 0, elecciones: [] }), m.get(id)!);
+  for (const e of de(evs, "escena")) {
+    const f = fila(e.escena);
+    if (e.paso === "inicio") f.veces++;
+    if (e.paso === "opcion") f.elecciones.push({ codigo: e.elegida, de: e.de, segundos: Math.round(e.ms_decidir / 100) / 10 });
+    if (e.paso === "fin" && e.saltada) f.saltada++;
+    if (e.paso === "fin" && e.pausada) f.pausada++;
   }
   return m;
 }
+
+// Each minigame as it was played: what it was, how it ended, how long it took and the choice it left, if any.
+export const minijuegos = (evs: Evento[]) => de(evs, "minijuego").map((e) => ({ minijuego: e.minijuego, resultado: e.resultado, segundos: Math.round(e.ms / 100) / 10, codigo: e.codigo ?? "" }));
 
 export function exploracion(evs: Evento[], c: Contenido) {
   const lugares = new Map<string, { ms: number; visitas: number; corrio: number; tocados: Set<string> }>();
@@ -210,14 +212,6 @@ export function aparienciaDe(evs: Evento[]): Apariencia | null {
       mochila: (p.color_mochila ?? 1) - 1,
     },
   };
-}
-
-export function casa(evs: Evento[]) {
-  const l = ultimo(evs, "casa_lista");
-  if (!l) return null;
-  const cuartos = new Map<string, { figura: string; distancia: number; renombrada: boolean }[]>();
-  for (const f of l.figuras) cuartos.set(f.cuarto, [...(cuartos.get(f.cuarto) ?? []), f]);
-  return { cuartos, protaCuarto: l.prota_cuarto as string | null };
 }
 
 export const csv = (evs: Evento[]) => {

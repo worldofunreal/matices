@@ -14,97 +14,97 @@
 # pieza en su clave aunque se haya dibujado en otro color.
 colores:
   piel:
-    clave: ["#ffead4", "#f6d7bd", "#e2b896", "#c4936f", "#af7954"]
+    clave: [ "#ffead4", "#f6d7bd", "#e2b896", "#c4936f", "#af7954" ]
     variantes:
-      - ["#ffead4", "#f6d7bd", "#e2b896", "#c4936f", "#af7954"]
-      - ["#fcd8b7", "#efc6a2", "#d9a87f", "#b9845c", "#a36b44"]
-      - ["#f1c199", "#e2b088", "#c9946b", "#a6714b", "#8e5835"]
-      - ["#e1ad7d", "#d19c6e", "#b78055", "#93603b", "#7a4a29"]
-      - ["#ce9465", "#bd8458", "#a06a42", "#7d4f2d", "#643c1e"]
-      - ["#b3784c", "#a26b42", "#865532", "#663d21", "#502c15"]
-      - ["#905c36", "#81512f", "#683f23", "#4c2c17", "#381f0f"]
-      - ["#694227", "#5e3a22", "#4b2c19", "#341d10", "#24120a"]
+      - [ "#ffead4", "#f6d7bd", "#e2b896", "#c4936f", "#af7954" ]
+      - [ "#fcd8b7", "#efc6a2", "#d9a87f", "#b9845c", "#a36b44" ]
+      - [ "#f1c199", "#e2b088", "#c9946b", "#a6714b", "#8e5835" ]
+      - [ "#e1ad7d", "#d19c6e", "#b78055", "#93603b", "#7a4a29" ]
+      - [ "#ce9465", "#bd8458", "#a06a42", "#7d4f2d", "#643c1e" ]
+      - [ "#b3784c", "#a26b42", "#865532", "#663d21", "#502c15" ]
+      - [ "#905c36", "#81512f", "#683f23", "#4c2c17", "#381f0f" ]
+      - [ "#694227", "#5e3a22", "#4b2c19", "#341d10", "#24120a" ]
   cabello:
-    clave: ["#4a3426", "#33231a", "#21160f"]
+    clave: [ "#4a3426", "#33231a", "#21160f" ]
     variantes:
-      - ["#4a3426", "#33231a", "#21160f"]
-      - ["#2a2422", "#1b1716", "#100d0c"]
-      - ["#6b4a33", "#503524", "#362317"]
-      - ["#9a6d46", "#7a5233", "#583a23"]
-      - ["#d1a868", "#b08547", "#87622f"]
-      - ["#a5532f", "#83401f", "#5e2c14"]
+      - [ "#4a3426", "#33231a", "#21160f" ]
+      - [ "#2a2422", "#1b1716", "#100d0c" ]
+      - [ "#6b4a33", "#503524", "#362317" ]
+      - [ "#9a6d46", "#7a5233", "#583a23" ]
+      - [ "#d1a868", "#b08547", "#87622f" ]
+      - [ "#a5532f", "#83401f", "#5e2c14" ]
   mochila:
-    clave: ["#5b8fd6", "#3f6fb3", "#2b4f85"]
+    clave: [ "#5b8fd6", "#3f6fb3", "#2b4f85" ]
     variantes:
-      - ["#5b8fd6", "#3f6fb3", "#2b4f85"]
-      - ["#e0605a", "#bf4540", "#8f2f2b"]
-      - ["#6cbf6a", "#4c9a4a", "#356f34"]
-      - ["#f2c14e", "#d19e2f", "#9c741d"]
+      - [ "#5b8fd6", "#3f6fb3", "#2b4f85" ]
+      - [ "#e0605a", "#bf4540", "#8f2f2b" ]
+      - [ "#6cbf6a", "#4c9a4a", "#356f34" ]
+      - [ "#f2c14e", "#d19e2f", "#9c741d" ]
   sueter:
-    clave: ["#4e4e56", "#3c3c44", "#2e2e35"]
+    clave: [ "#4e4e56", "#3c3c44", "#2e2e35" ]
     variantes:
-      - ["#4e4e56", "#3c3c44", "#2e2e35"]
-      - ["#2f3f6e", "#24315a", "#1a2445"]
-      - ["#7a2a35", "#5f1f29", "#46161e"]
-      - ["#2f5a3e", "#234630", "#183323"]
-      - ["#6a4a33", "#533926", "#3d291b"]
+      - [ "#4e4e56", "#3c3c44", "#2e2e35" ]
+      - [ "#2f3f6e", "#24315a", "#1a2445" ]
+      - [ "#7a2a35", "#5f1f29", "#46161e" ]
+      - [ "#2f5a3e", "#234630", "#183323" ]
+      - [ "#6a4a33", "#533926", "#3d291b" ]
   uniforme_abajo:
-    clave: ["#96969c", "#7a7a82", "#62626a"]
+    clave: [ "#96969c", "#7a7a82", "#62626a" ]
     variantes:
-      - ["#96969c", "#7a7a82", "#62626a"]
-      - ["#3a4a78", "#2c3a62", "#202b4b"]
-      - ["#b09a6e", "#927e56", "#736240"]
-      - ["#3a3a3e", "#2c2c30", "#1f1f22"]
+      - [ "#96969c", "#7a7a82", "#62626a" ]
+      - [ "#3a4a78", "#2c3a62", "#202b4b" ]
+      - [ "#b09a6e", "#927e56", "#736240" ]
+      - [ "#3a3a3e", "#2c2c30", "#1f1f22" ]
   playera:
-    clave: ["#1f7a7a", "#16605f", "#0f4746"]
+    clave: [ "#1f7a7a", "#16605f", "#0f4746" ]
     variantes:
-      - ["#1f7a7a", "#16605f", "#0f4746"]
-      - ["#c8433d", "#a2322d", "#78241f"]
-      - ["#e8c040", "#c49c2a", "#94741c"]
-      - ["#7d4fb0", "#623b8f", "#482a6b"]
-      - ["#e47fa6", "#c76189", "#9a4668"]
-      - ["#3f78c8", "#2f5fa4", "#22467b"]
+      - [ "#1f7a7a", "#16605f", "#0f4746" ]
+      - [ "#c8433d", "#a2322d", "#78241f" ]
+      - [ "#e8c040", "#c49c2a", "#94741c" ]
+      - [ "#7d4fb0", "#623b8f", "#482a6b" ]
+      - [ "#e47fa6", "#c76189", "#9a4668" ]
+      - [ "#3f78c8", "#2f5fa4", "#22467b" ]
   pants:
-    clave: ["#55585c", "#424548", "#313336"]
+    clave: [ "#55585c", "#424548", "#313336" ]
     variantes:
-      - ["#55585c", "#424548", "#313336"]
-      - ["#34508a", "#283f6f", "#1d2f54"]
-      - ["#2f2f33", "#232327", "#18181b"]
-      - ["#6b5040", "#543e31", "#3e2d23"]
+      - [ "#55585c", "#424548", "#313336" ]
+      - [ "#34508a", "#283f6f", "#1d2f54" ]
+      - [ "#2f2f33", "#232327", "#18181b" ]
+      - [ "#6b5040", "#543e31", "#3e2d23" ]
   tenis:
-    clave: ["#f2f2f2", "#cfcfcf", "#9a9a9a"]
+    clave: [ "#f2f2f2", "#cfcfcf", "#9a9a9a" ]
     variantes:
-      - ["#f2f2f2", "#cfcfcf", "#9a9a9a"]
-      - ["#3a3a3e", "#2a2a2e", "#1c1c1f"]
-      - ["#d0453f", "#a8332e", "#7a2420"]
-      - ["#4a7fd0", "#3765ab", "#274a80"]
+      - [ "#f2f2f2", "#cfcfcf", "#9a9a9a" ]
+      - [ "#3a3a3e", "#2a2a2e", "#1c1c1f" ]
+      - [ "#d0453f", "#a8332e", "#7a2420" ]
+      - [ "#4a7fd0", "#3765ab", "#274a80" ]
   gorra:
-    clave: ["#d23c3c", "#ab2e2e", "#7f2121"]
+    clave: [ "#d23c3c", "#ab2e2e", "#7f2121" ]
     variantes:
-      - ["#d23c3c", "#ab2e2e", "#7f2121"]
-      - ["#3b6cc4", "#2d55a0", "#203e77"]
-      - ["#3f9a4e", "#2f7a3c", "#215a2b"]
-      - ["#36363a", "#27272b", "#1a1a1d"]
-      - ["#e8c23e", "#c49e28", "#93761a"]
+      - [ "#d23c3c", "#ab2e2e", "#7f2121" ]
+      - [ "#3b6cc4", "#2d55a0", "#203e77" ]
+      - [ "#3f9a4e", "#2f7a3c", "#215a2b" ]
+      - [ "#36363a", "#27272b", "#1a1a1d" ]
+      - [ "#e8c23e", "#c49e28", "#93761a" ]
   lentes:
-    clave: ["#5e676a", "#4a5255", "#373d40"]
+    clave: [ "#5e676a", "#4a5255", "#373d40" ]
     variantes:
-      - ["#5e676a", "#4a5255", "#373d40"]
-      - ["#2a2a2e", "#1f1f22", "#141416"]
-      - ["#b8403a", "#92302b", "#6a221f"]
-      - ["#3e6fb8", "#2f5793", "#22406c"]
+      - [ "#5e676a", "#4a5255", "#373d40" ]
+      - [ "#2a2a2e", "#1f1f22", "#141416" ]
+      - [ "#b8403a", "#92302b", "#6a221f" ]
+      - [ "#3e6fb8", "#2f5793", "#22406c" ]
   aretes:
-    clave: ["#f2c64a", "#d1a12e", "#9c761c"]
+    clave: [ "#f2c64a", "#d1a12e", "#9c761c" ]
     variantes:
-      - ["#f2c64a", "#d1a12e", "#9c761c"]
-      - ["#e2e6ea", "#b8bec4", "#868c92"]
-      - ["#e0504a", "#b83a35", "#882a26"]
+      - [ "#f2c64a", "#d1a12e", "#9c761c" ]
+      - [ "#e2e6ea", "#b8bec4", "#868c92" ]
+      - [ "#e0504a", "#b83a35", "#882a26" ]
 
 grupos:
   - carpeta: personaje
     tipo: hoja
-    medida: [240, 192]
-    colores: [piel, cabello]
+    medida: [ 240, 192 ]
+    colores: [ piel, cabello ]
     piezas:
       cuerpo_nina: Cuerpo base de niña, 8 a 12 años, playera y short ajustados gris claro, descalza y sin cabello; piel con los colores clave
       cuerpo_nino: Cuerpo base de niño, igual que el de niña
@@ -118,60 +118,180 @@ grupos:
       cabello_08: Rapado
       cabello_09: Afro
       cabello_10: Con fleco
-      ropa_uniforme_arriba: {que: Suéter liso con playera blanca tipo polo, colores: [sueter]}
-      ropa_uniforme_pantalon: {que: Pantalón del uniforme, colores: [uniforme_abajo]}
-      ropa_uniforme_falda: {que: Falda a la rodilla con short, colores: [uniforme_abajo]}
-      ropa_casa_arriba: {que: Playera de casa, colores: [playera]}
-      ropa_casa_abajo: {que: Pants de casa, colores: [pants]}
-      calzado_tenis: {que: Tenis, colores: [tenis]}
-      extra_lentes: {que: Lentes, colores: [lentes]}
-      extra_aretes: {que: Aretes pequeños, colores: [aretes]}
-      extra_gorra: {que: Gorra, colores: [gorra]}
-      extra_mochila: {que: Mochila, colores: [mochila]}
+      ropa_uniforme_arriba: { que: Suéter liso con playera blanca tipo polo, colores: [ sueter ] }
+      ropa_uniforme_pantalon: { que: Pantalón del uniforme, colores: [ uniforme_abajo ] }
+      ropa_uniforme_falda: { que: Falda a la rodilla con short, colores: [ uniforme_abajo ] }
+      ropa_casa_arriba: { que: Playera de casa, colores: [ playera ] }
+      ropa_casa_abajo: { que: Pants de casa, colores: [ pants ] }
+      calzado_tenis: { que: Tenis, colores: [ tenis ] }
+      extra_lentes: { que: Lentes, colores: [ lentes ] }
+      extra_aretes: { que: Aretes pequeños, colores: [ aretes ] }
+      extra_gorra: { que: Gorra, colores: [ gorra ] }
+      extra_mochila: { que: Mochila, colores: [ mochila ] }
 
   - carpeta: figuras
     tipo: hoja
-    medida: [48, 80]
-    colores: [piel]
+    medida: [ 48, 80 ]
+    colores: [ piel ]
     piezas:
-      abuela: Abuela
-      abuelo: Abuelo
       mama: Mamá
       papa: Papá
-      tia: Tía
       tio: Tío
-      madrastra: Madrastra
-      padrastro: Padrastro
-      hermano_mayor: Hermano mayor (adolescente)
-      hermana_mayor: Hermana mayor (adolescente)
-      hermano_menor: Hermano menor
-      hermana_menor: Hermana menor
-      bebe: Bebé
-      primo: Primo
-      prima: Prima
-      otra_persona: Otra persona adulta
-      perro: Perro
-      perro_lado: {que: "Perro de perfil caminando, mirando a la izquierda: quieto y dos pasos", medida: [144, 48], colores: []}
-      gato: Gato
 
   - carpeta: personajes
     tipo: hoja
-    medida: [48, 64]
+    medida: [ 48, 64 ]
     piezas:
-      cuentera: La Cuentera. Señora mayor, rebozo, lentes, un libro grande
-      lucia: Lucía, la maestra
-      nico: Nico, compañero
-      clara: Clara, la bibliotecaria
-      don_chuy: Don Chuy, el de la tiendita
-      conserje: El conserje de la escuela
-      companero_1: Compañero genérico
-      companero_2: Compañera genérica
-      companero_3: Compañero genérico
-      companero_4: Compañera genérica
-      vecino_1: Vecino genérico
-      vecino_2: Vecina genérica
-      vecino_3: Vecino genérico
-      vecino_4: Vecina genérica
+      cuentera:
+        que: La Cuentera. Señora mayor, rebozo, lentes, un libro grande
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: La Cuentera, the storyteller, an older lady of about 70 with a long gray braid and round glasses, a dark-blue rebozo (Mexican shawl) over her shoulders, holding a big storybook. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is taller than the child: about 1.25 times the child's height, with the head about the same size as the child's and a longer body, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: personajes/cuentera/quieta.png
+          despues: acomodar
+          orden: 5
+      lucia:
+        que: Lucía, la maestra
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: Lucía, the school teacher, a woman of about 35 with dark hair in a low bun, a navy-blue blazer over a white blouse, a gray knee-length skirt, flat dark shoes, holding a folder. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is taller than the child: about 1.25 times the child's height, with the head about the same size as the child's and a longer body, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: personajes/lucia/quieta.png
+          despues: acomodar
+          orden: 6
+      nico:
+        que: Nico, compañero
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: Nico, a classmate, a boy of about 10 with short wavy black hair; the school uniform: a plain gray sweater over a white polo shirt, gray trousers, dark school shoes. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is about as tall as the child, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nino_frente.png
+          destino: personajes/nico/quieta.png
+          despues: acomodar
+          orden: 7
+      clara:
+        que: Clara, la bibliotecaria
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: Clara, the librarian, a woman of about 50 with short dark hair streaked with gray and round glasses on a chain, a long olive-green cardigan, dark trousers. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is taller than the child: about 1.25 times the child's height, with the head about the same size as the child's and a longer body, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: personajes/clara/quieta.png
+          despues: acomodar
+          orden: 8
+      don_chuy:
+        que: Don Chuy, el de la tiendita
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: Don Chuy, the owner of the corner store, a cheerful man of about 60 with short gray hair and a gray mustache, a white shirt, a navy-blue shop apron, dark trousers. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is taller than the child: about 1.25 times the child's height, with the head about the same size as the child's and a longer body, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nino_frente.png
+          destino: personajes/don_chuy/quieta.png
+          despues: acomodar
+          orden: 9
+      conserje:
+        que: El conserje de la escuela
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: the school janitor, a man of about 50 with short black hair, a blue work uniform (shirt and trousers), a ring of keys on his belt. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is taller than the child: about 1.25 times the child's height, with the head about the same size as the child's and a longer body, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nino_frente.png
+          destino: personajes/conserje/quieta.png
+          despues: acomodar
+          orden: 10
+      orientadora:
+        que: La orientadora de la escuela
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: the school counselor, a kind woman of about 40 with a warm, calm expression, shoulder-length dark hair and simple glasses, a soft teal cardigan over a white blouse, dark trousers, a school ID card on a lanyard. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is taller than the child: about 1.25 times the child's height, with the head about the same size as the child's and a longer body, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: personajes/orientadora/quieta.png
+          despues: acomodar
+          orden: 4
+      companero_1:
+        que: Valeria, provisional
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: Valeria, a girl of about 10, outgoing and sporty, with a big friendly smile and long dark hair in a high ponytail with a red hair tie; the school uniform: a plain gray sweater over a white polo shirt, a gray pleated skirt to the knees, dark school shoes. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is about as tall as the child, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: personajes/companero_1/quieta.png
+          despues: acomodar
+          orden: 1
+      companero_2:
+        que: Leo, provisional
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: Leo, a boy of about 10, calm and quiet, with a gentle expression and short neat black hair, holding a small sketchbook under one arm; the school uniform: a plain gray sweater over a white polo shirt, gray trousers, dark school shoes. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is about as tall as the child, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nino_frente.png
+          destino: personajes/companero_2/quieta.png
+          despues: acomodar
+          orden: 2
+      companero_3:
+        que: Sam, provisional
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: Sam, a boy of about 10, curious and adventurous, with bright eyes and messy dark hair, holding a small magnifying glass in one hand; the school uniform: a plain gray sweater over a white polo shirt, gray trousers, dark school shoes. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is about as tall as the child, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nino_frente.png
+          destino: personajes/companero_3/quieta.png
+          despues: acomodar
+          orden: 3
+      companero_4:
+        que: Compañera genérica
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: a classmate, a girl of about 10 with a short black bob haircut; the school uniform: a plain gray sweater over a white polo shirt, a gray pleated skirt to the knees, dark school shoes. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is about as tall as the child, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: personajes/companero_4/quieta.png
+          despues: acomodar
+          orden: 11
+      vecino_1:
+        que: Vecino genérico
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: a neighbor, a man of about 40 with short black hair, a plain dark-green t-shirt and blue jeans. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is taller than the child: about 1.25 times the child's height, with the head about the same size as the child's and a longer body, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nino_frente.png
+          destino: personajes/vecino_1/quieta.png
+          despues: acomodar
+          orden: 12
+      vecino_2:
+        que: Vecina genérica
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: a neighbor, a woman of about 35 with long black hair in a loose braid, a plain blue blouse and dark trousers, carrying a cloth shopping bag. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is taller than the child: about 1.25 times the child's height, with the head about the same size as the child's and a longer body, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: personajes/vecino_2/quieta.png
+          despues: acomodar
+          orden: 13
+      vecino_3:
+        que: Vecino genérico
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: a neighbor, an older man of about 65 with gray hair, a light-blue button shirt, gray trousers and a cap. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is taller than the child: about 1.25 times the child's height, with the head about the same size as the child's and a longer body, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nino_frente.png
+          destino: personajes/vecino_3/quieta.png
+          despues: acomodar
+          orden: 14
+      vecino_4:
+        que: Vecina genérica
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW character in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same chibi proportions, the same kind of face and eyes, and the same skin color. The new character: a neighbor, a young woman of about 25 with curly dark hair, a plain yellow hoodie and blue jeans. Standing still, facing the viewer, arms relaxed at the sides, full body from head to feet. It is taller than the child: about 1.25 times the child's height, with the head about the same size as the child's and a longer body, standing on the same floor line as the child. Plain everyday Mexican clothes; no beige, brown, orange or pink clothes or shoes, so they never look like skin. Hair in its real color. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new character, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: personajes/vecino_4/quieta.png
+          despues: acomodar
+          orden: 15
 
   # Lugares: el fondo es el lugar vacío (piso y muros); cada mueble va aparte en objetos.
   - carpeta: lugares/casa
@@ -179,110 +299,715 @@ grupos:
     piezas:
       fondo:
         que: Casa en corte, sin techo. Sala-comedor, cocina, 2 recámaras, baño, patio con tinaco y lavadero. Es el lugar más importante del juego
-        medida: [960, 544]
+        medida:
+          - 960
+          - 544
+        generacion:
+          prompt: |-
+            The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the layout of a place in the game, seen from above: the dark blocks are walls, the light area is the floor, each small square is one tile, and the child is about two tiles tall. Draw this place as a top-down game background in exactly the same art style as the child: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: a Mexican family house cut open with no roof: living-dining room, kitchen, 2 bedrooms, a bathroom, and a back patio. Follow the layout exactly: walls where the dark blocks are, openings where the layout leaves gaps, plain floor where small dark blocks stand inside a room. Only the floors, the walls and the ground: no furniture, no plants, no water tank, no washing sink; they are drawn apart. Do NOT draw the child. Create ONE image with the same proportions as the layout (960 by 544), filling it edge to edge. No text, no labels, no people.
+          referencias:
+            - referencias/nina_frente.png
+            - referencias/casa_muros.png
+          destino: lugares/casa/fondo.png
+          despues: avisar
+          orden: 16
 
   - carpeta: lugares/casa
     tipo: objeto
     piezas:
-      mesa: {que: Mesa del comedor, medida: [64, 48]}
-      sillon: {que: Sillón de la sala, medida: [64, 32]}
-      television: {que: Televisión con mueble, medida: [64, 48]}
-      refrigerador: {que: Refrigerador, medida: [32, 64]}
-      estufa: {que: Estufa, medida: [32, 48]}
-      fregadero: {que: Fregadero, medida: [64, 48]}
-      cama: {que: Cama, medida: [48, 64]}
-      ropero: {que: Ropero, medida: [48, 64]}
-      espejo: {que: Espejo de pie (para cambiar al personaje), medida: [32, 64]}
-      wc: {que: Taza del baño, medida: [32, 32]}
-      lavabo: {que: Lavabo, medida: [32, 48]}
-      regadera: {que: Regadera, medida: [32, 64]}
-      tinaco: {que: Tinaco, medida: [48, 64]}
-      lavadero: {que: Lavadero, medida: [64, 48]}
-      maceta: {que: Maceta, medida: [32, 32]}
-      foto_escuela: {que: Foto de la escuela en la pared, medida: [32, 32]}
+      mesa:
+        que: Mesa del comedor
+        medida:
+          - 64
+          - 48
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a wooden dining table, seen from the front and a little from above. It is smaller than the child: about 0.80 times the child's height, about 1.3 times as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/mesa.png
+          despues: avisar
+          orden: 17
+      sillon:
+        que: Sillón de la sala
+        medida:
+          - 64
+          - 32
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a living-room sofa, seen from the front and a little from above. It is smaller than the child: about 0.53 times the child's height, about 2.0 times as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/sillon.png
+          despues: avisar
+          orden: 18
+      television:
+        que: Televisión con mueble
+        medida:
+          - 64
+          - 48
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a TV on a low wooden TV stand, seen from the front and a little from above. It is smaller than the child: about 0.80 times the child's height, about 1.3 times as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/television.png
+          despues: avisar
+          orden: 19
+      refrigerador:
+        que: Refrigerador
+        medida:
+          - 32
+          - 64
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a kitchen refrigerator, seen from the front and a little from above. It is taller than the child: about 1.07 times the child's height, about 2.0 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/refrigerador.png
+          despues: avisar
+          orden: 20
+      estufa:
+        que: Estufa
+        medida:
+          - 32
+          - 48
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a kitchen stove with four burners and an oven door, seen from the front and a little from above. It is smaller than the child: about 0.80 times the child's height, about 1.5 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/estufa.png
+          despues: avisar
+          orden: 21
+      fregadero:
+        que: Fregadero
+        medida:
+          - 64
+          - 48
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a kitchen sink on a counter with cabinets below, seen from the front and a little from above. It is smaller than the child: about 0.80 times the child's height, about 1.3 times as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/fregadero.png
+          despues: avisar
+          orden: 22
+      cama:
+        que: Cama
+        medida:
+          - 48
+          - 64
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a single bed with a pillow and a blanket, seen from the front and a little from above. It is taller than the child: about 1.07 times the child's height, about 1.3 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/cama.png
+          despues: avisar
+          orden: 23
+      ropero:
+        que: Ropero
+        medida:
+          - 48
+          - 64
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a wooden wardrobe with two doors, seen from the front and a little from above. It is taller than the child: about 1.07 times the child's height, about 1.3 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/ropero.png
+          despues: avisar
+          orden: 24
+      espejo:
+        que: Espejo de pie (para cambiar al personaje)
+        medida:
+          - 32
+          - 64
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a full-length standing mirror in a wooden frame, seen from the front and a little from above. It is taller than the child: about 1.07 times the child's height, about 2.0 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/espejo.png
+          despues: avisar
+          orden: 25
+      wc:
+        que: Taza del baño
+        medida:
+          - 32
+          - 32
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a toilet, seen from the front and a little from above. It is smaller than the child: about 0.53 times the child's height, about as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/wc.png
+          despues: avisar
+          orden: 26
+      lavabo:
+        que: Lavabo
+        medida:
+          - 32
+          - 48
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a bathroom sink on a pedestal, seen from the front and a little from above. It is smaller than the child: about 0.80 times the child's height, about 1.5 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/lavabo.png
+          despues: avisar
+          orden: 27
+      regadera:
+        que: Regadera
+        medida:
+          - 32
+          - 64
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a shower stall with a shower head, seen from the front and a little from above. It is taller than the child: about 1.07 times the child's height, about 2.0 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/regadera.png
+          despues: avisar
+          orden: 28
+      tinaco:
+        que: Tinaco
+        medida:
+          - 48
+          - 64
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a black water tank (tinaco) on a small metal stand, as on the roofs of Mexican houses, seen from the front and a little from above. It is taller than the child: about 1.07 times the child's height, about 1.3 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/tinaco.png
+          despues: avisar
+          orden: 29
+      lavadero:
+        que: Lavadero
+        medida:
+          - 64
+          - 48
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a concrete washing sink (lavadero), as in the patios of Mexican houses, seen from the front and a little from above. It is smaller than the child: about 0.80 times the child's height, about 1.3 times as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/lavadero.png
+          despues: avisar
+          orden: 30
+      maceta:
+        que: Maceta
+        medida:
+          - 32
+          - 32
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a potted plant, seen from the front and a little from above. It is smaller than the child: about 0.53 times the child's height, about as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/maceta.png
+          despues: avisar
+          orden: 31
+      foto_escuela:
+        que: Foto de la escuela en la pared
+        medida:
+          - 32
+          - 32
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a framed school group photo, seen from the front and a little from above. It is smaller than the child: about 0.53 times the child's height, about as wide as it is tall, as it would hang on a wall next to the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/casa/foto_escuela.png
+          despues: avisar
+          orden: 32
 
   - carpeta: lugares/calle
     tipo: fondo
     piezas:
-      fondo: {que: Calle de la colonia con banquetas y cruce peatonal; las fachadas de la casa (con tinaco), la tiendita, la escuela (portón), el parque (reja) y la biblioteca van pintadas en el fondo, medida: [1920, 544]}
+      fondo:
+        que: Calle de la colonia con banquetas y cruce peatonal; las fachadas de la casa (con tinaco)
+        la tiendita: null
+        la escuela (portón): null
+        el parque (reja) y la biblioteca van pintadas en el fondo: null
+        medida:
+          - 1920
+          - 544
+        generacion:
+          prompt: |-
+            The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the layout of a place in the game, seen from above: the dark blocks are walls, the light area is the floor, each small square is one tile, and the child is about two tiles tall. Draw this place as a top-down game background in exactly the same art style as the child: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: a Mexican neighborhood street with sidewalks and a crosswalk; along it, painted as part of the background, the front of a house with a water tank on the roof, a corner store, a school gate, a park fence and a library. Follow the layout exactly: walls where the dark blocks are, openings where the layout leaves gaps, plain floor where small dark blocks stand inside a room. Only the floors, the walls and the ground: no street trees, no lamp posts, no benches, no street stall; they are drawn apart. Do NOT draw the child. Create ONE image with the same proportions as the layout (1920 by 544), filling it edge to edge. No text, no labels, no people.
+          referencias:
+            - referencias/nina_frente.png
+            - referencias/calle_muros.png
+          destino: lugares/calle/fondo.png
+          despues: avisar
+          orden: 58
 
   - carpeta: lugares/calle
     tipo: objeto
     piezas:
-      arbol: {que: Árbol de banqueta, medida: [64, 96]}
-      poste: {que: Poste de luz, medida: [16, 96]}
-      banca: {que: Banca, medida: [64, 32]}
-      puesto: {que: Puesto de la banqueta, medida: [64, 64]}
+      arbol:
+        que: Árbol de banqueta
+        medida:
+          - 64
+          - 96
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a sidewalk tree, seen from the front and a little from above. It is taller than the child: about 1.60 times the child's height, about 1.5 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/calle/arbol.png
+          despues: avisar
+          orden: 59
+      poste:
+        que: Poste de luz
+        medida:
+          - 16
+          - 96
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a street lamp post, seen from the front and a little from above. It is taller than the child: about 1.60 times the child's height, about 6.0 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/calle/poste.png
+          despues: avisar
+          orden: 60
+      banca:
+        que: Banca
+        medida:
+          - 64
+          - 32
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a street bench, seen from the front and a little from above. It is smaller than the child: about 0.53 times the child's height, about 2.0 times as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/calle/banca.png
+          despues: avisar
+          orden: 61
+      puesto:
+        que: Puesto de la banqueta
+        medida:
+          - 64
+          - 64
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a small street stall with a colorful striped awning, seen from the front and a little from above. It is taller than the child: about 1.07 times the child's height, about as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/calle/puesto.png
+          despues: avisar
+          orden: 62
 
   - carpeta: lugares/escuela_patio
     tipo: fondo
     piezas:
-      fondo: {que: Explanada de la escuela con jardineras, cancha techada al lado y la entrada al edificio, medida: [1280, 800]}
+      fondo:
+        que: Explanada de la escuela con jardineras
+        cancha techada al lado y la entrada al edificio: null
+        medida:
+          - 1280
+          - 800
+        generacion:
+          prompt: |-
+            The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the layout of a place in the game, seen from above: the dark blocks are walls, the light area is the floor, each small square is one tile, and the child is about two tiles tall. Draw this place as a top-down game background in exactly the same art style as the child: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: the main plaza of a Mexican public school, a roofed basketball court on one side and the entrance to the building. Follow the layout exactly: walls where the dark blocks are, openings where the layout leaves gaps, plain floor where small dark blocks stand inside a room. Only the floors, the walls and the ground: no planters, no trees, no flagpole, no basketball hoops; they are drawn apart. Do NOT draw the child. Create ONE image with the same proportions as the layout (1280 by 800), filling it edge to edge. No text, no labels, no people.
+          referencias:
+            - referencias/nina_frente.png
+            - referencias/escuela_patio_muros.png
+          destino: lugares/escuela_patio/fondo.png
+          despues: avisar
+          orden: 35
 
   - carpeta: lugares/escuela_patio
     tipo: objeto
     piezas:
-      asta: {que: Asta con bandera, medida: [32, 128]}
-      jardinera: {que: Jardinera con árbol, medida: [96, 96]}
-      aro_basquet: {que: Aro de básquet, medida: [32, 96]}
+      asta:
+        que: Asta con bandera
+        medida:
+          - 32
+          - 128
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a tall flagpole with the flag of Mexico, seen from the front and a little from above. It is taller than the child: about 2.13 times the child's height, about 4.0 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/escuela_patio/asta.png
+          despues: avisar
+          orden: 36
+      jardinera:
+        que: Jardinera con árbol
+        medida:
+          - 96
+          - 96
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a square planter with a tree, seen from the front and a little from above. It is taller than the child: about 1.60 times the child's height, about as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/escuela_patio/jardinera.png
+          despues: avisar
+          orden: 37
+      aro_basquet:
+        que: Aro de básquet
+        medida:
+          - 32
+          - 96
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a basketball hoop on a pole, seen from the front and a little from above. It is taller than the child: about 1.60 times the child's height, about 3.0 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/escuela_patio/aro_basquet.png
+          despues: avisar
+          orden: 38
 
   - carpeta: lugares/escuela_planta_baja
     tipo: fondo
     piezas:
-      fondo: {que: Planta baja. Entrada, dirección, aulas, baños, escalera, medida: [1280, 544]}
+      fondo:
+        que: Planta baja. Entrada
+        dirección: null
+        aulas: null
+        baños: null
+        escalera: null
+        medida:
+          - 1280
+          - 544
+        generacion:
+          prompt: |-
+            The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the layout of a place in the game, seen from above: the dark blocks are walls, the light area is the floor, each small square is one tile, and the child is about two tiles tall. Draw this place as a top-down game background in exactly the same art style as the child: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: the ground floor of a school: entrance, principal's office, classrooms, bathrooms and stairs. Follow the layout exactly: walls where the dark blocks are, openings where the layout leaves gaps, plain floor where small dark blocks stand inside a room. Only the floors, the walls and the ground: no desks, no chalkboards, no lockers, no plants; they are drawn apart. Do NOT draw the child. Create ONE image with the same proportions as the layout (1280 by 544), filling it edge to edge. No text, no labels, no people.
+          referencias:
+            - referencias/nina_frente.png
+            - referencias/escuela_planta_baja_muros.png
+          destino: lugares/escuela_planta_baja/fondo.png
+          despues: avisar
+          orden: 34
 
   - carpeta: lugares/escuela_planta_alta
     tipo: fondo
     piezas:
-      fondo: {que: Planta alta. Aulas, sala de cómputo, escalera, medida: [1280, 544]}
+      fondo:
+        que: Planta alta. Aulas
+        sala de cómputo: null
+        escalera: null
+        medida:
+          - 1280
+          - 544
+        generacion:
+          prompt: |-
+            The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the layout of a place in the game, seen from above: the dark blocks are walls, the light area is the floor, each small square is one tile, and the child is about two tiles tall. Draw this place as a top-down game background in exactly the same art style as the child: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: the upper floor of a school: classrooms, a computer room and stairs. Follow the layout exactly: walls where the dark blocks are, openings where the layout leaves gaps, plain floor where small dark blocks stand inside a room. Only the floors, the walls and the ground: no desks, no chalkboards, no computers, no plants; they are drawn apart. Do NOT draw the child. Create ONE image with the same proportions as the layout (1280 by 544), filling it edge to edge. No text, no labels, no people.
+          referencias:
+            - referencias/nina_frente.png
+            - referencias/escuela_planta_alta_muros.png
+          destino: lugares/escuela_planta_alta/fondo.png
+          despues: avisar
+          orden: 33
 
   - carpeta: lugares/escuela_interior
     tipo: objeto
     piezas:
-      pupitre: {que: Pupitre, medida: [32, 32]}
-      pizarron: {que: Pizarrón, medida: [96, 48]}
-      escritorio: {que: Escritorio, medida: [64, 48]}
-      computadora: {que: Mesa con computadora, medida: [32, 48]}
+      pupitre:
+        que: Pupitre
+        medida:
+          - 32
+          - 32
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a student desk with its chair, seen from the front and a little from above. It is smaller than the child: about 0.53 times the child's height, about as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/escuela_interior/pupitre.png
+          despues: avisar
+          orden: 39
+      pizarron:
+        que: Pizarrón
+        medida:
+          - 96
+          - 48
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a green chalkboard, seen from the front and a little from above. It is smaller than the child: about 0.80 times the child's height, about 2.0 times as wide as it is tall, as it would hang on a wall next to the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/escuela_interior/pizarron.png
+          despues: avisar
+          orden: 40
+      escritorio:
+        que: Escritorio
+        medida:
+          - 64
+          - 48
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a teacher's desk, seen from the front and a little from above. It is smaller than the child: about 0.80 times the child's height, about 1.3 times as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/escuela_interior/escritorio.png
+          despues: avisar
+          orden: 41
+      computadora:
+        que: Mesa con computadora
+        medida:
+          - 32
+          - 48
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a small desk with a computer on it, seen from the front and a little from above. It is smaller than the child: about 0.80 times the child's height, about 1.5 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/escuela_interior/computadora.png
+          despues: avisar
+          orden: 42
 
   - carpeta: lugares/parque
     tipo: fondo
     piezas:
-      fondo: {que: Parque. Entrada, plaza con fuente, lago con isla y muelle, mirador, área infantil, área de ejercicio, andadores, medida: [1600, 1280]}
+      fondo:
+        que: Parque. Entrada
+        plaza con fuente: null
+        lago con isla y muelle: null
+        mirador: null
+        área infantil: null
+        área de ejercicio: null
+        andadores: null
+        medida:
+          - 1600
+          - 1280
+        generacion:
+          prompt: |-
+            The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the layout of a place in the game, seen from above: the dark blocks are walls, the light area is the floor, each small square is one tile, and the child is about two tiles tall. Draw this place as a top-down game background in exactly the same art style as the child: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: a city park: entrance, a plaza, a lake with an island and a pier, a lookout, a playground area, an exercise area and paths. Follow the layout exactly: walls where the dark blocks are, openings where the layout leaves gaps, plain floor where small dark blocks stand inside a room. Only the floors, the walls and the ground: no trees, no fountain, no gazebo, no swings, no slide; they are drawn apart. Do NOT draw the child. Create ONE image with the same proportions as the layout (1600 by 1280), filling it edge to edge. No text, no labels, no people.
+          referencias:
+            - referencias/nina_frente.png
+            - referencias/parque_muros.png
+          destino: lugares/parque/fondo.png
+          despues: avisar
+          orden: 52
 
   - carpeta: lugares/parque
     tipo: objeto
     piezas:
-      fuente: {que: Fuente de la plaza, medida: [96, 96]}
-      kiosko: {que: Kiosko o mirador, medida: [128, 128]}
-      columpio: {que: Columpios, medida: [96, 64]}
-      resbaladilla: {que: Resbaladilla, medida: [64, 64]}
-      arbol_grande: {que: Árbol grande, medida: [96, 128]}
+      fuente:
+        que: Fuente de la plaza
+        medida:
+          - 96
+          - 96
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a round plaza fountain, seen from the front and a little from above. It is taller than the child: about 1.60 times the child's height, about as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/parque/fuente.png
+          despues: avisar
+          orden: 53
+      kiosko:
+        que: Kiosko o mirador
+        medida:
+          - 128
+          - 128
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a gazebo (kiosk) with a roof, seen from the front and a little from above. It is taller than the child: about 2.13 times the child's height, about as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/parque/kiosko.png
+          despues: avisar
+          orden: 54
+      columpio:
+        que: Columpios
+        medida:
+          - 96
+          - 64
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a swing set with two swings, seen from the front and a little from above. It is taller than the child: about 1.07 times the child's height, about 1.5 times as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/parque/columpio.png
+          despues: avisar
+          orden: 55
+      resbaladilla:
+        que: Resbaladilla
+        medida:
+          - 64
+          - 64
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a playground slide, seen from the front and a little from above. It is taller than the child: about 1.07 times the child's height, about as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/parque/resbaladilla.png
+          despues: avisar
+          orden: 56
+      arbol_grande:
+        que: Árbol grande
+        medida:
+          - 96
+          - 128
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a big leafy tree, seen from the front and a little from above. It is taller than the child: about 2.13 times the child's height, about 1.3 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/parque/arbol_grande.png
+          despues: avisar
+          orden: 57
 
   - carpeta: lugares/tiendita
     tipo: fondo
     piezas:
-      fondo: {que: Interior de la tiendita, medida: [480, 320]}
+      fondo:
+        que: Interior de la tiendita
+        medida:
+          - 480
+          - 320
+        generacion:
+          prompt: |-
+            The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the layout of a place in the game, seen from above: the dark blocks are walls, the light area is the floor, each small square is one tile, and the child is about two tiles tall. Draw this place as a top-down game background in exactly the same art style as the child: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: the inside of a small neighborhood corner store. Follow the layout exactly: walls where the dark blocks are, openings where the layout leaves gaps, plain floor where small dark blocks stand inside a room. Only the floors, the walls and the ground: no shelves, no counter, no fridges, no plants; they are drawn apart. Do NOT draw the child. Create ONE image with the same proportions as the layout (480 by 320), filling it edge to edge. No text, no labels, no people.
+          referencias:
+            - referencias/nina_frente.png
+            - referencias/tiendita_muros.png
+          destino: lugares/tiendita/fondo.png
+          despues: avisar
+          orden: 43
 
   - carpeta: lugares/tiendita
     tipo: objeto
     piezas:
-      mostrador: {que: Mostrador, medida: [96, 48]}
-      refrigerador_refrescos: {que: Refrigerador de refrescos, medida: [48, 64]}
-      estante: {que: Estante con productos, medida: [64, 64]}
+      mostrador:
+        que: Mostrador
+        medida:
+          - 96
+          - 48
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a shop counter with a cash register, seen from the front and a little from above. It is smaller than the child: about 0.80 times the child's height, about 2.0 times as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/tiendita/mostrador.png
+          despues: avisar
+          orden: 44
+      refrigerador_refrescos:
+        que: Refrigerador de refrescos
+        medida:
+          - 48
+          - 64
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a glass-door drinks refrigerator, seen from the front and a little from above. It is taller than the child: about 1.07 times the child's height, about 1.3 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/tiendita/refrigerador_refrescos.png
+          despues: avisar
+          orden: 45
+      estante:
+        que: Estante con productos
+        medida:
+          - 64
+          - 64
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a shelf full of grocery products, seen from the front and a little from above. It is taller than the child: about 1.07 times the child's height, about as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/tiendita/estante.png
+          despues: avisar
+          orden: 46
 
   - carpeta: lugares/biblioteca_planta_baja
     tipo: fondo
     piezas:
-      fondo: {que: Planta baja. Estantes, mostrador, mesas, baños, escalera, medida: [960, 640]}
+      fondo:
+        que: Planta baja. Estantes
+        mostrador: null
+        mesas: null
+        baños: null
+        escalera: null
+        medida:
+          - 960
+          - 640
+        generacion:
+          prompt: |-
+            The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the layout of a place in the game, seen from above: the dark blocks are walls, the light area is the floor, each small square is one tile, and the child is about two tiles tall. Draw this place as a top-down game background in exactly the same art style as the child: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: the ground floor of a public library: bookshelf area, front desk, tables, bathrooms and stairs. Follow the layout exactly: walls where the dark blocks are, openings where the layout leaves gaps, plain floor where small dark blocks stand inside a room. Only the floors, the walls and the ground: no bookshelves, no desk, no tables, no chairs; they are drawn apart. Do NOT draw the child. Create ONE image with the same proportions as the layout (960 by 640), filling it edge to edge. No text, no labels, no people.
+          referencias:
+            - referencias/nina_frente.png
+            - referencias/biblioteca_planta_baja_muros.png
+          destino: lugares/biblioteca_planta_baja/fondo.png
+          despues: avisar
+          orden: 48
 
   - carpeta: lugares/biblioteca_planta_alta
     tipo: fondo
     piezas:
-      fondo: {que: Planta alta. Mesas de lectura y el rincón de La Cuentera, medida: [960, 640]}
+      fondo:
+        que: Planta alta. Mesas de lectura y el rincón de La Cuentera
+        medida:
+          - 960
+          - 640
+        generacion:
+          prompt: |-
+            The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the layout of a place in the game, seen from above: the dark blocks are walls, the light area is the floor, each small square is one tile, and the child is about two tiles tall. Draw this place as a top-down game background in exactly the same art style as the child: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: the upper floor of a public library: reading tables and a storyteller's corner. Follow the layout exactly: walls where the dark blocks are, openings where the layout leaves gaps, plain floor where small dark blocks stand inside a room. Only the floors, the walls and the ground: no bookshelves, no tables, no chairs, no armchair; they are drawn apart. Do NOT draw the child. Create ONE image with the same proportions as the layout (960 by 640), filling it edge to edge. No text, no labels, no people.
+          referencias:
+            - referencias/nina_frente.png
+            - referencias/biblioteca_planta_alta_muros.png
+          destino: lugares/biblioteca_planta_alta/fondo.png
+          despues: avisar
+          orden: 47
 
   - carpeta: lugares/biblioteca_interior
     tipo: objeto
     piezas:
-      librero: {que: Librero, medida: [64, 64]}
-      mesa_lectura: {que: Mesa de lectura, medida: [96, 48]}
-      sillon_cuentera: {que: Sillón de La Cuentera, medida: [48, 48]}
+      librero:
+        que: Librero
+        medida:
+          - 64
+          - 64
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a bookshelf full of books, seen from the front and a little from above. It is taller than the child: about 1.07 times the child's height, about as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/biblioteca_interior/librero.png
+          despues: avisar
+          orden: 49
+      mesa_lectura:
+        que: Mesa de lectura
+        medida:
+          - 96
+          - 48
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a reading table with chairs, seen from the front and a little from above. It is smaller than the child: about 0.80 times the child's height, about 2.0 times as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/biblioteca_interior/mesa_lectura.png
+          despues: avisar
+          orden: 50
+      sillon_cuentera:
+        que: Sillón de La Cuentera
+        medida:
+          - 48
+          - 48
+        generacion:
+          prompt: |-
+            The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a cozy armchair, seen from the front and a little from above. It is smaller than the child: about 0.80 times the child's height, about as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
+          referencias:
+            - referencias/nina_frente.png
+          destino: lugares/biblioteca_interior/sillon_cuentera.png
+          despues: avisar
+          orden: 51
+
+  - carpeta: fauna
+    tipo: objeto
+    medida:
+      - 40
+      - 32
+    piezas:
+      gato_blanco: Gato blanco, echado
+      gato_calico: Gato calico, sentado con la pata levantada
+      gato_ginger_dormido: Gato naranja, dormido en bola
+      gato_kitten: Gato gris, sentado
+      gato_negro: Gato negro, sentado
+      gato_persa: Gato persa, esponjado
+      gato_siames: Gato siames, sentado

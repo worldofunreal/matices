@@ -1,0 +1,70 @@
+/* The minigames: a card over the world, with big buttons. */
+.juego {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(calc(100% - 2 * 84px), 560px);
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border-radius: 24px;
+  background: var(--tarjeta);
+  box-shadow: var(--sombra-alta);
+  text-align: center;
+}
+
+.juego h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.juego-cuadricula {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.juego-celda {
+  min-height: 56px;
+  font-size: 16px;
+}
+
+.juego-celda.tocada {
+  opacity: 0.45;
+}
+
+.juego-opciones {
+  display: grid;
+  gap: 10px;
+}
+
+.juego-barra {
+  height: 24px;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.1);
+  overflow: hidden;
+}
+
+.juego-barra span {
+  display: block;
+  height: 100%;
+  background: var(--acento, #6cbf6a);
+  transition: width 50ms linear;
+}
+
+.juego-mantener,
+.juego-saltar {
+  min-height: 72px;
+  font-size: 20px;
+}
+
+.juego-saltar.lista {
+  transform: scale(1.08);
+}
+
+.juego-pregunta,
+.juego-cuenta {
+  margin: 0;
+  font-size: 18px;
+}

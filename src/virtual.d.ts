@@ -1,23 +1,37 @@
 declare const __VERSION_JUEGO__: string;
 
 declare module "virtual:contenido" {
-  export type Opcion = [string, string];
-  export interface Situacion {
+  // One line of a scene: someone speaks, the child chooses, a minigame runs, a mark is set, a mission shows.
+  // Options are [code, text, answer]; the answer is null when it comes later in the scene.
+  export type Paso = {
+    de?: string;
+    texto?: string;
+    opciones?: [string, string, string | null][];
+    marca?: string;
+    mision?: string;
+    minijuego?: string;
+    efecto?: string;
+  };
+  export interface Escena {
     id: string;
     nombre: string;
-    lugar: string;
-    cuando: "correr";
-    quien: "adulto_cerca";
-    areas: string[];
-    aviso: string;
-    pregunta: string;
-    respuestas: Opcion[];
+    donde: string;
+    al: string;
+    dia?: number;
+    hora?: "manana" | "tarde" | "noche";
+    tras?: string | string[];
+    si?: string[];
+    no?: string[];
+    areas?: string[];
+    delicada?: boolean;
+    saltable?: boolean;
+    pasos: Paso[];
   }
   const contenido: {
     version: string;
-    situaciones: Situacion[];
+    escenas: Escena[];
     textos: Textos;
-    figuras: { id: string; tipo: "adulto" | "menor" | "mascota"; nombre: string }[];
+    figuras: { id: string; tipo: "adulto"; nombre: string }[];
     lugares: string[];
     conexiones: Record<string, string[]>;
     areas: { id: string; nombre: string; familia: string }[];
@@ -41,18 +55,12 @@ declare module "virtual:contenido" {
       escribir_nombre: string;
       nombres: string[];
     };
-    casa: {
-      inicio: string;
-      instruccion: string;
-      elegida: string;
-      puesta: string;
-      quitar: string;
-      renombrar: string;
-      piel: string;
-      mover: string;
-      cerrar: string;
-      listo: string;
-      cuartos: Record<string, string>;
+    escena: {
+      hablantes: Record<string, string>;
+      seguir: string;
+      saltar: string;
+      pausar: string;
+      mision: string;
     };
     mundo: {
       cerrado: string;

@@ -1,23 +1,29 @@
 # Códigos y eventos
 
-El juego guarda eventos con hora exacta, no conclusiones. Cada respuesta de cada situación lleva un código asignado al escribir el contenido (`contenido/situaciones.yaml`) y revisado por los psicólogos. El reporte solo cuenta códigos.
+El juego guarda eventos con hora exacta, no conclusiones. Cada opción de cada escena lleva un código asignado al escribir el contenido (`contenido/escenas.yaml`). El código describe lo que el niño contestó; nunca dice si fue bueno o malo, y el juego nunca se lo dice al niño.
 
-## Códigos de las respuestas
+## Códigos de las opciones
 
-| Código | Qué contesta el niño | Ejemplo en S01 (correr en la casa) |
+| Código | Qué contesta el niño | Ejemplo |
 | --- | --- | --- |
-| `DESAFIA` | Rechaza el límite | "No me importa" |
-| `PROMETE` | Promete no repetirlo | "No lo vuelvo a hacer" |
-| `SE_DISCULPA` | Pide perdón | "Perdón" |
+| `ACEPTA` | Acepta la propuesta o la indicación | "Está bien, mamá. Que te vaya bien." |
+| `PREGUNTA` | Pregunta por algo | "¿Mañana podemos desayunar juntos?" |
+| `PROPONE` | Hace una propuesta propia | "¿Y si combinamos las dos?" |
+| `PIDE_AYUDA` | Pide ayuda o algo que necesita | "¿Podrías ayudarme antes de irte?" |
+| `CUENTA` | Cuenta algo de lo que le pasa | "Me pasa algo en mi casa." |
+| `EXPRESA_AGRADO` | Dice lo que le gusta o lo que disfruta | "A mí me gusta dibujar." |
+| `EXPRESA_MALESTAR` | Dice cómo se siente: nervioso, incómodo, cansado | "Me siento algo nervioso." |
+| `COMPARTE` | Enseña algo o pide conversar | "Solo quería enseñártelo." |
+| `DESACUERDO` | No está de acuerdo | "No estoy de acuerdo." |
+| `POSPONE` | Deja algo para después | "Tal vez después." |
+| `EVITA` | Cambia de tema o no responde de lleno | "No quiero discutir." |
+| `CALLA` | Guarda silencio | "Guardar silencio." |
+| `SE_RETIRA` | Se va sin contestar | "Retirarme sin contestar." |
+| `ELIGE_UNIFORME` | Elige el uniforme del día (minijuego del ropero) | — |
+| `ELIGE_DEPORTE` | Elige la ropa de educación física (minijuego del ropero) | — |
+| `ELIGE_CASUAL` | Elige ropa casual (minijuego del ropero) | — |
 
-Cuando le hablan para contestar, el mundo espera hasta que elija una respuesta: no hay forma de irse sin contestar.
-
-## Quién reacciona
-
-| Código | Significado |
-| --- | --- |
-| `FIGURA:<id>` | Una figura de la casa, por su id de `contenido/figuras.yaml` (ej. `FIGURA:abuela`). Si la puso más de una vez, la segunda es `FIGURA:hermano_menor#2` |
-| `NADIE` | No había nadie que reaccionara (la casa sin adultos) |
+Cuando una escena le presenta opciones, el juego espera hasta que elija una. No hay forma de salir de una opción sin contestarla, salvo en las escenas que el guion marca como saltables.
 
 ## Eventos
 
@@ -26,9 +32,8 @@ Todos llevan: código del participante, sesión, versión del contenido y del ju
 | Evento | Datos | Para qué |
 | --- | --- | --- |
 | `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, color de cada prenda, tenis y extra que lleva (`colores`), si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
-| `casa_figura` | Qué hizo (`poner`, `mover`, `quitar`, `renombrar`, `piel`), figura, si es adulto, menor o mascota, cuarto, distancia al personaje en cuadros, orden. Al terminar, `casa_lista` con todas las figuras y el tiempo | Quién forma el mundo del niño |
-| `situacion` | Situación y paso: `aviso` (la primera vez, con quién reaccionó), `pregunta` (cada vez desde la segunda, cuando le habla), `respuesta` (código, opciones en el orden mostrado y ms para decidir desde que aparecen), `repite` (lo hizo otra vez después de contestar: veces y la última respuesta que había dado; luego viene otra `pregunta`) | El dato central: qué hace, qué contesta y si cumple |
-| `perro` | `sigue` (empieza a seguirlo), `escapa` (sale corriendo) y `alcanza` (el niño lo alcanza, con ms desde que escapó) | Cómo juega |
+| `escena` | Escena (`escena`), paso (`inicio`, `opcion`, `fin`), quién habla, opciones en el orden mostrado, la elegida (código) y ms para decidir desde que aparecen. En `fin`, si la escena se saltó (`saltada`) o se pausó (`pausada`) | Qué hace, qué contesta y cómo decide |
+| `minijuego` | Minijuego, resultado (`completado`), ms que duró y, si lo tiene, el código de la elección | Cómo juega |
 | `explora` | Al tocar un objeto o a una persona fija (lugar y cuál), y al salir de un lugar (lugar, ms de permanencia, visitas) | Qué busca, evita, repite |
 | `tramo` | Día y parte del día que empieza (`manana`, `tarde`, `noche`, `fin`) | Ritmo de la partida |
 | `corre` | Lugar y ms que corrió, al dejar de correr | Cuánto corre y dónde |
@@ -43,22 +48,22 @@ Todos llevan: código del participante, sesión, versión del contenido y del ju
 {
   "nino": "K7-0412",
   "sesion": 3,
-  "contenido": "0.2.0",
+  "contenido": "0.3.0",
   "semilla": 51873,
   "t_ms": 418230,
-  "tipo": "situacion",
-  "situacion": "S01",
-  "paso": "respuesta",
-  "quien": "FIGURA:abuela",
-  "opciones": ["SE_DISCULPA", "DESAFIA", "PROMETE"],
-  "elegida": "PROMETE",
+  "tipo": "escena",
+  "escena": "T05",
+  "paso": "opcion",
+  "de": "madre",
+  "opciones": ["PREGUNTA", "ACEPTA", "PIDE_AYUDA", "EXPRESA_MALESTAR"],
+  "elegida": "PIDE_AYUDA",
   "ms_decidir": 4100
 }
 ```
 
 ## Cómo leer el tiempo
 
-El tiempo para decidir empieza cuando aparecen las respuestas. Incluye leer y pensar; solo se compara contra el propio niño (decisiones más lentas que su mediana), nunca contra otros.
+El tiempo para decidir empieza cuando aparecen las opciones. Incluye leer y pensar; solo se compara contra el propio niño (decisiones más lentas que su mediana), nunca contra otros.
 
 ## Eventos de producto
 

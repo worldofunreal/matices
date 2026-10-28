@@ -1,4 +1,4 @@
-// Mi libro (GDD §10): the child's drawings, and a blank sheet to draw whenever they want.
+// Mi libro: the child's drawings, and a blank sheet to draw whenever they want.
 import { useEffect, useState } from "react";
 import contenido from "virtual:contenido";
 import { Icono } from "../ui/iconos";

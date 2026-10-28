@@ -1,4 +1,4 @@
-/* Opciones (GDD §13, §14): the child's settings over the world, like Mi libro. One column in portrait,
+/* Opciones: the child's settings over the world, like Mi libro. One column in portrait,
    two in landscape. The corner buttons keep their band free (estilos.css, --franja).
    Names start with "preferencias" on purpose: the creation screen already uses the class "opciones". */
 .preferencias {

@@ -1,4 +1,4 @@
-// Siempre a la mano (GDD §13, §15): Mi libro arriba a la izquierda, "Quiero hablar con alguien" arriba a la
+// Siempre a la mano: Mi libro arriba a la izquierda, "Quiero hablar con alguien" arriba a la
 // derecha y Opciones abajo a la derecha, en cualquier pantalla. Mi libro, Opciones y la frase de "Quiero
 // hablar" cubren lo que hay debajo; mientras cubren, el mundo se queda quieto (useSuperpuesto).
 import { createContext, useContext, useState, type ReactNode } from "react";
