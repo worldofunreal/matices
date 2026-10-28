@@ -7,9 +7,21 @@ escenas:
     al: entrar
     dia: 1
     hora: manana
+    areas: [necesidades_fisicas]
     pasos:
       - {de: pensamiento, texto: "Tengo hambre... creo que no he desayunado. ¿Habrá algo en la cocina?"}
       - {mision: "Buscar algo para desayunar"}
+
+  - id: T04
+    nombre: El calendario de pared
+    donde: casa
+    al: calendario
+    dia: 1
+    hora: manana
+    areas: [escuela_aprendizaje]
+    pasos:
+      - {de: pensamiento, texto: "Hoy jueves... ¡toca clase de educación física!"}
+      - {marca: vio_calendario}
 
   - id: T05
     nombre: Conversación con la madre
@@ -18,6 +30,7 @@ escenas:
     dia: 1
     hora: manana
     tras: T03
+    areas: [necesidades_fisicas, pedir_ayuda, apoyo_emocional]
     pasos:
       - {de: madre, texto: "¡Buenos días! Ya despertaste. Se me hizo un poco tarde y tengo que salir a trabajar."}
       - {de: yo, texto: "Buenos días, mamá. ¿Hay algo para desayunar?"}
@@ -36,6 +49,7 @@ escenas:
     dia: 1
     hora: manana
     tras: T05
+    areas: [necesidades_fisicas]
     pasos:
       - {minijuego: refri}
       - {de: sistema, texto: "¡Encontraste los huevos! Ahora puedes preparar el desayuno."}
@@ -47,6 +61,7 @@ escenas:
     dia: 1
     hora: manana
     tras: T06
+    areas: [necesidades_fisicas, apoyo_emocional]
     pasos:
       - {minijuego: estufa}
       - {de: pensamiento, texto: "Qué raro... hoy tampoco alcanzó a desayunar conmigo."}
@@ -60,6 +75,7 @@ escenas:
     dia: 1
     hora: manana
     tras: T07
+    areas: [conducta, escuela_aprendizaje]
     pasos:
       - {minijuego: ropero}
 
@@ -70,6 +86,7 @@ escenas:
     dia: 1
     hora: manana
     tras: T08
+    areas: [escuela_aprendizaje]
     pasos:
       - {de: pensamiento, texto: "Espero que hoy sea un buen día."}
       - {de: sistema, texto: "Tutorial completado. Ya puedes explorar, hablar con otras personas y descubrir nuevas actividades."}
@@ -82,6 +99,7 @@ escenas:
     hora: manana
     tras: T09
     si: [ropa_deporte]
+    areas: [escuela_aprendizaje, conducta]
     pasos:
       - {de: lucia, texto: "Buenos días. ¡Qué bien, vienes list{o} para educación física!"}
 
@@ -93,6 +111,7 @@ escenas:
     hora: manana
     tras: T09
     no: [ropa_deporte]
+    areas: [conducta, escuela_aprendizaje, prosocial]
     pasos:
       - {de: lucia, texto: "Buenos días. Hoy toca educación física. Puedes participar aunque no traigas ropa de deporte."}
       - opciones:
@@ -107,6 +126,7 @@ escenas:
     dia: 1
     hora: manana
     tras: [U01a, U01b]
+    areas: [companeros]
     pasos:
       - {de: pensamiento, texto: "Todavía no conozco bien a todos. Tal vez pueda hablar con alguien."}
       - {mision: "Conocer a tus compañeros"}
@@ -118,6 +138,7 @@ escenas:
     dia: 1
     hora: manana
     tras: R01
+    areas: [companeros, prosocial]
     pasos:
       - {de: valeria, texto: "¡Hola! Estamos buscando a alguien más para jugar. ¿Te animas?"}
       - opciones:
@@ -140,6 +161,7 @@ escenas:
     dia: 1
     hora: manana
     tras: R01
+    areas: [companeros, prosocial]
     pasos:
       - {de: leo, texto: "Estoy intentando terminar este dibujo. ¿Quieres ayudarme?"}
       - opciones:
@@ -156,6 +178,7 @@ escenas:
     dia: 1
     hora: manana
     tras: R01
+    areas: [companeros, prosocial, escuela_aprendizaje]
     pasos:
       - {de: sam, texto: "Encontré algo raro en el patio. Creo que alguien perdió una libreta."}
       - opciones:
@@ -172,6 +195,7 @@ escenas:
     dia: 1
     hora: tarde
     tras: T09
+    areas: [prosocial, cuidar_de_mas, supervision]
     pasos:
       - {de: madre, texto: "Oye, ¿me ayudas con algo? Nos faltan unas cosas para la comida. ¿Puedes ir a la tienda de la esquina?"}
       - opciones:
@@ -188,6 +212,7 @@ escenas:
     al: entrar
     dia: 2
     hora: manana
+    areas: [escuela_aprendizaje, sintomas_emocionales]
     pasos:
       - {de: lucia, texto: "Buenos días. Recuerden que hoy tenemos el examen que estuvimos preparando. Guarden sus materiales, por favor."}
       - {de: pensamiento, texto: "¡Cierto! El examen... Espero acordarme de lo que estudié."}
@@ -205,6 +230,7 @@ escenas:
     dia: 2
     hora: manana
     tras: R02-leo
+    areas: [companeros, apoyo_emocional, pedir_ayuda]
     pasos:
       - {de: leo, texto: "Oye, ¿te acuerdas del dibujo que hicimos? Pensé que podríamos terminarlo hoy."}
       - {de: leo, texto: "Te noto algo distraído. ¿Quieres jugar o prefieres que nos sentemos un rato?"}
@@ -220,6 +246,7 @@ escenas:
     al: cama
     dia: 2
     hora: noche
+    areas: [apoyo_emocional]
     pasos:
       - {minijuego: dibujo}
       - {de: sistema, texto: "¡Dibujo terminado!"}
@@ -233,6 +260,7 @@ escenas:
     dia: 2
     hora: noche
     tras: E2-01
+    areas: [abuso_emocional, limites, representacion_adultos]
     delicada: true
     saltable: true
     pasos:
@@ -264,6 +292,7 @@ escenas:
     dia: 2
     hora: noche
     tras: E2-02
+    areas: [sintomas_emocionales, apoyo_emocional]
     pasos:
       - {efecto: acompanamiento}
       - {de: pensamiento, texto: "Estaba content{o} con lo que hice."}
@@ -281,6 +310,7 @@ escenas:
     dia: 3
     hora: manana
     tras: E2-04
+    areas: [companeros, apoyo_emocional]
     pasos:
       - {efecto: alegria}
       - {de: leo, texto: "¡Oye, qué bien te quedó! ¿Lo hiciste tú?"}
@@ -294,6 +324,7 @@ escenas:
     dia: 3
     hora: manana
     tras: E2-05
+    areas: [pedir_ayuda, representacion_adultos, apoyo_emocional]
     delicada: true
     saltable: true
     pasos:
@@ -315,8 +346,9 @@ escenas:
     dia: 3
     hora: manana
     tras: O01
+    areas: [companeros, escuela_aprendizaje, prosocial]
     pasos:
-      - {de: lucia, texto: "Para la próxima clase prepararán un proyecto en parejas. Pueden escoger con quién trabajar. Tendrán que investigar y presentar sus resultados."}
+      - {de: lucia, texto: "Para la próxima clase prepararán un proyecto en parejas. Pueden escoger con quién trabajar."}
       - {de: valeria, texto: "Creo que quedaría mejor si lo hacemos así. ¿Tú qué opinas?"}
       - opciones:
           - [ACEPTA, "Acepto tu propuesta.", "Perfecto. Empezamos mañana."]

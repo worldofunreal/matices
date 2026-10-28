@@ -45,9 +45,9 @@ Nombre y apariencia los elige el jugador: cuerpo, piel, cabello, ropa, extras, t
 
 - **Familia:** madre (trabaja, sale temprano), padre (minimiza, presiona y chantajea emocionalmente), tío (visita; fuera del demo). La familia es fija; el jugador no la arma.
 - **Escuela:** profesora (revisa el uniforme; no castiga la falta de uniforme con exclusión), compañeros Valeria, Leo y Sam, con actividades distintas; orientadora (adulto seguro de la escuela).
-- **Barrio:** vecinos, la encargada de la tienda, la bibliotecaria.
+- **Barrio:** vecinos diversos al azar, la encargada de la tienda, la bibliotecaria, transeúntes, perros y gatos.
 
-Los personajes fijos solo saludan con líneas neutras. Quien tiene un papel en la historia habla por escenas.
+Los personajes fijos solo saludan con líneas neutras. Quien tiene un papel en la historia habla por escenas. Tocar animales o vehículos cotidianos registra la iniciativa de exploración de forma natural.
 
 ## Mundo
 

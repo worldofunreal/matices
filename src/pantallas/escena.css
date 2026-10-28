@@ -23,6 +23,25 @@
   animation: aparecer var(--rapido) both;
 }
 
+.escena-hablante-fila {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.escena-retrato {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgb(0 0 0 / 0.08);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
 .escena-caja p {
   margin: 4px 0 10px;
   font-size: 18px;

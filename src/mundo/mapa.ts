@@ -5,8 +5,13 @@ import { azar } from "../datos/azar";
 
 export const TILE = 32;
 // Places where animals wander in by chance: each partida gets its own, from its seed.
-const LUGARES_CON_FAUNA = ["calle", "parque", "escuela_patio", "tiendita"];
+const LUGARES_CON_FAUNA = ["calle", "parque", "escuela_patio", "tiendita", "biblioteca_planta_baja"];
 const GATOS = ["gato_blanco", "gato_calico", "gato_ginger_dormido", "gato_kitten", "gato_negro", "gato_persa", "gato_siames"];
+const PERSONAS_FONDO = [
+  "abuela", "abuelo", "tia", "madrastra", "padrastro", "otra_persona",
+  "hermano_mayor", "hermana_mayor", "hermano_menor", "hermana_menor",
+  "primo", "prima"
+];
 const VECINOS = [
   [1, 0],
   [-1, 0],
@@ -38,6 +43,7 @@ export interface Punto {
   y: number;
   arte: string;
   horas?: string;
+  piel?: number;
 }
 export interface Mapa {
   lugar: string;
@@ -65,7 +71,7 @@ interface ObjetoTiled {
 const propiedad = (o: ObjetoTiled, nombre: string) => o.properties?.find((p) => p.name === nombre)?.value;
 
 // Reads public/mapas/<lugar>.json. Read again on every visit, so the walls always start whole.
-export async function cargarMapa(lugar: string, semilla: string): Promise<Mapa> {
+export async function cargarMapa(lugar: string, semilla: string, dia = 1, hora: Hora = "manana"): Promise<Mapa> {
   const json = await (await fetch(`mapas/${lugar}.json`)).json();
   const capa = (nombre: string) => json.layers.find((l: { name: string }) => l.name === nombre);
   const objetos: ObjetoTiled[] = capa("objetos").objects;
@@ -95,24 +101,119 @@ export async function cargarMapa(lugar: string, semilla: string): Promise<Mapa> 
         horas: propiedad(o, "horas"),
       })),
   };
-  if (LUGARES_CON_FAUNA.includes(lugar)) m.puntos.push(...fauna(m, `${semilla}:${lugar}`));
+  m.puntos.push(...vidaProcedural(m, semilla, lugar, dia, hora));
   return m;
 }
 
-// Some cats on free floor, not on doors or things. The same seed always puts them in the same places.
-function fauna(m: Mapa, semilla: string): Punto[] {
-  const r = azar(semilla);
-  const cuantos = 2 + Math.floor(r.frac() * 3);
-  const gatos = r.barajar(GATOS);
-  const ocupadas = new Set([...m.puntos.map((p) => celdaDe(p.x, p.y)), ...m.puertas.map((d) => celdaDe(d.x, d.y))].map((c) => `${c.tx},${c.ty}`));
+// Procedural life: cats, dogs, background people and street vehicles.
+function vidaProcedural(m: Mapa, semillaBase: string, lugar: string, dia: number, hora: Hora): Punto[] {
+  const r = azar(`${semillaBase}:${lugar}:${dia}:${hora}`);
   const sitios: Punto[] = [];
-  for (let i = 0; i < 200 && sitios.length < cuantos; i++) {
-    const tx = Math.floor(r.frac() * m.columnas), ty = Math.floor(r.frac() * m.filas);
-    if (!libre(m, tx, ty) || ocupadas.has(`${tx},${ty}`)) continue;
-    ocupadas.add(`${tx},${ty}`);
-    const nombre = gatos[sitios.length];
-    sitios.push({ nombre, tipo: "fauna", x: tx * TILE + TILE / 2, y: ty * TILE + TILE - 1, arte: `fauna/${nombre}` });
+  const ocupadas = new Set([
+    ...m.puntos.map((p) => celdaDe(p.x, p.y)),
+    ...m.puertas.map((d) => celdaDe(d.x, d.y)),
+    celdaDe(m.inicio.x, m.inicio.y),
+    ...Object.values(m.llegadas).map((l) => celdaDe(l.x, l.y)),
+  ].map((c) => `${c.tx},${c.ty}`));
+
+  const buscarLibre = (intentos = 150): Celda | null => {
+    for (let i = 0; i < intentos; i++) {
+      const tx = Math.floor(r.frac() * m.columnas);
+      const ty = Math.floor(r.frac() * m.filas);
+      if (libre(m, tx, ty) && !ocupadas.has(`${tx},${ty}`)) {
+        ocupadas.add(`${tx},${ty}`);
+        return { tx, ty };
+      }
+    }
+    return null;
+  };
+
+  // 1. Gatos
+  if (LUGARES_CON_FAUNA.includes(lugar)) {
+    const cuantosGatos = 2 + Math.floor(r.frac() * 3);
+    const gatos = r.barajar(GATOS);
+    for (let i = 0; i < cuantosGatos; i++) {
+      const c = buscarLibre();
+      if (!c) break;
+      const nombre = gatos[i % gatos.length];
+      sitios.push({
+        nombre,
+        tipo: "fauna",
+        x: c.tx * TILE + TILE / 2,
+        y: c.ty * TILE + TILE - 1,
+        arte: `fauna/${nombre}`,
+      });
+    }
   }
+
+  // 3. Perros en la calle y parque
+  if (lugar === "calle" || lugar === "parque") {
+    const c = buscarLibre();
+    if (c) {
+      sitios.push({
+        nombre: "perro",
+        tipo: "fauna",
+        x: c.tx * TILE + TILE / 2,
+        y: c.ty * TILE + TILE - 1,
+        arte: "figuras/perro",
+      });
+    }
+  }
+
+  // 4. Transeúntes y vecinos al azar
+  if (["calle", "parque", "tiendita", "biblioteca_planta_baja", "escuela_patio"].includes(lugar)) {
+    const cuantasPersonas = 1 + Math.floor(r.frac() * 3);
+    const personas = r.barajar(PERSONAS_FONDO);
+    for (let i = 0; i < cuantasPersonas; i++) {
+      const c = buscarLibre();
+      if (!c) break;
+      const figura = personas[i % personas.length];
+      const piel = Math.floor(r.frac() * 8);
+      sitios.push({
+        nombre: "vecino_generico",
+        tipo: "npc",
+        x: c.tx * TILE + TILE / 2,
+        y: c.ty * TILE + TILE - 1,
+        arte: `figuras/${figura}`,
+        piel,
+      });
+    }
+  }
+
+  // 5. Vehículos en la calle (bicicletas, moto, carro)
+  if (lugar === "calle") {
+    const cBici = buscarLibre();
+    if (cBici) {
+      sitios.push({
+        nombre: "bicicleta",
+        tipo: "objeto",
+        x: cBici.tx * TILE + TILE / 2,
+        y: cBici.ty * TILE + TILE - 1,
+        arte: "lugares/calle/bicicleta",
+      });
+    }
+    const cMoto = buscarLibre();
+    if (cMoto) {
+      sitios.push({
+        nombre: "moto",
+        tipo: "objeto",
+        x: cMoto.tx * TILE + TILE / 2,
+        y: cMoto.ty * TILE + TILE - 1,
+        arte: "lugares/calle/moto",
+      });
+    }
+    const cCarro = buscarLibre();
+    if (cCarro) {
+      sitios.push({
+        nombre: "carro",
+        tipo: "objeto",
+        x: cCarro.tx * TILE + TILE / 2,
+        y: cCarro.ty * TILE + TILE - 1,
+        arte: "lugares/calle/carro",
+      });
+    }
+  }
+
   return sitios;
 }
 

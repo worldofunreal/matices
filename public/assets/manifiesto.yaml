@@ -134,9 +134,25 @@ grupos:
     medida: [ 48, 80 ]
     colores: [ piel ]
     piezas:
+      abuela: Abuela
+      abuelo: Abuelo
       mama: Mamá
       papa: Papá
+      tia: Tía
       tio: Tío
+      madrastra: Madrastra
+      padrastro: Padrastro
+      hermano_mayor: Hermano mayor (adolescente)
+      hermana_mayor: Hermana mayor (adolescente)
+      hermano_menor: Hermano menor
+      hermana_menor: Hermana menor
+      bebe: Bebé
+      primo: Primo
+      prima: Prima
+      otra_persona: Otra persona adulta
+      perro: Perro
+      perro_lado: { que: "Perro de perfil caminando, mirando a la izquierda: quieto y dos pasos", medida: [ 144, 48 ], colores: [] }
+      gato: Gato
 
   - carpeta: personajes
     tipo: hoja
@@ -523,6 +539,11 @@ grupos:
           destino: lugares/casa/foto_escuela.png
           despues: avisar
           orden: 32
+      calendario:
+        que: Calendario de pared con fechas marcadas
+        medida:
+          - 32
+          - 32
 
   - carpeta: lugares/calle
     tipo: fondo
@@ -600,6 +621,21 @@ grupos:
           destino: lugares/calle/puesto.png
           despues: avisar
           orden: 62
+      bicicleta:
+        que: Bicicleta recargada en la banqueta
+        medida:
+          - 48
+          - 32
+      moto:
+        que: Motocicleta estacionada en la banqueta
+        medida:
+          - 48
+          - 32
+      carro:
+        que: Automóvil estacionado en la calle
+        medida:
+          - 96
+          - 48
 
   - carpeta: lugares/escuela_patio
     tipo: fondo

@@ -7,12 +7,68 @@ import { azar } from "../datos/azar";
 import { registrar, semilla } from "../datos/eventos";
 import { conGenero, marcar, mision, terminarEscena } from "../datos/escenas";
 import { Bocina } from "../ui/Bocina";
+import { Cabeza, Cara } from "../lienzo/Personaje";
 import { JUEGOS, type Resultado } from "./Juegos";
 import "./escena.css";
 
 const E = contenido.textos.escena;
 
-const hablante = (de: string) => E.hablantes[de].replace("{nombre}", estado().nombre);
+const hablante = (de: string) => E.hablantes[de]?.replace("{nombre}", estado().nombre) ?? de;
+
+function RetratoHablante({ de }: { de: string }) {
+  if (de === "sistema") return null;
+  if (de === "yo" || de === "pensamiento") {
+    return (
+      <div className="escena-retrato" aria-hidden="true">
+        <Cabeza a={estado().apariencia} escala={1.5} />
+      </div>
+    );
+  }
+  const piel = estado().apariencia.colores.piel ?? 0;
+  if (de === "madre" || de === "mama") {
+    return (
+      <div className="escena-retrato" aria-hidden="true">
+        <Cara id="figuras/mama" piel={piel} tam={48} />
+      </div>
+    );
+  }
+  if (de === "papa" || de === "padre") {
+    return (
+      <div className="escena-retrato" aria-hidden="true">
+        <Cara id="figuras/papa" piel={piel} tam={48} />
+      </div>
+    );
+  }
+  if (de === "tio") {
+    return (
+      <div className="escena-retrato" aria-hidden="true">
+        <Cara id="figuras/tio" piel={piel} tam={48} />
+      </div>
+    );
+  }
+  const idPersonaje: Record<string, string> = {
+    valeria: "companero_1",
+    leo: "companero_2",
+    sam: "companero_3",
+    companero_1: "companero_1",
+    companero_2: "companero_2",
+    companero_3: "companero_3",
+    companero_4: "companero_4",
+    lucia: "lucia",
+    orientadora: "orientadora",
+    nico: "nico",
+    conserje: "conserje",
+    don_chuy: "don_chuy",
+    clara: "clara",
+    cuentera: "cuentera",
+  };
+  const archivo = idPersonaje[de] ?? de;
+  return (
+    <div className="escena-retrato" aria-hidden="true">
+      <Cara id={`personajes/${archivo}`} tam={48} />
+    </div>
+  );
+}
 
 // Who spoke last before step `i`: the answer to an option comes from them.
 const ultimoAntes = (pasos: Paso[], i: number) => [...pasos.slice(0, i)].reverse().find((p) => p.de)?.de ?? "pensamiento";
@@ -91,9 +147,12 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: () 
   };
 
   // Lines of a scene are read at the child's pace: they only go on with "Seguir".
-  const linea = (quien: string, texto: string) => (
+  const linea = (quien: string, texto: string, de?: string) => (
     <div className="escena-caja" role="status">
-      <span className="globo-quien">{quien}</span>
+      <div className="escena-hablante-fila">
+        {de && <RetratoHablante de={de} />}
+        <span className="globo-quien">{quien}</span>
+      </div>
       <p>{conGenero(texto)}</p>
       <div className="escena-acciones">
         <Bocina clave={`escena.${escena.id}.${i}`} texto={conGenero(texto)} />
@@ -124,7 +183,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: () 
         )}
       </div>
 
-      {p.de !== undefined && linea(hablante(p.de), p.texto!)}
+      {p.de !== undefined && linea(hablante(p.de), p.texto!, p.de)}
 
       {p.opciones && !respuesta && (
         <div className="respuestas" role="group">
@@ -137,7 +196,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: () 
           ))}
         </div>
       )}
-      {p.opciones && respuesta && linea(hablante(ultimoAntes(pasos, i)), respuesta)}
+      {p.opciones && respuesta && linea(hablante(ultimoAntes(pasos, i)), respuesta, ultimoAntes(pasos, i))}
 
       {p.minijuego && JUEGOS[p.minijuego]({ alTerminar: alJuego })}
     </section>

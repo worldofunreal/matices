@@ -3,6 +3,8 @@
 import { useEffect, useState, type ReactElement } from "react";
 import { Dibujo } from "./Dibujo";
 import { cambiarEstado, estado } from "../datos/guardado";
+import { azar } from "../datos/azar";
+import { semilla } from "../datos/eventos";
 import "./juegos.css";
 
 export interface Resultado {
@@ -39,8 +41,27 @@ function Buscar({ titulo, items, alTerminar }: Alto & { titulo: string; items: {
   );
 }
 
-const REFRI = [{ nombre: "Leche" }, { nombre: "Huevos", buscado: true }, { nombre: "Jamón" }, { nombre: "Queso" }, { nombre: "Huevos", buscado: true }, { nombre: "Yogur" }, { nombre: "Huevos", buscado: true }, { nombre: "Jugo" }, { nombre: "Verduras" }];
-const PISTAS = ["Libreta", "Pelota", "Hoja", "Mochila", "Lápiz", "Cuerda", "Gis"].map((nombre) => ({ nombre, buscado: ["Libreta", "Hoja", "Lápiz"].includes(nombre) }));
+function generarRefri(sem: string) {
+  const r = azar(`${sem}:refri`);
+  const base = [
+    { nombre: "Leche" },
+    { nombre: "Jamón" },
+    { nombre: "Queso" },
+    { nombre: "Yogur" },
+    { nombre: "Jugo" },
+    { nombre: "Verduras" },
+    { nombre: "Huevos", buscado: true },
+    { nombre: "Huevos", buscado: true },
+    { nombre: "Huevos", buscado: true },
+  ];
+  return r.barajar(base);
+}
+
+function generarPistas(sem: string) {
+  const r = azar(`${sem}:pistas`);
+  const lista = ["Libreta", "Pelota", "Hoja", "Mochila", "Lápiz", "Cuerda", "Gis"];
+  return r.barajar(lista.map((nombre) => ({ nombre, buscado: ["Libreta", "Hoja", "Lápiz"].includes(nombre) })));
+}
 
 // Hold the button to heat the stove: the bar fills while it is held.
 function Estufa({ alTerminar }: Alto) {
@@ -145,25 +166,34 @@ function Dibujar({ alTerminar }: Alto) {
   );
 }
 
-const EXAMEN = [
+const BANCO_EXAMEN = [
   { pregunta: "¿Cuánto es 7 + 5?", opciones: ["11", "12", "13"] },
   { pregunta: "¿Qué día va después del martes?", opciones: ["Lunes", "Miércoles", "Jueves"] },
   { pregunta: "¿Cuántas patas tiene un perro?", opciones: ["2", "6", "4"] },
   { pregunta: "¿Qué número sigue? 2, 4, 6, __", opciones: ["7", "8", "9"] },
+  { pregunta: "¿Cuántos días tiene una semana?", opciones: ["5", "7", "10"] },
+  { pregunta: "¿Cuál objeto se usa para medir el tiempo?", opciones: ["Reloj", "Regla", "Báscula"] },
 ];
 
+function generarExamen(sem: string) {
+  const r = azar(`${sem}:examen`);
+  const barajadas = r.barajar(BANCO_EXAMEN).slice(0, 4);
+  return barajadas.map((q) => ({ pregunta: q.pregunta, opciones: r.barajar(q.opciones) }));
+}
+
 // Four short questions. No answer is right or wrong on screen: the choices are logged and the test goes on.
-function Examen({ alTerminar }: Alto) {
+function Examen({ preguntas, alTerminar }: Alto & { preguntas: { pregunta: string; opciones: string[] }[] }) {
   const [i, setI] = useState(0);
-  const siguiente = () => (i + 1 === EXAMEN.length ? alTerminar() : setI(i + 1));
+  const siguiente = () => (i + 1 === preguntas.length ? alTerminar({ marca: "hizo_examen" }) : setI(i + 1));
+  const q = preguntas[i];
   return (
     <div className="juego">
       <h2>
-        Examen {i + 1} de {EXAMEN.length}
+        Examen {i + 1} de {preguntas.length}
       </h2>
-      <p className="juego-pregunta">{EXAMEN[i].pregunta}</p>
+      <p className="juego-pregunta">{q.pregunta}</p>
       <div className="juego-opciones">
-        {EXAMEN[i].opciones.map((o) => (
+        {q.opciones.map((o) => (
           <button key={o} className="boton principal" onClick={siguiente}>
             {o}
           </button>
@@ -173,25 +203,33 @@ function Examen({ alTerminar }: Alto) {
   );
 }
 
-const TIENDA = [
+const PRODUCTOS_TIENDA = [
   { nombre: "Leche", precio: 25 },
   { nombre: "Pan", precio: 18 },
   { nombre: "Huevos", precio: 42 },
   { nombre: "Manzanas", precio: 30 },
   { nombre: "Jugo", precio: 22 },
+  { nombre: "Tortillas", precio: 24 },
+  { nombre: "Frijoles", precio: 28 },
+  { nombre: "Arroz", precio: 20 },
 ];
 const PRESUPUESTO = 120;
 
+function generarTienda(sem: string) {
+  const r = azar(`${sem}:tienda`);
+  return r.barajar(PRODUCTOS_TIENDA).slice(0, 5);
+}
+
 // Buy from the list with $120. Going over is not allowed; the change is shown at the end.
-function Tienda({ alTerminar }: Alto) {
+function Tienda({ items, alTerminar }: Alto & { items: { nombre: string; precio: number }[] }) {
   const [carrito, setCarrito] = useState<number[]>([]);
-  const total = carrito.reduce((a, i) => a + TIENDA[i].precio, 0);
+  const total = carrito.reduce((a, i) => a + items[i].precio, 0);
   const alternar = (i: number) => setCarrito(carrito.includes(i) ? carrito.filter((k) => k !== i) : [...carrito, i]);
   return (
     <div className="juego">
       <h2>Compras · ${PRESUPUESTO}</h2>
       <div className="juego-cuadricula">
-        {TIENDA.map((x, i) => {
+        {items.map((x, i) => {
           const sube = !carrito.includes(i) && total + x.precio > PRESUPUESTO;
           return (
             <button key={x.nombre} className={`boton juego-celda${carrito.includes(i) ? " tocada" : ""}`} disabled={sube} onClick={() => alternar(i)}>
@@ -203,7 +241,7 @@ function Tienda({ alTerminar }: Alto) {
       <p className="juego-cuenta">
         Total ${total} · Cambio ${PRESUPUESTO - total}
       </p>
-      <button className="boton principal" disabled={carrito.length === 0} onClick={() => alTerminar()}>
+      <button className="boton principal" disabled={carrito.length === 0} onClick={() => alTerminar({ marca: "hizo_compras" })}>
         Pagar
       </button>
     </div>
@@ -211,12 +249,12 @@ function Tienda({ alTerminar }: Alto) {
 }
 
 export const JUEGOS: Record<string, (p: Alto) => ReactElement> = {
-  refri: (p) => <Buscar titulo="Busca lo del desayuno" items={REFRI} {...p} />,
+  refri: (p) => <Buscar titulo="Busca lo del desayuno" items={generarRefri(`${semilla()}:${estado().dia}`)} {...p} />,
   estufa: (p) => <Estufa {...p} />,
   ropero: (p) => <Ropero {...p} />,
   cuerda: (p) => <Cuerda {...p} />,
   dibujo: (p) => <Dibujar {...p} />,
-  pistas: (p) => <Buscar titulo="Busca las pistas en el patio" items={PISTAS} {...p} />,
-  examen: (p) => <Examen {...p} />,
-  tienda: (p) => <Tienda {...p} />,
+  pistas: (p) => <Buscar titulo="Busca las pistas en el patio" items={generarPistas(`${semilla()}:${estado().dia}`)} {...p} />,
+  examen: (p) => <Examen preguntas={generarExamen(`${semilla()}:${estado().dia}`)} {...p} />,
+  tienda: (p) => <Tienda items={generarTienda(`${semilla()}:${estado().dia}`)} {...p} />,
 };

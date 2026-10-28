@@ -8,7 +8,7 @@
 //   (or <id>_quieta), anywhere under ARTE/figuras, cut to its height (FIGURAS in arte.ts).
 //   A layer (hair, clothes, extras) is each body pose edited by the generator (herramientas/generar.ts):
 //   with the body's folder, the layer keeps only the pixels that changed, framed like the body.
-import { readdirSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { createCanvas, loadImage } from "@napi-rs/canvas";
 import { ARTE, ASSETS, FIGURAS, leerManifiesto, type Manifiesto, type Pieza } from "./arte.ts";
@@ -472,6 +472,102 @@ function buscarFigura(n: string) {
   return f && join(carpeta, f);
 }
 
+async function objeto(pieza: Pieza) {
+  const [w, h] = pieza.medida;
+  const rutaArte = join(ARTE, pieza.archivo);
+  if (!existsSync(rutaArte)) return false;
+  const img = await leer(rutaArte);
+  let minX = img.w, maxX = 0, minY = img.h, maxY = 0;
+  let count = 0;
+  for (let y = 0; y < img.h; y++) {
+    for (let x = 0; x < img.w; x++) {
+      if (img.fg[y * img.w + x]) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+        count++;
+      }
+    }
+  }
+  if (!count) return false;
+  const objW = maxX - minX + 1;
+  const objH = maxY - minY + 1;
+  const escala = Math.min(w / objW, h / objH);
+  const finalW = Math.max(1, Math.round(objW * escala));
+  const finalH = Math.max(1, Math.round(objH * escala));
+  const offsetX = Math.round((w - finalW) / 2);
+  const offsetY = h - finalH;
+
+  const c = createCanvas(w, h);
+  const ctx = c.getContext("2d");
+  const temp = createCanvas(img.w, img.h);
+  const tCtx = temp.getContext("2d");
+  const imgData = tCtx.createImageData(img.w, img.h);
+  for (let y = 0; y < img.h; y++) {
+    for (let x = 0; x < img.w; x++) {
+      const i = y * img.w + x;
+      if (img.fg[i]) {
+        imgData.data[i * 4] = Math.round(img.rgb[i * 3] * 255);
+        imgData.data[i * 4 + 1] = Math.round(img.rgb[i * 3 + 1] * 255);
+        imgData.data[i * 4 + 2] = Math.round(img.rgb[i * 3 + 2] * 255);
+        imgData.data[i * 4 + 3] = 255;
+      }
+    }
+  }
+  tCtx.putImageData(imgData, 0, 0);
+
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(temp, minX, minY, objW, objH, offsetX, offsetY, finalW, finalH);
+
+  writeFileSync(join(ASSETS, pieza.archivo), c.toBuffer("image/png"));
+  console.log(`${pieza.archivo}: ${w} × ${h} (objeto ajustado)`);
+  return true;
+}
+
+async function fondo(pieza: Pieza) {
+  const [w, h] = pieza.medida;
+  const rutaArte = join(ARTE, pieza.archivo);
+  if (!existsSync(rutaArte)) return false;
+  const im = await loadImage(rutaArte);
+  const c = createCanvas(w, h);
+  const ctx = c.getContext("2d");
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(im, 0, 0, w, h);
+  writeFileSync(join(ASSETS, pieza.archivo), c.toBuffer("image/png"));
+  console.log(`${pieza.archivo}: ${w} × ${h} (fondo ajustado)`);
+  return true;
+}
+
+async function limpiarFauna() {
+  const faunaDir = join(ASSETS, "fauna");
+  if (!existsSync(faunaDir)) return;
+  const archivos = readdirSync(faunaDir).filter((f) => f.endsWith(".png"));
+  for (const f of archivos) {
+    const ruta = join(faunaDir, f);
+    const im = await loadImage(ruta);
+    const c = createCanvas(im.width, im.height);
+    const ctx = c.getContext("2d");
+    ctx.drawImage(im, 0, 0);
+    const imgData = ctx.getImageData(0, 0, im.width, im.height);
+    const d = imgData.data;
+    for (let i = 0; i < d.length; i += 4) {
+      if (d[i + 3] === 0) continue;
+      const r = d[i] / 255, g = d[i + 1] / 255, b = d[i + 2] / 255;
+      if (Math.hypot(r - 1, g, b - 1) < 0.45) {
+        d[i + 3] = 0;
+      } else {
+        const m = Math.max(0, Math.min(r, b) - g);
+        d[i] = Math.round((r - m) * 255);
+        d[i + 2] = Math.round((b - m) * 255);
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    writeFileSync(ruta, c.toBuffer("image/png"));
+  }
+  console.log(`fauna limpia de bordes magenta`);
+}
+
 // Frames side by side; none may touch its side edges, or it would be cut.
 function guardarFigura(pieza: Pieza, cuadros: Uint8ClampedArray[]) {
   const [w, h] = pieza.medida;
@@ -498,6 +594,24 @@ async function main() {
     const faltan: string[] = [];
     for (const p of piezas) if (!(await figura(p, m))) faltan.push(p.id);
     if (faltan.length) console.log(`sin imagen todavía: ${faltan.join(", ")}`);
+    return;
+  }
+  if (id === "fauna") {
+    await limpiarFauna();
+    return;
+  }
+  if (id === "casa" || id === "objetos" || id?.startsWith("lugares/")) {
+    const piezas = m.piezas.filter((p) =>
+      id === "casa"
+        ? p.id.startsWith("lugares/casa/")
+        : id === "objetos"
+        ? p.tipo === "objeto" || p.tipo === "fondo"
+        : p.id === id || p.id.startsWith(`${id}/`),
+    );
+    for (const p of piezas) {
+      if (p.tipo === "fondo") await fondo(p);
+      else if (p.tipo === "objeto") await objeto(p);
+    }
     return;
   }
   const pieza = m.piezas.find((p) => p.id === id) as Pieza | undefined;

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import contenido, { type Escena } from "virtual:contenido";
 import { cargarMapa, quitarAusentes, visible, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
-import { Motor } from "../mundo/motor";
+import { Motor, type Figura } from "../mundo/motor";
 import { pieza } from "../lienzo/arte";
 import { capas, coloresDe } from "../personaje/apariencia";
 import { estado, cambiarEstado, type Estado } from "../datos/guardado";
@@ -46,8 +46,13 @@ function primerPaso(desde: string, meta: string): string | null {
 export const nombreSalida = (desde: string, destino: string) => (desde.split("_")[0] === destino.split("_")[0] && M.lugares_dentro[destino]) || M.lugares[destino];
 
 // Where the day goes next: the school in the morning, home in the afternoon, bed at night.
-// The ring sits on the door toward it (or on the bed), and its sign and the edge arrow say its name.
+// The ring sits on the active mission target or door toward it (or on the bed), and its sign and the edge arrow say its name.
 function guiaDe(m: Mapa): { x: number; y: number; nombre: string; puerta: string | null } | null {
+  for (const p of m.puntos) {
+    if (escenaPara(m.lugar, p.nombre)) {
+      return { x: p.x, y: p.y - 16, nombre: M.nombres[p.nombre] ?? M.objetos[m.lugar]?.[p.nombre] ?? M.objetos.comun[p.nombre] ?? p.nombre, puerta: null };
+    }
+  }
   const { hora } = estado();
   const meta = hora === "manana" ? "escuela_patio" : "casa";
   if (hora === "manana" && m.lugar.startsWith("escuela")) return null;
@@ -69,11 +74,13 @@ function inicioDe(m: Mapa, e: Estado) {
 }
 
 // Everything the place draws is read before the first frame, so the loop never waits.
-async function cargarArte(m: Mapa, e: Estado) {
+async function cargarArte(m: Mapa, e: Estado, figuras: Figura[]) {
   await Promise.all([
     pieza(`lugares/${m.lugar}/fondo`),
-    ...m.puntos.map((p) => pieza(p.arte)),
+    ...m.puntos.map((p) => (p.piel !== undefined ? pieza(p.arte, { piel: p.piel }) : pieza(p.arte))),
+    ...figuras.map((f) => pieza(`figuras/${f.id}`, { piel: f.piel })),
     ...capas(e.apariencia).map((id) => pieza(id, coloresDe(e.apariencia))),
+    pieza("figuras/perro_lado"),
   ]);
 }
 
@@ -167,9 +174,17 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       const e = escenaPara(lugarActual, p.nombre);
       if (e) return iniciarEscena(e);
       registrar("explora", { lugar: lugarActual, persona: p.nombre });
-      const saludos = M.saludos[p.nombre];
+      const saludos = M.saludos[p.nombre] ?? M.saludos.vecino_generico ?? ["Buenos días.", "Hola."];
       const i = (estado().visitas[lugarActual] ?? 0) % saludos.length;
       mostrar(`mundo.saludos.${p.nombre}.${i}`, saludos[i]);
+    };
+
+    const acariciar = (p: Punto) => {
+      registrar("explora", { lugar: lugarActual, animal: p.nombre });
+      const esGato = p.nombre.startsWith("gato");
+      const saludos = (esGato ? M.saludos.gato : M.saludos.perro) ?? (esGato ? ["¡Miau!"] : ["¡Guau!"]);
+      const i = (estado().visitas[lugarActual] ?? 0) % saludos.length;
+      mostrar(`mundo.animal.${p.nombre}`, saludos[i]);
     };
 
     const cruzar = (p: Puerta) => {
@@ -188,9 +203,21 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       window.setTimeout(() => setRecarga((r) => r + 1), 220);
     };
 
-    void cargarMapa(lugarActual, e0.semilla).then(async (m) => {
+    const figuras: Figura[] = [];
+    if (lugarActual === "casa") {
+      if (e0.dia === 1 && e0.hora === "manana" && !e0.historia.hechas.includes("T05")) {
+        figuras.push({ id: "mama", x: 208, y: 416, piel: e0.apariencia.colores.piel ?? 0 });
+      }
+      if (e0.dia === 2 && e0.hora === "noche") {
+        figuras.push({ id: "papa", x: 112, y: 480, piel: e0.apariencia.colores.piel ?? 0 });
+      }
+    } else if (lugarActual === "calle" || lugarActual === "parque") {
+      figuras.push({ id: "perro", x: 260, y: 460, piel: 0 });
+    }
+
+    void cargarMapa(lugarActual, e0.semilla, e0.dia, e0.hora).then(async (m) => {
       quitarAusentes(m, e0.hora);
-      await cargarArte(m, e0);
+      await cargarArte(m, e0, figuras);
       if (!vivo) return;
       const inicio = inicioDe(m, e0);
       puerta = m.puertas.find((d) => dentro(d, inicio.x, inicio.y - CAIDA))?.nombre ?? null;
@@ -202,7 +229,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         y: inicio.y,
         dir: e0.direccion,
         apariencia: e0.apariencia,
-        figuras: [],
+        figuras,
         hora: e0.hora,
         alTocar: (cx, cy) => accion.current?.tocar(cx, cy),
         alCuadro: () => {
@@ -235,6 +262,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           const p = motor.puntoEn(cx, cy);
           if (p?.tipo === "objeto") motor.irA(p, () => usar(p));
           else if (p?.tipo === "npc") motor.irA(p, () => saludar(p));
+          else if (p?.tipo === "fauna") motor.irA(p, () => acariciar(p));
           else motor.tocarSuelo(cx, cy);
         },
       };
@@ -261,9 +289,9 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       <canvas ref={lienzo} className="mundo-lienzo" />
 
       {/* A nameplate under the fixed people here and under the child. */}
-      {mapa?.puntos.filter((p) => p.tipo === "npc" && visible(p, estado().hora)).map((p) => (
-        <div key={p.nombre} className="nombre-mundo" data-mundo-x={p.x} data-mundo-y={p.y} aria-hidden="true">
-          <span className="placa">{M.nombres[p.nombre]}</span>
+      {mapa?.puntos.filter((p) => p.tipo === "npc" && visible(p, estado().hora)).map((p, i) => (
+        <div key={`${p.nombre}_${i}`} className="nombre-mundo" data-mundo-x={p.x} data-mundo-y={p.y} aria-hidden="true">
+          <span className="placa">{M.nombres[p.nombre] ?? M.nombres.vecino_generico ?? "Vecino"}</span>
         </div>
       ))}
       {mapa && estado().nombre && (

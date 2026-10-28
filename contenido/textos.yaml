@@ -50,6 +50,7 @@ escena:
     yo: "{nombre}"
     madre: "Mamá"
     papa: "Papá"
+    tio: "Tío"
     lucia: "Maestra Lucía"
     valeria: "Valeria"
     leo: "Leo"
@@ -86,8 +87,14 @@ mundo:
     clara: ["Bienvenido a la biblioteca.", "Los libros de cuentos están arriba."]
     cuentera: ["Hola. Aquí vengo a leer.", "Qué gusto verte."]
     orientadora: ["Buenos días.", "Mi oficina está en la planta baja."]
+    vecino_generico: ["Buenos días.", "Hola.", "Buenas tardes.", "Qué buen día hace."]
+    gato: ["¡Miau!", "El gato se estira.", "El gato ronronea al verte.", "¡Miau!"]
+    perro: ["¡Guau!", "El perro mueve la cola.", "¡Guau, guau!"]
   # El nombre en la placa de cada personaje fijo.
   nombres:
+    vecino_generico: Vecino
+    perro: Perro
+    gato: Gato
     vecino_1: Vecino
     vecino_2: Vecina
     vecino_3: Vecino
@@ -117,6 +124,7 @@ mundo:
       mesa_lectura: "Una mesa para leer."
       mostrador: "El mostrador."
     casa:
+      calendario: "El calendario de la pared con las fechas de la escuela marcadas."
       foto_escuela: "La foto de la escuela."
       tinaco: "El tinaco."
       lavadero: "El lavadero."
@@ -133,6 +141,10 @@ mundo:
       estufa: "La estufa."
       fregadero: "El fregadero."
       maceta: "Una maceta."
+    calle:
+      bicicleta: "Una bicicleta recargada en la banqueta."
+      moto: "Una motocicleta estacionada."
+      carro: "Un automóvil estacionado junto a la banqueta."
     escuela_patio:
       asta: "La bandera."
       jardinera: "Una jardinera."
