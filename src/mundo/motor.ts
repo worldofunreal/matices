@@ -61,6 +61,8 @@ export class Motor {
   moviendo = false;
   pausado = false;
   corriendo = false; // the run button; Shift also runs while held
+  corriendoSostenido = false; // continuous run while holding tap/click
+  correrAlDestino = false; // double-tap run to destination
   guia: { x: number; y: number } | null = null;
   private o: OpcionesMotor;
   private ctx: CanvasRenderingContext2D;
@@ -76,6 +78,14 @@ export class Motor {
   private libre = false; // true while the child has moved the view; false while the camera follows the walker
   private mirada = { x: 0, y: 0 }; // the top-left of the view while it is not following
   private arrastre: { id: number; x: number; y: number; cam: { x: number; y: number }; movio: boolean } | null = null;
+  private temporizadorHold = 0;
+  private destinoSostenido: { x: number; y: number } | null = null;
+  private ultimoTap = 0;
+  private ultimoTapX = 0;
+  private ultimoTapY = 0;
+  private ondas: { x: number; y: number; t0: number }[] = [];
+  private rutaGuia: { tx: number; ty: number }[] = [];
+  private celdaGuiaCalculada = { tx: -1, ty: -1, metaX: -1, metaY: -1 };
   private acumulado = 0; // wheel movement not yet turned into a zoom step
   private shift = false;
   private perro: Perro | null = null;
@@ -97,9 +107,9 @@ export class Motor {
     if (f) this.perro = { f, modo: "quieto", cola: [], ruta: [], hasta: 0, izq: false, anda: false, suelto: false };
   }
 
-  // Running right now: moving with the run button on or Shift held.
+  // Running right now: moving with the run button on, Shift held, tap-and-hold or double-tap.
   get rapido() {
-    return this.moviendo && (this.corriendo || this.shift);
+    return this.moviendo && (this.corriendo || this.shift || this.corriendoSostenido || this.correrAlDestino);
   }
 
   iniciar() {
@@ -127,6 +137,7 @@ export class Motor {
   }
 
   detener() {
+    clearTimeout(this.temporizadorHold);
     cancelAnimationFrame(this.raf);
     removeEventListener("resize", this.medir);
     removeEventListener("keydown", this.teclaBajar);
@@ -195,18 +206,31 @@ export class Motor {
     zoomElegido = n;
   }
 
-  // A tap walks or acts (see Mundo.tsx). A drag moves the view, and the camera stops following the walker until "centrar".
+  // A tap walks or acts (see Mundo.tsx). Holding runs towards the pointer; a drag moves the view.
   private bajar = (e: PointerEvent) => {
+    clearTimeout(this.temporizadorHold);
     this.arrastre = { id: e.pointerId, x: e.clientX, y: e.clientY, cam: { ...this.cam }, movio: false };
+    this.temporizadorHold = window.setTimeout(() => {
+      const a = this.arrastre;
+      if (!a || a.id !== e.pointerId || a.movio || this.pausado) return;
+      this.corriendoSostenido = true;
+      this.libre = false;
+      this.destinoSostenido = this.aMundo(e.clientX, e.clientY);
+    }, 220);
   };
 
   private mover = (e: PointerEvent) => {
     const a = this.arrastre;
     if (!a || a.id !== e.pointerId) return;
+    if (this.corriendoSostenido) {
+      this.destinoSostenido = this.aMundo(e.clientX, e.clientY);
+      return;
+    }
     const dx = e.clientX - a.x;
     const dy = e.clientY - a.y;
     if (!a.movio) {
       if (Math.hypot(dx, dy) <= ARRASTRE) return;
+      clearTimeout(this.temporizadorHold);
       a.movio = true;
       this.libre = true;
     }
@@ -217,12 +241,31 @@ export class Motor {
 
   private soltar = (e: PointerEvent) => {
     const a = this.arrastre;
+    clearTimeout(this.temporizadorHold);
     if (!a || a.id !== e.pointerId) return;
     this.arrastre = null;
-    if (!a.movio) this.o.alTocar(e.clientX, e.clientY);
+    if (this.corriendoSostenido) {
+      this.corriendoSostenido = false;
+      this.destinoSostenido = null;
+      this.parar();
+      return;
+    }
+    if (a.movio) return;
+    const ahora = performance.now();
+    const dobleTap = ahora - this.ultimoTap < 320 && Math.hypot(e.clientX - this.ultimoTapX, e.clientY - this.ultimoTapY) < 36;
+    this.ultimoTap = ahora;
+    this.ultimoTapX = e.clientX;
+    this.ultimoTapY = e.clientY;
+    this.correrAlDestino = dobleTap;
+    const { x, y } = this.aMundo(e.clientX, e.clientY);
+    this.ondas.push({ x, y, t0: this.tiempo });
+    this.o.alTocar(e.clientX, e.clientY);
   };
 
   private cancelar = () => {
+    clearTimeout(this.temporizadorHold);
+    this.corriendoSostenido = false;
+    this.destinoSostenido = null;
     this.arrastre = null;
   };
 
@@ -267,12 +310,19 @@ export class Motor {
   parar() {
     this.ruta = [];
     this.alLlegar = null;
+    this.correrAlDestino = false;
+    this.corriendoSostenido = false;
+    this.destinoSostenido = null;
     this.teclas.clear();
   }
 
   pausar(pausa: boolean) {
     this.pausado = pausa;
     if (pausa) {
+      clearTimeout(this.temporizadorHold);
+      this.corriendoSostenido = false;
+      this.destinoSostenido = null;
+      this.correrAlDestino = false;
       this.ruta = [];
       this.alLlegar = null;
       this.teclas.clear();
@@ -302,11 +352,12 @@ export class Motor {
     if (!p) {
       const accion = this.alLlegar;
       this.alLlegar = null;
+      this.correrAlDestino = false;
       accion?.();
       return [0, 0];
     }
     const d = Math.hypot(p.x - this.x, p.y - this.y);
-    const v = this.corriendo || this.shift ? CORRER : VELOCIDAD;
+    const v = this.corriendo || this.shift || this.correrAlDestino ? CORRER : VELOCIDAD;
     return [((p.x - this.x) / d) * v, ((p.y - this.y) / d) * v];
   }
 
@@ -314,19 +365,32 @@ export class Motor {
     let vx = 0;
     let vy = 0;
     if (!this.pausado) {
-      for (const t of this.teclas) {
-        vx += FLECHAS[t][0];
-        vy += FLECHAS[t][1];
-      }
-      if (vx || vy) {
-        this.libre = false; // walking with the keys brings the view back to the walker
+      if (this.corriendoSostenido && this.destinoSostenido) {
+        this.libre = false;
         this.ruta = [];
         this.alLlegar = null;
-        const n = Math.hypot(vx, vy);
-        const v = this.corriendo || this.shift ? CORRER : VELOCIDAD;
-        vx = (vx / n) * v;
-        vy = (vy / n) * v;
-      } else [vx, vy] = this.velocidadDeRuta();
+        const dx = this.destinoSostenido.x - this.x;
+        const dy = this.destinoSostenido.y - this.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist > 12) {
+          vx = (dx / dist) * CORRER;
+          vy = (dy / dist) * CORRER;
+        }
+      } else {
+        for (const t of this.teclas) {
+          vx += FLECHAS[t][0];
+          vy += FLECHAS[t][1];
+        }
+        if (vx || vy) {
+          this.libre = false; // walking with the keys brings the view back to the walker
+          this.ruta = [];
+          this.alLlegar = null;
+          const n = Math.hypot(vx, vy);
+          const v = this.corriendo || this.shift ? CORRER : VELOCIDAD;
+          vx = (vx / n) * v;
+          vy = (vy / n) * v;
+        } else [vx, vy] = this.velocidadDeRuta();
+      }
     }
     const x0 = this.x;
     const y0 = this.y;
@@ -338,6 +402,22 @@ export class Motor {
     // Running plays the same steps faster.
     this.tPaso = this.moviendo ? this.tPaso + dt * 1000 * (Math.hypot(vx, vy) / VELOCIDAD) : 0;
     if (this.perro && !this.pausado) this.moverPerro(dt);
+
+    // Refresh guide route when character or guide changes tile
+    if (this.guia) {
+      const tx = Math.floor(this.x / TILE);
+      const ty = Math.floor((this.y - PIE.alto / 2) / TILE);
+      const gx = Math.round(this.guia.x);
+      const gy = Math.round(this.guia.y);
+      if (tx !== this.celdaGuiaCalculada.tx || ty !== this.celdaGuiaCalculada.ty || gx !== this.celdaGuiaCalculada.metaX || gy !== this.celdaGuiaCalculada.metaY) {
+        this.celdaGuiaCalculada = { tx, ty, metaX: gx, metaY: gy };
+        const origen = celdaDe(this.x, this.y - PIE.alto / 2);
+        const meta = libreCerca(this.o.mapa, Math.floor(this.guia.x / TILE), Math.floor(this.guia.y / TILE));
+        this.rutaGuia = meta ? rutaA(this.o.mapa, origen, meta) : [];
+      }
+    } else {
+      this.rutaGuia = [];
+    }
   }
 
   // The dog: follows when close, occasionally runs ahead playfully.
@@ -445,18 +525,73 @@ export class Motor {
       ctx.drawImage(fondo, sx, sy, sw, sh, sx, sy, sw, sh);
     }
 
+    // Guide path dots on the floor
+    if (this.rutaGuia.length > 0 && !this.pausado) {
+      const ahora = this.tiempo;
+      ctx.save();
+      for (let i = 0; i < this.rutaGuia.length; i++) {
+        const c = this.rutaGuia[i];
+        const cx = c.tx * TILE + TILE / 2;
+        const cy = c.ty * TILE + TILE / 2;
+        const flujo = Math.sin(ahora / 260 - i * 0.7);
+        const radio = 3 + 1.2 * flujo;
+        const alfa = 0.45 + 0.35 * flujo;
+        ctx.fillStyle = "#f2c14e";
+        ctx.globalAlpha = Math.max(0.1, alfa);
+        ctx.beginPath();
+        ctx.arc(cx, cy, Math.max(1, radio), 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // Touch ripples on the floor
+    const ahoraOndas = this.tiempo;
+    this.ondas = this.ondas.filter((o) => ahoraOndas - o.t0 < 350);
+    for (const o of this.ondas) {
+      const prog = (ahoraOndas - o.t0) / 350;
+      const radio = 3 + 18 * prog;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, (1 - prog) * 0.75);
+      ctx.strokeStyle = "#f2c14e";
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(o.x, o.y, radio, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
 
     // Everything that stands on the ground is drawn from back to front, by its feet.
     const cosas: { y: number; dibujar: () => void }[] = [];
     for (const p of m.puntos) {
       if (!visible(p, this.o.hora)) continue;
       if (p.tipo === "npc") {
+        const distJugador = Math.hypot(p.x - this.x, p.y - this.y);
+        const miraJugador = distJugador < 72;
+        const voltear = miraJugador ? this.x > p.x : false;
         if (p.piel !== undefined) {
           const hoja = piezaYa(p.arte, { piel: p.piel });
-          if (hoja) cosas.push({ y: p.y, dibujar: () => ctx.drawImage(hoja, Math.round(p.x - hoja.width / 2), Math.round(p.y - hoja.height)) });
+          if (hoja) {
+            cosas.push({
+              y: p.y,
+              dibujar: () => {
+                const x = Math.round(p.x - hoja.width / 2);
+                const y = Math.round(p.y - hoja.height);
+                if (!voltear) {
+                  ctx.drawImage(hoja, x, y);
+                } else {
+                  ctx.save();
+                  ctx.translate(x + hoja.width, y);
+                  ctx.scale(-1, 1);
+                  ctx.drawImage(hoja, 0, 0);
+                  ctx.restore();
+                }
+              },
+            });
+          }
         } else {
           const img = piezaYa(p.arte);
-          if (img) cosas.push({ y: p.y, dibujar: () => this.cuadro(img, 0, 0, p.x, p.y) });
+          if (img) cosas.push({ y: p.y, dibujar: () => this.cuadro(img, 0, 0, p.x, p.y, voltear) });
         }
       } else {
         const img = piezaYa(p.arte);

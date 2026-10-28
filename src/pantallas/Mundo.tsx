@@ -117,12 +117,38 @@ async function cargarArte(m: Mapa, e: Estado, figuras: Figura[]) {
   ]);
 }
 
+interface PuntoInteraccion {
+  id: string;
+  nombre: string;
+  tipo: "npc" | "objeto" | "fauna";
+  x: number;
+  y: number;
+  alto: number;
+  icono: string;
+  etiqueta: string;
+  esGuia: boolean;
+  punto: Punto;
+}
+
+interface SaludoAmbiental {
+  id: string;
+  quien: string;
+  texto: string;
+  x: number;
+  y: number;
+}
+
 export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const lienzo = useRef<HTMLCanvasElement>(null);
-  const accion = useRef<{ tocar: (cx: number, cy: number) => void } | null>(null);
+  const accion = useRef<{
+    tocar: (cx: number, cy: number) => void;
+    interactuar: (p: Punto) => void;
+  } | null>(null);
   const alEspejoRef = useRef(alEspejo);
   alEspejoRef.current = alEspejo;
   const temporizador = useRef(0);
+  const temporizadorSaludo = useRef(0);
+  const ultimosSaludos = useRef<Record<string, number>>({});
   const motorRef = useRef<Motor | null>(null);
   // Mi libro, Opciones or the "Quiero hablar" card cover the screen (Siempre.tsx): the world stands still under them.
   const superpuesto = useSuperpuesto();
@@ -132,6 +158,8 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const [cartel, setCartel] = useState<{ texto: string } | null>(null);
   const [mapa, setMapa] = useState<Mapa | null>(null);
   const [guia, setGuia] = useState<ReturnType<typeof guiaDe>>(null);
+  const [emotes, setEmotes] = useState<PuntoInteraccion[]>([]);
+  const [saludoAmbiental, setSaludoAmbiental] = useState<SaludoAmbiental | null>(null);
   const [corriendo, setCorriendo] = useState(false);
   // A scene of the story is on: the world stands still under it, and the mission shows once it is over.
   const [escena, setEscena] = useState<{ escena: Escena; alFin: () => void } | null>(null);
@@ -157,6 +185,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     let mapaActual: Mapa | null = null;
     let puerta: string | null = null;
     let corriendoDesde = 0; // when the current run started
+    let ultimoChequeoCercanos = 0;
     setBurbuja(null);
     setMision(e0.historia.mision);
 
@@ -305,6 +334,60 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
             registrar("corre", { lugar: lugarActual, ms: Math.round(ahora - corriendoDesde) });
             corriendoDesde = 0;
           }
+
+          if (ahora - ultimoChequeoCercanos > 120 && !superpuesto && !escena) {
+            ultimoChequeoCercanos = ahora;
+            const obj = objetivoActual();
+            const nuevos: PuntoInteraccion[] = [];
+            for (const pt of m.puntos) {
+              if (!visible(pt, estado().hora)) continue;
+              const dist = Math.hypot(pt.x - motor.x, pt.y - motor.y);
+              const esGuia =
+                obj.lugar === lugarActual &&
+                (obj.objeto === pt.nombre || (obj.objeto === "mama" && pt.nombre === "mesa") || (obj.objeto === "papa" && pt.nombre === "sillon"));
+              const tieneEscena = !!escenaPara(lugarActual, pt.nombre);
+              const estaCerca = dist <= 85;
+
+              if (esGuia || (estaCerca && (pt.tipo === "npc" || pt.tipo === "fauna" || tieneEscena || pt.nombre === "espejo" || (pt.nombre === "cama" && estado().hora === "noche")))) {
+                let icono = "👋";
+                if (esGuia) icono = "!";
+                else if (pt.tipo === "fauna") icono = "🐾";
+                else if (tieneEscena) icono = "💬";
+                else if (pt.nombre === "cama") icono = "💤";
+                else if (pt.nombre === "espejo") icono = "🪞";
+                else if (pt.tipo === "objeto") icono = "🔍";
+
+                const etiqueta = M.nombres[pt.nombre] ?? M.objetos[lugarActual]?.[pt.nombre] ?? M.objetos.comun[pt.nombre] ?? pt.nombre;
+                nuevos.push({
+                  id: `${pt.nombre}_${pt.x}_${pt.y}`,
+                  nombre: pt.nombre,
+                  tipo: pt.tipo,
+                  x: pt.x,
+                  y: pt.y,
+                  alto: pt.tipo === "npc" ? 54 : 36,
+                  icono,
+                  etiqueta,
+                  esGuia,
+                  punto: pt,
+                });
+              }
+
+              // Saludo ambiental al pasar cerca de un NPC común
+              if (motor.moviendo && pt.tipo === "npc" && !tieneEscena && !esGuia && dist <= 56) {
+                const ultimo = ultimosSaludos.current[pt.nombre] ?? 0;
+                if (ahora - ultimo > 14000) {
+                  ultimosSaludos.current[pt.nombre] = ahora;
+                  const saludos = M.saludos[pt.nombre] ?? M.saludos.vecino_generico ?? ["¡Hola!"];
+                  const idx = (estado().visitas[lugarActual] ?? 0) % saludos.length;
+                  const texto = saludos[idx];
+                  setSaludoAmbiental({ id: pt.nombre, quien: M.nombres[pt.nombre] ?? "Vecino", texto, x: pt.x, y: pt.y });
+                  clearTimeout(temporizadorSaludo.current);
+                  temporizadorSaludo.current = window.setTimeout(() => setSaludoAmbiental(null), 2800);
+                }
+              }
+            }
+            setEmotes(nuevos);
+          }
         },
       });
       motor.corriendo = corriendo;
@@ -324,6 +407,12 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           else if (p?.tipo === "fauna") motor.irA(p, () => acariciar(p));
           else motor.tocarSuelo(cx, cy);
         },
+        interactuar: (p: Punto) => {
+          if (motor.pausado) return;
+          if (p.tipo === "objeto") motor.irA(p, () => usar(p));
+          else if (p.tipo === "npc") motor.irA(p, () => saludar(p));
+          else if (p.tipo === "fauna") motor.irA(p, () => acariciar(p));
+        },
       };
       setMapa(m);
       setGuia(g);
@@ -335,6 +424,9 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       vivo = false;
       accion.current = null;
       clearTimeout(temporizador.current);
+      clearTimeout(temporizadorSaludo.current);
+      setEmotes([]);
+      setSaludoAmbiental(null);
       if (activo) {
         activo.detener();
         registrar("explora", { lugar: lugarActual, ms: Math.round(performance.now() - t0), visitas });
@@ -380,6 +472,43 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       <div className="letrero guia flecha-texto" data-flecha hidden aria-hidden="true">
         <span>{guia?.nombre}</span>
       </div>
+
+      {/* Interactive Emotes over nearby people, pets and usable objects */}
+      {!escena && emotes.map((p) => (
+        <div
+          key={`emote_${p.id}`}
+          className="contenedor-emote"
+          data-mundo-x={p.x}
+          data-mundo-y={p.y - p.alto}
+        >
+          <button
+            type="button"
+            className={`emote-mundo${p.esGuia ? " guia" : ""}`}
+            onClick={(ev) => {
+              ev.stopPropagation();
+              accion.current?.interactuar(p.punto);
+            }}
+            aria-label={p.etiqueta}
+          >
+            <span>{p.icono}</span>
+          </button>
+        </div>
+      ))}
+
+      {/* Ambient speech over an NPC's head */}
+      {!escena && saludoAmbiental && (
+        <div
+          className="globo-figura-mundo"
+          data-mundo-x={saludoAmbiental.x}
+          data-mundo-y={saludoAmbiental.y - 52}
+          role="status"
+        >
+          <div className="globo-figura-caja">
+            <span className="globo-quien">{saludoAmbiental.quien}</span>
+            <p>{saludoAmbiental.texto}</p>
+          </div>
+        </div>
+      )}
 
       <div className="controles mundo-controles">
         <button className="boton redondo" aria-label="Acercar" onClick={() => motorRef.current?.acercar()}>

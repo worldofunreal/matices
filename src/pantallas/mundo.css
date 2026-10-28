@@ -107,6 +107,70 @@
   display: none;
 }
 
+/* Interactive emotes over nearby people, animals and usable objects */
+.contenedor-emote,
+.globo-figura-mundo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 9;
+  pointer-events: none;
+}
+
+.emote-mundo {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 38px;
+  height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2.5px solid #ffffff;
+  background: var(--tarjeta, #fdfaf6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  pointer-events: auto;
+  font-size: 20px;
+  line-height: 1;
+  padding: 0;
+  animation: emote-rebote 1.6s ease-in-out infinite;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.emote-mundo:hover,
+.emote-mundo:focus-visible {
+  transform: translate(-50%, -50%) scale(1.18);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.45);
+}
+
+.emote-mundo.guia {
+  background: var(--girasol, #f2c14e);
+  color: var(--tinta, #1d1a24);
+  font-weight: 900;
+  font-size: 22px;
+  border-color: #ffffff;
+  animation: emote-guia 1.2s ease-in-out infinite;
+}
+
+@keyframes emote-rebote {
+  0%, 100% {
+    transform: translate(-50%, -50%) translateY(0);
+  }
+  50% {
+    transform: translate(-50%, -50%) translateY(-6px);
+  }
+}
+
+@keyframes emote-guia {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15) translateY(-4px);
+  }
+}
+
 /* Someone of the house speaking, over their head. */
 .globo-figura-caja {
   position: absolute;
