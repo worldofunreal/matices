@@ -7,22 +7,26 @@ escenas:
     al: entrar
     dia: 1
     hora: manana
-    areas: [necesidades_fisicas]
+    areas:
+      - necesidades_fisicas
     pasos:
-      - {de: pensamiento, texto: "Tengo hambre... creo que no he desayunado. ¿Habrá algo en la cocina?"}
-      - {mision: "Hablar con mamá en el comedor"}
-
+      - de: pensamiento
+        titulo: Tengo hambre
+        texto: No he comido nada. Voy a la cocina a ver qué hay de desayunar.
+      - mision: Hablar con mamá en el comedor
   - id: T04
     nombre: El calendario de pared
     donde: casa
     al: calendario
     dia: 1
     hora: manana
-    areas: [escuela_aprendizaje]
+    areas:
+      - escuela_aprendizaje
     pasos:
-      - {de: pensamiento, texto: "Hoy jueves... ¡toca clase de educación física!"}
-      - {marca: vio_calendario}
-
+      - de: pensamiento
+        titulo: Calendario escolar
+        texto: Hoy es jueves. Me toca clase de educación física.
+      - marca: vio_calendario
   - id: T05
     nombre: Conversación con la madre
     donde: casa
@@ -30,20 +34,39 @@ escenas:
     dia: 1
     hora: manana
     tras: T03
-    areas: [necesidades_fisicas, pedir_ayuda, apoyo_emocional]
+    areas:
+      - necesidades_fisicas
+      - pedir_ayuda
+      - apoyo_emocional
     pasos:
-      - {de: madre, texto: "¡Buenos días! Ya despertaste. Se me hizo un poco tarde y tengo que salir a trabajar."}
-      - {de: yo, texto: "Buenos días, mamá. ¿Hay algo para desayunar?"}
-      - {de: madre, texto: "Hay huevos en el refrigerador. Hoy no alcancé a preparar el desayuno, pero puedes hacerte algo con lo que dejé. Tengo que irme."}
-      - opciones:
-          - [ACEPTA, "Está bien, mamá. Que te vaya bien.", "Gracias. Nos vemos más tarde."]
-          - [PREGUNTA, "¿Mañana podemos desayunar juntos?", "Voy a intentar organizarme, ¿sí?"]
-          - [PIDE_AYUDA, "¿Podrías ayudarme antes de irte?", "Hoy ya no alcanzo. Dejé lo necesario en la cocina."]
-          - [EXPRESA_MALESTAR, "No tengo muchas ganas de cocinar.", "Hay algo sencillo que puedes preparar. Luego hablamos."]
-      - {de: pensamiento, texto: "Últimamente siempre tiene mucha prisa."}
-      - {mision: "Sacar los huevos del refrigerador en la cocina"}
-      - {marca: hablo_mama}
-
+      - de: madre
+        titulo: Prisa en la mañana
+        texto: ¡Buenos días! Se me hizo un poco tarde y ya salgo a trabajar.
+      - de: yo
+        titulo: Desayuno pendiente
+        texto: Buenos días, mamá. ¿Dejaste algo listo para desayunar?
+      - de: madre
+        titulo: Huevos en el refri
+        texto: Hay huevos en la cocina. Prepárate algo rápido antes de irte.
+      - titulo: ¿Qué le respondes?
+        opciones:
+          - - ACEPTA
+            - Está bien, mamá. Que te vaya bien.
+            - Gracias. Nos vemos más tarde.
+          - - PREGUNTA
+            - ¿Mañana podemos desayunar juntos?
+            - Voy a intentar organizarme, ¿sí?
+          - - PIDE_AYUDA
+            - ¿Podrías ayudarme antes de irte?
+            - Hoy ya no alcanzo. Dejé todo en la cocina.
+          - - EXPRESA_MALESTAR
+            - No tengo muchas ganas de cocinar.
+            - Hay algo sencillo en la cocina. Al rato hablamos.
+      - de: pensamiento
+        titulo: Siempre con prisa
+        texto: Últimamente mamá nunca tiene tiempo para desayunar conmigo.
+      - mision: Sacar los huevos del refrigerador en la cocina
+      - marca: hablo_mama
   - id: T06
     nombre: El refrigerador
     donde: casa
@@ -51,13 +74,15 @@ escenas:
     dia: 1
     hora: manana
     tras: T05
-    areas: [necesidades_fisicas]
+    areas:
+      - necesidades_fisicas
     pasos:
-      - {minijuego: refri}
-      - {de: sistema, texto: "¡Encontraste los huevos! Ahora puedes preparar el desayuno."}
-      - {marca: saco_huevos}
-      - {mision: "Preparar el desayuno en la estufa"}
-
+      - minijuego: refri
+      - de: sistema
+        titulo: Huevos listos
+        texto: ¡Encontraste los huevos! Ahora puedes cocinarlos en la estufa.
+      - marca: saco_huevos
+      - mision: Preparar el desayuno en la estufa
   - id: T07
     nombre: Preparar el desayuno
     donde: casa
@@ -65,14 +90,21 @@ escenas:
     dia: 1
     hora: manana
     tras: T06
-    areas: [necesidades_fisicas, apoyo_emocional]
+    areas:
+      - necesidades_fisicas
+      - apoyo_emocional
     pasos:
-      - {minijuego: estufa}
-      - {de: pensamiento, texto: "Qué raro... hoy tampoco alcanzó a desayunar conmigo."}
-      - {de: pensamiento, texto: "Bueno, mejor termino. No quiero llegar tarde."}
-      - {de: sistema, texto: "Suena la alarma del reloj: hora de alistarte para la escuela."}
-      - {mision: "Elegir tu ropa en el ropero de tu habitación"}
-
+      - minijuego: estufa
+      - de: pensamiento
+        titulo: Desayunando a solas
+        texto: Hoy tampoco alcanzó a sentarse conmigo a la mesa.
+      - de: pensamiento
+        titulo: Hora de alistarse
+        texto: Mejor termino de comer rápido para no llegar tarde a clases.
+      - de: sistema
+        titulo: Alarma escolar
+        texto: "Sonó la alarma: es hora de ponerte el uniforme en tu cuarto."
+      - mision: Elegir tu ropa en el ropero de tu habitación
   - id: T08
     nombre: Elegir la ropa
     donde: casa
@@ -80,12 +112,12 @@ escenas:
     dia: 1
     hora: manana
     tras: T07
-    areas: [conducta, escuela_aprendizaje]
+    areas:
+      - conducta
+      - escuela_aprendizaje
     pasos:
-      - {minijuego: ropero}
-      - {mision: "Salir de casa rumbo a la escuela"}
-
-  # Lo que el niño deja sin hacer al salir de casa: pensamientos opcionales sin frenar la salida si decide salir libremente.
+      - minijuego: ropero
+      - mision: Salir de casa rumbo a la escuela
   - id: P-mama
     nombre: Antes de salir, hablar con mamá
     donde: casa
@@ -93,10 +125,12 @@ escenas:
     dia: 1
     hora: manana
     tras: T03
-    no: [hablo_mama]
+    no:
+      - hablo_mama
     pasos:
-      - {de: pensamiento, texto: "Primero voy a hablar con mamá en el comedor para ver qué hay de desayunar."}
-
+      - de: pensamiento
+        titulo: Despedirme de mamá
+        texto: Antes de salir a la calle, voy al comedor a hablar con mamá.
   - id: P-huevos
     nombre: Antes de salir, sacar los huevos
     donde: casa
@@ -104,10 +138,12 @@ escenas:
     dia: 1
     hora: manana
     tras: T05
-    no: [saco_huevos]
+    no:
+      - saco_huevos
     pasos:
-      - {de: pensamiento, texto: "Primero voy a buscar los huevos en el refrigerador de la cocina."}
-
+      - de: pensamiento
+        titulo: Comida pendiente
+        texto: Tengo que sacar los huevos del refri para hacerme de desayunar.
   - id: P-desayuno
     nombre: Antes de salir, preparar el desayuno
     donde: casa
@@ -115,10 +151,12 @@ escenas:
     dia: 1
     hora: manana
     tras: T06
-    no: [estufa_prendida]
+    no:
+      - estufa_prendida
     pasos:
-      - {de: pensamiento, texto: "Primero voy a preparar mi desayuno en la estufa."}
-
+      - de: pensamiento
+        titulo: Cocinar desayuno
+        texto: No puedo irme sin desayunar; voy a cocinar los huevos en la estufa.
   - id: P-ropa
     nombre: Antes de salir, elegir la ropa
     donde: casa
@@ -126,75 +164,101 @@ escenas:
     dia: 1
     hora: manana
     tras: T07
-    no: [ropa_uniforme, ropa_deporte, ropa_casual]
+    no:
+      - ropa_uniforme
+      - ropa_deporte
+      - ropa_casual
     pasos:
-      - {de: pensamiento, texto: "Primero voy a elegir mi ropa en el ropero de mi habitación antes de salir."}
-
+      - de: pensamiento
+        titulo: Cambiarme de ropa
+        texto: Antes de salir a la calle, debo ponerme la ropa de la escuela.
   - id: R-estufa
     nombre: Antes de salir, la estufa prendida
     donde: casa
     al: salir:calle
-    si: [estufa_prendida]
-    no: [estufa_apagada]
+    si:
+      - estufa_prendida
+    no:
+      - estufa_apagada
     frena: true
     pasos:
-      - {de: pensamiento, texto: "La estufa sigue prendida. Mejor la apago antes de salir."}
-
+      - de: pensamiento
+        titulo: Estufa encendida
+        texto: Dejé la lumbre prendida en la cocina. Debo apagarla antes de salir.
   - id: D-estufa
     nombre: Salir con la estufa prendida
     donde: casa
     al: salir:calle
     tras: R-estufa
-    si: [estufa_prendida]
-    no: [estufa_apagada, dejo_estufa]
+    si:
+      - estufa_prendida
+    no:
+      - estufa_apagada
+      - dejo_estufa
     pasos:
-      - {de: pensamiento, texto: "Ya no me da tiempo. La estufa se queda prendida."}
-      - {marca: dejo_estufa}
-
+      - de: pensamiento
+        titulo: Se hace tarde
+        texto: Ya no me da tiempo de volver. La estufa se queda prendida.
+      - marca: dejo_estufa
   - id: A-estufa
     nombre: Apagar la estufa
     donde: casa
     al: estufa
-    si: [estufa_prendida]
-    no: [estufa_apagada]
+    si:
+      - estufa_prendida
+    no:
+      - estufa_apagada
     pasos:
-      - {de: pensamiento, texto: "Apago la estufa."}
-      - {marca: estufa_apagada}
-
+      - de: pensamiento
+        titulo: Estufa apagada
+        texto: Giro la perilla y apago la estufa para evitar accidentes.
+      - marca: estufa_apagada
   - id: C-estufa
     nombre: Al volver, la comida quemada
     donde: casa
     al: entrar
     hora: noche
-    si: [dejo_estufa]
-    no: [consecuencia_estufa, estufa_apagada]
+    si:
+      - dejo_estufa
+    no:
+      - consecuencia_estufa
+      - estufa_apagada
     pasos:
-      - {efecto: inquietud}
-      - {de: sistema, texto: "Huele a quemado. La comida se quemó en el sartén."}
-      - {de: mensaje_mama, texto: "Me avisaron del humo y tuve que ir a apagar la estufa. Límpialo, por favor."}
-      - {marca: estufa_apagada}
-      - {marca: consecuencia_estufa}
-
+      - efecto: inquietud
+      - de: sistema
+        titulo: Olor a quemado
+        texto: Huele a humo en toda la casa. El sartén se quemó en la estufa.
+      - de: mensaje_mama
+        titulo: Aviso de mamá
+        texto: Me avisaron del humo y vine a apagar la estufa. Límpialo, por favor.
+      - marca: estufa_apagada
+      - marca: consecuencia_estufa
   - id: L-sarten
     nombre: Lavar el sartén quemado
     donde: casa
     al: fregadero
-    si: [consecuencia_estufa]
-    no: [limpio_estufa]
+    si:
+      - consecuencia_estufa
+    no:
+      - limpio_estufa
     pasos:
-      - {de: pensamiento, texto: "Lavo el sartén quemado."}
-      - {marca: limpio_estufa}
-
+      - de: pensamiento
+        titulo: Limpiar la cocina
+        texto: Pongo jabón y lavo el sartén quemado en el fregadero.
+      - marca: limpio_estufa
   - id: R-sarten
     nombre: Antes de salir, el sartén quemado
     donde: casa
     al: salir:calle
-    si: [consecuencia_estufa]
-    no: [limpio_estufa]
+    si:
+      - consecuencia_estufa
+    no:
+      - limpio_estufa
     frena: true
     pasos:
-      - {de: pensamiento, texto: "Antes de salir, lavo el sartén quemado."}
-
+      - de: pensamiento
+        titulo: Sartén sucio
+        texto: Antes de salir a la calle, tengo que lavar el sartén quemado.
   - id: T09
     nombre: Salir de casa
     donde: casa
@@ -202,12 +266,16 @@ escenas:
     dia: 1
     hora: manana
     tras: T08
-    areas: [escuela_aprendizaje]
+    areas:
+      - escuela_aprendizaje
     pasos:
-      - {de: pensamiento, texto: "Espero que hoy sea un buen día."}
-      - {de: sistema, texto: "Tutorial completado. Ya puedes explorar, hablar con otras personas y descubrir nuevas actividades."}
-      - {mision: "Ir a la escuela"}
-
+      - de: pensamiento
+        titulo: Rumbo a la escuela
+        texto: Espero que hoy sea un buen día con mis compañeros.
+      - de: sistema
+        titulo: Camino libre
+        texto: Ya puedes explorar el pueblo, platicar con gente y entrar a la escuela.
+      - mision: Ir a la escuela
   - id: U01a
     nombre: Revisión del uniforme, con ropa de deporte
     donde: escuela_planta_baja
@@ -215,11 +283,15 @@ escenas:
     dia: 1
     hora: manana
     tras: T09
-    si: [ropa_deporte]
-    areas: [escuela_aprendizaje, conducta]
+    si:
+      - ropa_deporte
+    areas:
+      - escuela_aprendizaje
+      - conducta
     pasos:
-      - {de: lucia, texto: "Buenos días. ¡Qué bien, vienes list{o} para educación física!"}
-
+      - de: lucia
+        titulo: Ropa de deportes
+        texto: ¡Buenos días! Qué bien que viniste list{o} para educación física.
   - id: U01b
     nombre: Revisión del uniforme, con otra ropa
     donde: escuela_planta_baja
@@ -227,27 +299,43 @@ escenas:
     dia: 1
     hora: manana
     tras: T09
-    no: [ropa_deporte]
-    areas: [conducta, escuela_aprendizaje, prosocial]
+    no:
+      - ropa_deporte
+    areas:
+      - conducta
+      - escuela_aprendizaje
+      - prosocial
     pasos:
-      - {de: lucia, texto: "Buenos días. Hoy toca educación física. Puedes participar aunque no traigas ropa de deporte."}
-      - opciones:
-          - [ACEPTA, "Sí, quiero participar.", "Perfecto. Te explico cómo."]
-          - [PREGUNTA, "¿Qué puedo hacer sin cambiarme?", "Puedes ayudar a contar y a pasar el balón."]
-          - [EVITA, "Prefiero quedarme en mi lugar.", "Está bien. Te aviso cuando empiece."]
-
+      - de: lucia
+        titulo: Clase de deportes
+        texto: Buenos días. Hoy toca educación física; puedes jugar sin ropa deportiva.
+      - titulo: ¿Qué le respondes a la maestra?
+        opciones:
+          - - ACEPTA
+            - Sí, quiero participar.
+            - Perfecto. Te explico la actividad.
+          - - PREGUNTA
+            - ¿Qué puedo hacer sin cambiarme?
+            - Puedes ayudar a contar puntos y pasar balones.
+          - - EVITA
+            - Prefiero quedarme en mi lugar.
+            - De acuerdo. Puedes ver desde la banca.
   - id: R01
     nombre: Primer recreo
     donde: escuela_planta_baja
     al: entrar
     dia: 1
     hora: manana
-    tras: [U01a, U01b]
-    areas: [companeros]
+    tras:
+      - U01a
+      - U01b
+    areas:
+      - companeros
     pasos:
-      - {de: pensamiento, texto: "Todavía no conozco bien a todos. Tal vez pueda hablar con alguien."}
-      - {mision: "Conocer a tus compañeros"}
-
+      - de: pensamiento
+        titulo: Hora del recreo
+        texto: Todavía no conozco bien a nadie aquí. Voy a buscar con quién hablar.
+      - mision: Conocer a tus compañeros
   - id: R02-valeria
     nombre: Valeria y la cuerda
     donde: escuela_planta_baja
@@ -255,22 +343,43 @@ escenas:
     dia: 1
     hora: manana
     tras: R01
-    areas: [companeros, prosocial]
+    areas:
+      - companeros
+      - prosocial
     pasos:
-      - {de: valeria, texto: "¡Hola! Estamos buscando a alguien más para jugar. ¿Te animas?"}
-      - opciones:
-          - [ACEPTA, "¡Claro! ¿Qué están jugando?", "Saltar la cuerda. ¿Entras?"]
-          - [ACEPTA, "No soy muy bueno, pero puedo intentarlo.", "No importa. Entras y ya."]
-          - [POSPONE, "Tal vez después.", "Está bien. Aquí andamos."]
-      - {minijuego: cuerda}
-      - {de: valeria, texto: "¡Estuvo divertido! ¿Quieres jugar conmigo en el próximo recreo?"}
-      - opciones:
-          - [ACEPTA, "Sí, me gustaría.", "¡Genial! Te busco."]
-          - [PROPONE, "Podemos intentar otro juego.", "Buena idea, ¿cuál?"]
-          - [EVITA, "A veces prefiero hacer otras cosas, pero podemos hablar.", "Claro, cuando quieras."]
-      - {marca: conocio_valeria}
-      - {de: sistema, texto: "Has conocido mejor a Valeria."}
-
+      - de: valeria
+        titulo: Jugar a la cuerda
+        texto: ¡Hola! Nos falta una persona para saltar la cuerda. ¿Quieres jugar?
+      - titulo: ¿Entras a jugar con Valeria?
+        opciones:
+          - - ACEPTA
+            - ¡Claro! ¿Cómo van las reglas?
+            - Solo saltas al ritmo. ¿Entras?
+          - - ACEPTA
+            - No juego muy bien, pero le entro.
+            - No pasa nada. Aquí te enseñamos.
+          - - POSPONE
+            - Tal vez al rato.
+            - Está bien. Aquí seguimos jugando.
+      - minijuego: cuerda
+      - de: valeria
+        titulo: ¿Otro recreo?
+        texto: ¡Estuvo divertido! ¿Jugamos juntos en el recreo de mañana?
+      - titulo: ¿Qué le dices a Valeria?
+        opciones:
+          - - ACEPTA
+            - Sí, me gustaría jugar otra vez.
+            - ¡Genial! Te busco en el patio.
+          - - PROPONE
+            - Podemos probar otro juego.
+            - Buena idea, ¿cuál se te ocurre?
+          - - EVITA
+            - A veces prefiero caminar, pero platicamos.
+            - Claro, cuando quieras.
+      - marca: conocio_valeria
+      - de: sistema
+        titulo: Nueva amistad
+        texto: Platicaste y conociste mejor a Valeria.
   - id: R02-leo
     nombre: Leo y el dibujo
     donde: escuela_planta_baja
@@ -278,16 +387,26 @@ escenas:
     dia: 1
     hora: manana
     tras: R01
-    areas: [companeros, prosocial]
+    areas:
+      - companeros
+      - prosocial
     pasos:
-      - {de: leo, texto: "Estoy intentando terminar este dibujo. ¿Quieres ayudarme?"}
-      - opciones:
-          - [ACEPTA, "Sí, me gusta dibujar.", "¡Genial! Empieza con el cielo."]
-          - [PREGUNTA, "¿Qué estás haciendo?", "Un paisaje del patio, con la cancha al fondo."]
-          - [EVITA, "Prefiero seguir explorando.", "Está bien. Aquí sigo."]
-      - {minijuego: dibujo}
-      - {marca: conocio_leo}
-
+      - de: leo
+        titulo: Terminar el dibujo
+        texto: Estoy pintando este dibujo del patio. ¿Me ayudas a terminarlo?
+      - titulo: ¿Ayudas a Leo con el dibujo?
+        opciones:
+          - - ACEPTA
+            - Sí, me gusta mucho dibujar.
+            - ¡Genial! Pinta el cielo y las bancas.
+          - - PREGUNTA
+            - ¿Qué estás dibujando?
+            - Un paisaje del patio con la cancha de básquet.
+          - - EVITA
+            - Prefiero seguir caminando.
+            - Está bien. Aquí me quedo dibujando.
+      - minijuego: dibujo
+      - marca: conocio_leo
   - id: R02-sam
     nombre: Sam y la libreta perdida
     donde: escuela_planta_baja
@@ -295,16 +414,27 @@ escenas:
     dia: 1
     hora: manana
     tras: R01
-    areas: [companeros, prosocial, escuela_aprendizaje]
+    areas:
+      - companeros
+      - prosocial
+      - escuela_aprendizaje
     pasos:
-      - {de: sam, texto: "Encontré algo raro en el patio. Creo que alguien perdió una libreta."}
-      - opciones:
-          - [ACEPTA, "Vamos a investigar.", "¡Vamos! Busquemos juntos."]
-          - [PREGUNTA, "¿Dónde la encontraste?", "Cerca de la jardinera, junto al aro de básquet."]
-          - [EVITA, "Ahora tengo otras cosas que hacer.", "Te aviso si encuentro algo más."]
-      - {minijuego: pistas}
-      - {marca: conocio_sam}
-
+      - de: sam
+        titulo: Libreta perdida
+        texto: Encontré algo en el patio. Alguien perdió su libreta de apuntes.
+      - titulo: ¿Ayudas a Sam a investigar?
+        opciones:
+          - - ACEPTA
+            - Vamos a buscar de quién es.
+            - ¡Vamos! Revisemos las pistas juntos.
+          - - PREGUNTA
+            - ¿Dónde la viste?
+            - Junto a la jardinera, cerca de la canasta.
+          - - EVITA
+            - Ahorita tengo otra cosa que hacer.
+            - Sale. Te aviso si encuentro al dueño.
+      - minijuego: pistas
+      - marca: conocio_sam
   - id: C03
     nombre: ¿Me ayudas con las compras?
     donde: calle
@@ -312,36 +442,63 @@ escenas:
     dia: 1
     hora: tarde
     tras: T09
-    areas: [prosocial, cuidar_de_mas, supervision]
+    areas:
+      - prosocial
+      - cuidar_de_mas
+      - supervision
     pasos:
-      - {de: madre, texto: "Oye, ¿me ayudas con algo? Nos faltan unas cosas para la comida. ¿Puedes ir a la tienda de la esquina?"}
-      - opciones:
-          - [ACEPTA, "¡Claro! ¿Qué necesitas?", "Aquí tienes la lista y el dinero."]
-          - [PREGUNTA, "¿Puedo ir después de terminar mi tarea?", "Sí, pero no tardes."]
-          - [PIDE_AYUDA, "Está bien, pero necesito la lista.", "Aquí la tienes. Regresa pronto."]
-      - {minijuego: tienda}
-      - {de: sistema, texto: "Regresaste con las compras."}
-      - {marca: compras}
-      - {mision: "Regresar a casa para descansar"}
-
+      - de: madre
+        titulo: Encargo de comida
+        texto: ¿Me ayudas a comprar? Faltan cosas para la comida en la tiendita.
+      - titulo: ¿Qué le dices a mamá?
+        opciones:
+          - - ACEPTA
+            - ¡Claro! ¿Qué hace falta?
+            - Aquí tienes la lista y el dinero.
+          - - PREGUNTA
+            - ¿Puedo ir al acabar mi tarea?
+            - Sí, pero no tardes en volver.
+          - - PIDE_AYUDA
+            - Sí voy, pero dame la lista.
+            - Aquí la tienes. Regresa pronto a casa.
+      - minijuego: tienda
+      - de: sistema
+        titulo: Compras hechas
+        texto: Compraste los ingredientes y regresaste a la calle.
+      - marca: compras
+      - mision: Regresar a casa para descansar
   - id: X01
     nombre: ¡Hoy toca examen!
     donde: escuela_planta_baja
     al: entrar
     dia: 2
     hora: manana
-    areas: [escuela_aprendizaje, sintomas_emocionales]
+    areas:
+      - escuela_aprendizaje
+      - sintomas_emocionales
     pasos:
-      - {de: lucia, texto: "Buenos días. Recuerden que hoy tenemos el examen que estuvimos preparando. Guarden sus materiales, por favor."}
-      - {de: pensamiento, texto: "¡Cierto! El examen... Espero acordarme de lo que estudié."}
-      - opciones:
-          - [ACEPTA, "¡Estoy list{o}!", "Muy bien. Suerte."]
-          - [EXPRESA_MALESTAR, "Me siento algo nervios{o}.", "Respira. Son preguntas sencillas."]
-          - [EXPRESA_MALESTAR, "Debí estudiar un poco más.", "Puedes hacer lo que sepas."]
-          - [ACEPTA, "Bueno, haré lo que pueda.", "Eso es todo lo que se pide."]
-      - {minijuego: examen}
-      - {mision: "Hablar con Leo en el patio de la escuela"}
-
+      - de: lucia
+        titulo: Examen de hoy
+        texto: Buenos días. Hoy tenemos el examen que repasamos. Guarden sus cosas.
+      - de: pensamiento
+        titulo: Repaso mental
+        texto: ¡Es cierto, el examen! Espero acordarme bien de lo que estudié.
+      - titulo: ¿Cómo te sientes con el examen?
+        opciones:
+          - - ACEPTA
+            - ¡Estoy list{o}!
+            - Muy bien. Mucho éxito con tus respuestas.
+          - - EXPRESA_MALESTAR
+            - Tengo un poco de nervios.
+            - Respira tranquilo. Las preguntas son sencillas.
+          - - EXPRESA_MALESTAR
+            - Debí repasar un poco más.
+            - Contesta con calma lo que recuerdes.
+          - - ACEPTA
+            - Haré mi mejor esfuerzo.
+            - Con eso es suficiente. Mucho éxito.
+      - minijuego: examen
+      - mision: Hablar con Leo en el patio de la escuela
   - id: R05
     nombre: Amistad que crece
     donde: escuela_planta_baja
@@ -349,31 +506,50 @@ escenas:
     dia: 2
     hora: manana
     tras: R02-leo
-    areas: [companeros, apoyo_emocional, pedir_ayuda]
+    areas:
+      - companeros
+      - apoyo_emocional
+      - pedir_ayuda
     pasos:
-      - {de: leo, texto: "Oye, ¿te acuerdas del dibujo que hicimos? Pensé que podríamos terminarlo hoy."}
-      - {de: leo, texto: "Te noto algo distraído. ¿Quieres jugar o prefieres que nos sentemos un rato?"}
-      - opciones:
-          - [ACEPTA, "Sí, vamos a jugar.", "¡Vamos!"]
-          - [COMPARTE, "Prefiero conversar.", "Claro, aquí nos sentamos."]
-          - [EVITA, "No tengo muchas ganas de hablar.", "Está bien. Aquí estoy si cambias de idea."]
-          - [EXPRESA_MALESTAR, "Hay algo que me preocupa.", "Cuéntame, te escucho."]
-      - {mision: "Salir de la escuela para regresar a casa"}
-      - {marca: hablo_leo}
-
+      - de: leo
+        titulo: El dibujo de ayer
+        texto: ¿Te acuerdas del dibujo que empezamos? Hoy podemos acabarlo.
+      - de: leo
+        titulo: ¿Cómo estás?
+        texto: Te noto algo callad{o}. ¿Quieres jugar o platicamos en la banca?
+      - titulo: ¿Qué prefieres hacer con Leo?
+        opciones:
+          - - ACEPTA
+            - Sí, vamos a jugar.
+            - ¡Vámonos a la cancha!
+          - - COMPARTE
+            - Prefiero platicar un rato.
+            - Claro, vamos a sentarnos a la banca.
+          - - EVITA
+            - No tengo muchas ganas de hablar.
+            - Está bien. Aquí estoy por si cambias de opinión.
+          - - EXPRESA_MALESTAR
+            - Traigo algo que me preocupa.
+            - Cuéntame con confianza, te escucho.
+      - mision: Salir de la escuela para regresar a casa
+      - marca: hablo_leo
   - id: E2-01
     nombre: Un momento tranquilo
     donde: casa
     al: cama
     dia: 2
     hora: noche
-    areas: [apoyo_emocional]
+    areas:
+      - apoyo_emocional
     pasos:
-      - {minijuego: dibujo}
-      - {de: sistema, texto: "¡Dibujo terminado!"}
-      - {de: pensamiento, texto: "Me gustó cómo quedó. Tal vez pueda enseñárselo a alguien."}
-      - {mision: "Enseñar el dibujo a papá en la sala"}
-
+      - minijuego: dibujo
+      - de: sistema
+        titulo: Dibujo terminado
+        texto: Terminaste tu dibujo en el cuaderno.
+      - de: pensamiento
+        titulo: Compartir el dibujo
+        texto: Me gustó mucho cómo quedó. Voy a enseñárselo a papá en la sala.
+      - mision: Enseñar el dibujo a papá en la sala
   - id: E2-02
     nombre: Encuentro con el padre
     donde: casa
@@ -381,32 +557,66 @@ escenas:
     dia: 2
     hora: noche
     tras: E2-01
-    areas: [abuso_emocional, limites, representacion_adultos]
+    areas:
+      - abuso_emocional
+      - limites
+      - representacion_adultos
     delicada: true
     saltable: true
     pasos:
-      - {efecto: inquietud}
-      - {de: yo, texto: "Papá, mira lo que hice."}
-      - {de: papa, texto: "¿Otra vez perdiendo el tiempo con eso?"}
-      - {de: yo, texto: "Lo hice en mi tiempo libre."}
-      - {de: papa, texto: "Deberías hacer algo más útil. Con tantas cosas que tienes que mejorar, siempre estás entretenid{o} con tonterías."}
-      - opciones:
-          - [EXPRESA_AGRADO, "A mí me gusta dibujar.", null]
-          - [COMPARTE, "Solo quería enseñártelo.", null]
-          - [PREGUNTA, "¿Por qué siempre dices eso?", null]
-          - [CALLA, "Guardar silencio.", null]
-      - {de: papa, texto: "Cuando aprendas a hacer algo bien, entonces podrás venir a presumirme tus cosas."}
-      - {de: papa, texto: "Y no pongas esa cara. Te digo estas cosas por tu bien."}
-      - opciones:
-          - [EXPRESA_MALESTAR, "Me hace sentir mal que hables así.", null]
-          - [DESACUERDO, "No estoy de acuerdo.", null]
-          - [EVITA, "No quiero discutir.", null]
-          - [SE_RETIRA, "Retirarme sin contestar.", null]
-      - {efecto: intensidad}
-      - {de: papa, texto: "Con todo lo que hago por ti, al menos podrías agradecerme que intente corregirte."}
-      - {marca: visto_papa}
-      - {mision: "Regresar a tu cama en tu habitación"}
-
+      - efecto: inquietud
+      - de: yo
+        titulo: Mostrar el dibujo
+        texto: Papá, mira lo que dibujé en mi cuaderno.
+      - de: papa
+        titulo: Reclamo de papá
+        texto: ¿Otra vez perdiendo el tiempo con esos rayones?
+      - de: yo
+        titulo: Tiempo libre
+        texto: Lo terminé en mi tiempo libre después de la tarea.
+      - de: papa
+        titulo: Palabras duras
+        texto: Deberías ponerte a hacer algo útil en vez de entretenerte con tonterías.
+      - titulo: ¿Qué le contestas a papá?
+        opciones:
+          - - EXPRESA_AGRADO
+            - A mí me gusta mucho dibujar.
+            - null
+          - - COMPARTE
+            - Solo quería que lo vieras.
+            - null
+          - - PREGUNTA
+            - ¿Por qué siempre me dices eso?
+            - null
+          - - CALLA
+            - Quedarme callad{o}.
+            - null
+      - de: papa
+        titulo: Exigencia de papá
+        texto: Cuando hagas algo útil de verdad, vienes a enseñarme tus cosas.
+      - de: papa
+        titulo: Por tu bien
+        texto: Y no pongas esa cara. Te digo las cosas por tu bien.
+      - titulo: ¿Cómo reaccionas ante lo que dijo?
+        opciones:
+          - - EXPRESA_MALESTAR
+            - Me hace sentir mal cómo me hablas.
+            - null
+          - - DESACUERDO
+            - No estoy de acuerdo con lo que dices.
+            - null
+          - - EVITA
+            - No quiero pelear.
+            - null
+          - - SE_RETIRA
+            - Darme la vuelta e irme a mi cuarto.
+            - null
+      - efecto: intensidad
+      - de: papa
+        titulo: Falta de apoyo
+        texto: Con todo lo que te doy, al menos deberías agradecer que te corrija.
+      - marca: visto_papa
+      - mision: Regresar a tu cama en tu habitación
   - id: E2-04
     nombre: Consecuencia emocional
     donde: casa
@@ -414,18 +624,32 @@ escenas:
     dia: 2
     hora: noche
     tras: E2-02
-    areas: [sintomas_emocionales, apoyo_emocional]
+    areas:
+      - sintomas_emocionales
+      - apoyo_emocional
     pasos:
-      - {efecto: acompanamiento}
-      - {de: pensamiento, texto: "Estaba content{o} con lo que hice."}
-      - {de: pensamiento, texto: "Ahora ya no sé si quiero enseñárselo a alguien."}
-      - opciones:
-          - [EVITA, "Guardar el dibujo.", null]
-          - [EXPRESA_AGRADO, "Colgarlo en la pared.", null]
-          - [EXPRESA_AGRADO, "Continuar trabajando en él.", null]
-          - [COMPARTE, "Enseñárselo a un compañero.", null]
-      - {mision: "Dormir en tu cama para descansar"}
-
+      - efecto: acompanamiento
+      - de: pensamiento
+        titulo: Ilusión rota
+        texto: Estaba content{o} con mi dibujo antes de bajar a la sala.
+      - de: pensamiento
+        titulo: Duda personal
+        texto: Ahora ya no sé si quiero que alguien más lo vea.
+      - titulo: ¿Qué decides hacer con el dibujo?
+        opciones:
+          - - EVITA
+            - Guardar el dibujo en un cajón.
+            - null
+          - - EXPRESA_AGRADO
+            - Pegarlo en la pared de mi cuarto.
+            - null
+          - - EXPRESA_AGRADO
+            - Seguir coloreándolo a mi gusto.
+            - null
+          - - COMPARTE
+            - Enseñárselo mañana a un compañero.
+            - null
+      - mision: Dormir en tu cama para descansar
   - id: E2-05
     nombre: Reconocimiento y apoyo
     donde: escuela_planta_baja
@@ -433,15 +657,22 @@ escenas:
     dia: 3
     hora: manana
     tras: E2-04
-    areas: [companeros, apoyo_emocional]
+    areas:
+      - companeros
+      - apoyo_emocional
     pasos:
-      - {efecto: alegria}
-      - {de: leo, texto: "¡Oye, qué bien te quedó! ¿Lo hiciste tú?"}
-      - {de: yo, texto: "Sí, aunque en mi casa no les gustó mucho."}
-      - {de: leo, texto: "Bueno, no tiene que gustarle a todo el mundo. Lo importante es que disfrutes hacerlo."}
-      - {mision: "Hablar con la orientadora en la planta baja de la escuela"}
-      - {marca: reconocio_dibujo}
-
+      - efecto: alegria
+      - de: leo
+        titulo: Opinión de Leo
+        texto: ¡Oye, qué padre te quedó el dibujo! ¿Lo hiciste tú?
+      - de: yo
+        titulo: Lo que pasó en casa
+        texto: Sí, aunque en mi casa dijeron que era una tontería.
+      - de: leo
+        titulo: Palabras de apoyo
+        texto: No tiene que gustarle a todos. Lo que importa es que tú lo disfrutes.
+      - mision: Hablar con la orientadora en la planta baja de la escuela
+      - marca: reconocio_dibujo
   - id: O01
     nombre: Hablar con la orientadora
     donde: escuela_planta_baja
@@ -449,22 +680,39 @@ escenas:
     dia: 3
     hora: manana
     tras: E2-05
-    areas: [pedir_ayuda, representacion_adultos, apoyo_emocional]
+    areas:
+      - pedir_ayuda
+      - representacion_adultos
+      - apoyo_emocional
     delicada: true
     saltable: true
     pasos:
-      - {efecto: acompanamiento}
-      - {de: yo, texto: "¿Puedo hablar con usted un momento?"}
-      - {de: orientadora, texto: "Claro. Puedes contarme con calma."}
-      - opciones:
-          - [CUENTA, "Me pasa algo en mi casa.", "Gracias por contarme. Vamos paso a paso."]
-          - [PREGUNTA, "¿Qué puedo hacer?", "Podemos buscar a alguien de confianza para hablar."]
-          - [EVITA, "No sé cómo explicarlo.", "No tienes que explicarlo todo hoy."]
-          - [SE_RETIRA, "Mejor después.", "Está bien. Aquí estaré."]
-      - {de: orientadora, texto: "Lo que cuentas importa. Juntos pensamos a quién más podemos avisarle."}
-      - {marca: hablo_orientadora}
-      - {mision: "Preparar el proyecto en parejas en el salón"}
-
+      - efecto: acompanamiento
+      - de: yo
+        titulo: Pedir hablar
+        texto: Maestra, ¿puedo hablar con usted a solas un momento?
+      - de: orientadora
+        titulo: Espacio seguro
+        texto: Claro. Pasa y cuéntame con toda calma qué pasó.
+      - titulo: ¿Qué decides contarle a la orientadora?
+        opciones:
+          - - CUENTA
+            - Me pasa algo difícil en mi casa.
+            - Gracias por confiar en mí. Lo revisamos con calma.
+          - - PREGUNTA
+            - ¿Qué puedo hacer cuando me siento así?
+            - Podemos buscar a personas de confianza para apoyarte.
+          - - EVITA
+            - No sé muy bien cómo explicarlo.
+            - No tienes que decir todo hoy. Vamos a tu ritmo.
+          - - SE_RETIRA
+            - Prefiero regresar después.
+            - Está bien. Aquí tienes la puerta abierta.
+      - de: orientadora
+        titulo: Apoyo escolar
+        texto: Lo que sientes sí importa. Pensaremos juntos cómo ayudarte.
+      - marca: hablo_orientadora
+      - mision: Preparar el proyecto en parejas en el salón
   - id: C02
     nombre: Un proyecto entre dos
     donde: escuela_planta_baja
@@ -472,30 +720,46 @@ escenas:
     dia: 3
     hora: manana
     tras: O01
-    areas: [companeros, escuela_aprendizaje, prosocial]
+    areas:
+      - companeros
+      - escuela_aprendizaje
+      - prosocial
     pasos:
-      - {de: lucia, texto: "Para la próxima clase prepararán un proyecto en parejas. Pueden escoger con quién trabajar."}
-      - {de: valeria, texto: "Creo que quedaría mejor si lo hacemos así. ¿Tú qué opinas?"}
-      - opciones:
-          - [ACEPTA, "Acepto tu propuesta.", "Perfecto. Empezamos mañana."]
-          - [PROPONE, "Prefiero otra idea.", "A ver, cuéntame."]
-          - [PROPONE, "¿Y si combinamos las dos?", "Me gusta. Hagámoslo así."]
-      - {marca: proyecto_pareja}
-      - {mision: "Salir de la escuela para regresar a casa"}
-
-  # En la escuela, lo que el niño deja sin hacer: la salida lo frena una vez y luego lo deja salir.
+      - de: lucia
+        titulo: Trabajo en parejas
+        texto: Para mañana prepararán un proyecto en parejas. Elijan con quién trabajar.
+      - de: valeria
+        titulo: Propuesta de Valeria
+        texto: Tengo una idea para armar el trabajo juntos. ¿Qué opinas?
+      - titulo: ¿Qué le dices a Valeria para el trabajo?
+        opciones:
+          - - ACEPTA
+            - Me late tu idea, hagámoslo así.
+            - ¡Súper! Empezamos a prepararlo.
+          - - PROPONE
+            - Tengo otra idea diferente.
+            - A ver, platícamela.
+          - - PROPONE
+            - ¿Y si juntamos las dos ideas?
+            - Me parece muy bien. Lo combinamos.
+      - marca: proyecto_pareja
+      - mision: Salir de la escuela para regresar a casa
   - id: P-recreo
     nombre: Antes de irse, hablar con Leo
     donde: escuela_planta_baja
     al: salir:calle
     dia: 1
     hora: manana
-    tras: [U01a, U01b]
-    no: [conocio_leo]
+    tras:
+      - U01a
+      - U01b
+    no:
+      - conocio_leo
     frena: true
     pasos:
-      - {de: pensamiento, texto: "Todavía es hora del recreo; voy a hablar con mis compañeros en el patio antes de irme."}
-
+      - de: pensamiento
+        titulo: Aún hay recreo
+        texto: Sigue la hora del descanso; voy a platicar con mis compañeros en el patio.
   - id: P-leo-2
     nombre: Antes de irse, platicar con Leo
     donde: escuela_planta_baja
@@ -503,11 +767,13 @@ escenas:
     dia: 2
     hora: manana
     tras: X01
-    no: [hablo_leo]
+    no:
+      - hablo_leo
     frena: true
     pasos:
-      - {de: pensamiento, texto: "Antes de irme a casa, voy a platicar con Leo aquí en el patio."}
-
+      - de: pensamiento
+        titulo: Buscar a Leo
+        texto: Antes de irme a casa, voy a platicar con Leo aquí en el patio.
   - id: P-leo-3
     nombre: Antes de irse, hablar con Leo
     donde: escuela_planta_baja
@@ -515,11 +781,13 @@ escenas:
     dia: 3
     hora: manana
     tras: E2-04
-    no: [reconocio_dibujo]
+    no:
+      - reconocio_dibujo
     frena: true
     pasos:
-      - {de: pensamiento, texto: "Primero voy a hablar con Leo aquí en el patio."}
-
+      - de: pensamiento
+        titulo: Hablar con Leo
+        texto: Primero voy a buscar a Leo en el patio de la escuela.
   - id: P-orientadora
     nombre: Antes de irse, hablar con la orientadora
     donde: escuela_planta_baja
@@ -527,11 +795,13 @@ escenas:
     dia: 3
     hora: manana
     tras: E2-05
-    no: [hablo_orientadora]
+    no:
+      - hablo_orientadora
     frena: true
     pasos:
-      - {de: pensamiento, texto: "Antes de irme, tengo que hablar con la orientadora."}
-
+      - de: pensamiento
+        titulo: Cita pendiente
+        texto: Antes de salir de la escuela, tengo que hablar con la orientadora.
   - id: P-proyecto
     nombre: Antes de irse, el proyecto en parejas
     donde: escuela_planta_baja
@@ -539,24 +809,25 @@ escenas:
     dia: 3
     hora: manana
     tras: O01
-    no: [proyecto_pareja]
+    no:
+      - proyecto_pareja
     frena: true
     pasos:
-      - {de: pensamiento, texto: "Antes de irme, falta preparar el proyecto en parejas."}
-
+      - de: pensamiento
+        titulo: Proyecto escolar
+        texto: Falta organizar el proyecto en parejas antes de salir a la calle.
 pendientes:
-  # Lo que el niño deja abierto: una marca lo abre y otra lo cierra. Lo cierra una escena al tocar su objeto.
   - id: apagar-estufa
     abre: estufa_prendida
     cierra: estufa_apagada
     lugar: casa
     objeto: estufa
     etiqueta: Estufa
-    mision: "Apagar la estufa"
+    mision: Apagar la estufa
   - id: lavar-sarten
     abre: consecuencia_estufa
     cierra: limpio_estufa
     lugar: casa
     objeto: fregadero
     etiqueta: Fregadero
-    mision: "Lavar el sartén quemado"
+    mision: Lavar el sartén quemado

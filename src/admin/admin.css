@@ -147,7 +147,7 @@ body.tablero #raiz {
   width: 260px;
   border-radius: var(--radio-chico);
   box-shadow: inset 0 0 0 1px var(--linea);
-  background: #fff;
+  background: #fff; /* papel del dibujo: blanco a propósito */
   display: block;
 }
 

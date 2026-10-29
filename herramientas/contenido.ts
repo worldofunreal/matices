@@ -192,11 +192,13 @@ export function validar() {
       if (clases.length !== 1) return err(dp, "cada paso es una sola cosa: de, opciones, marca, mision, minijuego o efecto");
       if (p.de !== undefined) {
         if (!hablantes.has(p.de)) err(dp, `no se sabe quién habla: ${p.de}`);
+        if (p.titulo !== undefined) texto(`${dp} titulo`, p.titulo);
         texto(dp, p.texto);
         ultimo = p.de;
       } else if (p.opciones) {
         if (p.opciones.length < 2 || p.opciones.length > 4) err(dp, "de 2 a 4 opciones");
         if (!ultimo) err(dp, "las opciones necesitan una línea antes");
+        if (p.titulo !== undefined) texto(`${dp} titulo`, p.titulo);
         p.opciones.forEach((o, j) => {
           if (!Array.isArray(o) || o.length !== 3) return err(`${dp} opción ${j + 1}`, "debe ser [CÓDIGO, texto, respuesta]");
           codigo(`${dp} opción ${j + 1}`, o[0]);
@@ -239,7 +241,7 @@ export function validar() {
   return { version: version(), escenas, textos, figuras, lugares, conexiones, objetos, areas: areasDelMarco(), pendientes };
 }
 
-type Paso = { de?: string; texto?: string; opciones?: [string, string, string | null][]; marca?: string; mision?: string; minijuego?: string; efecto?: string };
+type Paso = { de?: string; titulo?: string; texto?: string; opciones?: [string, string, string | null][]; marca?: string; mision?: string; minijuego?: string; efecto?: string };
 type Escena = { id: string; nombre: string; donde: string; al: string; dia?: number; hora?: string; tras?: string | string[]; si?: string[]; no?: string[]; areas?: string[]; delicada?: boolean; saltable?: boolean; frena?: boolean; pasos: Paso[] };
 type Pendiente = { id: string; abre: string; cierra: string; lugar: string; objeto: string; etiqueta: string; mision: string };
 

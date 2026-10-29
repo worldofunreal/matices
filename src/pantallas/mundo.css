@@ -42,8 +42,8 @@
 
 /* The run button lights up while it is on. */
 .mundo-controles .correr[aria-pressed="true"] {
-  background: var(--girasol);
-  color: var(--tinta);
+  background: var(--aro-oro);
+  color: var(--contorno);
 }
 
 /* Action buttons cluster in the bottom-right corner, accessible next to Opciones */
@@ -55,18 +55,6 @@
   display: flex;
   align-items: center;
   gap: 10px;
-}
-
-.mundo-acciones .accion-btn {
-  width: 48px;
-  height: 48px;
-  background: rgba(254, 250, 243, 0.94);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1.5px solid rgba(43, 34, 51, 0.15);
-  box-shadow: 0 4px 14px rgba(29, 26, 36, 0.18);
-  color: var(--tinta, #1d1a24);
-  transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
 }
 
 .mundo-acciones .accion-btn svg {
@@ -177,8 +165,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.95);
-  background: var(--tarjeta, #fdfaf6);
+  border: 2px solid var(--contorno);
+  background: var(--tarjeta);
   box-shadow: 0 4px 12px rgba(29, 26, 36, 0.3);
   cursor: pointer;
   pointer-events: auto;
@@ -195,7 +183,7 @@
   transform: translateX(-50%);
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 6px solid #fdfaf6;
+  border-top: 6px solid var(--tarjeta);
 }
 
 .emote-mundo:hover,
@@ -206,7 +194,7 @@
 
 /* Nivel 1: Misión Principal Activa */
 .emote-mundo.nivel-1 {
-  background: #fff9e6;
+  background: var(--tarjeta);
   border-color: #d89a2b;
   color: #1d1a24;
   box-shadow: 0 4px 14px rgba(216, 154, 43, 0.45);
@@ -214,19 +202,19 @@
 }
 
 .emote-mundo.nivel-1::after {
-  border-top-color: #fff9e6;
+  border-top-color: var(--tarjeta);
 }
 
 /* Nivel 2: Acción Secundaria Cercana */
 .emote-mundo.nivel-2 {
-  background: #ffffff;
+  background: var(--tarjeta);
   border-color: rgba(43, 34, 51, 0.16);
   color: #1d1a24;
   animation: emote-aparicion 180ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .emote-mundo.nivel-2::after {
-  border-top-color: #ffffff;
+  border-top-color: var(--tarjeta);
 }
 
 @keyframes emote-flotante {
@@ -346,10 +334,9 @@
   gap: 8px;
   padding: 8px 18px;
   border-radius: 999px;
-  background: rgba(253, 250, 246, 0.94);
-  border: 1.5px solid rgba(43, 34, 51, 0.12);
+  background: var(--tarjeta);
+  border: 2px solid var(--contorno);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(8px);
   font-size: 15px;
   font-weight: 800;
   color: var(--tinta, #1d1a24);
@@ -374,10 +361,8 @@
   gap: 8px;
   padding: 7px 18px;
   border-radius: 999px;
-  background: rgba(254, 250, 243, 0.96);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1.5px solid rgba(175, 125, 60, 0.28);
+  background: var(--tarjeta);
+  border: 2px solid var(--contorno);
   box-shadow: 0 8px 24px rgba(29, 26, 36, 0.2), 0 2px 6px rgba(29, 26, 36, 0.1);
   color: #1d1a24;
   font-size: 15px;

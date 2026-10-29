@@ -5,6 +5,7 @@ declare module "virtual:contenido" {
   // Options are [code, text, answer]; the answer is null when it comes later in the scene.
   export type Paso = {
     de?: string;
+    titulo?: string;
     texto?: string;
     opciones?: [string, string, string | null][];
     marca?: string;

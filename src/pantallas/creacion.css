@@ -93,7 +93,7 @@
   width: min(80%, 72vmin);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 45%, #fff 0%, #fff 38%, var(--acento-claro) 62%, rgb(255 255 255 / 0) 72%);
+  background: radial-gradient(circle at 50% 45%, #fff 0%, #fff 38%, var(--acento-claro) 62%, rgb(255 255 255 / 0) 72%); /* blanco a propósito */
   transition: background var(--suave);
 }
 
@@ -149,7 +149,7 @@
   height: 14%;
   translate: -50% 30%;
   border-radius: 50%;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--acento) 60%, #fff) 0%, color-mix(in srgb, var(--acento) 30%, #fff) 65%, rgb(255 255 255 / 0) 100%);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--acento) 60%, #fff) 0%, color-mix(in srgb, var(--acento) 30%, #fff) 65%, rgb(255 255 255 / 0) 100%); /* blanco a propósito */
   transition: background var(--suave);
 }
 
@@ -268,7 +268,6 @@
 
 /* Choices in this screen: a soft card that, chosen, wears the step's color and a check. */
 .creacion .opcion {
-  background: #fff;
   box-shadow: inset 0 0 0 2px #f1e9df, 0 2px 0 #efe5d8;
   transition: transform var(--rapido), box-shadow var(--rapido), background var(--rapido);
 }
@@ -294,7 +293,6 @@
 
 .creacion .muestra {
   position: relative;
-  border: 4px solid #fff;
   box-shadow: 0 0 0 1px #eadfd2, 0 3px 6px rgb(43 34 51 / 0.12);
 }
 

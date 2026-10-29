@@ -289,13 +289,13 @@ function Perfil({ nino, todos }: { nino: string; todos: Evento[] }) {
 
       <section>
         <h2>Escenas</h2>
-        <p className="nota">Qué pasó en cada escena: cuántas veces empezó, si la saltó o la pausó, y cada elección en orden, con quién hablaba y los segundos que tardó en elegir.</p>
+        <p className="nota">Qué pasó en cada escena: cuántas veces empezó, si la saltó o la pausó, qué eligió y cuándo cerró el diálogo antes de responder o continuar.</p>
         {esc.size ? (
           <table>
-            <thead><tr><th>Escena</th><th className="num">Veces</th><th className="num">Saltada</th><th className="num">Pausada</th><th>Elecciones</th></tr></thead>
+            <thead><tr><th>Escena</th><th className="num">Veces</th><th className="num">Saltada</th><th className="num">Pausada</th><th>Cerró fuera</th><th>Elecciones</th></tr></thead>
             <tbody>
               {[...esc].map(([id, f]) => (
-                <tr key={id}><td>{escena(id)}</td><td className="num">{f.veces}</td><td className="num">{f.saltada || ""}</td><td className="num">{f.pausada || ""}</td><td>{f.elecciones.map((r) => `${r.codigo} (${r.de}, ${r.segundos} s)`).join(" → ") || "—"}</td></tr>
+                <tr key={id}><td>{escena(id)}</td><td className="num">{f.veces}</td><td className="num">{f.saltada || ""}</td><td className="num">{f.pausada || ""}</td><td>{f.cierres.map((r) => `${r.accion === "evitar_respuesta" ? "sin responder" : "sin continuar"} (${r.formato}, paso ${r.paso}, ${r.segundos} s)`).join(" · ") || "—"}</td><td>{f.elecciones.map((r) => `${r.codigo} (${r.de}, ${r.segundos} s)`).join(" → ") || "—"}</td></tr>
               ))}
             </tbody>
           </table>

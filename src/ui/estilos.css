@@ -6,7 +6,14 @@
 :root {
   --papel: #fbf6ee;
   --papel-2: #f3eadb;
-  --tarjeta: #ffffff;
+  --tarjeta: #f8efdc; /* parchment: buttons, choices, small cards */
+  --pergamino: linear-gradient(180deg, #fbf4e4, #efe1c4); /* panels and the dialogue box */
+  --contorno: #4a2e18; /* dark brown outline */
+  --dorado: #c9a045; /* gold corners */
+  --madera: #7a4a24;
+  --madera-clara: #a86d37;
+  --aro-madera: radial-gradient(circle closest-side, var(--tarjeta) 76%, transparent 78%), linear-gradient(160deg, var(--madera-clara), var(--madera)); /* round buttons: wooden ring */
+  --aro-oro: radial-gradient(circle closest-side, var(--tarjeta) 76%, transparent 78%), linear-gradient(160deg, #f5d27a, var(--dorado)); /* the running button, while on */
   --tinta: #2b2233;
   --tinta-suave: #6d6372;
   --linea: #e6dac7;
@@ -101,7 +108,7 @@ canvas.pixel {
 .boton {
   min-height: var(--toque);
   padding: 0 24px;
-  border: 0;
+  border: 2px solid var(--contorno);
   border-radius: 999px;
   background: var(--tarjeta);
   box-shadow: var(--sombra);
@@ -131,6 +138,7 @@ canvas.pixel {
 }
 
 .boton.secundario {
+  border-color: var(--linea);
   background: transparent;
   box-shadow: inset 0 0 0 2px var(--linea);
   color: var(--tinta-suave);
@@ -147,12 +155,16 @@ canvas.pixel {
   gap: 8px;
 }
 
-/* Round icon button (speaker, close, zoom). */
+/* Round icon button (speaker, close, zoom, corners): a wooden ring around a parchment disc, brown icon. */
 .redondo {
   width: var(--toque);
   height: var(--toque);
   padding: 0;
   flex: none;
+  border: 0;
+  background: var(--aro-madera);
+  color: var(--contorno);
+  box-shadow: 0 0 0 2px var(--contorno), var(--sombra);
 }
 
 .redondo svg {
@@ -173,14 +185,34 @@ canvas.pixel {
 /* ---- Cards and choices */
 
 .panel {
-  background: var(--tarjeta);
+  position: relative;
+  background: var(--pergamino);
+  border: 2px solid var(--contorno);
   border-radius: var(--radio);
   box-shadow: var(--sombra-alta);
 }
 
+/* Gold corner brackets on the parchment panels and on the dialogue box (escena.css): eight short lines, two per corner. */
+.panel::after,
+.escena-caja::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--dorado), var(--dorado)) left top / 16px 2px no-repeat,
+    linear-gradient(var(--dorado), var(--dorado)) left top / 2px 16px no-repeat,
+    linear-gradient(var(--dorado), var(--dorado)) right top / 16px 2px no-repeat,
+    linear-gradient(var(--dorado), var(--dorado)) right top / 2px 16px no-repeat,
+    linear-gradient(var(--dorado), var(--dorado)) left bottom / 16px 2px no-repeat,
+    linear-gradient(var(--dorado), var(--dorado)) left bottom / 2px 16px no-repeat,
+    linear-gradient(var(--dorado), var(--dorado)) right bottom / 16px 2px no-repeat,
+    linear-gradient(var(--dorado), var(--dorado)) right bottom / 2px 16px no-repeat;
+}
+
 .opcion {
   position: relative;
-  border: 0;
+  border: 2px solid var(--contorno);
   padding: 8px;
   border-radius: var(--radio-chico);
   background: var(--tarjeta);
@@ -217,7 +249,7 @@ canvas.pixel {
   height: var(--toque);
   border-radius: 50%;
   padding: 0;
-  border: 4px solid #fff;
+  border: 4px solid var(--tarjeta);
   box-shadow: var(--sombra);
   cursor: pointer;
   transition: transform var(--rapido), box-shadow var(--rapido);

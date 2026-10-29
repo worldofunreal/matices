@@ -35,7 +35,7 @@ test("cuenta por participante, por Ã¡rea, la referencia de todos y lo que eligiÃ
   assert.equal(a.get("pedir_ayuda")!.get("PIDE_AYUDA")!.n, 1);
   const todos = [...g.values()].map((evs) => codigosPorArea(evs, C));
   assert.deepEqual(referencia(todos, "conducta", "PIDE_AYUDA"), { N: 2, mediana: 0.5, min: 0, max: 1 });
-  assert.deepEqual(escenas(g.get("a")!).get("T05"), { veces: 1, saltada: 1, pausada: 0, elecciones: [{ codigo: "PIDE_AYUDA", de: "madre", segundos: 4.1 }] });
+  assert.deepEqual(escenas(g.get("a")!).get("T05"), { veces: 1, saltada: 1, pausada: 0, elecciones: [{ codigo: "PIDE_AYUDA", de: "madre", segundos: 4.1 }], cierres: [] });
   assert.deepEqual(minijuegos(g.get("a")!), [{ minijuego: "ropero", resultado: "completado", segundos: 2.5, codigo: "ELIGE_DEPORTE" }]);
 });
 

@@ -3,7 +3,7 @@
   position: absolute;
   inset: 0;
   z-index: 10;
-  pointer-events: none;
+  pointer-events: auto;
 }
 
 .escena > * {
@@ -38,12 +38,11 @@
 .escena-caja {
   position: relative;
   width: 100%;
-  padding: 18px 20px 14px;
-  border-radius: 22px;
-  background: rgba(253, 250, 246, 0.96);
-  border: 2px solid rgba(43, 34, 51, 0.12);
+  padding: 16px 20px 12px;
+  border-radius: 20px;
+  background: var(--pergamino);
+  border: 2px solid var(--contorno);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.28), 0 2px 8px rgba(0, 0, 0, 0.12);
-  backdrop-filter: blur(10px);
   color: var(--tinta, #1d1a24);
   box-sizing: border-box;
 }
@@ -70,7 +69,7 @@
   font-weight: 800;
   letter-spacing: 0.3px;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-  border: 2px solid #fbf6ee;
+  border: 2px solid var(--papel);
   z-index: 2;
 }
 
@@ -99,15 +98,26 @@
 .escena-texto-col {
   flex: 1;
   min-width: 0;
-  padding-top: 2px;
+  padding-top: 1px;
 }
 
+.escena-titulo {
+  margin: 0 0 3px 0;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.25;
+  color: var(--tinta, #1d1a24);
+  letter-spacing: -0.2px;
+}
+
+.escena-descripcion,
 .escena-cuerpo p {
   margin: 0;
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 700;
-  line-height: 1.4;
-  color: var(--tinta, #1d1a24);
+  line-height: 1.35;
+  color: #2c2734;
+  word-break: break-word;
 }
 
 .cursor-escena {
@@ -179,8 +189,8 @@
   font-size: 17px;
   font-weight: 700;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  background: var(--tarjeta, #fdfaf6);
-  border: 1.5px solid rgba(43, 34, 51, 0.12);
+  background: var(--tarjeta);
+  border: 2px solid var(--contorno);
   color: var(--tinta, #1d1a24);
   cursor: pointer;
   transition: transform 120ms ease, background-color 120ms ease, box-shadow 120ms ease;
@@ -189,7 +199,7 @@
 .respuesta-btn:hover,
 .respuesta-btn:focus-visible {
   transform: translateY(-2px);
-  background: var(--fondo, #ffffff);
+  background: var(--pergamino);
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
 }
 
@@ -209,8 +219,8 @@
   height: 1.5em;
   margin-right: 4px;
   border-radius: 50%;
-  background: var(--tinta, #1d1a24);
-  color: #fbf6ee;
+  background: var(--contorno);
+  color: var(--tarjeta);
   font-size: 0.85em;
   font-weight: 800;
   flex-shrink: 0;

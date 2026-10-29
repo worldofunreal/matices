@@ -196,7 +196,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const cicloEscenaRef = useRef(0);
   const [corriendo, setCorriendo] = useState(false);
   // A scene of the story is on: the world stands still under it, and the mission shows once it is over.
-  const [escena, setEscena] = useState<{ escena: Escena; alFin: () => void } | null>(null);
+  const [escena, setEscena] = useState<{ escena: Escena; alFin: (hecha: boolean) => void } | null>(null);
   const [mision, setMision] = useState<string | null>(() => sincronizarHistoria().mision);
 
   useEffect(() => {
@@ -300,7 +300,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       sonarMision();
       setEscena({
         escena: e,
-        alFin: () => {
+        alFin: (hecha) => {
           setEscena(null);
           cicloEscenaRef.current++;
           if (mapaActual) {
@@ -320,7 +320,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           }
           refrescarGuia();
           if (estado().apariencia !== antes) setRecarga((r) => r + 1);
-          const siguienteEntrar = escenaPara(lugarActual, "entrar");
+          const siguienteEntrar = hecha ? escenaPara(lugarActual, "entrar") : null;
           if (siguienteEntrar) {
             iniciarEscena(siguienteEntrar, alFin);
           } else {

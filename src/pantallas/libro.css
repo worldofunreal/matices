@@ -70,7 +70,7 @@
   padding: 12px 10px;
   border: 1.5px solid rgba(43, 34, 51, 0.08);
   border-radius: var(--radio);
-  background: var(--tarjeta, #ffffff);
+  background: var(--tarjeta);
   box-shadow: 0 4px 12px rgba(29, 26, 36, 0.07);
   color: inherit;
   font-size: 15px;
@@ -109,7 +109,7 @@
   text-align: center;
   gap: 10px;
   padding: 32px 20px;
-  background: rgba(255, 255, 255, 0.6);
+  background: color-mix(in srgb, var(--tarjeta) 60%, transparent);
   border-radius: var(--radio);
   border: 1px dashed rgba(43, 34, 51, 0.15);
   max-width: 420px;
@@ -156,7 +156,7 @@
 
 .libro-dibujo-marco {
   padding: 12px;
-  background: #ffffff;
+  background: #ffffff; /* papel del dibujo: blanco a propósito */
   border-radius: 18px;
   box-shadow: 0 10px 30px rgba(29, 26, 36, 0.15);
   border: 1.5px solid rgba(43, 34, 51, 0.08);

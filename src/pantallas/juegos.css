@@ -52,7 +52,7 @@
   filter: none;
   background: var(--acento, #6cbf6a) !important;
   color: #ffffff !important;
-  border-color: #ffffff;
+  border-color: #ffffff; /* borde blanco a propósito */
   transform: scale(1.05);
   box-shadow: 0 4px 12px rgba(108, 191, 106, 0.45);
 }
