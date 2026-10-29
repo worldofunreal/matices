@@ -1,6 +1,6 @@
 // Runs one scene of the story over the world (contenido/escenas.yaml): lines to read, options to choose, minigames,
 // marks and effects. Nothing runs by itself: the child goes on with "Seguir", and a scene never ends on its own.
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import contenido, { type Escena, type Paso } from "virtual:contenido";
 import { estado } from "../datos/guardado";
 import { azar } from "../datos/azar";
@@ -87,7 +87,15 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
   const [opcionElegida, setOpcionElegida] = useState<number | null>(null);
   const t0 = useRef(performance.now()); // when the options of this step appeared
   const p = pasos[i];
+  const progresoMinijuego = useRef<Record<string, unknown>>({ etapa: "inicio" });
+  const alProgreso = useCallback((progreso: Record<string, unknown>) => {
+    progresoMinijuego.current = progreso;
+  }, []);
   const orden = useMemo(() => (p?.opciones ? azar(`${semilla()}:${escena.id}:${i}`).barajar(p.opciones.map((_, j) => j)) : []), [i]);
+
+  useLayoutEffect(() => {
+    progresoMinijuego.current = { etapa: "inicio" };
+  }, [i, p?.minijuego]);
 
   const textoActual = respuesta ? conGenero(respuesta) : p?.texto ? conGenero(p.texto) : "";
 
@@ -210,12 +218,25 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
 
   // A minigame reports its result: the mark it leaves, the code of the choice, and the log.
   const alJuego = (r?: Resultado) => {
-    registrar("minijuego", { minijuego: p.minijuego, resultado: "completado", ms: Math.round(performance.now() - t0.current), ...(r?.codigo ? { codigo: r.codigo } : {}) });
+    registrar("minijuego", {
+      minijuego: p.minijuego,
+      resultado: r?.resultado ?? "completado",
+      ...(r?.motivo ? { motivo: r.motivo } : {}),
+      ms: Math.round(performance.now() - t0.current),
+      escena: escena.id,
+      es_main: esMain,
+      progreso: progresoMinijuego.current,
+      ...(r?.codigo ? { codigo: r.codigo } : {}),
+    });
+    if (r?.resultado === "sin_respuesta") {
+      terminar(true, "saltada", { motivo: r.motivo ?? "sin_respuesta", minijuego: p.minijuego, es_main: esMain });
+      return;
+    }
     if (r?.marca) marcar(r.marca);
     avanzar(i + 1);
   };
 
-  const abortarMinijuego = (motivo: "click_fuera" | "boton_cerrar" | "boton_pausar") => {
+  const abortarMinijuego = (motivo: "click_fuera" | "boton_pausar") => {
     if (!p?.minijuego) return;
     const ms = Math.round(performance.now() - t0.current);
     registrar("minijuego", {
@@ -225,6 +246,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
       ms,
       escena: escena.id,
       es_main: esMain,
+      progreso: progresoMinijuego.current,
     });
     registrar("escena", {
       escena: escena.id,
@@ -233,6 +255,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
       motivo,
       es_main: esMain,
       ms,
+      progreso: progresoMinijuego.current,
     });
 
     if (esMain || motivo === "boton_pausar") {
@@ -252,6 +275,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
       ms,
       escena: escena.id,
       es_main: esMain,
+      progreso: progresoMinijuego.current,
     });
     registrar("escena", {
       escena: escena.id,
@@ -260,6 +284,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
       minijuego: p.minijuego,
       es_main: esMain,
       ms,
+      progreso: progresoMinijuego.current,
     });
 
     terminar(true, "saltada", { motivo: "omitir_objetivo", minijuego: p.minijuego, es_main: esMain });
@@ -326,7 +351,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
   // Tapping the dialogue box advances it or completes its typewriter text; a tap anywhere else does nothing, so a stray
   // touch never skips a line. In minigames, tapping outside the game area aborts the activity.
   const alTocarPantalla = (e: React.MouseEvent<HTMLElement>) => {
-    if (e.target instanceof Element && e.target.closest(".escena-controles, .bocina, .minijuego-acciones, .respuesta-btn")) return;
+    if (e.target instanceof Element && e.target.closest(".escena-controles, .bocina, .minijuego-panel, .minijuego-acciones, .respuesta-btn")) return;
     if (p.minijuego) {
       if (e.target instanceof Element && e.target.closest(".juego, .dibujo")) return;
       abortarMinijuego("click_fuera");
@@ -395,31 +420,40 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
       {p.opciones && respuesta && linea(hablante(ultimoAntes(pasos, i)), respuesta, ultimoAntes(pasos, i), "Respuesta")}
 
       {p.minijuego && (
-        <div className="escena-contenedor-minijuego" onClick={(e) => e.stopPropagation()}>
-          <div className="minijuego-panel panel">
+        <div
+          className="escena-contenedor-minijuego"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              e.stopPropagation();
+              abortarMinijuego("click_fuera");
+            }
+          }}
+        >
+          <div className="minijuego-panel panel" onClick={(e) => e.stopPropagation()}>
             {JUEGOS[p.minijuego]({
               alTerminar: alJuego,
-              alOmitirObjetivo: saltarMinijuego,
-              alPausar: () => abortarMinijuego("boton_pausar"),
+              alProgreso,
             })}
-            <div className="minijuego-acciones" role="toolbar" aria-label="Opciones de actividad">
-              <button
-                type="button"
-                className="boton suave boton-cerrar-minijuego"
-                onClick={() => abortarMinijuego("boton_pausar")}
-                aria-label={E.seguir_despues}
-              >
-                {E.seguir_despues}
-              </button>
-              <button
-                type="button"
-                className="boton principal boton-saltar-minijuego"
-                onClick={saltarMinijuego}
-                aria-label={E.omitir_objetivo}
-              >
-                {E.omitir_objetivo}
-              </button>
-            </div>
+            {p.minijuego !== "dibujo" && (
+              <div className="minijuego-acciones" role="toolbar" aria-label="Opciones de actividad">
+                <button
+                  type="button"
+                  className="boton suave boton-pausar-minijuego"
+                  onClick={() => abortarMinijuego("boton_pausar")}
+                  aria-label={E.seguir_despues}
+                >
+                  {E.seguir_despues}
+                </button>
+                <button
+                  type="button"
+                  className="boton principal boton-saltar-minijuego"
+                  onClick={saltarMinijuego}
+                  aria-label={E.omitir_objetivo}
+                >
+                  {E.omitir_objetivo}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}

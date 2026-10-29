@@ -1,6 +1,6 @@
 // The minigames of the story (contenido/escenas.yaml, `minijuego: <nombre>`). Each one covers the world and
 // ends with alTerminar; the scene goes on from there. Every minigame is simple and has no wrong answer.
-import { useEffect, useState, type ReactElement } from "react";
+import { useEffect, useRef, useState, type ReactElement } from "react";
 import { Dibujo } from "./Dibujo";
 import { cambiarEstado, estado } from "../datos/guardado";
 import { azar } from "../datos/azar";
@@ -10,8 +10,13 @@ import "./juegos.css";
 export interface Resultado {
   marca?: string; // the mark the choice leaves behind (ropero)
   codigo?: string; // the code of the choice (ropero)
+  resultado?: "sin_respuesta";
+  motivo?: string;
 }
-export type Alto = { alTerminar: (r?: Resultado) => void; alOmitirObjetivo?: () => void; alPausar?: () => void };
+export type Alto = {
+  alTerminar: (r?: Resultado) => void;
+  alProgreso: (progreso: Record<string, unknown>) => void;
+};
 
 const ICONOS_ITEMS: Record<string, string> = {
   Huevos: "🥚",
@@ -31,17 +36,26 @@ const ICONOS_ITEMS: Record<string, string> = {
 };
 
 // Find what is needed among things on a shelf: all the marked ones.
-function Buscar({ titulo, items, alTerminar }: Alto & { titulo: string; items: { nombre: string; buscado?: boolean }[] }) {
+function Buscar({ titulo, items, alTerminar, alProgreso }: Alto & { titulo: string; items: { nombre: string; buscado?: boolean }[] }) {
   const [tocados, setTocados] = useState<number[]>([]);
   const [completado, setCompletado] = useState(false);
   const hallados = tocados.filter((i) => items[i].buscado).length;
   const total = items.filter((x) => x.buscado).length;
+  useEffect(() => alProgreso({ etapa: "busqueda", selecciones: 0, aciertos: 0, total }), [alProgreso, total]);
   const tocar = (i: number) => {
     if (tocados.includes(i) || completado) return;
     if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(items[i].buscado ? 25 : 12);
     const nuevos = [...tocados, i];
+    const nuevosAciertos = nuevos.filter((k) => items[k].buscado).length;
+    alProgreso({
+      etapa: nuevosAciertos === total ? "completado" : "busqueda",
+      selecciones: nuevos.length,
+      aciertos: nuevosAciertos,
+      total,
+      elementos: nuevos.map((k) => ({ nombre: items[k].nombre, buscado: !!items[k].buscado })),
+    });
     setTocados(nuevos);
-    if (nuevos.filter((k) => items[k].buscado).length === total) {
+    if (nuevosAciertos === total) {
       setCompletado(true);
       if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate([30, 50, 30]);
       setTimeout(() => alTerminar(), 600);
@@ -96,15 +110,18 @@ function generarPistas(sem: string) {
 }
 
 // Hold the button to heat the stove: the bar fills while it is held.
-function Estufa({ alTerminar }: Alto) {
+function Estufa({ alTerminar, alProgreso }: Alto) {
   const [nivel, setNivel] = useState(0);
   const [apretando, setApretando] = useState(false);
   const [completado, setCompletado] = useState(false);
+  const presiones = useRef(0);
+  useEffect(() => alProgreso({ etapa: "esperando", porcentaje: 0, presiones: 0 }), [alProgreso]);
   useEffect(() => {
     if (!apretando || completado) return;
     const id = setInterval(() => {
       setNivel((n) => {
         const sig = Math.min(100, n + 2.5);
+        alProgreso({ etapa: sig >= 100 ? "completado" : "calentando", porcentaje: sig, presiones: presiones.current });
         if (sig >= 100) {
           setCompletado(true);
           if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate([25, 45, 25]);
@@ -114,7 +131,7 @@ function Estufa({ alTerminar }: Alto) {
       });
     }, 45);
     return () => clearInterval(id);
-  }, [apretando, completado]);
+  }, [apretando, completado, alProgreso]);
   return (
     <div className={`juego${completado ? " exito" : ""}`}>
       <h2>{completado ? "¡Estufa lista! 🔥" : "Prende la estufa"}</h2>
@@ -125,10 +142,18 @@ function Estufa({ alTerminar }: Alto) {
         className={`boton principal juego-mantener${apretando ? " caliente" : ""}`}
         onPointerDown={() => {
           if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
+          presiones.current++;
+          alProgreso({ etapa: "calentando", porcentaje: nivel, presiones: presiones.current });
           setApretando(true);
         }}
-        onPointerUp={() => setApretando(false)}
-        onPointerLeave={() => setApretando(false)}
+        onPointerUp={() => {
+          alProgreso({ etapa: "pausa", porcentaje: nivel, presiones: presiones.current, causa: "solto" });
+          setApretando(false);
+        }}
+        onPointerLeave={() => {
+          alProgreso({ etapa: "pausa", porcentaje: nivel, presiones: presiones.current, causa: "salio_del_boton" });
+          setApretando(false);
+        }}
       >
         {completado ? "¡Caliente! ✨" : apretando ? "🔥 Calentando..." : "Mantén presionado"}
       </button>
@@ -143,9 +168,11 @@ const ROPA = [
   { nombre: "Ropa casual", icono: "👕", marca: "ropa_casual", codigo: "ELIGE_CASUAL", ropa: "casa" as const },
 ];
 
-function Ropero({ alTerminar }: Alto) {
+function Ropero({ alTerminar, alProgreso }: Alto) {
+  useEffect(() => alProgreso({ etapa: "eleccion", respuestas: 0, opciones: ROPA.length }), [alProgreso]);
   const elegir = (o: (typeof ROPA)[number]) => {
     if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(20);
+    alProgreso({ etapa: "completado", respuestas: 1, opciones: ROPA.length, codigo: o.codigo });
     cambiarEstado({ apariencia: { ...estado().apariencia, ropa: o.ropa } }, true);
     alTerminar({ marca: o.marca, codigo: o.codigo });
   };
@@ -165,12 +192,15 @@ function Ropero({ alTerminar }: Alto) {
 }
 
 // Tap when the rope is low: five times is enough. A miss only means the next try.
-function Cuerda({ alTerminar }: Alto) {
+function Cuerda({ alTerminar, alProgreso }: Alto) {
   const [ronda, setRonda] = useState(0);
   const [ventana, setVentana] = useState(false);
   const [aciertos, setAciertos] = useState(0);
+  const [intentos, setIntentos] = useState(0);
+  const [fallos, setFallos] = useState(0);
+  useEffect(() => alProgreso({ etapa: ventana ? "oportunidad" : "espera", ronda: ronda + 1, aciertos, intentos, fallos }), [alProgreso, ventana, ronda, aciertos, intentos, fallos]);
   useEffect(() => {
-    if (aciertos >= 5) return void alTerminar();
+    if (aciertos >= 5) return;
     const a = setTimeout(() => setVentana(true), 900);
     const b = setTimeout(() => {
       setVentana(false);
@@ -181,8 +211,21 @@ function Cuerda({ alTerminar }: Alto) {
       clearTimeout(b);
     };
   }, [ronda, aciertos]);
+  useEffect(() => {
+    if (aciertos < 5) return;
+    alProgreso({ etapa: "completado", ronda: ronda + 1, aciertos, intentos, fallos });
+    alTerminar();
+  }, [aciertos, ronda, intentos, fallos, alProgreso, alTerminar]);
   const saltar = () => {
-    if (!ventana) return;
+    const nuevosIntentos = intentos + 1;
+    setIntentos(nuevosIntentos);
+    if (!ventana) {
+      const nuevosFallos = fallos + 1;
+      setFallos(nuevosFallos);
+      alProgreso({ etapa: "espera", ronda: ronda + 1, aciertos, intentos: nuevosIntentos, fallos: nuevosFallos });
+      return;
+    }
+    alProgreso({ etapa: aciertos + 1 === 5 ? "completado" : "salto", ronda: ronda + 1, aciertos: aciertos + 1, intentos: nuevosIntentos, fallos });
     setVentana(false);
     setAciertos((n) => n + 1);
   };
@@ -198,15 +241,16 @@ function Cuerda({ alTerminar }: Alto) {
 }
 
 // Keep a drawing: Mi libro gets the page, as on the sheet of its own.
-function Dibujar({ alTerminar }: Alto) {
+function Dibujar({ alTerminar, alProgreso }: Alto) {
   return (
     <Dibujo
       origen="minijuego-dibujo"
       consigna="Dibuja lo que quieras."
       modoActividad
+      alProgreso={alProgreso}
       alTerminar={(imagen) => {
         if (imagen) cambiarEstado({ libro: [...estado().libro, { dibujo: imagen, cuando: Date.now() }] }, true);
-        alTerminar();
+        alTerminar({ resultado: imagen ? undefined : "sin_respuesta", motivo: imagen ? undefined : "listo_sin_dibujo" });
       }}
     />
   );
@@ -228,9 +272,21 @@ function generarExamen(sem: string) {
 }
 
 // Four short questions. No answer is right or wrong on screen: the choices are logged and the test goes on.
-function Examen({ preguntas, alTerminar }: Alto & { preguntas: { pregunta: string; opciones: string[] }[] }) {
+function Examen({ preguntas, alTerminar, alProgreso }: Alto & { preguntas: { pregunta: string; opciones: string[] }[] }) {
   const [i, setI] = useState(0);
-  const siguiente = () => (i + 1 === preguntas.length ? alTerminar({ marca: "hizo_examen" }) : setI(i + 1));
+  const respuestas = useRef<{ pregunta: number; respuesta: string }[]>([]);
+  useEffect(() => alProgreso({ etapa: "pregunta", pregunta: 1, respondidas: 0, total: preguntas.length, respuestas: [] }), [alProgreso, preguntas.length]);
+  const responder = (respuesta: string) => {
+    const nuevas = [...respuestas.current, { pregunta: i + 1, respuesta }];
+    respuestas.current = nuevas;
+    if (i + 1 === preguntas.length) {
+      alProgreso({ etapa: "completado", pregunta: i + 1, respondidas: nuevas.length, total: preguntas.length, respuestas: nuevas });
+      alTerminar({ marca: "hizo_examen" });
+    } else {
+      alProgreso({ etapa: "pregunta", pregunta: i + 2, respondidas: nuevas.length, total: preguntas.length, respuestas: nuevas });
+      setI(i + 1);
+    }
+  };
   const q = preguntas[i];
   return (
     <div className="juego">
@@ -240,7 +296,7 @@ function Examen({ preguntas, alTerminar }: Alto & { preguntas: { pregunta: strin
       <p className="juego-pregunta">{q.pregunta}</p>
       <div className="juego-opciones">
         {q.opciones.map((o) => (
-          <button key={o} className="boton principal" onClick={siguiente}>
+          <button key={o} className="boton principal" onClick={() => responder(o)}>
             {o}
           </button>
         ))}
@@ -267,10 +323,16 @@ function generarTienda(sem: string) {
 }
 
 // Buy from the list with $120. Going over is not allowed; the change is shown at the end.
-function Tienda({ items, alTerminar }: Alto & { items: { nombre: string; precio: number }[] }) {
+function Tienda({ items, alTerminar, alProgreso }: Alto & { items: { nombre: string; precio: number }[] }) {
   const [carrito, setCarrito] = useState<number[]>([]);
   const total = carrito.reduce((a, i) => a + items[i].precio, 0);
-  const alternar = (i: number) => setCarrito(carrito.includes(i) ? carrito.filter((k) => k !== i) : [...carrito, i]);
+  useEffect(() => alProgreso({ etapa: "seleccion", seleccionados: 0, gasto: 0, total: items.length }), [alProgreso, items.length]);
+  const alternar = (i: number) => {
+    const nuevo = carrito.includes(i) ? carrito.filter((k) => k !== i) : [...carrito, i];
+    const gasto = nuevo.reduce((a, k) => a + items[k].precio, 0);
+    setCarrito(nuevo);
+    alProgreso({ etapa: "seleccion", seleccionados: nuevo.length, gasto, total: items.length, compra: nuevo.map((k) => ({ nombre: items[k].nombre, precio: items[k].precio })) });
+  };
   return (
     <div className="juego">
       <h2>Compras · ${PRESUPUESTO}</h2>
@@ -287,7 +349,10 @@ function Tienda({ items, alTerminar }: Alto & { items: { nombre: string; precio:
       <p className="juego-cuenta">
         Total ${total} · Cambio ${PRESUPUESTO - total}
       </p>
-      <button className="boton principal" disabled={carrito.length === 0} onClick={() => alTerminar({ marca: "hizo_compras" })}>
+      <button className="boton principal" disabled={carrito.length === 0} onClick={() => {
+        alProgreso({ etapa: "completado", seleccionados: carrito.length, gasto: total, total: items.length, compra: carrito.map((k) => ({ nombre: items[k].nombre, precio: items[k].precio })) });
+        alTerminar({ marca: "hizo_compras" });
+      }}>
         Pagar
       </button>
     </div>

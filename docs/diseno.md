@@ -80,7 +80,7 @@ El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tie
 ## Escenas, decisiones y registro
 
 - Una escena tiene una línea de alguien, y a veces opciones. Las opciones aparecen en un orden distinto para cada niño.
-- Todo minijuego se puede pausar para retomarlo u omitir como objetivo. Al omitirlo, la escena queda saltada y no se registran resultados o marcas que no ocurrieron.
+- Todo minijuego se puede pausar para retomarlo u omitir como objetivo; tocar fuera también lo pausa. Se registra el último avance, incluidas respuestas vacías y la etapa alcanzada, sin inventar marcas o resultados que no ocurrieron.
 - Tocar fuera de un diálogo no hace nada. Para dejar una escena a medias está Pausar, que aparece en todas las escenas: la escena guarda la línea donde iba y, al volver, sigue ahí.
 - El orden es permisivo: una escena que llega antes no bloquea el juego; se juega su variante. Solo unas pocas escenas esperan a otra (`tras` en `contenido/README.md`).
 - Cada opción lleva un código que **describe** lo que hizo. El código no dice si fue bueno o malo.

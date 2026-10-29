@@ -31,12 +31,12 @@ Todos llevan: código del participante, sesión, versión del contenido y del ju
 | --- | --- | --- |
 | `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, color de cada prenda, tenis y extra que lleva (`colores`), si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
 | `escena` | Escena (`escena`), paso (`inicio`, `opcion`, `fin`), quién habla, opciones en el orden mostrado, la elegida (código) y ms para decidir desde que aparecen. En `fin`, si se saltó (`saltada`) o pausó (`pausada`) | Qué hace, qué contesta y si deja una escena a medias |
-| `minijuego` | Minijuego, resultado (`completado`, `saltado` o `abortado`), motivo si se omitió o se dejó, ms y, si lo tiene, el código de la elección | Cómo juega y cuándo decide dejar una actividad |
+| `minijuego` | Minijuego, resultado (`completado`, `sin_respuesta`, `saltado` o `abortado`), motivo, ms, escena y último avance: etapa, elecciones, intentos o respuestas registradas | Qué alcanza a hacer y dónde deja o confirma una actividad; no es una conclusión clínica |
 | `explora` | Al tocar un objeto o a una persona fija (lugar y cuál), y al salir de un lugar (lugar, ms de permanencia, visitas) | Qué busca, evita, repite |
 | `tramo` | Día y parte del día que empieza (`manana`, `tarde`, `noche`, `fin`) | Ritmo de la partida |
 | `corre` | Lugar y ms que corrió, al dejar de correr | Cuánto corre y dónde |
 | `accion_personaje` | Acción motriz ejecutada (salto o combos de ataque estilo arcade: `combo_1`, `combo_2`, `combo_remate`, e impacto de caída al aterrizar: `impacto_caida`), paso del combo (`0` a `3`), objetivo alcanzado (`objetivo`), tipo (`npc`, `fauna`, `objeto`, `muro`, `nada`), distancia en píxeles, coordenadas `x`, `y` | Patrones de exploración física, motricidad, impulsividad, ritmo de pulsaciones e interacción hacia personas, animales u objetos |
-| `dibujo` | Trazos con color, grosor, goma y tiempo de cada punto, cuántos deshizo, tiempo, imagen final | El dibujo y su proceso |
+| `dibujo` | Si confirmó un dibujo vacío o uno con trazos, cantidad de trazos y puntos, trazos con color/grosor/goma, cuántos deshizo, tiempo e imagen final | El dibujo y su proceso; Listo vacío queda distinguido de una omisión explícita |
 | `quiero_hablar` | Pantalla y hora | Dispara el aviso |
 | `repetir_voz` | Pantalla y línea que pidió oír | Separar duda de dificultad para leer |
 | `inactividad` | Pantalla, duración (pausas de 30 s o más) | Pausas largas |

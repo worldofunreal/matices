@@ -156,7 +156,7 @@ export function escenas(evs: Evento[]) {
 }
 
 // Each minigame as it was played: what it was, how it ended, how long it took and the choice it left, if any.
-export const minijuegos = (evs: Evento[]) => de(evs, "minijuego").map((e) => ({ minijuego: e.minijuego, resultado: e.resultado, segundos: Math.round(e.ms / 100) / 10, codigo: e.codigo ?? "" }));
+export const minijuegos = (evs: Evento[]) => de(evs, "minijuego").map((e) => ({ minijuego: e.minijuego, resultado: e.resultado, segundos: Math.round(e.ms / 100) / 10, codigo: e.codigo ?? "", ...(e.progreso ? { progreso: e.progreso } : {}) }));
 
 export function exploracion(evs: Evento[], c: Contenido) {
   const lugares = new Map<string, { ms: number; visitas: number; corrio: number; tocados: Set<string> }>();

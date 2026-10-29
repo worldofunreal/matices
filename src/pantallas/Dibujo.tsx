@@ -39,18 +39,21 @@ export function Dibujo({
   alTerminar,
   alAbortar,
   modoActividad = false,
+  alProgreso,
 }: {
   origen: string;
   consigna: string;
   alTerminar: (imagen: string | null) => void;
   alAbortar?: () => void;
   modoActividad?: boolean;
+  alProgreso?: (progreso: Record<string, unknown>) => void;
 }) {
   const hoja = useRef<HTMLCanvasElement>(null);
   const trazos = useRef<Trazo[]>([]);
   const actual = useRef<Trazo | null>(null);
   const t0 = useRef(performance.now());
   const deshechos = useRef(0);
+  const puntos = useRef(0);
   const [color, setColor] = useState(COLORES[0]);
   const [grosor, setGrosor] = useState(GROSORES[1]);
   const [goma, setGoma] = useState(false);
@@ -63,12 +66,14 @@ export function Dibujo({
   };
 
   const pintar = () => pintarHoja(hoja.current!.getContext("2d")!, trazos.current);
+  const informarProgreso = (etapa: string) => alProgreso?.({ etapa, trazos: trazos.current.length, puntos: puntos.current, deshechos: deshechos.current });
 
   // The sheet is sized and painted once it is on the screen.
   useEffect(() => {
     hoja.current!.width = ANCHO;
     hoja.current!.height = ALTO;
     pintar();
+    informarProgreso("inicio");
   }, []);
 
   const empezar = (e: React.PointerEvent) => {
@@ -78,29 +83,49 @@ export function Dibujo({
       // Synthetic events cannot be captured; drawing still works.
     }
     actual.current = { color, grosor, goma, puntos: [punto(e)] };
+    puntos.current++;
     trazos.current.push(actual.current);
     pintar();
+    informarProgreso("trazando");
   };
 
   const seguir = (e: React.PointerEvent) => {
     if (!actual.current) return;
     actual.current.puntos.push(punto(e));
+    puntos.current++;
     pintar();
+    if (puntos.current % 5 === 0) informarProgreso("trazando");
   };
 
   const soltar = () => {
+    const teniaTrazo = !!actual.current;
     actual.current = null;
+    if (teniaTrazo) informarProgreso("trazo_terminado");
   };
 
   const deshacer = () => {
     if (trazos.current.pop()) deshechos.current++;
+    puntos.current = trazos.current.reduce((total, trazo) => total + trazo.puntos.length, 0);
     pintar();
     repintar((n) => n + 1);
+    informarProgreso("deshacer");
   };
 
   const cerrar = (imagen: string | null) => {
     const datos = trazos.current.map((t) => ({ color: t.color, grosor: t.grosor, goma: t.goma, puntos: t.puntos }));
-    registrar("dibujo", { origen, trazos: datos, deshechos: deshechos.current, ms: Math.round(performance.now() - t0.current), imagen });
+    const vacio = trazos.current.length === 0;
+    informarProgreso(vacio ? "listo_vacio" : "listo_con_dibujo");
+    registrar("dibujo", {
+      origen,
+      resultado: vacio ? "vacio" : "con_dibujo",
+      vacio,
+      trazos: datos,
+      cantidad_trazos: trazos.current.length,
+      cantidad_puntos: puntos.current,
+      deshechos: deshechos.current,
+      ms: Math.round(performance.now() - t0.current),
+      imagen,
+    });
     alTerminar(imagen);
   };
 

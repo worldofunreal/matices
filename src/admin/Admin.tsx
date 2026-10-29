@@ -22,6 +22,13 @@ function etiqueta(codigo: string) {
 }
 const fecha = (ms: number | null | undefined) => (ms ? new Date(ms).toLocaleString("es-MX", { dateStyle: "short", timeStyle: "short" }) : "—");
 const escena = (id: string) => `${id} ${nombreDe.get(id) ?? ""}`.trim();
+const avanceMinijuego = (p: Record<string, unknown> | null) => {
+  if (!p) return "—";
+  const etapa = typeof p.etapa === "string" ? p.etapa.replaceAll("_", " ") : "avance";
+  const claves = ["respondidas", "aciertos", "selecciones", "seleccionados", "intentos", "fallos", "ronda", "porcentaje", "presiones", "trazos", "puntos"];
+  const datos = claves.filter((k) => typeof p[k] === "number").map((k) => `${k}: ${p[k]}`);
+  return [etapa, ...datos].join(" · ");
+};
 
 function descargar(nombre: string, texto: string, tipo: string) {
   const a = document.createElement("a");
@@ -304,9 +311,9 @@ function Perfil({ nino, todos }: { nino: string; todos: Evento[] }) {
         <h2>Minijuegos</h2>
         {juegos.length ? (
           <table>
-            <thead><tr><th>Minijuego</th><th>Resultado</th><th className="num">Segundos</th><th>Elección</th></tr></thead>
+            <thead><tr><th>Minijuego</th><th>Resultado</th><th className="num">Segundos</th><th>Elección</th><th>Avance</th></tr></thead>
             <tbody>
-              {juegos.map((j, i) => <tr key={i}><td>{j.minijuego}</td><td>{j.resultado}</td><td className="num">{j.segundos}</td><td>{j.codigo || "—"}</td></tr>)}
+              {juegos.map((j, i) => <tr key={i}><td>{j.minijuego}</td><td>{j.resultado}</td><td className="num">{j.segundos}</td><td>{j.codigo || "—"}</td><td>{j.progreso ? <details><summary>{avanceMinijuego(j.progreso)}</summary><pre style={{ whiteSpace: "pre-wrap", margin: 4 }}>{JSON.stringify(j.progreso, null, 2)}</pre></details> : "—"}</td></tr>)}
             </tbody>
           </table>
         ) : <p className="nota">Todavía ninguno.</p>}
