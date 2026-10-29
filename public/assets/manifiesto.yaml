@@ -652,26 +652,24 @@ grupos:
           - 96
           - 48
 
-  - carpeta: lugares/escuela_patio
+  - carpeta: lugares/escuela_planta_baja
     tipo: fondo
     piezas:
       fondo:
-        que: Explanada de la escuela con jardineras
-        cancha techada al lado y la entrada al edificio: null
+        que: "Planta baja de la escuela, sin techo: patio con cancha al centro, salones alrededor, oficina de la orientadora, baños, galería y la entrada. Las paredes y puertas del mapa se leen de esta imagen"
         medida:
-          - 1280
-          - 800
+          - 1984
+          - 1120
         generacion:
           prompt: |-
-            The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the layout of a place in the game, seen from above: the dark blocks are walls, the light area is the floor, each small square is one tile, and the child is about two tiles tall. Draw this place as a top-down game background in exactly the same art style as the child: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: the main plaza of a Mexican public school, a roofed basketball court on one side and the entrance to the building. Follow the layout exactly: walls where the dark blocks are, openings where the layout leaves gaps, plain floor where small dark blocks stand inside a room. Only the floors, the walls and the ground: no planters, no trees, no flagpole, no basketball hoops; they are drawn apart. Do NOT draw the child. Create ONE image with the same proportions as the layout (1280 by 800), filling it edge to edge. No text, no labels, no people.
+            The attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. Draw a top-down game background in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: the ground floor of a Mexican public school seen from above with no roof: an open yard in the middle with a basketball court, classrooms on the north and west sides, an office and two bathrooms on the south side, a long gallery on the east side, the entrance in the middle of the south wall and a stair in the west corridor; grass and sidewalk around the building. The child is about two floor tiles of 32 pixels tall; doors are gaps about two tiles wide. Only the floors, the walls and the ground: no desks, no chalkboards, no flagpole, no basketball hoops, no planters; they are drawn apart. Do NOT draw the child. Create ONE image of 1984 by 1120, filling it edge to edge. No text, no labels, no people.
           referencias:
             - referencias/nina_frente.png
-            - referencias/escuela_patio_muros.png
-          destino: lugares/escuela_patio/fondo.png
+          destino: lugares/escuela_planta_baja/fondo.png
           despues: avisar
-          orden: 35
+          orden: 33
 
-  - carpeta: lugares/escuela_patio
+  - carpeta: lugares/escuela_planta_baja
     tipo: objeto
     piezas:
       asta:
@@ -684,7 +682,7 @@ grupos:
             The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a tall flagpole with the flag of Mexico, seen from the front and a little from above. It is taller than the child: about 2.13 times the child's height, about 4.0 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
           referencias:
             - referencias/nina_frente.png
-          destino: lugares/escuela_patio/asta.png
+          destino: lugares/escuela_planta_baja/asta.png
           despues: avisar
           orden: 36
       jardinera:
@@ -697,7 +695,7 @@ grupos:
             The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a square planter with a tree, seen from the front and a little from above. It is taller than the child: about 1.60 times the child's height, about as wide as it is tall, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
           referencias:
             - referencias/nina_frente.png
-          destino: lugares/escuela_patio/jardinera.png
+          destino: lugares/escuela_planta_baja/jardinera.png
           despues: avisar
           orden: 37
       aro_basquet:
@@ -710,51 +708,27 @@ grupos:
             The attached image is a pixel art game character, a child of about 9, standing still and facing the viewer, on a flat magenta background. Draw a NEW object in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading, the same cute rounded shapes. The new object: a basketball hoop on a pole, seen from the front and a little from above. It is taller than the child: about 1.60 times the child's height, about 3.0 times as tall as it is wide, standing on the same floor line as the child. Do NOT draw the child: create ONE image the same size as the attached one, with ONLY the new object, centered. Flat solid magenta background (#FF00FF), fully opaque, never transparent. No text, no floor shadow, no extra objects.
           referencias:
             - referencias/nina_frente.png
-          destino: lugares/escuela_patio/aro_basquet.png
+          destino: lugares/escuela_planta_baja/aro_basquet.png
           despues: avisar
           orden: 38
-
-  - carpeta: lugares/escuela_planta_baja
-    tipo: fondo
-    piezas:
-      fondo:
-        que: Planta baja. Entrada
-        dirección: null
-        aulas: null
-        baños: null
-        escalera: null
-        medida:
-          - 1280
-          - 544
-        generacion:
-          prompt: |-
-            The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the layout of a place in the game, seen from above: the dark blocks are walls, the light area is the floor, each small square is one tile, and the child is about two tiles tall. Draw this place as a top-down game background in exactly the same art style as the child: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: the ground floor of a school: entrance, principal's office, classrooms, bathrooms and stairs. Follow the layout exactly: walls where the dark blocks are, openings where the layout leaves gaps, plain floor where small dark blocks stand inside a room. Only the floors, the walls and the ground: no desks, no chalkboards, no lockers, no plants; they are drawn apart. Do NOT draw the child. Create ONE image with the same proportions as the layout (1280 by 544), filling it edge to edge. No text, no labels, no people.
-          referencias:
-            - referencias/nina_frente.png
-            - referencias/escuela_planta_baja_muros.png
-          destino: lugares/escuela_planta_baja/fondo.png
-          despues: avisar
-          orden: 34
 
   - carpeta: lugares/escuela_planta_alta
     tipo: fondo
     piezas:
       fondo:
-        que: Planta alta. Aulas
-        sala de cómputo: null
-        escalera: null
+        que: "Planta alta de la escuela, sin techo: galería alrededor del hueco del patio, salones, sala de cómputo, baños y la escalera. Las paredes y puertas del mapa se leen de esta imagen"
         medida:
-          - 1280
-          - 544
+          - 1984
+          - 1120
         generacion:
           prompt: |-
-            The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the layout of a place in the game, seen from above: the dark blocks are walls, the light area is the floor, each small square is one tile, and the child is about two tiles tall. Draw this place as a top-down game background in exactly the same art style as the child: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: the upper floor of a school: classrooms, a computer room and stairs. Follow the layout exactly: walls where the dark blocks are, openings where the layout leaves gaps, plain floor where small dark blocks stand inside a room. Only the floors, the walls and the ground: no desks, no chalkboards, no computers, no plants; they are drawn apart. Do NOT draw the child. Create ONE image with the same proportions as the layout (1280 by 544), filling it edge to edge. No text, no labels, no people.
+            The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the ground floor of the same school. Draw its upper floor as a top-down game background in exactly the same art style: the same pixel size, the same dark outline, the same flat colors with soft shading. Keep the same building outline, the same size and the stair in the same place. The place: the upper floor of a Mexican public school seen from above with no roof: a gallery with a railing around the open void over the yard and its basketball court, classrooms on the north and west sides, a computer room on the east side and bathrooms on the south side; grass and sidewalk around the building. Only the floors, the walls and the ground: no desks, no chalkboards, no computers, no plants; they are drawn apart. Do NOT draw the child. Create ONE image of 1984 by 1120, filling it edge to edge. No text, no labels, no people.
           referencias:
             - referencias/nina_frente.png
-            - referencias/escuela_planta_alta_muros.png
+            - lugares/escuela_planta_baja/fondo.png
           destino: lugares/escuela_planta_alta/fondo.png
           despues: avisar
-          orden: 33
+          orden: 34
 
   - carpeta: lugares/escuela_interior
     tipo: objeto

@@ -2,7 +2,7 @@
 .mundo {
   position: fixed;
   inset: 0;
-  overflow: hidden;
+  overflow: clip; /* names of people off screen must never scroll the world sideways */
   background: #1d1a24;
 }
 

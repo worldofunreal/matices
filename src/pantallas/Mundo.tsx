@@ -532,7 +532,8 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         </div>
       )}
 
-      {escena && <EscenaEnCurso escena={escena.escena} alTerminar={escena.alFin} />}
+      {/* keyed by scene: a scene chained right after another starts from its first step */}
+      {escena && <EscenaEnCurso key={escena.escena.id} escena={escena.escena} alTerminar={escena.alFin} />}
       {mision && !escena && <p className="mision-mundo">{contenido.textos.escena.mision}: {mision}</p>}
 
       <div className={`velo-mundo${cubierto ? " cubierto" : ""}`} />

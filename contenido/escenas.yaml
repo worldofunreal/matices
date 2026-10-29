@@ -94,7 +94,7 @@ escenas:
     pasos:
       - {de: pensamiento, texto: "Espero que hoy sea un buen día."}
       - {de: sistema, texto: "Tutorial completado. Ya puedes explorar, hablar con otras personas y descubrir nuevas actividades."}
-      - {mision: "Ir a la escuela y entrar a los salones"}
+      - {mision: "Ir a la escuela"}
 
   - id: U01a
     nombre: Revisión del uniforme, con ropa de deporte
@@ -107,7 +107,6 @@ escenas:
     areas: [escuela_aprendizaje, conducta]
     pasos:
       - {de: lucia, texto: "Buenos días. ¡Qué bien, vienes list{o} para educación física!"}
-      - {mision: "Salir al patio de la escuela para el recreo"}
 
   - id: U01b
     nombre: Revisión del uniforme, con otra ropa
@@ -124,11 +123,10 @@ escenas:
           - [ACEPTA, "Sí, quiero participar.", "Perfecto. Te explico cómo."]
           - [PREGUNTA, "¿Qué puedo hacer sin cambiarme?", "Puedes ayudar a contar y a pasar el balón."]
           - [EVITA, "Prefiero quedarme en mi lugar.", "Está bien. Te aviso cuando empiece."]
-      - {mision: "Salir al patio de la escuela para el recreo"}
 
   - id: R01
     nombre: Primer recreo
-    donde: escuela_patio
+    donde: escuela_planta_baja
     al: entrar
     dia: 1
     hora: manana
@@ -140,7 +138,7 @@ escenas:
 
   - id: R02-valeria
     nombre: Valeria y la cuerda
-    donde: escuela_patio
+    donde: escuela_planta_baja
     al: companero_1
     dia: 1
     hora: manana
@@ -163,7 +161,7 @@ escenas:
 
   - id: R02-leo
     nombre: Leo y el dibujo
-    donde: escuela_patio
+    donde: escuela_planta_baja
     al: companero_2
     dia: 1
     hora: manana
@@ -234,7 +232,7 @@ escenas:
 
   - id: R05
     nombre: Amistad que crece
-    donde: escuela_patio
+    donde: escuela_planta_baja
     al: companero_2
     dia: 2
     hora: manana
@@ -317,7 +315,7 @@ escenas:
 
   - id: E2-05
     nombre: Reconocimiento y apoyo
-    donde: escuela_patio
+    donde: escuela_planta_baja
     al: companero_2
     dia: 3
     hora: manana

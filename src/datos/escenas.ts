@@ -72,16 +72,16 @@ export function objetivoActual(): Objetivo {
       return { lugar: "casa", puertaDestino: "calle", mision: "Salir de casa rumbo a la escuela", etiqueta: "Salir a la calle" };
     }
     if (!h.includes("U01a") && !h.includes("U01b")) {
-      return { lugar: "escuela_planta_baja", mision: "Ir a la escuela y entrar a los salones", etiqueta: "Salones" };
+      return { lugar: "escuela_planta_baja", mision: "Ir a la escuela", etiqueta: "Escuela" };
     }
     if (!h.includes("R01")) {
-      return { lugar: "escuela_patio", mision: "Salir al patio de la escuela para el recreo", etiqueta: "Patio" };
+      return { lugar: "escuela_planta_baja", mision: "Salir al patio de la escuela para el recreo", etiqueta: "Patio" };
     }
     if (!h.includes("R02-valeria")) {
-      return { lugar: "escuela_patio", objeto: "companero_1", mision: "Hablar con Valeria en el patio de la escuela", etiqueta: "Valeria" };
+      return { lugar: "escuela_planta_baja", objeto: "companero_1", mision: "Hablar con Valeria en el patio de la escuela", etiqueta: "Valeria" };
     }
     if (!h.includes("R02-leo")) {
-      return { lugar: "escuela_patio", objeto: "companero_2", mision: "Hablar con Leo en el patio de la escuela", etiqueta: "Leo" };
+      return { lugar: "escuela_planta_baja", objeto: "companero_2", mision: "Hablar con Leo en el patio de la escuela", etiqueta: "Leo" };
     }
     if (!h.includes("R02-sam")) {
       return { lugar: "escuela_planta_baja", objeto: "companero_3", mision: "Hablar con Sam en los salones de la planta baja", etiqueta: "Sam" };
@@ -103,10 +103,10 @@ export function objetivoActual(): Objetivo {
   // Día 2 — Mañana
   if (dia === 2 && hora === "manana") {
     if (!h.includes("X01")) {
-      return { lugar: "escuela_planta_baja", mision: "Ir a los salones de la escuela para el examen", etiqueta: "Salones" };
+      return { lugar: "escuela_planta_baja", mision: "Ir a la escuela para el examen", etiqueta: "Escuela" };
     }
     if (!h.includes("R05")) {
-      return { lugar: "escuela_patio", objeto: "companero_2", mision: "Hablar con Leo en el patio de la escuela", etiqueta: "Leo" };
+      return { lugar: "escuela_planta_baja", objeto: "companero_2", mision: "Hablar con Leo en el patio de la escuela", etiqueta: "Leo" };
     }
     return { lugar: "calle", mision: "Salir de la escuela para regresar a casa", etiqueta: "Salir a la calle" };
   }
@@ -131,13 +131,13 @@ export function objetivoActual(): Objetivo {
   // Día 3 — Mañana
   if (dia === 3 && hora === "manana") {
     if (!h.includes("E2-05")) {
-      return { lugar: "escuela_patio", objeto: "companero_2", mision: "Ir al patio de la escuela para hablar con Leo", etiqueta: "Leo" };
+      return { lugar: "escuela_planta_baja", objeto: "companero_2", mision: "Ir al patio de la escuela para hablar con Leo", etiqueta: "Leo" };
     }
     if (!h.includes("O01")) {
       return { lugar: "escuela_planta_baja", objeto: "orientadora", mision: "Hablar con la orientadora en la planta baja", etiqueta: "Orientadora" };
     }
     if (!h.includes("C02")) {
-      return { lugar: "escuela_planta_baja", mision: "Preparar el proyecto en parejas en el salón", etiqueta: "Salones" };
+      return { lugar: "escuela_planta_baja", mision: "Preparar el proyecto en parejas en el salón", etiqueta: "Escuela" };
     }
     return { lugar: "calle", mision: "Salir de la escuela para regresar a casa", etiqueta: "Salir a la calle" };
   }
@@ -173,18 +173,19 @@ export function pistaPaso(lugar: string, al: string): string | null {
     }
   }
 
-  if (lugar === "escuela_patio" && al === "salir:calle" && hora === "manana") {
+  if (lugar === "escuela_planta_baja" && al === "salir:calle" && hora === "manana") {
     if (dia === 1) {
-      if (!h.includes("U01a") && !h.includes("U01b")) return "Acabo de llegar a la escuela; primero entro a los salones.";
+      if (!h.includes("U01a") && !h.includes("U01b")) return "Acabo de llegar a la escuela; primero voy con la maestra.";
       if (!h.includes("R02-leo")) return "Todavía es hora del recreo; voy a hablar con mis compañeros en el patio antes de irme.";
     }
     if (dia === 2) {
-      if (!h.includes("X01")) return "Primero tengo que entrar a los salones para presentar el examen.";
+      if (!h.includes("X01")) return "Primero tengo que presentar el examen.";
       if (!h.includes("R05")) return "Antes de irme a casa, voy a platicar con Leo aquí en el patio.";
     }
     if (dia === 3) {
       if (!h.includes("E2-05")) return "Primero voy a hablar con Leo aquí en el patio.";
-      if (!h.includes("O01") || !h.includes("C02")) return "Antes de irme, tengo que entrar a los salones de la planta baja.";
+      if (!h.includes("O01")) return "Antes de irme, tengo que hablar con la orientadora.";
+      if (!h.includes("C02")) return "Antes de irme, falta preparar el proyecto en parejas.";
     }
   }
 

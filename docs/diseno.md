@@ -51,7 +51,7 @@ Los personajes fijos solo saludan con líneas neutras. Quien tiene un papel en l
 
 ## Mundo
 
-Casa (sala y comedor, cocina, recámaras, baño, patio), escuela (patio, cancha, aulas, pasillos, gimnasio, dirección), biblioteca, parque, tienda del vecindario y calle. Los mapas viven en `public/mapas/`.
+Casa (sala y comedor, cocina, recámaras, baño, patio), escuela (dos plantas: la baja con patio y cancha al centro, salones, oficina de la orientadora, baños y entrada; la alta con galería, salones, sala de cómputo y baños), biblioteca, parque, tienda del vecindario y calle. Los mapas viven en `public/mapas/`.
 
 El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tienda, parque) y noche (a dormir). El demo cubre tres días.
 

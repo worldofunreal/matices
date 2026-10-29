@@ -5,7 +5,7 @@ import { azar } from "../datos/azar";
 
 export const TILE = 32;
 // Places where animals wander in by chance: each partida gets its own, from its seed.
-const LUGARES_CON_FAUNA = ["calle", "parque", "escuela_patio", "tiendita", "biblioteca_planta_baja"];
+const LUGARES_CON_FAUNA = ["calle", "parque", "escuela_planta_baja", "tiendita", "biblioteca_planta_baja"];
 const GATOS = ["gato_blanco", "gato_calico", "gato_ginger_dormido", "gato_kitten", "gato_negro", "gato_persa", "gato_siames"];
 // Things drawn in several pictures so the places don't look the same: the first is the piece itself, the rest are _2, _3…
 const VARIANTES: Record<string, number> = { "lugares/biblioteca_interior/librero": 5, "lugares/casa/maceta": 4 };
@@ -171,7 +171,7 @@ function vidaProcedural(m: Mapa, semillaBase: string, lugar: string, dia: number
   }
 
   // 4. Transeúntes y vecinos al azar
-  if (["calle", "parque", "tiendita", "biblioteca_planta_baja", "escuela_patio"].includes(lugar)) {
+  if (["calle", "parque", "tiendita", "biblioteca_planta_baja"].includes(lugar)) {
     const cuantasPersonas = 1 + Math.floor(r.frac() * 3);
     const personas = r.barajar(PERSONAS_FONDO);
     for (let i = 0; i < cuantasPersonas; i++) {

@@ -69,6 +69,8 @@ export async function cargarEstado(): Promise<Estado> {
   delete anterior.casa;
   delete anterior.casaLista;
   delete anterior.protaCasa;
+  // Games saved before 2026-10-28 in the school's yard: the yard is part of the ground floor now.
+  if (actual.lugar === "escuela_patio") Object.assign(actual, { lugar: "escuela_planta_baja", llegada: "desde_calle", x: null, y: null });
   // Games saved before 2026-10-21 (version 0.1): the story pages keep only their drawings.
   const v01 = actual as Estado & { cuentos?: unknown };
   delete v01.cuentos;

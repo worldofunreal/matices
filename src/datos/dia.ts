@@ -19,7 +19,7 @@ export function bloqueo(desde: string, horas: string | undefined): "noche" | "ce
 // After crossing a door: moves on to the next part of the day if it is time.
 export function revisarHora(lugar: string, desde?: string): Hora | null {
   const { hora } = estado();
-  if (hora === "manana" && desde === "escuela_patio" && lugar === "calle") return pasarA("tarde");
+  if (hora === "manana" && desde === "escuela_planta_baja" && lugar === "calle") return pasarA("tarde");
   if (hora === "tarde" && lugar === "casa") return pasarA("noche");
   return null;
 }

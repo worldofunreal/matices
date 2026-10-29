@@ -149,7 +149,7 @@ mundo:
       bicicleta: "Una bicicleta recargada en la banqueta."
       moto: "Una motocicleta estacionada."
       carro: "Un automóvil estacionado junto a la banqueta."
-    escuela_patio:
+    escuela_planta_baja:
       asta: "La bandera."
       jardinera: "Una jardinera."
       aro_basquet: "La canasta de básquet."
@@ -172,13 +172,12 @@ mundo:
     calle: "Calle"
     tiendita: "Tiendita"
     parque: "Parque"
-    escuela_patio: "Escuela"
-    escuela_planta_baja: "Salones"
+    escuela_planta_baja: "Escuela"
     escuela_planta_alta: "Planta alta"
     biblioteca_planta_baja: "Biblioteca"
     biblioteca_planta_alta: "Planta alta"
   lugares_dentro:
-    escuela_patio: "Patio"
+    escuela_planta_baja: "Planta baja"
     biblioteca_planta_baja: "Planta baja"
 
 # Mi libro: los dibujos del niño. La consigna está pendiente de revisión clínica y la puede
