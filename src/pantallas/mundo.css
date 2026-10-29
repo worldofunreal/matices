@@ -107,9 +107,11 @@
   align-items: center;
   gap: 5px;
   padding: 4px 12px;
+  border: 2px solid var(--contorno);
   border-radius: 999px;
-  background: rgb(43 34 51 / 0.82);
-  color: #fbf6ee;
+  background: var(--pergamino-calido);
+  box-shadow: var(--sombra);
+  color: var(--tinta);
   font-size: 15px;
   font-weight: 800;
   white-space: nowrap;
@@ -121,22 +123,30 @@
 }
 
 .letrero.cerrada span {
-  background: rgb(43 34 51 / 0.5);
-  color: rgb(251 246 238 / 0.7);
+  opacity: 0.6;
 }
 
-/* The sign where the day goes next pulses in the ring's yellow. */
-.letrero.guia span {
+/* The main goal: its sign or nameplate turns the ring's yellow and pulses. The pulse is as strong as Efectos in
+   Opciones (--fuerza), so at 0 it does not move. */
+.letrero.guia span,
+.placa.guia {
   background: var(--girasol);
   color: var(--tinta);
-  font-size: 17px;
   box-shadow: var(--sombra-alta);
   animation: guia 1.4s ease-in-out infinite;
 }
 
+.letrero.guia span {
+  font-size: 17px;
+}
+
+.placa.guia {
+  font-size: 15px;
+}
+
 @keyframes guia {
   50% {
-    transform: translate(-50%, -50%) scale(1.1);
+    scale: calc(1 + 0.15 * var(--fuerza));
   }
 }
 

@@ -8,6 +8,7 @@
   --papel-2: #f3eadb;
   --tarjeta: #f8efdc; /* parchment: buttons, choices, small cards */
   --pergamino: linear-gradient(180deg, #fbf4e4, #efe1c4); /* panels and the dialogue box */
+  --pergamino-calido: linear-gradient(180deg, #fbe6c9, #f3d8b3); /* warm parchment: nameplates and door signs in the world */
   --contorno: #4a2e18; /* dark brown outline */
   --dorado: #c9a045; /* gold corners */
   --madera: #7a4a24;
@@ -406,16 +407,18 @@ canvas.pixel {
   font-size: 21px;
 }
 
-/* The nameplate under each person, pet and the child, in the house and in the world, so it is clear who is
-   who. It hangs under its holder's feet; the text stays crisp at any zoom. */
+/* The nameplate under each person and the child, in the house and in the world, so it is clear who is who. An
+   animal or object gets one only while the main goal points at it (mundo.css). It hangs under its holder's feet;
+   the text stays crisp at any zoom. */
 .placa {
   position: absolute;
   top: calc(100% + 4px);
   left: 50%;
   transform: translateX(-50%);
   padding: 2px 9px;
+  border: 2px solid var(--contorno);
   border-radius: 999px;
-  background: var(--tarjeta);
+  background: var(--pergamino-calido);
   box-shadow: var(--sombra);
   color: var(--tinta);
   font-size: 13px;

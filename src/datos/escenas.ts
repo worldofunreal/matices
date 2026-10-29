@@ -63,7 +63,7 @@ export function objetivoActual(): Objetivo {
 
   // Día 1 — Mañana
   if (dia === 1 && hora === "manana") {
-    if (!h.includes("T03")) {
+    if (!h.includes("T03") && !h.includes("T05")) {
       return { lugar: "casa", mision: "Despertar en tu habitación", etiqueta: "Casa" };
     }
     if (!h.includes("T05")) {
@@ -222,6 +222,10 @@ export function mision(texto: string) {
 // A scene is over (finished, skipped or paused): finished and skipped ones never come back.
 export function terminarEscena(id: string, hecha: boolean) {
   const h = estado().historia;
-  if (hecha && !h.hechas.includes(id)) cambiarEstado({ historia: { ...h, hechas: [...h.hechas, id] } }, true);
+  if (hecha && !h.hechas.includes(id)) {
+    const hechas = [...h.hechas, id];
+    if (id === "T05" && !hechas.includes("T03")) hechas.push("T03");
+    cambiarEstado({ historia: { ...h, hechas } }, true);
+  }
   sincronizarHistoria();
 }

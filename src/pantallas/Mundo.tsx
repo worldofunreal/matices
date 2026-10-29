@@ -1,6 +1,6 @@
 // The world: one place at a time. Walking and running are in mundo/motor.ts; this screen holds
 // the rules: doors and their hours with a sign on each one, the bed, the mirror and what a tap says.
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import contenido, { type Escena } from "virtual:contenido";
 import { cargarMapa, libre, quitarAusentes, visible, refrescarVidaProcedural, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
 import { Motor, type Figura } from "../mundo/motor";
@@ -73,6 +73,16 @@ function sincronizarFamiliaEnCasa(m: Mapa) {
   }
 }
 
+// The name a world point goes by: on its nameplate, its emote and the guide.
+function etiquetaDe(p: Punto, lugar: string): string {
+  return M.nombres[p.nombre] ?? M.objetos[lugar]?.[p.nombre] ?? M.objetos.comun[p.nombre] ?? p.nombre;
+}
+
+// Whether the main goal points at this world point (a door is not one): its nameplate turns gold.
+function esObjetivo(p: Punto, g: ReturnType<typeof guiaDe>): boolean {
+  return !!g && !g.puerta && g.x === p.x && g.y === p.y;
+}
+
 // Where the story guides the child right now: the active object/person in this map, or the next door toward the active map.
 function guiaDe(m: Mapa): { x: number; y: number; nombre: string; puerta: string | null } | null {
   const obj = objetivoActual();
@@ -98,7 +108,7 @@ function guiaDe(m: Mapa): { x: number; y: number; nombre: string; puerta: string
     if (p.nombre === "mesa" && tieneMama) continue;
     if (p.nombre === "sillon" && tienePapa) continue;
     if (escenaPara(m.lugar, p.nombre)) {
-      return { x: p.x, y: p.y, nombre: M.nombres[p.nombre] ?? M.objetos[m.lugar]?.[p.nombre] ?? M.objetos.comun[p.nombre] ?? p.nombre, puerta: null };
+      return { x: p.x, y: p.y, nombre: etiquetaDe(p, m.lugar), puerta: null };
     }
   }
 
@@ -464,7 +474,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
               // Nivel 1: Objetivo Principal activo de la historia
               if (esGuia) {
                 const icono = pt.tipo === "npc" ? "💬" : "✨";
-                const etiqueta = M.nombres[pt.nombre] ?? M.objetos[lugarActual]?.[pt.nombre] ?? M.objetos.comun[pt.nombre] ?? pt.nombre;
+                const etiqueta = etiquetaDe(pt, lugarActual);
                 nuevos.push({
                   id: `${pt.nombre}_${pt.x}_${pt.y}`,
                   nombre: pt.nombre,
@@ -485,7 +495,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
                 else if (pt.nombre === "espejo") icono = "🪞";
                 else if (pt.nombre === "cama") icono = "💤";
 
-                const etiqueta = M.nombres[pt.nombre] ?? M.objetos[lugarActual]?.[pt.nombre] ?? M.objetos.comun[pt.nombre] ?? pt.nombre;
+                const etiqueta = etiquetaDe(pt, lugarActual);
                 nuevos.push({
                   id: `${pt.nombre}_${pt.x}_${pt.y}`,
                   nombre: pt.nombre,
@@ -590,14 +600,18 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     };
   }, [recarga]);
 
+  const fuerza = estado().opciones.efectos / 5; // Efectos in Opciones: how strong the main goal's pulse is
+
   return (
-    <main className="mundo">
+    <main className="mundo" style={{ "--fuerza": fuerza } as CSSProperties}>
       <canvas ref={lienzo} className="mundo-lienzo" />
 
-      {/* A nameplate under the fixed people here and under the child. */}
-      {mapa?.puntos.filter((p) => p.tipo === "npc" && visible(p, estado().hora)).map((p, i) => (
+      {/* A nameplate under each person here, and under an animal or object only while the main goal points at it. */}
+      {mapa && mapa.puntos.filter((p) => (p.tipo === "npc" || esObjetivo(p, guia)) && visible(p, estado().hora)).map((p, i) => (
         <div key={`${p.nombre}_${i}`} className="nombre-mundo" data-mundo-x={p.x} data-mundo-y={p.y} aria-hidden="true">
-          <span className="placa">{M.nombres[p.nombre] ?? M.nombres.vecino_generico ?? "Vecino"}</span>
+          <span className={`placa${esObjetivo(p, guia) ? " guia" : ""}`}>
+            {p.tipo === "npc" ? M.nombres[p.nombre] ?? M.nombres.vecino_generico ?? "Vecino" : etiquetaDe(p, mapa.lugar)}
+          </span>
         </div>
       ))}
       {mapa && estado().nombre && (

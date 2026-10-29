@@ -132,6 +132,12 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
   // Over: finished (hecha), skipped (hecha, saltada) or paused (not hecha: it starts again next time).
   const terminar = (hecha: boolean, motivo?: "saltada" | "pausada", datos: Record<string, unknown> = {}) => {
     registrar("escena", { escena: escena.id, paso: "fin", ...(motivo ? { [motivo]: true } : {}), ...datos });
+    if (hecha) {
+      for (const paso of pasos) {
+        if (paso.marca) marcar(paso.marca);
+        if (paso.mision) mision(paso.mision);
+      }
+    }
     terminarEscena(escena.id, hecha);
     alTerminar(hecha);
   };
@@ -257,7 +263,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
     const tituloFinal = titulo ? conGenero(titulo) : null;
     return (
       <div className="escena-contenedor-dialogo">
-        <div className="escena-caja interactiva" role="status" onClick={avanzarLinea} style={{ cursor: "pointer" }}>
+        <div className="escena-caja interactiva" role="status" style={{ cursor: "pointer" }}>
           {quien && (
             <div className="escena-nombre-placa">
               <span>{quien}</span>
@@ -292,39 +298,22 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
   const fuerza = estado().opciones.efectos / 5;
 
   if (!p) return null;
-  const cerrarFuera = (e: React.MouseEvent<HTMLElement>) => {
-    if (e.target instanceof Element && e.target.closest(".escena-contenedor-dialogo, .escena-controles, .juego, .dibujo, .minijuego-barra-superior")) return;
+
+  // Tapping anywhere on screen advances dialogue / completes typewriter text.
+  // In minigames, tapping outside the game area aborts the activity.
+  const alTocarPantalla = (e: React.MouseEvent<HTMLElement>) => {
+    if (e.target instanceof Element && e.target.closest(".escena-controles, .bocina, .minijuego-barra-superior, .respuesta-btn")) return;
     if (p.minijuego) {
+      if (e.target instanceof Element && e.target.closest(".juego, .dibujo")) return;
       abortarMinijuego("click_fuera");
       return;
     }
-    if (escena.al === "entrar") {
-      // Escenas de entrada no tienen un objeto en el mapa para volver a abrirlas.
-      // Cerrar fuera las completa aplicando marcas, misiones y efectos para no trabar la historia.
-      for (let k = i; k < pasos.length; k++) {
-        if (pasos[k].marca) marcar(pasos[k].marca!);
-        if (pasos[k].mision) mision(pasos[k].mision!);
-        if (pasos[k].efecto) setEfecto(pasos[k].efecto!);
-      }
-      terminar(true, "saltada", {
-        cierre_fuera: true,
-        al_entrar: true,
-        ms_en_paso: Math.round(performance.now() - t0.current),
-      });
-      return;
-    }
-    if (p.de === undefined && !p.opciones) return;
-    const opciones = !!p.opciones && !respuesta;
-    terminar(false, "pausada", {
-      cierre_fuera: true,
-      formato: opciones ? "opciones" : "dialogo",
-      indice_paso: i,
-      ...(opciones ? { opciones: orden.map((j) => p.opciones![j][0]) } : {}),
-      ms_en_paso: Math.round(performance.now() - t0.current),
-    });
+    if (p.opciones && !respuesta) return;
+    avanzarLinea();
   };
+
   return (
-    <section className="escena" aria-label={escena.nombre} onClick={cerrarFuera}>
+    <section className="escena" aria-label={escena.nombre} onClick={alTocarPantalla}>
       {efecto && fuerza > 0 && <div className={`escena-efecto ${efecto}`} style={{ "--fuerza": fuerza } as CSSProperties} />}
       <div className="escena-controles">
         {escena.saltable && (
