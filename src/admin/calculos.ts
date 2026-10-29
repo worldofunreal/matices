@@ -143,7 +143,7 @@ export function referencia(todos: Map<string, Map<string, { n: number }>>[], are
 // Each scene as it went: how many times it started, how many times it was skipped or paused, and every choice in
 // order with who spoke and how many seconds it took to choose. Only what happened, never what it means.
 export function escenas(evs: Evento[]) {
-  const m = new Map<string, { veces: number; saltada: number; pausada: number; elecciones: { codigo: string; de: string; segundos: number }[]; cierres: { accion: string; formato: string; paso: number; segundos: number }[] }>();
+  const m = new Map<string, { veces: number; saltada: number; pausada: number; elecciones: { codigo: string; de: string; segundos: number }[]; cierres: { formato: string; paso: number; segundos: number }[] }>();
   const fila = (id: string) => m.get(id) ?? (m.set(id, { veces: 0, saltada: 0, pausada: 0, elecciones: [], cierres: [] }), m.get(id)!);
   for (const e of de(evs, "escena")) {
     const f = fila(e.escena);
@@ -151,7 +151,7 @@ export function escenas(evs: Evento[]) {
     if (e.paso === "opcion") f.elecciones.push({ codigo: e.elegida, de: e.de, segundos: Math.round(e.ms_decidir / 100) / 10 });
     if (e.paso === "fin" && e.saltada) f.saltada++;
     if (e.paso === "fin" && e.pausada) f.pausada++;
-    if (e.paso === "fin" && e.cierre_fuera) f.cierres.push({ accion: e.accion, formato: e.formato, paso: e.indice_paso + 1, segundos: Math.round(e.ms_en_paso / 100) / 10 });
+    if (e.paso === "fin" && e.cierre_fuera) f.cierres.push({ formato: e.formato, paso: e.indice_paso + 1, segundos: Math.round(e.ms_en_paso / 100) / 10 });
   }
   return m;
 }

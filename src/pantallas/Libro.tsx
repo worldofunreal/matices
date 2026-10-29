@@ -20,6 +20,7 @@ export function Libro({ alCerrar }: { alCerrar: () => void }) {
       <Dibujo
         origen="libre"
         consigna={L.consigna}
+        alAbortar={() => setDibujando(false)}
         alTerminar={(imagen) => {
           enDetalle(null);
           setDibujando(false);

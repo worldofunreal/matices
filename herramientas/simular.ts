@@ -56,7 +56,11 @@ function participante(i: number) {
           const opciones = p.opciones.map((o) => o[0]).sort(() => Math.random() - 0.5);
           ev("escena", { escena: x.id, paso: "opcion", de: "yo", opciones, elegida: azar(opciones), ms_decidir: entre(1500, 9000) });
         }
-        if (p.minijuego) ev("minijuego", { minijuego: p.minijuego, resultado: "completado", ms: entre(5, 60) * 1000, ...(p.minijuego === "ropero" ? { codigo: azar(["ELIGE_UNIFORME", "ELIGE_DEPORTE", "ELIGE_CASUAL"]) } : {}) });
+        if (p.minijuego) {
+          const resultado = Math.random() < 0.15 ? "abortado" : Math.random() < 0.1 ? "saltado" : "completado";
+          const motivo = resultado === "abortado" ? (Math.random() < 0.5 ? "click_fuera" : "boton_cerrar") : resultado === "saltado" ? "boton_saltar" : undefined;
+          ev("minijuego", { minijuego: p.minijuego, resultado, ...(motivo ? { motivo } : {}), ms: entre(2, 60) * 1000, ...(p.minijuego === "ropero" ? { codigo: azar(["ELIGE_UNIFORME", "ELIGE_DEPORTE", "ELIGE_CASUAL"]) } : {}) });
+        }
         if (x.saltable && Math.random() < 0.2) { saltada = true; break; }
       }
       ev("escena", { escena: x.id, paso: "fin", ...(saltada ? { saltada: true } : {}) });

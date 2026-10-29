@@ -27,6 +27,7 @@ declare module "virtual:contenido" {
     delicada?: boolean;
     saltable?: boolean;
     frena?: boolean;
+    sugerida?: boolean;
     pasos: Paso[];
   }
   // A pending thing the child can leave undone: a mark opens it and another closes it (contenido/escenas.yaml).

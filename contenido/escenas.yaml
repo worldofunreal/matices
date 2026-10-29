@@ -343,6 +343,8 @@ escenas:
     dia: 1
     hora: manana
     tras: R01
+    sugerida: true
+    saltable: true
     areas:
       - companeros
       - prosocial
@@ -387,6 +389,8 @@ escenas:
     dia: 1
     hora: manana
     tras: R01
+    sugerida: true
+    saltable: true
     areas:
       - companeros
       - prosocial
@@ -414,6 +418,8 @@ escenas:
     dia: 1
     hora: manana
     tras: R01
+    sugerida: true
+    saltable: true
     areas:
       - companeros
       - prosocial

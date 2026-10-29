@@ -11,7 +11,7 @@ export interface Resultado {
   marca?: string; // the mark the choice leaves behind (ropero)
   codigo?: string; // the code of the choice (ropero)
 }
-type Alto = { alTerminar: (r?: Resultado) => void };
+export type Alto = { alTerminar: (r?: Resultado) => void; alAbortar?: () => void };
 
 const ICONOS_ITEMS: Record<string, string> = {
   Huevos: "🥚",
@@ -198,11 +198,12 @@ function Cuerda({ alTerminar }: Alto) {
 }
 
 // Keep a drawing: Mi libro gets the page, as on the sheet of its own.
-function Dibujar({ alTerminar }: Alto) {
+function Dibujar({ alTerminar, alAbortar }: Alto) {
   return (
     <Dibujo
       origen="minijuego-dibujo"
       consigna="Dibuja lo que quieras."
+      alAbortar={alAbortar}
       alTerminar={(imagen) => {
         if (imagen) cambiarEstado({ libro: [...estado().libro, { dibujo: imagen, cuando: Date.now() }] }, true);
         alTerminar();

@@ -242,7 +242,7 @@ export function validar() {
 }
 
 type Paso = { de?: string; titulo?: string; texto?: string; opciones?: [string, string, string | null][]; marca?: string; mision?: string; minijuego?: string; efecto?: string };
-type Escena = { id: string; nombre: string; donde: string; al: string; dia?: number; hora?: string; tras?: string | string[]; si?: string[]; no?: string[]; areas?: string[]; delicada?: boolean; saltable?: boolean; frena?: boolean; pasos: Paso[] };
+type Escena = { id: string; nombre: string; donde: string; al: string; dia?: number; hora?: string; tras?: string | string[]; si?: string[]; no?: string[]; areas?: string[]; delicada?: boolean; saltable?: boolean; frena?: boolean; sugerida?: boolean; pasos: Paso[] };
 type Pendiente = { id: string; abre: string; cierra: string; lugar: string; objeto: string; etiqueta: string; mision: string };
 
 type ObjetoMapa = { name: string; type: string; properties?: { name: string; value: string }[] };

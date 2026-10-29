@@ -2,7 +2,7 @@
 // marks and missions. Nothing runs by itself: the child goes on with "Seguir", and a scene never ends on its own.
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import contenido, { type Escena, type Paso } from "virtual:contenido";
-import { estado } from "../datos/guardado";
+import { cambiarEstado, estado } from "../datos/guardado";
 import { azar } from "../datos/azar";
 import { registrar, semilla } from "../datos/eventos";
 import { conGenero, marcar, mision, terminarEscena } from "../datos/escenas";
@@ -179,10 +179,73 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
     return () => removeEventListener("keydown", tecla);
   });
 
+  const esMain = !escena.sugerida;
+
+  const marcasPorDefecto: Record<string, Resultado> = {
+    estufa: { marca: "estufa_prendida" },
+    ropero: { marca: "ropa_uniforme", codigo: "ELIGE_UNIFORME" },
+    examen: { marca: "hizo_examen" },
+    tienda: { marca: "hizo_compras" },
+  };
+
   // A minigame reports its result: the mark it leaves, the code of the choice, and the log.
   const alJuego = (r?: Resultado) => {
     registrar("minijuego", { minijuego: p.minijuego, resultado: "completado", ms: Math.round(performance.now() - t0.current), ...(r?.codigo ? { codigo: r.codigo } : {}) });
     if (r?.marca) marcar(r.marca);
+    avanzar(i + 1);
+  };
+
+  const abortarMinijuego = (motivo: "click_fuera" | "boton_cerrar") => {
+    if (!p?.minijuego) return;
+    const ms = Math.round(performance.now() - t0.current);
+    registrar("minijuego", {
+      minijuego: p.minijuego,
+      resultado: "abortado",
+      motivo,
+      ms,
+      escena: escena.id,
+      es_main: esMain,
+    });
+    registrar("escena", {
+      escena: escena.id,
+      paso: "minijuego_abortado",
+      minijuego: p.minijuego,
+      motivo,
+      es_main: esMain,
+      ms,
+    });
+
+    if (esMain) {
+      terminar(false, "pausada", { motivo, minijuego: p.minijuego, es_main: true });
+    } else {
+      terminar(true, "saltada", { motivo, minijuego: p.minijuego, es_main: false });
+    }
+  };
+
+  const saltarMinijuego = () => {
+    if (!p?.minijuego) return;
+    const ms = Math.round(performance.now() - t0.current);
+    registrar("minijuego", {
+      minijuego: p.minijuego,
+      resultado: "saltado",
+      motivo: "boton_saltar",
+      ms,
+      escena: escena.id,
+      es_main: esMain,
+    });
+    registrar("escena", {
+      escena: escena.id,
+      paso: "minijuego_saltado",
+      minijuego: p.minijuego,
+      es_main: esMain,
+      ms,
+    });
+
+    const resDefecto = marcasPorDefecto[p.minijuego];
+    if (resDefecto?.marca) marcar(resDefecto.marca);
+    if (p.minijuego === "ropero") {
+      cambiarEstado({ apariencia: { ...estado().apariencia, ropa: "uniforme" } }, true);
+    }
     avanzar(i + 1);
   };
 
@@ -230,12 +293,15 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
 
   if (!p) return null;
   const cerrarFuera = (e: React.MouseEvent<HTMLElement>) => {
-    if (e.target instanceof Element && e.target.closest(".escena-contenedor-dialogo, .escena-controles")) return;
-    if (p.minijuego || (p.de === undefined && !p.opciones)) return;
+    if (e.target instanceof Element && e.target.closest(".escena-contenedor-dialogo, .escena-controles, .juego, .dibujo, .minijuego-barra-superior")) return;
+    if (p.minijuego) {
+      abortarMinijuego("click_fuera");
+      return;
+    }
+    if (p.de === undefined && !p.opciones) return;
     const opciones = !!p.opciones && !respuesta;
     terminar(false, "pausada", {
       cierre_fuera: true,
-      accion: opciones ? "evitar_respuesta" : "evitar_continuar",
       formato: opciones ? "opciones" : "dialogo",
       indice_paso: i,
       ...(opciones ? { opciones: orden.map((j) => p.opciones![j][0]) } : {}),
@@ -294,7 +360,32 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
       )}
       {p.opciones && respuesta && linea(hablante(ultimoAntes(pasos, i)), respuesta, ultimoAntes(pasos, i), "Respuesta")}
 
-      {p.minijuego && JUEGOS[p.minijuego]({ alTerminar: alJuego })}
+      {p.minijuego && (
+        <div className="escena-contenedor-minijuego" onClick={(e) => e.stopPropagation()}>
+          <div className="minijuego-barra-superior" role="toolbar" aria-label="Controles de actividad">
+            <button
+              type="button"
+              className="boton suave boton-cerrar-minijuego"
+              onClick={() => abortarMinijuego("boton_cerrar")}
+              aria-label={esMain ? "Volver al mapa" : "Cerrar actividad"}
+            >
+              ✕ {esMain ? "Volver" : "Cerrar"}
+            </button>
+            <button
+              type="button"
+              className="boton principal boton-saltar-minijuego"
+              onClick={saltarMinijuego}
+              aria-label="Saltar actividad"
+            >
+              ⏭ Saltar actividad
+            </button>
+          </div>
+          {JUEGOS[p.minijuego]({
+            alTerminar: alJuego,
+            alAbortar: () => abortarMinijuego("boton_cerrar"),
+          })}
+        </div>
+      )}
     </section>
   );
 }

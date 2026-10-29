@@ -33,7 +33,17 @@ export function pintarHoja(ctx: CanvasRenderingContext2D, trazos: Trazo[], hasta
   }
 }
 
-export function Dibujo({ origen, consigna, alTerminar }: { origen: string; consigna: string; alTerminar: (imagen: string | null) => void }) {
+export function Dibujo({
+  origen,
+  consigna,
+  alTerminar,
+  alAbortar,
+}: {
+  origen: string;
+  consigna: string;
+  alTerminar: (imagen: string | null) => void;
+  alAbortar?: () => void;
+}) {
   const hoja = useRef<HTMLCanvasElement>(null);
   const trazos = useRef<Trazo[]>([]);
   const actual = useRef<Trazo | null>(null);
@@ -101,7 +111,14 @@ export function Dibujo({ origen, consigna, alTerminar }: { origen: string; consi
     <section className="dibujo" aria-label={consigna}>
       <header className="dibujo-cabecera">
         <p>{consigna}</p>
-        <Bocina clave={`dibujo.${origen}`} texto={consigna} />
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <Bocina clave={`dibujo.${origen}`} texto={consigna} />
+          {alAbortar && (
+            <button className="boton suave" type="button" onClick={alAbortar} style={{ minHeight: 40, borderRadius: 999 }}>
+              ✕ Salir
+            </button>
+          )}
+        </div>
       </header>
       <div className="dibujo-cuerpo">
         <div className="dibujo-hoja">

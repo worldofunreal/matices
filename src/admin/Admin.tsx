@@ -295,7 +295,7 @@ function Perfil({ nino, todos }: { nino: string; todos: Evento[] }) {
             <thead><tr><th>Escena</th><th className="num">Veces</th><th className="num">Saltada</th><th className="num">Pausada</th><th>Cerró fuera</th><th>Elecciones</th></tr></thead>
             <tbody>
               {[...esc].map(([id, f]) => (
-                <tr key={id}><td>{escena(id)}</td><td className="num">{f.veces}</td><td className="num">{f.saltada || ""}</td><td className="num">{f.pausada || ""}</td><td>{f.cierres.map((r) => `${r.accion === "evitar_respuesta" ? "sin responder" : "sin continuar"} (${r.formato}, paso ${r.paso}, ${r.segundos} s)`).join(" · ") || "—"}</td><td>{f.elecciones.map((r) => `${r.codigo} (${r.de}, ${r.segundos} s)`).join(" → ") || "—"}</td></tr>
+                <tr key={id}><td>{escena(id)}</td><td className="num">{f.veces}</td><td className="num">{f.saltada || ""}</td><td className="num">{f.pausada || ""}</td><td>{f.cierres.map((r) => `${r.formato}, paso ${r.paso}, ${r.segundos} s`).join(" · ") || "—"}</td><td>{f.elecciones.map((r) => `${r.codigo} (${r.de}, ${r.segundos} s)`).join(" → ") || "—"}</td></tr>
               ))}
             </tbody>
           </table>

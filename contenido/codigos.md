@@ -32,7 +32,7 @@ Todos llevan: código del participante, sesión, versión del contenido y del ju
 | Evento | Datos | Para qué |
 | --- | --- | --- |
 | `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, color de cada prenda, tenis y extra que lleva (`colores`), si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
-| `escena` | Escena (`escena`), paso (`inicio`, `opcion`, `fin`), quién habla, opciones en el orden mostrado, la elegida (código) y ms para decidir desde que aparecen. En `fin`, si se saltó (`saltada`) o pausó (`pausada`); al cerrar fuera registra `accion` (`evitar_respuesta` o `evitar_continuar`), formato, paso, opciones y duración | Qué hace, qué contesta y cuándo evita responder o continuar |
+| `escena` | Escena (`escena`), paso (`inicio`, `opcion`, `fin`), quién habla, opciones en el orden mostrado, la elegida (código) y ms para decidir desde que aparecen. En `fin`, si se saltó (`saltada`) o pausó (`pausada`); al cerrar fuera registra el formato, paso, opciones y duración | Qué hace, qué contesta y cuándo cierra una escena |
 | `minijuego` | Minijuego, resultado (`completado`), ms que duró y, si lo tiene, el código de la elección | Cómo juega |
 | `explora` | Al tocar un objeto o a una persona fija (lugar y cuál), y al salir de un lugar (lugar, ms de permanencia, visitas) | Qué busca, evita, repite |
 | `tramo` | Día y parte del día que empieza (`manana`, `tarde`, `noche`, `fin`) | Ritmo de la partida |
