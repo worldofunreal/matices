@@ -331,7 +331,6 @@
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    justify-content: space-between;
     gap: 12px;
     padding: 10px 8px;
     transform: none;
@@ -340,6 +339,7 @@
 
   .con-opciones .respuestas-integradas {
     order: -1;
+    margin-top: auto;
   }
 
   body:has(.escena .con-opciones) .siempre > button,
@@ -349,34 +349,39 @@
 
   .opciones-libro {
     flex: none;
-    min-height: clamp(180px, 26vh, 230px);
-    padding: 34px 12px 12px;
+    min-height: clamp(132px, 18vh, 160px);
+    padding: 32px 10px 10px;
+    background: linear-gradient(180deg, #fbf1dd, #f0dfc1);
   }
 
   .opciones-libro .escena-cuerpo {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 8px;
   }
 
   .opciones-libro .escena-retrato {
-    width: clamp(88px, 20vw, 124px);
-    height: clamp(108px, 22vh, 150px);
+    width: clamp(56px, 16vw, 64px);
+    height: clamp(56px, 16vw, 64px);
+    border: 2px double #8c6842;
+    border-radius: 12px;
   }
 
   .opciones-libro .escena-retrato > canvas {
-    width: clamp(72px, 16vw, 104px) !important;
-    height: clamp(72px, 16vw, 104px) !important;
+    width: clamp(48px, 14vw, 56px) !important;
+    height: clamp(48px, 14vw, 56px) !important;
   }
 
   .opciones-libro .escena-texto-col {
-    padding: 0 10px;
+    padding: 0 8px 0 0;
   }
 
   .opciones-libro .escena-titulo {
-    font-size: clamp(17px, 3vw, 21px);
+    font-size: clamp(16px, 4vw, 18px);
   }
 
   .opciones-libro .escena-descripcion {
-    font-size: clamp(14px, 2.5vw, 17px);
+    font-size: clamp(14px, 3.7vw, 16px);
+    line-height: 1.3;
   }
 
   .con-opciones .respuestas-integradas {
