@@ -4,6 +4,7 @@ Cada cambio de dirección, con su razón. La más reciente arriba.
 
 | Fecha | Decisión | Por qué | Quién |
 | --- | --- | --- | --- |
+| 2026-10-29 | Vigilantes: solo se voltean hacia el niño las personas y animales que vigilan. Mamá y papá siempre; los compañeros mientras una meta los señala; una escena puede marcar a cualquiera. Ya no se voltean por cercanía | Da presencia a la familia y al barrio sin diálogo, y una escena puede señalar a alguien, bueno o malo, según la historia | Omar |
 | 2026-10-28 | Mundo cotidiano vivo y actividades generadas al azar por semilla (gatos, perros, vecinos diversos, vehículos y minijuegos dinámicos) sobre historia fija | Evita copias en clase, hace el mundo variado e inmersivo, y permite registrar iniciativa y cambios de conducta sin sesgar | Omar |
 | 2026-10-27 | La historia de Dayana reemplaza la premisa anterior: un RPG narrativo de vida diaria de secundaria, con el protagonista en su casa, su escuela y su barrio | Es la dirección creativa para el demo, y sirve a los tres objetivos | Dayana (propuesta), Omar |
 | 2026-10-27 | Fuera del juego: GTA, policía, armar la casa y el perro que se escapa. El tío (E1) queda fuera del demo hasta validar su storyboard | Ninguno aporta a los tres objetivos; el storyboard se valida antes de programarlo | Omar |

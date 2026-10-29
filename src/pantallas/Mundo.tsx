@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import contenido, { type Escena } from "virtual:contenido";
 import { cargarMapa, libre, quitarAusentes, visible, refrescarVidaProcedural, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
 import { Motor, type Figura } from "../mundo/motor";
+import { esVigilante } from "../mundo/vigilancia";
 import { pieza } from "../lienzo/arte";
 import { capas, coloresDe } from "../personaje/apariencia";
 import { estado, cambiarEstado, type Estado } from "../datos/guardado";
@@ -273,6 +274,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     let puerta: string | null = null;
     let corriendoDesde = 0; // when the current run started
     let ultimoChequeoCercanos = 0;
+    let conObjetivo = new Set<Punto>(); // the people and animals a main or secondary goal points at right now
     setBurbuja(null);
     setMision(e0.historia.mision);
 
@@ -425,6 +427,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         figuras,
         hora: estado().hora,
         alTocar: (cx, cy) => accion.current?.tocar(cx, cy),
+        vigila: (p) => esVigilante(p, conObjetivo, estado().historia.marcas),
         alCuadro: () => {
           if (motor.moviendo) cambiarEstado({ x: Math.round(motor.x), y: Math.round(motor.y), direccion: motor.dir });
           const p = m.puertas.find((d) => dentro(d, motor.x, motor.y - CAIDA));
@@ -517,6 +520,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
               sonarProximidad();
             }
 
+            conObjetivo = new Set(nuevos.map((n) => n.punto));
             setEmotes(nuevos);
           }
         },

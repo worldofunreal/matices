@@ -206,7 +206,7 @@ export function validar() {
           if (o[2] !== null) texto(`${dp} opción ${j + 1} respuesta`, o[2]);
         });
       } else if (p.marca !== undefined) {
-        if (!/^[a-z_]+$/.test(p.marca)) err(dp, `marca inválida ${p.marca}`);
+        if (!/^[a-z0-9_]+$/.test(p.marca)) err(dp, `marca inválida ${p.marca}`);
       } else if (p.mision !== undefined) {
         texto(dp, p.mision);
       } else if (p.minijuego !== undefined) {

@@ -63,5 +63,6 @@ Mientras está abierto y el niño está en ese lugar, el letrero y la guía lo m
 - Una escena `delicada` siempre es `saltable`: el niño puede pausarla, saltarla y pedir ayuda en cualquier momento.
 - Las respuestas (`null` o texto) solo van cuando quien responde ya habló antes en la escena.
 - Un género no se escribe fijo. Donde una palabra cambia con el cuerpo del niño se escribe con la marca `{o}`: `list{o}` sale "listo" o "lista". Sin otras marcas en el texto.
+- Una marca `vigila_<nombre>` (el nombre de la persona o del animal, como en el mapa; por ejemplo `vigila_vecino_1`) hace vigilante a esa persona o animal mientras la marca esté: se voltea hacia el niño según de qué lado esté. Quiénes son vigilantes sin marca están en `src/mundo/vigilancia.ts`.
 - Textos para secundaria, en español de México, sin violencia explícita, sin groserías. Puede ser ruda en el tono, nunca grosera en las palabras.
 - Cambiar un texto sube la versión del contenido; los reportes guardan la versión que vio cada niño.

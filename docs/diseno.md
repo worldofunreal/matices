@@ -49,6 +49,8 @@ Nombre y apariencia los elige el jugador: cuerpo, piel, cabello, ropa, extras, t
 
 Los personajes fijos solo saludan con líneas neutras. Quien tiene un papel en la historia habla por escenas. Tocar animales o vehículos cotidianos registra la iniciativa de exploración de forma natural.
 
+Algunas personas y animales vigilan al niño: se voltean hacia él según de qué lado esté (ver `contenido/README.md`).
+
 ## Mundo
 
 Casa (sala y comedor, cocina, recámaras, baño, patio), escuela (dos plantas: la baja con patio y cancha al centro, salones, oficina de la orientadora, baños y entrada; la alta con galería, salones, sala de cómputo y baños), biblioteca, parque, tienda del vecindario y calle. Los mapas viven en `public/mapas/`.

@@ -33,7 +33,6 @@ escenas:
     al: mesa
     dia: 1
     hora: manana
-    tras: T03
     areas:
       - necesidades_fisicas
       - pedir_ayuda
@@ -124,9 +123,9 @@ escenas:
     al: salir:calle
     dia: 1
     hora: manana
-    tras: T03
     no:
       - hablo_mama
+    frena: true
     pasos:
       - de: pensamiento
         titulo: Despedirme de mamá
@@ -140,6 +139,7 @@ escenas:
     tras: T05
     no:
       - saco_huevos
+    frena: true
     pasos:
       - de: pensamiento
         titulo: Comida pendiente
@@ -153,6 +153,7 @@ escenas:
     tras: T06
     no:
       - estufa_prendida
+    frena: true
     pasos:
       - de: pensamiento
         titulo: Cocinar desayuno
@@ -168,6 +169,7 @@ escenas:
       - ropa_uniforme
       - ropa_deporte
       - ropa_casual
+    frena: true
     pasos:
       - de: pensamiento
         titulo: Cambiarme de ropa

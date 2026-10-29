@@ -5,7 +5,7 @@
 import type { Hora } from "../datos/guardado";
 import { piezaYa, CUADRO } from "../lienzo/arte";
 import { capas, coloresDe, filaDe, type Apariencia, type Direccion } from "../personaje/apariencia";
-import { TILE, celdaDe, libre, libreCerca, rutaA, visible, type Mapa, type Punto } from "./mapa";
+import { TILE, celdaDe, libre, libreCerca, rutaA, visible, type Mapa, type Punto, type Puerta } from "./mapa";
 
 const VELOCIDAD = 90; // game pixels per second
 const CORRER = 165; // running
@@ -65,6 +65,7 @@ export interface OpcionesMotor {
   hora: Hora;
   alCuadro: () => void; // after every frame, for the rules
   alTocar: (cx: number, cy: number) => void; // a tap on the screen, not the end of a drag
+  vigila: (p: Punto) => boolean; // who turns to face the child right now (vigilancia.ts)
 }
 
 export class Motor {
@@ -82,8 +83,14 @@ export class Motor {
   private ruta: { x: number; y: number }[] = [];
   private alLlegar: (() => void) | null = null;
   private teclas = new Set<string>();
-  private z = 1; // device pixels per game pixel: a whole number, so every game pixel is sharp
+  private z = 1;
+  private zoomObjetivo = 1;
   private cam = { x: 0, y: 0 };
+  private camPos = { x: 0, y: 0 };
+  private camInicializado = false;
+  private entidadHover: Punto | null = null;
+  private ultimoHover: Punto | null = null;
+  private hoverAlfa = 0;
   private tPaso = 0;
   private tiempo = 0;
   private ultimo = 0;
@@ -353,6 +360,7 @@ export class Motor {
     addEventListener("pointerup", this.soltar);
     addEventListener("pointercancel", this.cancelar);
     this.o.canvas.addEventListener("pointerdown", this.bajar);
+    this.o.canvas.addEventListener("pointerleave", this.alSalirPuntero);
     this.o.canvas.addEventListener("wheel", this.rueda, { passive: false });
     this.ultimo = performance.now();
     const cuadro = (t: number) => {
@@ -360,7 +368,7 @@ export class Motor {
       this.ultimo = t;
       this.tiempo = t;
       this.actualizar(dt);
-      this.dibujar();
+      this.dibujar(dt);
       this.o.alCuadro();
       this.raf = requestAnimationFrame(cuadro);
     };
@@ -378,7 +386,9 @@ export class Motor {
     removeEventListener("pointerup", this.soltar);
     removeEventListener("pointercancel", this.cancelar);
     this.o.canvas.removeEventListener("pointerdown", this.bajar);
+    this.o.canvas.removeEventListener("pointerleave", this.alSalirPuntero);
     this.o.canvas.removeEventListener("wheel", this.rueda);
+    this.o.canvas.style.cursor = "default";
   }
 
   // The canvas fills the window; the zoom keeps the short side at about LADO_CORTO game pixels.
@@ -387,7 +397,9 @@ export class Motor {
     const dpr = devicePixelRatio || 1;
     c.width = Math.round(innerWidth * dpr);
     c.height = Math.round(innerHeight * dpr);
-    this.z = zoomElegido ?? Math.max(1, Math.floor(Math.min(c.width, c.height) / LADO_CORTO));
+    const objetivo = zoomElegido ?? Math.max(1, Math.floor(Math.min(c.width, c.height) / LADO_CORTO));
+    this.zoomObjetivo = objetivo;
+    if (this.z <= 1 && !zoomElegido) this.z = objetivo;
     this.ctx.imageSmoothingEnabled = false;
   };
 
@@ -409,13 +421,13 @@ export class Motor {
     this.shift = false;
   };
 
-  // The zoom buttons and the wheel change the zoom one whole step at a time, so every pixel stays sharp.
+  // The zoom buttons and the wheel change the zoom smoothly towards the next whole step.
   acercar() {
-    this.fijarZoom(this.z + 1);
+    this.fijarZoom(Math.round(this.zoomObjetivo) + 1);
   }
 
   alejar() {
-    this.fijarZoom(this.z - 1);
+    this.fijarZoom(Math.round(this.zoomObjetivo) - 1);
   }
 
   // Back to following the walker.
@@ -425,15 +437,8 @@ export class Motor {
 
   private fijarZoom(nuevo: number) {
     const n = Math.min(ZOOM_MAX, Math.max(1, nuevo));
-    if (n === this.z) return;
-    if (this.libre) {
-      // The middle of the view stays where it is.
-      const c = this.o.canvas;
-      const medioX = this.mirada.x + c.width / this.z / 2;
-      const medioY = this.mirada.y + c.height / this.z / 2;
-      this.mirada = { x: medioX - c.width / n / 2, y: medioY - c.height / n / 2 };
-    }
-    this.z = n;
+    if (n === this.zoomObjetivo) return;
+    this.zoomObjetivo = n;
     zoomElegido = n;
   }
 
@@ -454,7 +459,10 @@ export class Motor {
 
   private mover = (e: PointerEvent) => {
     const a = this.arrastre;
-    if (!a || a.id !== e.pointerId) return;
+    if (!a || a.id !== e.pointerId) {
+      this.actualizarHover(e.clientX, e.clientY);
+      return;
+    }
     if (this.corriendoSostenido) {
       // A new tile under the finger plans a new walk, the same as a tap does.
       const antes = this.destinoSostenido;
@@ -471,10 +479,42 @@ export class Motor {
       clearTimeout(this.temporizadorHold);
       a.movio = true;
       this.libre = true;
+      this.entidadHover = null;
+      this.o.canvas.style.cursor = "default";
     }
     const c = this.o.canvas;
     const porPixel = c.width / c.getBoundingClientRect().width / this.z; // game pixels per screen pixel
     this.mirada = { x: a.cam.x - dx * porPixel, y: a.cam.y - dy * porPixel };
+  };
+
+  private actualizarHover(cx: number, cy: number) {
+    if (this.arrastre?.movio || this.pausado) {
+      if (this.entidadHover) {
+        this.entidadHover = null;
+        this.o.canvas.style.cursor = "default";
+      }
+      return;
+    }
+    const pt = this.puntoEn(cx, cy);
+    if (pt) {
+      this.entidadHover = pt;
+      this.ultimoHover = pt;
+      this.o.canvas.style.cursor = "pointer";
+      return;
+    }
+    const puerta = this.puertaEn(cx, cy);
+    if (puerta) {
+      this.entidadHover = null;
+      this.o.canvas.style.cursor = "pointer";
+      return;
+    }
+    this.entidadHover = null;
+    this.o.canvas.style.cursor = "default";
+  }
+
+  private alSalirPuntero = () => {
+    this.entidadHover = null;
+    this.o.canvas.style.cursor = "default";
   };
 
   private soltar = (e: PointerEvent) => {
@@ -512,7 +552,7 @@ export class Motor {
   private rueda = (e: WheelEvent) => {
     e.preventDefault();
     this.acumulado += e.deltaY;
-    if (Math.abs(this.acumulado) < 100) return;
+    if (Math.abs(this.acumulado) < 80) return;
     if (this.acumulado < 0) this.acercar();
     else this.alejar();
     this.acumulado = 0;
@@ -525,11 +565,19 @@ export class Motor {
     for (const p of this.o.mapa.puntos) {
       if (!visible(p, this.o.hora)) continue;
       const img = p.tipo === "npc" && p.piel !== undefined ? piezaYa(p.arte, { piel: p.piel }) : piezaYa(p.arte);
-      const w = p.tipo === "npc" && p.piel === undefined ? CUADRO.ancho : (img?.width ?? 0);
-      const h = p.tipo === "npc" && p.piel === undefined ? CUADRO.alto : (img?.height ?? 0);
-      if (x >= p.x - w / 2 - 6 && x <= p.x + w / 2 + 6 && y >= p.y - h - 18 && y <= p.y + 6 && (!mejor || p.y > mejor.y)) mejor = p;
+      const w = p.tipo === "npc" && p.piel === undefined ? CUADRO.ancho : (img?.width ?? 24);
+      const h = p.tipo === "npc" && p.piel === undefined ? CUADRO.alto : (img?.height ?? 24);
+      if (x >= p.x - w / 2 - 8 && x <= p.x + w / 2 + 8 && y >= p.y - h - 18 && y <= p.y + 8 && (!mejor || p.y > mejor.y)) mejor = p;
     }
     return mejor;
+  }
+
+  puertaEn(cx: number, cy: number): Puerta | null {
+    const { x, y } = this.aMundo(cx, cy);
+    for (const p of this.o.mapa.puertas) {
+      if (x >= p.x && x <= p.x + p.w && y >= p.y && y <= p.y + p.h) return p;
+    }
+    return null;
   }
 
   // A tap on the floor: walk there.
@@ -582,7 +630,14 @@ export class Motor {
   private aMundo(cx: number, cy: number) {
     const r = this.o.canvas.getBoundingClientRect();
     const k = this.o.canvas.width / r.width;
-    return { x: this.cam.x + ((cx - r.left) * k) / this.z, y: this.cam.y + ((cy - r.top) * k) / this.z };
+    const px = (cx - r.left) * k;
+    const py = (cy - r.top) * k;
+    const transX = -Math.round(this.cam.x * this.z);
+    const transY = -Math.round(this.cam.y * this.z);
+    return {
+      x: (px - transX) / this.z,
+      y: (py - transY) / this.z,
+    };
   }
 
   private velocidadDeRuta(): [number, number] {
@@ -633,6 +688,14 @@ export class Motor {
     // Running plays the same steps faster.
     this.tPaso = this.moviendo ? this.tPaso + dt * 1000 * (Math.hypot(vx, vy) / VELOCIDAD) : 0;
     if (this.perro && !this.pausado) this.moverPerro(dt);
+
+    // Smooth hover alpha transition
+    const objetivoAlfa = this.entidadHover ? 1 : 0;
+    this.hoverAlfa += (objetivoAlfa - this.hoverAlfa) * (1 - Math.exp(-dt * 14));
+    if (Math.abs(this.hoverAlfa - objetivoAlfa) < 0.005) {
+      this.hoverAlfa = objetivoAlfa;
+      if (!this.entidadHover) this.ultimoHover = null;
+    }
 
     // Dust puffs when running
     if (this.rapido && this.tiempo - this.tUltimoPolvo > 110) {
@@ -750,31 +813,73 @@ export class Motor {
     return false;
   }
 
-  private dibujar() {
+  private dibujar(dt = 0.016) {
     const { canvas: c, mapa: m } = this.o;
     const ctx = this.ctx;
+
+    // Smooth Zoom interpolation
+    if (Math.abs(this.z - this.zoomObjetivo) > 0.001) {
+      const factorZoom = 1 - Math.exp(-dt * 8);
+      const antesZ = this.z;
+      this.z += (this.zoomObjetivo - this.z) * factorZoom;
+      if (Math.abs(this.z - this.zoomObjetivo) < 0.001) {
+        this.z = this.zoomObjetivo;
+        this.ctx.imageSmoothingEnabled = false;
+      } else {
+        this.ctx.imageSmoothingEnabled = true;
+      }
+      const centroX = this.camPos.x + c.width / antesZ / 2;
+      const centroY = this.camPos.y + c.height / antesZ / 2;
+      this.camPos.x = centroX - c.width / this.z / 2;
+      this.camPos.y = centroY - c.height / this.z / 2;
+      if (this.libre) {
+        this.mirada.x = this.camPos.x;
+        this.mirada.y = this.camPos.y;
+      }
+    }
+
     const z = this.z;
     const vw = c.width / z;
     const vh = c.height / z;
+
     // The camera follows the walker, unless the child has moved the view. It stops at the map's edges; a map
     // smaller than the view is centered.
     const encajar = (pos: number, mide: number, vista: number) => (mide > vista ? Math.min(Math.max(pos, 0), mide - vista) : (mide - vista) / 2);
     const destino = this.libre ? this.mirada : { x: this.x - vw / 2, y: this.y - PIE.alto * 2 - vh / 2 };
     const fijo = { x: encajar(destino.x, m.ancho, vw), y: encajar(destino.y, m.alto, vh) };
     if (this.libre) this.mirada = fijo;
-    this.cam = { x: Math.round(fijo.x), y: Math.round(fijo.y) };
+
+    if (!this.camInicializado) {
+      this.camPos = { x: fijo.x, y: fijo.y };
+      this.cam = { x: fijo.x, y: fijo.y };
+      this.camInicializado = true;
+    } else if (this.arrastre?.movio) {
+      this.camPos = { x: fijo.x, y: fijo.y };
+      this.cam = { x: fijo.x, y: fijo.y };
+    } else {
+      const factorCam = 1 - Math.exp(-dt * 12);
+      this.camPos.x += (fijo.x - this.camPos.x) * factorCam;
+      this.camPos.y += (fijo.y - this.camPos.y) * factorCam;
+      this.camPos.x = encajar(this.camPos.x, m.ancho, vw);
+      this.camPos.y = encajar(this.camPos.y, m.alto, vh);
+      this.cam = { x: this.camPos.x, y: this.camPos.y };
+    }
+
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.fillStyle = "#1d1a24";
     ctx.fillRect(0, 0, c.width, c.height);
-    ctx.setTransform(z, 0, 0, z, -this.cam.x * z, -this.cam.y * z);
+
+    const transX = -Math.round(this.cam.x * z);
+    const transY = -Math.round(this.cam.y * z);
+    ctx.setTransform(z, 0, 0, z, transX, transY);
 
     // The ground: only the part on screen is drawn.
     const fondo = piezaYa(`lugares/${m.lugar}/fondo`);
     if (fondo) {
-      const sx = Math.max(0, this.cam.x);
-      const sy = Math.max(0, this.cam.y);
-      const sw = Math.min(m.ancho, this.cam.x + vw) - sx;
-      const sh = Math.min(m.alto, this.cam.y + vh) - sy;
+      const sx = Math.max(0, Math.floor(this.cam.x));
+      const sy = Math.max(0, Math.floor(this.cam.y));
+      const sw = Math.min(m.ancho, Math.ceil(this.cam.x + vw)) - sx;
+      const sh = Math.min(m.alto, Math.ceil(this.cam.y + vh)) - sy;
       ctx.drawImage(fondo, sx, sy, sw, sh, sx, sy, sw, sh);
     }
 
@@ -790,6 +895,26 @@ export class Motor {
       ctx.lineWidth = 1.6;
       ctx.stroke();
       ctx.restore();
+    }
+
+    // Floor halo for hovered entity
+    if (this.ultimoHover && this.hoverAlfa > 0.01 && !this.pausado) {
+      const p = this.ultimoHover;
+      const esGuia = this.guia && Math.hypot(p.x - this.guia.x, p.y - this.guia.y) < 4;
+      if (!esGuia) {
+        const k = 0.5 + 0.5 * Math.sin(this.tiempo / 350);
+        ctx.save();
+        ctx.beginPath();
+        const radX = (p.tipo === "npc" ? 14 : 16) + 1.5 * k;
+        const radY = (p.tipo === "npc" ? 7 : 8) + 0.8 * k;
+        ctx.ellipse(p.x, p.y, radX, radY, 0, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 230, 150, ${0.28 * this.hoverAlfa})`;
+        ctx.fill();
+        ctx.strokeStyle = `rgba(255, 215, 100, ${0.75 * this.hoverAlfa})`;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.restore();
+      }
     }
 
     // Guide path dots on the floor (only when not immediately next to the goal)
@@ -866,10 +991,12 @@ export class Motor {
         }
       }
       const esFlash = (this.hitFlashes.get(p.nombre) ?? 0) > this.tiempo;
+      const esHover = this.ultimoHover === p && this.hoverAlfa > 0.05;
 
       const aplicarTransformHit = (dibujo: () => void) => {
         ctx.save();
         if (esFlash) ctx.filter = "brightness(0) invert(1)";
+        else if (esHover) ctx.filter = `brightness(${(1 + 0.12 * this.hoverAlfa).toFixed(2)})`;
         if (deformX !== 1 || deformY !== 1 || shakeX !== 0) {
           ctx.translate(p.x + shakeX, p.y);
           ctx.scale(deformX, deformY);
@@ -880,10 +1007,9 @@ export class Motor {
       };
 
       if (p.tipo === "npc") {
-        const distJugador = Math.hypot(p.x - this.x, p.y - this.y);
-        const miraJugador = distJugador < 72;
-        let voltear = miraJugador ? this.x > p.x : false;
-        if (!miraJugador && m.lugar === "tiendita" && p.nombre === "vecino_generico") {
+        const vigila = this.o.vigila(p);
+        let voltear = vigila && this.x > p.x;
+        if (!vigila && m.lugar === "tiendita" && p.nombre === "vecino_generico") {
           voltear = p.x > m.ancho / 2;
         }
         if (p.piel !== undefined) {
@@ -922,15 +1048,23 @@ export class Motor {
           }
         }
       } else {
-        // Objects integrated directly into the pre-rendered room background are interactable without duplicate sprites
-        if (m.lugar !== "tiendita") {
+        // Objects integrated directly into the pre-rendered room background are interactable without duplicate sprites; animals are never in it
+        if (m.lugar !== "tiendita" || p.tipo === "fauna") {
           const img = piezaYa(p.arte);
           if (img) {
+            const voltear = this.o.vigila(p) && this.x > p.x;
             cosas.push({
               y: p.y,
               dibujar: () => {
                 aplicarTransformHit(() => {
-                  ctx.drawImage(img, Math.round(p.x + shakeX - img.width / 2), Math.round(p.y - img.height));
+                  const x = Math.round(p.x + shakeX - img.width / 2);
+                  const y = Math.round(p.y - img.height);
+                  if (!voltear) return ctx.drawImage(img, x, y);
+                  ctx.save();
+                  ctx.translate(x + img.width, y);
+                  ctx.scale(-1, 1);
+                  ctx.drawImage(img, 0, 0);
+                  ctx.restore();
                 });
               },
             });
@@ -1161,11 +1295,15 @@ export class Motor {
     const dpr = c.width / (c.clientWidth || c.width);
     const raiz = c.parentElement;
     if (!raiz) return;
+    const transX = -Math.round(this.cam.x * this.z);
+    const transY = -Math.round(this.cam.y * this.z);
     for (const el of raiz.querySelectorAll<HTMLElement>("[data-mundo-x], [data-mundo-sigue]")) {
       const sigue = el.dataset.mundoSigue === "prota" ? this : null;
-      const x = (((sigue?.x ?? Number(el.dataset.mundoX)) - this.cam.x) * this.z) / dpr;
-      const y = (((sigue?.y ?? Number(el.dataset.mundoY)) - this.cam.y) * this.z) / dpr;
-      el.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
+      const wx = sigue?.x ?? Number(el.dataset.mundoX);
+      const wy = sigue?.y ?? Number(el.dataset.mundoY);
+      const x = (wx * this.z + transX) / dpr;
+      const y = (wy * this.z + transY) / dpr;
+      el.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`;
     }
     const texto = raiz.querySelector<HTMLElement>("[data-flecha]");
     if (!texto) return;
@@ -1178,8 +1316,10 @@ export class Motor {
   private flechaGuia(g: { x: number; y: number }): { x: number; y: number } | null {
     const { canvas: c } = this.o;
     const ctx = this.ctx;
-    const px = (g.x - this.cam.x) * this.z;
-    const py = (g.y - this.cam.y) * this.z;
+    const transX = -Math.round(this.cam.x * this.z);
+    const transY = -Math.round(this.cam.y * this.z);
+    const px = g.x * this.z + transX;
+    const py = g.y * this.z + transY;
     const dpr = c.width / (c.clientWidth || c.width);
     const r = c.getBoundingClientRect();
     const enPantalla = px >= 0 && px <= c.width && py >= 0 && py <= c.height;

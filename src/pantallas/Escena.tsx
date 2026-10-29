@@ -298,6 +298,21 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
       abortarMinijuego("click_fuera");
       return;
     }
+    if (escena.al === "entrar") {
+      // Escenas de entrada no tienen un objeto en el mapa para volver a abrirlas.
+      // Cerrar fuera las completa aplicando marcas, misiones y efectos para no trabar la historia.
+      for (let k = i; k < pasos.length; k++) {
+        if (pasos[k].marca) marcar(pasos[k].marca!);
+        if (pasos[k].mision) mision(pasos[k].mision!);
+        if (pasos[k].efecto) setEfecto(pasos[k].efecto!);
+      }
+      terminar(true, "saltada", {
+        cierre_fuera: true,
+        al_entrar: true,
+        ms_en_paso: Math.round(performance.now() - t0.current),
+      });
+      return;
+    }
     if (p.de === undefined && !p.opciones) return;
     const opciones = !!p.opciones && !respuesta;
     terminar(false, "pausada", {

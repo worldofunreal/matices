@@ -88,7 +88,7 @@ mundo:
     clara: ["Bienvenido a la biblioteca.", "Los libros de cuentos están arriba."]
     cuentera: ["Hola. Aquí vengo a leer.", "Qué gusto verte."]
     orientadora: ["Buenos días.", "Mi oficina está en la planta baja."]
-    mama: ["Buenos días.", "En la cocina dejé lo necesario."]
+    mama: ["¡Buenos días! Ven a platicar al comedor.", "Buenos días, ven al comedor."]
     papa: ["Ahora estoy descansando.", "Más tarde platicamos."]
     vecino_generico: ["Buenos días.", "Hola.", "Buenas tardes.", "Qué buen día hace."]
     gato: ["¡Miau!", "El gato se estira.", "El gato ronronea al verte.", "¡Miau!"]
