@@ -255,19 +255,31 @@
   font-size: 18px;
 }
 
-/* The mission of the story, under the top controls. */
+/* The mission of the story, centered between the corner buttons */
 .mision-mundo {
   position: absolute;
-  top: 64px;
+  top: 18px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 5;
   margin: 0;
-  padding: 6px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
   border-radius: 999px;
-  background: var(--tarjeta);
-  box-shadow: var(--sombra-alta);
+  background: rgba(253, 250, 246, 0.94);
+  border: 1.5px solid rgba(43, 34, 51, 0.12);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(8px);
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 800;
+  color: var(--tinta, #1d1a24);
   white-space: nowrap;
+  animation: aparecer 220ms ease both;
+}
+
+.mision-icono {
+  font-size: 16px;
+  line-height: 1;
 }

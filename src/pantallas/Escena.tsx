@@ -20,7 +20,7 @@ function RetratoHablante({ de }: { de: string }) {
   if (de === "yo" || de === "pensamiento") {
     return (
       <div className="escena-retrato" aria-hidden="true">
-        <Cabeza a={estado().apariencia} escala={1.5} />
+        <Cabeza a={estado().apariencia} escala={2} />
       </div>
     );
   }
@@ -28,21 +28,21 @@ function RetratoHablante({ de }: { de: string }) {
   if (de === "madre" || de === "mama") {
     return (
       <div className="escena-retrato" aria-hidden="true">
-        <Cara id="figuras/mama" piel={piel} tam={48} />
+        <Cara id="figuras/mama" piel={piel} tam={64} />
       </div>
     );
   }
   if (de === "papa" || de === "padre") {
     return (
       <div className="escena-retrato" aria-hidden="true">
-        <Cara id="figuras/papa" piel={piel} tam={48} />
+        <Cara id="figuras/papa" piel={piel} tam={64} />
       </div>
     );
   }
   if (de === "tio") {
     return (
       <div className="escena-retrato" aria-hidden="true">
-        <Cara id="figuras/tio" piel={piel} tam={48} />
+        <Cara id="figuras/tio" piel={piel} tam={64} />
       </div>
     );
   }
@@ -65,7 +65,7 @@ function RetratoHablante({ de }: { de: string }) {
   const archivo = idPersonaje[de] ?? de;
   return (
     <div className="escena-retrato" aria-hidden="true">
-      <Cara id={`personajes/${archivo}`} tam={48} />
+      <Cara id={`personajes/${archivo}`} tam={64} />
     </div>
   );
 }
@@ -186,32 +186,38 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: () 
     avanzar(i + 1);
   };
 
-  // Lines of a scene: typewriter effect, click anywhere on box to speed up or advance.
+  // Lines of a scene: RPG-style dialogue box docked at the bottom with nameplate badge and large framed portrait.
   const linea = (quien: string, texto: string, de?: string) => {
     const textoCompleto = conGenero(texto);
     const visible = letrasVisibles >= textoCompleto.length ? textoCompleto : textoCompleto.slice(0, letrasVisibles);
     const estaCompleto = letrasVisibles >= textoCompleto.length;
     return (
-      <div className="escena-caja interactiva" role="status" onClick={avanzarLinea} style={{ cursor: "pointer" }}>
-        <div className="escena-hablante-fila">
-          {de && <RetratoHablante de={de} />}
-          <span className="globo-quien">{quien}</span>
-        </div>
-        <p>
-          {visible}
-          {!estaCompleto && <span className="cursor-escena" aria-hidden="true">▍</span>}
-        </p>
-        <div className="escena-acciones">
-          <Bocina clave={`escena.${escena.id}.${i}`} texto={textoCompleto} />
-          <button
-            className="boton principal"
-            onClick={(ev) => {
-              ev.stopPropagation();
-              avanzarLinea();
-            }}
-          >
-            {!estaCompleto ? "Rápido" : E.seguir}
-          </button>
+      <div className="escena-contenedor-dialogo">
+        <div className="escena-caja interactiva" role="status" onClick={avanzarLinea} style={{ cursor: "pointer" }}>
+          {quien && (
+            <div className="escena-nombre-placa">
+              <span>{quien}</span>
+            </div>
+          )}
+          <div className="escena-cuerpo">
+            {de && <RetratoHablante de={de} />}
+            <div className="escena-texto-col">
+              <p>
+                {visible}
+                {!estaCompleto && <span className="cursor-escena" aria-hidden="true">▍</span>}
+              </p>
+            </div>
+          </div>
+          <div className="escena-pie">
+            <Bocina clave={`escena.${escena.id}.${i}`} texto={textoCompleto} />
+            <div className="escena-indicador-avance">
+              {estaCompleto ? (
+                <span className="escena-flecha-avance" aria-hidden="true">▼ Continuar</span>
+              ) : (
+                <span className="escena-saltar-texto">Toca para acelerar</span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -240,14 +246,33 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: () 
       {p.de !== undefined && linea(hablante(p.de), p.texto!, p.de)}
 
       {p.opciones && !respuesta && (
-        <div className="respuestas" role="group">
-          {orden.map((j, n) => (
-            <div key={j} className="respuesta">
-              <button className="boton principal" onClick={() => elegir(j)}>
-                <span className="escena-numero">{n + 1}</span> {conGenero(p.opciones![j][1])}
+        <div className="escena-contenedor-dialogo con-opciones">
+          <div className="respuestas-integradas" role="group">
+            {orden.map((j, n) => (
+              <button key={j} className="boton principal respuesta-btn" onClick={() => elegir(j)}>
+                <span className="escena-numero">{n + 1}</span>
+                <span>{conGenero(p.opciones![j][1])}</span>
               </button>
-            </div>
-          ))}
+            ))}
+          </div>
+          {(() => {
+            const pasoPrevio = [...pasos.slice(0, i)].reverse().find((x) => x.texto);
+            const hablantePrevio = ultimoAntes(pasos, i);
+            const textoPregunta = pasoPrevio ? conGenero(pasoPrevio.texto!) : "¿Qué quieres responder?";
+            return (
+              <div className="escena-caja fija" role="status">
+                <div className="escena-nombre-placa">
+                  <span>{hablante(hablantePrevio)}</span>
+                </div>
+                <div className="escena-cuerpo">
+                  <RetratoHablante de={hablantePrevio} />
+                  <div className="escena-texto-col">
+                    <p>{textoPregunta}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       )}
       {p.opciones && respuesta && linea(hablante(ultimoAntes(pasos, i)), respuesta, ultimoAntes(pasos, i))}
