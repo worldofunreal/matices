@@ -58,6 +58,7 @@ export interface Mapa {
   llegadas: Record<string, { x: number; y: number }>;
   inicio: { x: number; y: number };
   puntos: Punto[];
+  puntosEstaticos?: Punto[];
 }
 
 interface ObjetoTiled {
@@ -73,13 +74,32 @@ interface ObjetoTiled {
 const propiedad = (o: ObjetoTiled, nombre: string) => o.properties?.find((p) => p.name === nombre)?.value;
 
 // Reads public/mapas/<lugar>.json. Read again on every visit, so the walls always start whole.
-export async function cargarMapa(lugar: string, semilla: string, dia = 1, hora: Hora = "manana"): Promise<Mapa> {
+export async function cargarMapa(
+  lugar: string,
+  semilla: string,
+  dia = 1,
+  hora: Hora = "manana",
+  visitas = 0,
+  cicloEscena = 0,
+  misionActiva?: string
+): Promise<Mapa> {
   const json = await (await fetch(`mapas/${lugar}.json`)).json();
   const capa = (nombre: string) => json.layers.find((l: { name: string }) => l.name === nombre);
   const objetos: ObjetoTiled[] = capa("objetos").objects;
   const llegadas: Record<string, { x: number; y: number }> = {};
   for (const o of objetos) if (o.type === "llegada") llegadas[o.name] = { x: o.x, y: o.y };
   const inicio = objetos.find((o) => o.name === "inicio") ?? objetos.find((o) => o.type === "llegada")!;
+  const puntosEstaticos: Punto[] = objetos
+    .filter((o) => o.type === "objeto" || o.type === "npc")
+    .map((o) => ({
+      nombre: o.name,
+      tipo: o.type === "npc" ? ("npc" as const) : ("objeto" as const),
+      x: o.x,
+      y: o.y,
+      arte: o.type === "npc" ? `personajes/${o.name}` : variante(propiedad(o, "arte") ?? `lugares/${lugar}/${o.name}`, `${semilla}:${lugar}:${o.x},${o.y}`),
+      horas: propiedad(o, "horas"),
+    }));
+
   const m: Mapa = {
     lugar,
     ancho: json.width * json.tilewidth,
@@ -92,18 +112,10 @@ export async function cargarMapa(lugar: string, semilla: string, dia = 1, hora: 
       .map((o) => ({ nombre: o.name, x: o.x, y: o.y, w: o.width ?? 0, h: o.height ?? 0, destino: propiedad(o, "destino")!, llegada: propiedad(o, "llegada")!, horas: propiedad(o, "horas") })),
     llegadas,
     inicio: { x: inicio.x, y: inicio.y },
-    puntos: objetos
-      .filter((o) => o.type === "objeto" || o.type === "npc")
-      .map((o) => ({
-        nombre: o.name,
-        tipo: o.type === "npc" ? ("npc" as const) : ("objeto" as const),
-        x: o.x,
-        y: o.y,
-        arte: o.type === "npc" ? `personajes/${o.name}` : variante(propiedad(o, "arte") ?? `lugares/${lugar}/${o.name}`, `${semilla}:${lugar}:${o.x},${o.y}`),
-        horas: propiedad(o, "horas"),
-      })),
+    puntos: [...puntosEstaticos],
+    puntosEstaticos,
   };
-  m.puntos.push(...vidaProcedural(m, semilla, lugar, dia, hora));
+  m.puntos.push(...vidaProcedural(m, semilla, lugar, dia, hora, visitas, cicloEscena, misionActiva));
   return m;
 }
 
@@ -116,15 +128,48 @@ function variante(arte: string, semilla: string) {
 }
 
 // Procedural life: cats, dogs, background people and street vehicles.
-function vidaProcedural(m: Mapa, semillaBase: string, lugar: string, dia: number, hora: Hora): Punto[] {
-  const r = azar(`${semillaBase}:${lugar}:${dia}:${hora}`);
+export function vidaProcedural(
+  m: Mapa,
+  semillaBase: string,
+  lugar: string,
+  dia: number,
+  hora: Hora,
+  visitas = 0,
+  cicloEscena = 0,
+  misionActiva?: string
+): Punto[] {
+  const r = azar(`${semillaBase}:${lugar}:${dia}:${hora}:v${visitas}:c${cicloEscena}`);
   const sitios: Punto[] = [];
 
   // Protect all doors, doorsteps and arrival points from having procedural objects/vehicles blocking them.
   const ocupadas = new Set<string>();
 
   // Static points and arrival spots
-  for (const p of m.puntos) ocupadas.add(`${Math.floor(p.x / TILE)},${Math.floor((p.y - 1) / TILE)}`);
+  const basePuntos = m.puntosEstaticos ?? m.puntos;
+  for (const p of basePuntos) {
+    const tx = Math.floor(p.x / TILE);
+    const ty = Math.floor((p.y - 1) / TILE);
+    ocupadas.add(`${tx},${ty}`);
+
+    // If this object is a counter (mostrador), keep the front interaction area clear (3 tiles wide, 2 tiles deep)
+    if (p.nombre === "mostrador" || p.arte.includes("mostrador")) {
+      for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = 0; dy <= 2; dy++) {
+          ocupadas.add(`${tx + dx},${ty + dy}`);
+        }
+      }
+    }
+
+    // If this point is the active mission target, keep adjacent tiles clear
+    if (misionActiva && p.nombre === misionActiva) {
+      for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -1; dy <= 1; dy++) {
+          ocupadas.add(`${tx + dx},${ty + dy}`);
+        }
+      }
+    }
+  }
+
   for (const l of Object.values(m.llegadas)) {
     const cx = Math.floor(l.x / TILE);
     const cy = Math.floor(l.y / TILE);
@@ -148,6 +193,24 @@ function vidaProcedural(m: Mapa, semillaBase: string, lugar: string, dia: number
     }
   }
 
+  // Specifically in tiendita: clear the entire central walking aisle between door and counter
+  if (lugar === "tiendita") {
+    for (let tx = 5; tx <= 9; tx++) {
+      for (let ty = 3; ty <= 8; ty++) {
+        ocupadas.add(`${tx},${ty}`);
+      }
+    }
+  }
+
+  // In biblioteca_planta_baja: clear the central walkway from entrance to counter
+  if (lugar === "biblioteca_planta_baja") {
+    for (let tx = 13; tx <= 16; tx++) {
+      for (let ty = 10; ty <= 18; ty++) {
+        ocupadas.add(`${tx},${ty}`);
+      }
+    }
+  }
+
   const buscarLibre = (intentos = 150, minFila = 0): Celda | null => {
     for (let i = 0; i < intentos; i++) {
       const tx = Math.floor(r.frac() * m.columnas);
@@ -162,7 +225,8 @@ function vidaProcedural(m: Mapa, semillaBase: string, lugar: string, dia: number
 
   // 1. Gatos
   if (LUGARES_CON_FAUNA.includes(lugar)) {
-    const cuantosGatos = 2 + Math.floor(r.frac() * 3);
+    // In tiendita, at most 1 cozy cat (or 0), while streets have 2-4
+    const cuantosGatos = lugar === "tiendita" ? (r.frac() > 0.4 ? 1 : 0) : 2 + Math.floor(r.frac() * 3);
     const gatos = r.barajar(GATOS);
     for (let i = 0; i < cuantosGatos; i++) {
       const c = buscarLibre();
@@ -192,9 +256,46 @@ function vidaProcedural(m: Mapa, semillaBase: string, lugar: string, dia: number
     }
   }
 
-  // 4. Transeúntes y vecinos al azar
-  if (["calle", "parque", "tiendita", "biblioteca_planta_baja"].includes(lugar)) {
-    const cuantasPersonas = 1 + Math.floor(r.frac() * 3);
+  // 4. Transeúntes y clientes al azar
+  if (lugar === "tiendita") {
+    // Small store (15x10): max 1 customer or empty (55% chance of 1 shopper, 45% empty)
+    const hayCliente = r.frac() > 0.45;
+    if (hayCliente) {
+      // Anchors: right side (shelves / abarrotes) or left side (cooler / refrescos)
+      const anclas = [
+        { minTx: 10, maxTx: 12, minTy: 5, maxTy: 7 }, // Estante de abarrotes (derecha)
+        { minTx: 2, maxTx: 4, minTy: 5, maxTy: 7 },   // Refrigerador de bebidas (izquierda)
+        { minTx: 11, maxTx: 13, minTy: 7, maxTy: 8 }, // Esquina lateral
+      ];
+      const ancla = anclas[Math.floor(r.frac() * anclas.length)];
+      let celdaCliente: Celda | null = null;
+      for (let intento = 0; intento < 30; intento++) {
+        const tx = ancla.minTx + Math.floor(r.frac() * (ancla.maxTx - ancla.minTx + 1));
+        const ty = ancla.minTy + Math.floor(r.frac() * (ancla.maxTy - ancla.minTy + 1));
+        if (libre(m, tx, ty) && !ocupadas.has(`${tx},${ty}`)) {
+          ocupadas.add(`${tx},${ty}`);
+          celdaCliente = { tx, ty };
+          break;
+        }
+      }
+      if (!celdaCliente) celdaCliente = buscarLibre(50);
+      if (celdaCliente) {
+        const personas = r.barajar(PERSONAS_FONDO);
+        const figura = personas[0];
+        const piel = Math.floor(r.frac() * 8);
+        sitios.push({
+          nombre: "vecino_generico",
+          tipo: "npc",
+          x: celdaCliente.tx * TILE + TILE / 2,
+          y: celdaCliente.ty * TILE + TILE - 1,
+          arte: `figuras/${figura}`,
+          piel,
+        });
+      }
+    }
+  } else if (["calle", "parque", "biblioteca_planta_baja"].includes(lugar)) {
+    const maxGente = lugar === "biblioteca_planta_baja" ? 2 : 3;
+    const cuantasPersonas = 1 + Math.floor(r.frac() * maxGente);
     const personas = r.barajar(PERSONAS_FONDO);
     for (let i = 0; i < cuantasPersonas; i++) {
       const c = buscarLibre();
@@ -256,6 +357,24 @@ function vidaProcedural(m: Mapa, semillaBase: string, lugar: string, dia: number
   }
 
   return sitios;
+}
+
+// Refreshes procedural life in-place on scene completions or dynamic state shifts
+export function refrescarVidaProcedural(
+  m: Mapa,
+  semillaBase: string,
+  lugar: string,
+  dia: number,
+  hora: Hora,
+  visitas: number,
+  cicloEscena: number,
+  misionActiva?: string
+): Punto[] {
+  const base = m.puntosEstaticos ?? m.puntos.filter((p) => p.nombre !== "vecino_generico" && p.tipo !== "fauna");
+  m.puntosEstaticos = base;
+  const nuevaVida = vidaProcedural(m, semillaBase, lugar, dia, hora, visitas, cicloEscena, misionActiva);
+  m.puntos = [...base, ...nuevaVida];
+  return nuevaVida;
 }
 
 export const visible = (p: Punto, hora: Hora) => !p.horas || p.horas.split(",").includes(hora);

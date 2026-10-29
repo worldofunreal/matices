@@ -2,7 +2,7 @@
 // the rules: doors and their hours with a sign on each one, the bed, the mirror and what a tap says.
 import { useEffect, useRef, useState } from "react";
 import contenido, { type Escena } from "virtual:contenido";
-import { cargarMapa, libre, quitarAusentes, visible, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
+import { cargarMapa, libre, quitarAusentes, visible, refrescarVidaProcedural, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
 import { Motor, type Figura } from "../mundo/motor";
 import { pieza } from "../lienzo/arte";
 import { capas, coloresDe } from "../personaje/apariencia";
@@ -193,6 +193,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const [saludoAmbiental, setSaludoAmbiental] = useState<SaludoAmbiental | null>(null);
   const [anuncioLugar, setAnuncioLugar] = useState<{ id: number; icono: string; nombre: string } | null>(null);
   const temporizadorLugar = useRef(0);
+  const cicloEscenaRef = useRef(0);
   const [corriendo, setCorriendo] = useState(false);
   // A scene of the story is on: the world stands still under it, and the mission shows once it is over.
   const [escena, setEscena] = useState<{ escena: Escena; alFin: () => void } | null>(null);
@@ -301,6 +302,22 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         escena: e,
         alFin: () => {
           setEscena(null);
+          cicloEscenaRef.current++;
+          if (mapaActual) {
+            const obj = objetivoActual();
+            refrescarVidaProcedural(
+              mapaActual,
+              estado().semilla,
+              lugarActual,
+              estado().dia,
+              estado().hora,
+              visitas,
+              cicloEscenaRef.current,
+              obj.objeto
+            );
+            void cargarArte(mapaActual, estado(), figuras);
+            setMapa({ ...mapaActual, puntos: [...mapaActual.puntos] });
+          }
           refrescarGuia();
           if (estado().apariencia !== antes) setRecarga((r) => r + 1);
           const siguienteEntrar = escenaPara(lugarActual, "entrar");
@@ -388,7 +405,8 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       figuras.push({ id: "perro", x: 260, y: 460, piel: 0 });
     }
 
-    void cargarMapa(lugarActual, e0.semilla, estado().dia, estado().hora).then(async (m) => {
+    const objInicial = objetivoActual();
+    void cargarMapa(lugarActual, e0.semilla, estado().dia, estado().hora, visitas, cicloEscenaRef.current, objInicial.objeto).then(async (m) => {
       mapaActual = m;
       sincronizarFamiliaEnCasa(m);
       quitarAusentes(m, estado().hora);

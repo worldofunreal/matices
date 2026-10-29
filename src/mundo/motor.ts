@@ -446,7 +446,9 @@ export class Motor {
       if (!a || a.id !== e.pointerId || a.movio || this.pausado) return;
       this.corriendoSostenido = true;
       this.libre = false;
-      this.destinoSostenido = this.aMundo(e.clientX, e.clientY);
+      const p = this.aMundo(e.clientX, e.clientY);
+      this.destinoSostenido = p;
+      this.caminarA(p.x, p.y);
     }, 220);
   };
 
@@ -454,7 +456,12 @@ export class Motor {
     const a = this.arrastre;
     if (!a || a.id !== e.pointerId) return;
     if (this.corriendoSostenido) {
-      this.destinoSostenido = this.aMundo(e.clientX, e.clientY);
+      // A new tile under the finger plans a new walk, the same as a tap does.
+      const antes = this.destinoSostenido;
+      const nuevo = this.aMundo(e.clientX, e.clientY);
+      this.destinoSostenido = nuevo;
+      const otraCelda = !antes || Math.floor(antes.x / TILE) !== Math.floor(nuevo.x / TILE) || Math.floor(antes.y / TILE) !== Math.floor(nuevo.y / TILE);
+      if (otraCelda) this.caminarA(nuevo.x, nuevo.y);
       return;
     }
     const dx = e.clientX - a.x;
@@ -495,6 +502,7 @@ export class Motor {
 
   private cancelar = () => {
     clearTimeout(this.temporizadorHold);
+    if (this.corriendoSostenido) this.ruta = []; // the hold's walk stops with the gesture
     this.corriendoSostenido = false;
     this.destinoSostenido = null;
     this.arrastre = null;
@@ -588,7 +596,7 @@ export class Motor {
       return [0, 0];
     }
     const d = Math.hypot(p.x - this.x, p.y - this.y);
-    const v = this.corriendo || this.shift || this.correrAlDestino ? CORRER : VELOCIDAD;
+    const v = this.corriendo || this.shift || this.corriendoSostenido || this.correrAlDestino ? CORRER : VELOCIDAD;
     return [((p.x - this.x) / d) * v, ((p.y - this.y) / d) * v];
   }
 
@@ -596,17 +604,9 @@ export class Motor {
     let vx = 0;
     let vy = 0;
     if (!this.pausado) {
-      if (this.corriendoSostenido && this.destinoSostenido) {
-        this.libre = false;
-        this.ruta = [];
-        this.alLlegar = null;
-        const dx = this.destinoSostenido.x - this.x;
-        const dy = this.destinoSostenido.y - this.y;
-        const dist = Math.hypot(dx, dy);
-        if (dist > 12) {
-          vx = (dx / dist) * CORRER;
-          vy = (dy / dist) * CORRER;
-        }
+      if (this.corriendoSostenido) {
+        // The walk planned when the hold started or the finger moved to another tile.
+        [vx, vy] = this.velocidadDeRuta();
       } else {
         for (const t of this.teclas) {
           vx += FLECHAS[t][0];
@@ -882,7 +882,10 @@ export class Motor {
       if (p.tipo === "npc") {
         const distJugador = Math.hypot(p.x - this.x, p.y - this.y);
         const miraJugador = distJugador < 72;
-        const voltear = miraJugador ? this.x > p.x : false;
+        let voltear = miraJugador ? this.x > p.x : false;
+        if (!miraJugador && m.lugar === "tiendita" && p.nombre === "vecino_generico") {
+          voltear = p.x > m.ancho / 2;
+        }
         if (p.piel !== undefined) {
           const hoja = piezaYa(p.arte, { piel: p.piel });
           if (hoja) {
