@@ -86,6 +86,10 @@ export class Motor {
   private ondas: { x: number; y: number; t0: number }[] = [];
   private rutaGuia: { tx: number; ty: number }[] = [];
   private celdaGuiaCalculada = { tx: -1, ty: -1, metaX: -1, metaY: -1 };
+  private particulasPolvo: { x: number; y: number; t0: number; r: number }[] = [];
+  private destellosGuia: { x: number; y: number; t0: number; dy: number }[] = [];
+  private tUltimoPolvo = 0;
+  private tUltimoDestello = 0;
   private acumulado = 0; // wheel movement not yet turned into a zoom step
   private shift = false;
   private perro: Perro | null = null;
@@ -403,6 +407,28 @@ export class Motor {
     this.tPaso = this.moviendo ? this.tPaso + dt * 1000 * (Math.hypot(vx, vy) / VELOCIDAD) : 0;
     if (this.perro && !this.pausado) this.moverPerro(dt);
 
+    // Dust puffs when running
+    if (this.rapido && this.tiempo - this.tUltimoPolvo > 110) {
+      this.tUltimoPolvo = this.tiempo;
+      this.particulasPolvo.push({
+        x: this.x + (Math.random() * 10 - 5),
+        y: this.y + (Math.random() * 4 - 2),
+        t0: this.tiempo,
+        r: 2 + Math.random() * 2,
+      });
+    }
+
+    // Sparkles on guided object
+    if (this.guia && !this.pausado && this.tiempo - this.tUltimoDestello > 340) {
+      this.tUltimoDestello = this.tiempo;
+      this.destellosGuia.push({
+        x: this.guia.x + (Math.random() * 24 - 12),
+        y: this.guia.y - 12 + (Math.random() * 16 - 8),
+        t0: this.tiempo,
+        dy: 10 + Math.random() * 10,
+      });
+    }
+
     // Refresh guide route when character or guide changes tile
     if (this.guia) {
       const tx = Math.floor(this.x / TILE);
@@ -561,6 +587,21 @@ export class Motor {
       ctx.restore();
     }
 
+    // Dust puffs on the ground behind sprinting feet
+    const ahoraPolvo = this.tiempo;
+    this.particulasPolvo = this.particulasPolvo.filter((p) => ahoraPolvo - p.t0 < 250);
+    for (const p of this.particulasPolvo) {
+      const prog = (ahoraPolvo - p.t0) / 250;
+      const radio = p.r + 3.5 * prog;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, (1 - prog) * 0.45);
+      ctx.fillStyle = "#e8dfd3";
+      ctx.beginPath();
+      ctx.arc(p.x, p.y - prog * 3, radio, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
     // Everything that stands on the ground is drawn from back to front, by its feet.
     const cosas: { y: number; dibujar: () => void }[] = [];
     for (const p of m.puntos) {
@@ -656,6 +697,22 @@ export class Motor {
       ctx.strokeStyle = "#f2c14e";
       ctx.stroke();
       ctx.restore();
+
+      // Golden sparkles rising over the guided object
+      const ahoraDestellos = this.tiempo;
+      this.destellosGuia = this.destellosGuia.filter((d) => ahoraDestellos - d.t0 < 550);
+      for (const d of this.destellosGuia) {
+        const prog = (ahoraDestellos - d.t0) / 550;
+        const x = d.x;
+        const y = d.y - prog * d.dy;
+        const escala = Math.sin(prog * Math.PI);
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, escala * 0.85);
+        ctx.fillStyle = "#f2c14e";
+        ctx.font = `${Math.round(8 + 4 * escala)}px monospace`;
+        ctx.fillText("✦", x, y);
+        ctx.restore();
+      }
     }
     const flecha = this.guia && !this.pausado ? this.flechaGuia(this.guia) : null; // a cover over the world hides the ring; no arrow then
     this.ponerHtml(flecha);

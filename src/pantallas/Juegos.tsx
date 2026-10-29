@@ -13,29 +13,61 @@ export interface Resultado {
 }
 type Alto = { alTerminar: (r?: Resultado) => void };
 
+const ICONOS_ITEMS: Record<string, string> = {
+  Huevos: "🥚",
+  Leche: "🥛",
+  Queso: "🧀",
+  Jamón: "🥓",
+  Yogur: "🥣",
+  Jugo: "🧃",
+  Verduras: "🥦",
+  Libreta: "📓",
+  Pelota: "⚽",
+  Hoja: "📄",
+  Mochila: "🎒",
+  Lápiz: "✏️",
+  Cuerda: "🪢",
+  Gis: "🖍️",
+};
+
 // Find what is needed among things on a shelf: all the marked ones.
 function Buscar({ titulo, items, alTerminar }: Alto & { titulo: string; items: { nombre: string; buscado?: boolean }[] }) {
   const [tocados, setTocados] = useState<number[]>([]);
+  const [completado, setCompletado] = useState(false);
   const hallados = tocados.filter((i) => items[i].buscado).length;
   const total = items.filter((x) => x.buscado).length;
   const tocar = (i: number) => {
-    if (tocados.includes(i)) return;
+    if (tocados.includes(i) || completado) return;
+    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(items[i].buscado ? 25 : 12);
     const nuevos = [...tocados, i];
     setTocados(nuevos);
-    if (nuevos.filter((k) => items[k].buscado).length === total) alTerminar();
+    if (nuevos.filter((k) => items[k].buscado).length === total) {
+      setCompletado(true);
+      if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate([30, 50, 30]);
+      setTimeout(() => alTerminar(), 600);
+    }
   };
   return (
-    <div className="juego">
+    <div className={`juego${completado ? " exito" : ""}`}>
       <h2>{titulo}</h2>
       <div className="juego-cuadricula">
-        {items.map((x, i) => (
-          <button key={i} className={`boton juego-celda${tocados.includes(i) ? " tocada" : ""}`} onClick={() => tocar(i)}>
-            {x.nombre}
-          </button>
-        ))}
+        {items.map((x, i) => {
+          const tocada = tocados.includes(i);
+          const acertada = tocada && x.buscado;
+          return (
+            <button
+              key={i}
+              className={`boton juego-celda${tocada ? " tocada" : ""}${acertada ? " acertada" : ""}`}
+              onClick={() => tocar(i)}
+            >
+              <span className="juego-icono" aria-hidden="true">{ICONOS_ITEMS[x.nombre] ?? "📦"}</span>
+              <span className="juego-texto">{x.nombre}</span>
+            </button>
+          );
+        })}
       </div>
       <p className="juego-cuenta">
-        {hallados} de {total}
+        {completado ? "¡Listo! ✨" : `${hallados} de ${total}`}
       </p>
     </div>
   );
@@ -67,27 +99,38 @@ function generarPistas(sem: string) {
 function Estufa({ alTerminar }: Alto) {
   const [nivel, setNivel] = useState(0);
   const [apretando, setApretando] = useState(false);
+  const [completado, setCompletado] = useState(false);
   useEffect(() => {
-    if (!apretando) return;
-    const id = setInterval(() => setNivel((n) => Math.min(100, n + 2)), 50);
+    if (!apretando || completado) return;
+    const id = setInterval(() => {
+      setNivel((n) => {
+        const sig = Math.min(100, n + 2.5);
+        if (sig >= 100) {
+          setCompletado(true);
+          if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate([25, 45, 25]);
+          setTimeout(() => alTerminar(), 500);
+        }
+        return sig;
+      });
+    }, 45);
     return () => clearInterval(id);
-  }, [apretando]);
-  useEffect(() => {
-    if (nivel >= 100) alTerminar();
-  }, [nivel]);
+  }, [apretando, completado]);
   return (
-    <div className="juego">
-      <h2>Prende la estufa</h2>
+    <div className={`juego${completado ? " exito" : ""}`}>
+      <h2>{completado ? "¡Estufa lista! 🔥" : "Prende la estufa"}</h2>
       <div className="juego-barra">
         <span style={{ width: `${nivel}%` }} />
       </div>
       <button
-        className="boton principal juego-mantener"
-        onPointerDown={() => setApretando(true)}
+        className={`boton principal juego-mantener${apretando ? " caliente" : ""}`}
+        onPointerDown={() => {
+          if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
+          setApretando(true);
+        }}
         onPointerUp={() => setApretando(false)}
         onPointerLeave={() => setApretando(false)}
       >
-        Mantén presionado
+        {completado ? "¡Caliente! ✨" : apretando ? "🔥 Calentando..." : "Mantén presionado"}
       </button>
     </div>
   );
@@ -95,13 +138,14 @@ function Estufa({ alTerminar }: Alto) {
 
 // Three sets of clothes. The one chosen is the one the child wears in the world.
 const ROPA = [
-  { nombre: "Uniforme", marca: "ropa_uniforme", codigo: "ELIGE_UNIFORME", ropa: "uniforme" as const },
-  { nombre: "Ropa de deporte", marca: "ropa_deporte", codigo: "ELIGE_DEPORTE", ropa: "casa" as const },
-  { nombre: "Ropa casual", marca: "ropa_casual", codigo: "ELIGE_CASUAL", ropa: "casa" as const },
+  { nombre: "Uniforme", icono: "👔", marca: "ropa_uniforme", codigo: "ELIGE_UNIFORME", ropa: "uniforme" as const },
+  { nombre: "Ropa de deporte", icono: "👟", marca: "ropa_deporte", codigo: "ELIGE_DEPORTE", ropa: "casa" as const },
+  { nombre: "Ropa casual", icono: "👕", marca: "ropa_casual", codigo: "ELIGE_CASUAL", ropa: "casa" as const },
 ];
 
 function Ropero({ alTerminar }: Alto) {
   const elegir = (o: (typeof ROPA)[number]) => {
+    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(20);
     cambiarEstado({ apariencia: { ...estado().apariencia, ropa: o.ropa } }, true);
     alTerminar({ marca: o.marca, codigo: o.codigo });
   };
@@ -110,8 +154,9 @@ function Ropero({ alTerminar }: Alto) {
       <h2>¿Qué te pones hoy?</h2>
       <div className="juego-opciones">
         {ROPA.map((o) => (
-          <button key={o.marca} className="boton principal" onClick={() => elegir(o)}>
-            {o.nombre}
+          <button key={o.marca} className="boton principal juego-ropa-btn" onClick={() => elegir(o)}>
+            <span className="juego-icono-ropa" aria-hidden="true">{o.icono}</span>
+            <span>{o.nombre}</span>
           </button>
         ))}
       </div>

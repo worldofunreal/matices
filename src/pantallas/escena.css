@@ -23,6 +23,31 @@
   animation: aparecer var(--rapido) both;
 }
 
+.escena-caja.interactiva {
+  user-select: none;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.escena-caja.interactiva:active {
+  transform: translateX(-50%) scale(0.995);
+}
+
+.cursor-escena {
+  display: inline-block;
+  margin-left: 3px;
+  color: var(--girasol, #f2c14e);
+  animation: parpadeo 0.7s infinite;
+}
+
+@keyframes parpadeo {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
 .escena-hablante-fila {
   display: flex;
   align-items: center;

@@ -81,9 +81,31 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: () 
   const [i, setI] = useState(0);
   const [respuesta, setRespuesta] = useState<string | null>(null); // the answer to the option just chosen
   const [efecto, setEfecto] = useState<string | null>(null); // the effect on screen, until the next one or the scene ends
+  const [letrasVisibles, setLetrasVisibles] = useState(0);
   const t0 = useRef(performance.now()); // when the options of this step appeared
   const p = pasos[i];
   const orden = useMemo(() => (p?.opciones ? azar(`${semilla()}:${escena.id}:${i}`).barajar(p.opciones.map((_, j) => j)) : []), [i]);
+
+  const textoActual = respuesta ? conGenero(respuesta) : p?.texto ? conGenero(p.texto) : "";
+
+  // Typewriter effect: letters appear progressively; tap speeds it up.
+  useEffect(() => {
+    setLetrasVisibles(0);
+    if (!textoActual) return;
+    const duracionMs = Math.min(500, Math.max(160, textoActual.length * 14));
+    const intervalo = Math.max(12, duracionMs / textoActual.length);
+    let n = 0;
+    const id = setInterval(() => {
+      n += 2;
+      if (n >= textoActual.length) {
+        setLetrasVisibles(textoActual.length);
+        clearInterval(id);
+      } else {
+        setLetrasVisibles(n);
+      }
+    }, intervalo);
+    return () => clearInterval(id);
+  }, [i, respuesta, textoActual]);
 
   // Walks on from step `desde`, applying the marks and missions on the way. The scene ends after its last step.
   const avanzar = (desde: number) => {
@@ -96,6 +118,15 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: () 
     }
     setRespuesta(null);
     k >= pasos.length ? terminar(true) : setI(k);
+  };
+
+  const avanzarLinea = () => {
+    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(12);
+    if (letrasVisibles < textoActual.length) {
+      setLetrasVisibles(textoActual.length);
+      return;
+    }
+    avanzar(i + 1);
   };
 
   // Over: finished (hecha), skipped (hecha, saltada) or paused (not hecha: it starts again next time).
@@ -115,6 +146,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: () 
   }, [i]);
 
   const elegir = (j: number) => {
+    if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
     const [codigo, , res] = p.opciones![j];
     registrar("escena", {
       escena: escena.id,
@@ -128,10 +160,18 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: () 
     else avanzar(i + 1);
   };
 
-  // Keys 1 to 4 choose an option on a computer.
+  // Keys 1 to 4 choose an option; Space / Enter advance dialogue lines.
   useEffect(() => {
-    if (!p?.opciones || respuesta) return;
     const tecla = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.code === "Space" || e.code === "Enter") {
+        if (!p?.opciones || respuesta) {
+          e.preventDefault();
+          avanzarLinea();
+          return;
+        }
+      }
+      if (!p?.opciones || respuesta) return;
       const k = Number(e.key) - 1;
       if (k >= 0 && k < orden.length) elegir(orden[k]);
     };
@@ -146,22 +186,36 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: () 
     avanzar(i + 1);
   };
 
-  // Lines of a scene are read at the child's pace: they only go on with "Seguir".
-  const linea = (quien: string, texto: string, de?: string) => (
-    <div className="escena-caja" role="status">
-      <div className="escena-hablante-fila">
-        {de && <RetratoHablante de={de} />}
-        <span className="globo-quien">{quien}</span>
+  // Lines of a scene: typewriter effect, click anywhere on box to speed up or advance.
+  const linea = (quien: string, texto: string, de?: string) => {
+    const textoCompleto = conGenero(texto);
+    const visible = letrasVisibles >= textoCompleto.length ? textoCompleto : textoCompleto.slice(0, letrasVisibles);
+    const estaCompleto = letrasVisibles >= textoCompleto.length;
+    return (
+      <div className="escena-caja interactiva" role="status" onClick={avanzarLinea} style={{ cursor: "pointer" }}>
+        <div className="escena-hablante-fila">
+          {de && <RetratoHablante de={de} />}
+          <span className="globo-quien">{quien}</span>
+        </div>
+        <p>
+          {visible}
+          {!estaCompleto && <span className="cursor-escena" aria-hidden="true">▍</span>}
+        </p>
+        <div className="escena-acciones">
+          <Bocina clave={`escena.${escena.id}.${i}`} texto={textoCompleto} />
+          <button
+            className="boton principal"
+            onClick={(ev) => {
+              ev.stopPropagation();
+              avanzarLinea();
+            }}
+          >
+            {!estaCompleto ? "Rápido" : E.seguir}
+          </button>
+        </div>
       </div>
-      <p>{conGenero(texto)}</p>
-      <div className="escena-acciones">
-        <Bocina clave={`escena.${escena.id}.${i}`} texto={conGenero(texto)} />
-        <button className="boton principal" onClick={() => avanzar(i + 1)}>
-          {E.seguir}
-        </button>
-      </div>
-    </div>
-  );
+    );
+  };
 
   // Efectos in Opciones, 0 to 5: the strength of the effect on screen; at 0 there is none.
   const fuerza = estado().opciones.efectos / 5;
