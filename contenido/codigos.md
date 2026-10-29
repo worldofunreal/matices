@@ -23,8 +23,6 @@ El juego guarda eventos con hora exacta, no conclusiones. Cada opción de cada e
 | `ELIGE_DEPORTE` | Elige la ropa de educación física (minijuego del ropero) | — |
 | `ELIGE_CASUAL` | Elige ropa casual (minijuego del ropero) | — |
 
-Cuando una escena le presenta opciones, puede cerrarla tocando fuera del diálogo. La escena se pausa y queda pendiente para otra visita; el evento registra el paso, las opciones mostradas y cuánto tiempo estuvo abierto. También registra si cerró una línea antes de continuar.
-
 ## Eventos
 
 Todos llevan: código del participante, sesión, versión del contenido y del juego, semilla de orden, milisegundos desde el inicio de la sesión (`t_ms`), hora (`cuando`) y su número en el aparato (`id`).
@@ -32,7 +30,7 @@ Todos llevan: código del participante, sesión, versión del contenido y del ju
 | Evento | Datos | Para qué |
 | --- | --- | --- |
 | `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, color de cada prenda, tenis y extra que lleva (`colores`), si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
-| `escena` | Escena (`escena`), paso (`inicio`, `opcion`, `fin`), quién habla, opciones en el orden mostrado, la elegida (código) y ms para decidir desde que aparecen. En `fin`, si se saltó (`saltada`) o pausó (`pausada`); al cerrar fuera registra el formato, paso, opciones y duración | Qué hace, qué contesta y cuándo cierra una escena |
+| `escena` | Escena (`escena`), paso (`inicio`, `opcion`, `fin`), quién habla, opciones en el orden mostrado, la elegida (código) y ms para decidir desde que aparecen. En `fin`, si se saltó (`saltada`) o pausó (`pausada`) | Qué hace, qué contesta y si deja una escena a medias |
 | `minijuego` | Minijuego, resultado (`completado`), ms que duró y, si lo tiene, el código de la elección | Cómo juega |
 | `explora` | Al tocar un objeto o a una persona fija (lugar y cuál), y al salir de un lugar (lugar, ms de permanencia, visitas) | Qué busca, evita, repite |
 | `tramo` | Día y parte del día que empieza (`manana`, `tarde`, `noche`, `fin`) | Ritmo de la partida |

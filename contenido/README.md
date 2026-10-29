@@ -1,11 +1,11 @@
 # Contenido
 
-Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.4.0` (borrador, sin revisión clínica).
+Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.4.1` (borrador, sin revisión clínica).
 
 | Archivo | Qué es |
 | --- | --- |
 | `escenas.yaml` | Las escenas del demo (guion de Dayana): dónde y cuándo empiezan, sus líneas, opciones, minijuegos y marcas |
-| `figuras.yaml` | La familia que aparece en la casa (mamá, papá, tío) |
+| `figuras.yaml` | La familia que aparece en la casa (mamá, papá, tío). Con `x` e `y` tiene su sitio en el mapa de la casa; sin sitio no aparece allí |
 | `textos.yaml` | Textos fijos: creación de personaje, los 40 nombres, cuadro de diálogo, mundo, letreros de las salidas |
 | `codigos.md` | Los códigos de las opciones y los eventos que guarda el juego |
 | `areas.md` | Las áreas de las escenas |
@@ -32,13 +32,12 @@ Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual
         - [PIDE_AYUDA, "¿Podrías ayudarme?", null]
     - {minijuego: refri}               # refri, estufa, ropero, cuerda, dibujo, pistas, examen, tienda
     - {marca: conocio_valeria}         # una marca que otras escenas pueden pedir con si y no
-    - {mision: "Buscar algo para desayunar"}
     - {de: sistema, texto: "Has conocido mejor a Valeria."}
 ```
 
-Cada paso hace una sola cosa: una línea (`de`), unas opciones, un minijuego, una marca, una misión o un efecto (`inquietud`, `miedo`, `intensidad`, `acompanamiento` o `alegria`; la intensidad la gradúa Efectos en Opciones).
+Cada paso hace una sola cosa: una línea (`de`), unas opciones, un minijuego, una marca o un efecto (`inquietud`, `miedo`, `intensidad`, `acompanamiento` o `alegria`; la intensidad la gradúa Efectos en Opciones).
 
-Una salida (`al: salir:<lugar>`) puede llevar `frena: true`. Entonces la puerta retiene al niño con el recordatorio de la escena la primera vez que intenta salir. Cada escena de salida se da una sola vez: al volver a intentarlo, pasa a la siguiente escena o sale.
+Una salida (`al: salir:<lugar>`) con `frena: true` es el recordatorio de un pendiente: su `si:` pide la marca que lo abre. Aparece una sola vez: al aparecer queda visto, y el siguiente intento sale.
 
 ## Pendientes
 
@@ -55,12 +54,27 @@ pendientes:
     mision: "Apagar la estufa"         # el letrero de arriba mientras está abierto
 ```
 
-Mientras está abierto y el niño está en ese lugar, el letrero y la guía lo muestran primero. El validador exige que una escena de ese objeto dé la marca de cierre, para que ningún pendiente quede sin salida.
+Mientras está abierto y el niño está en ese lugar, el letrero y la guía lo muestran primero. El validador exige que una escena de ese objeto dé la marca de cierre, para que ningún pendiente quede sin salida. Y necesita su consecuencia: una escena de llegada (`al: entrar`) en ese lugar que pide la marca que lo abre.
+
+## Objetivos
+
+Los objetivos del día van en `hitos:`, al final de `escenas.yaml`, en orden. El juego muestra el primero que no se ha cumplido.
+
+```yaml
+hitos:
+  - { dia: 1, hora: manana, lugar: casa, objeto: mama, mision: Hablar con mamá en el comedor, etiqueta: Hablar con Mamá, cumple: [T05, T05b] }
+  - { dia: 1, hora: manana, lugar: casa, puertaDestino: calle, mision: Salir de casa rumbo a la escuela, etiqueta: Salir a la calle, cumple: [T09] }
+```
+
+- `dia`, `hora` y `lugar`: cuándo y dónde vale el objetivo.
+- `objeto`, o `puertaDestino` (la puerta que lleva a otro lugar): a qué apunta la guía. Debe existir en el mapa.
+- `mision`: el letrero de arriba. `etiqueta`: el nombre en la guía.
+- `cumple`: una o más escenas. Basta con que una esté hecha. Un objetivo sin `cumple` dura hasta que cambie la parte del día, así que va al final de su bloque.
 
 ## Reglas
 
 - Toda opción lleva un código de `codigos.md`. Una opción sin código o con un código que no existe rompe la compilación.
-- Una escena `delicada` siempre es `saltable`: el niño puede pausarla, saltarla y pedir ayuda en cualquier momento.
+- Una escena `delicada` siempre es `saltable`: el niño puede saltarla y pedir ayuda en cualquier momento. Las reglas de pausa están en `docs/diseno.md`.
 - Las respuestas (`null` o texto) solo van cuando quien responde ya habló antes en la escena.
 - Un género no se escribe fijo. Donde una palabra cambia con el cuerpo del niño se escribe con la marca `{o}`: `list{o}` sale "listo" o "lista". Sin otras marcas en el texto.
 - Una marca `vigila_<nombre>` (el nombre de la persona o del animal, como en el mapa; por ejemplo `vigila_vecino_1`) hace vigilante a esa persona o animal mientras la marca esté: se voltea hacia el niño según de qué lado esté. Quiénes son vigilantes sin marca están en `src/mundo/vigilancia.ts`.

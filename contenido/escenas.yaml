@@ -209,6 +209,18 @@ escenas:
       - de: pensamiento
         titulo: Sartén sucio
         texto: Antes de salir a la calle, tengo que lavar el sartén quemado.
+  - id: C-sarten
+    nombre: Al volver, el sartén sin lavar
+    donde: casa
+    al: entrar
+    si:
+      - consecuencia_estufa
+    no:
+      - limpio_estufa
+    pasos:
+      - de: sistema
+        titulo: Sartén quemado
+        texto: El sartén quemado sigue en el fregadero.
   - id: T09
     nombre: Salir de casa
     donde: casa

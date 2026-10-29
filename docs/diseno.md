@@ -80,11 +80,13 @@ El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tie
 ## Escenas, decisiones y registro
 
 - Una escena tiene una línea de alguien, y a veces opciones. Las opciones aparecen en un orden distinto para cada niño.
+- Tocar fuera de un diálogo no hace nada. Para dejar una escena a medias está Pausar, que aparece en todas las escenas: la escena guarda la línea donde iba y, al volver, sigue ahí.
+- El orden es permisivo: una escena que llega antes no bloquea el juego; se juega su variante. Solo unas pocas escenas esperan a otra (`tras` en `contenido/README.md`).
 - Cada opción lleva un código que **describe** lo que hizo. El código no dice si fue bueno o malo.
-- Una escena delicada siempre permite pausar, saltar la secuencia sensible y pedir ayuda. La ruta de protección no depende de elegir bien una opción.
+- Una escena delicada siempre permite saltar la secuencia sensible y pedir ayuda. La ruta de protección no depende de elegir bien una opción.
 - Elegir callar, obedecer o retirarse nunca se presenta como responsabilidad del protagonista.
 - Las escenas de abuso sugieren la transgresión y cortan a negro. No se muestra violencia sexual. Lo que se nombra en lenguaje claro, según la edad, lo revisan los especialistas.
-- Lo que el niño deja sin hacer (apagar la estufa, hablar con mamá, platicar con Leo) lo retiene la puerta una vez: se le recuerda y, si insiste, puede salir. El juego no le pregunta si lo va a hacer: lee lo que hace.
+- Lo que el niño deja sin hacer, como apagar la estufa, lo retiene la puerta una vez: se le recuerda y, si insiste, puede salir. El juego no le pregunta si lo va a hacer: lee lo que hace.
 - Al volver, la consecuencia llega como escena y como hecho (la comida quemada; mamá tuvo que apagar la estufa porque le avisaron). No es un juicio: el juego registra qué hace después, por ejemplo si limpia el sartén.
 
 ## Lo que el juego nunca hace

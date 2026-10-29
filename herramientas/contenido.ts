@@ -235,6 +235,9 @@ export function validar() {
     else if (!objetosDe(mapa).some((o) => o.type === "objeto" && o.name === p.objeto)) err(d, `objeto: ${p.objeto} no es un objeto de ${p.lugar}`);
     if (!escenas.some((x) => x.donde === p.lugar && x.al === p.objeto && x.pasos.some((s) => s.marca === p.cierra)))
       err(d, `nadie la cierra: ninguna escena de ${p.objeto} da la marca ${p.cierra}`);
+    // The consequence is what the place shows the child on return while the pending thing is still open.
+    if (!escenas.some((x) => x.donde === p.lugar && x.al === "entrar" && !x.frena && (x.si ?? []).includes(p.abre)))
+      err(d, `sin consecuencia: ninguna escena al llegar a ${p.lugar} pide la marca ${p.abre}`);
     texto(`${d} etiqueta`, p.etiqueta);
     texto(`${d} mision`, p.mision);
   }
