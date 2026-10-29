@@ -9,7 +9,7 @@ import { pieza } from "../lienzo/arte";
 import { capas, coloresDe } from "../personaje/apariencia";
 import { estado, cambiarEstado, type Estado } from "../datos/guardado";
 import { bloqueo, revisarHora, dormir } from "../datos/dia";
-import { escenaPara, objetivoActual, pistaPaso, sincronizarHistoria } from "../datos/escenas";
+import { escenaPara, objetivoActual, pistaPaso, quedaAlgoCon, sincronizarHistoria, terminarEscena } from "../datos/escenas";
 import { Escena as EscenaEnCurso } from "./Escena";
 import { registrar } from "../datos/eventos";
 import { Bocina } from "../ui/Bocina";
@@ -59,17 +59,14 @@ function primerPaso(desde: string, meta: string): string | null {
 // The sign over a door: where it leads. Inside the same building a place has its inside name ("Patio").
 export const nombreSalida = (desde: string, destino: string) => (desde.split("_")[0] === destino.split("_")[0] && M.lugares_dentro[destino]) || M.lugares[destino];
 
-// Syncs family members in the house with the current story step (Mamá leaves after T05; Papá is in the living room on Day 2 night).
+// The family in the house, each figure at its spot (figuras.yaml). One is there while something is still to say to them
+// here and now (escenas.yaml decides when): Mamá stops being there once she has been spoken to, Papá comes when his scene is due.
 function sincronizarFamiliaEnCasa(m: Mapa) {
   if (m.lugar !== "casa") return;
-  const e = estado();
-  const piel = e.apariencia.colores.piel ?? 0;
-  m.puntos = m.puntos.filter((p) => p.nombre !== "mama" && p.nombre !== "papa");
-  if (e.dia === 1 && e.hora === "manana" && !e.historia.hechas.includes("T05")) {
-    m.puntos.push({ nombre: "mama", tipo: "npc", x: 248, y: 416, arte: "figuras/mama", piel });
-  }
-  if (e.dia === 2 && e.hora === "noche") {
-    m.puntos.push({ nombre: "papa", tipo: "npc", x: 144, y: 480, arte: "figuras/papa", piel });
+  const piel = estado().apariencia.colores.piel ?? 0;
+  m.puntos = m.puntos.filter((p) => !contenido.figuras.some((f) => f.id === p.nombre));
+  for (const f of contenido.figuras) {
+    if (f.casa && quedaAlgoCon("casa", f.id)) m.puntos.push({ nombre: f.id, tipo: "npc", x: f.casa.x, y: f.casa.y, arte: `figuras/${f.id}`, piel });
   }
 }
 
@@ -87,32 +84,25 @@ function esObjetivo(p: Punto, g: ReturnType<typeof guiaDe>): boolean {
 function guiaDe(m: Mapa): { x: number; y: number; nombre: string; puerta: string | null } | null {
   const obj = objetivoActual();
 
-  if (m.lugar === obj.lugar) {
+  if (obj && m.lugar === obj.lugar) {
     if (obj.puertaDestino) {
       const puerta = m.puertas.find((p) => p.destino === obj.puertaDestino);
       if (puerta) return { x: puerta.x + puerta.w / 2, y: puerta.y + puerta.h / 2, nombre: obj.etiqueta, puerta: puerta.nombre };
     }
     if (obj.objeto) {
-      const tieneMama = m.puntos.some((x) => x.nombre === "mama");
-      const tienePapa = m.puntos.some((x) => x.nombre === "papa");
-      const respaldo = obj.objeto === "mama" && !tieneMama ? "mesa" : obj.objeto === "papa" && !tienePapa ? "sillon" : null;
-      const p = m.puntos.find((x) => x.nombre === obj.objeto) ?? (respaldo ? m.puntos.find((x) => x.nombre === respaldo) : undefined);
+      const p = m.puntos.find((x) => x.nombre === obj.objeto);
       if (p) return { x: p.x, y: p.y, nombre: obj.etiqueta, puerta: null };
     }
   }
 
-  const tieneMama = m.puntos.some((x) => x.nombre === "mama");
-  const tienePapa = m.puntos.some((x) => x.nombre === "papa");
   for (const p of m.puntos) {
     if (p.nombre === "calendario") continue;
-    if (p.nombre === "mesa" && tieneMama) continue;
-    if (p.nombre === "sillon" && tienePapa) continue;
     if (escenaPara(m.lugar, p.nombre)) {
       return { x: p.x, y: p.y, nombre: etiquetaDe(p, m.lugar), puerta: null };
     }
   }
 
-  if (m.lugar !== obj.lugar) {
+  if (obj && m.lugar !== obj.lugar) {
     const paso = primerPaso(m.lugar, obj.lugar);
     const puerta = m.puertas.find((p) => p.destino === paso);
     if (puerta) {
@@ -152,7 +142,7 @@ async function cargarArte(m: Mapa, e: Estado, figuras: Figura[]) {
     pieza(`lugares/${m.lugar}/fondo`),
     ...m.puntos.map((p) => (p.piel !== undefined ? pieza(p.arte, { piel: p.piel }) : pieza(p.arte))),
     ...figuras.map((f) => pieza(`figuras/${f.id}`, { piel: f.piel })),
-    ...(m.lugar === "casa" ? [pieza("figuras/mama", { piel }), pieza("figuras/papa", { piel })] : []),
+    ...(m.lugar === "casa" ? contenido.figuras.filter((f) => f.casa).map((f) => pieza(`figuras/${f.id}`, { piel })) : []),
     ...capas(e.apariencia).map((id) => pieza(id, coloresDe(e.apariencia))),
     pieza("figuras/perro_lado"),
   ]);
@@ -170,6 +160,7 @@ interface PuntoInteraccion {
   esGuia: boolean;
   nivel: 1 | 2;
   punto: Punto;
+  fase?: "entrando" | "staged" | "saliendo";
 }
 
 interface SaludoAmbiental {
@@ -208,7 +199,33 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const [corriendo, setCorriendo] = useState(false);
   // A scene of the story is on: the world stands still under it, and the mission shows once it is over.
   const [escena, setEscena] = useState<{ escena: Escena; alFin: (hecha: boolean) => void } | null>(null);
-  const [mision, setMision] = useState<string | null>(() => sincronizarHistoria().mision);
+  const [mision, setMision] = useState<string | null>(() => sincronizarHistoria()?.mision ?? null);
+
+  // Lifecyle for world emotes: Entrada (180ms pop-in), Staged (idle loop), Salida (140ms shrink)
+  useEffect(() => {
+    const haySaliendo = emotes.some((e) => e.fase === "saliendo");
+    const hayEntrando = emotes.some((e) => e.fase === "entrando");
+
+    let timerEntrando: number | undefined;
+    let timerSaliendo: number | undefined;
+
+    if (hayEntrando) {
+      timerEntrando = window.setTimeout(() => {
+        setEmotes((prev) => prev.map((e) => (e.fase === "entrando" ? { ...e, fase: "staged" } : e)));
+      }, 180);
+    }
+
+    if (haySaliendo) {
+      timerSaliendo = window.setTimeout(() => {
+        setEmotes((prev) => prev.filter((e) => e.fase !== "saliendo"));
+      }, 140);
+    }
+
+    return () => {
+      if (timerEntrando) clearTimeout(timerEntrando);
+      if (timerSaliendo) clearTimeout(timerSaliendo);
+    };
+  }, [emotes]);
 
   useEffect(() => {
     motorRef.current?.pausar(superpuesto || !!escena);
@@ -307,7 +324,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
 
     // A scene starts over the world. When it is over, the mission, family presence and yellow guide update immediately,
     // a changed look is drawn again, any chained "entrar" scene starts, and `alFin` goes on.
-    const iniciarEscena = (e: Escena, alFin: () => void = () => {}) => {
+    const iniciarEscena = (e: Escena, alFin: (hecha: boolean) => void = () => {}) => {
       const antes = estado().apariencia;
       sonarMision();
       setEscena({
@@ -325,7 +342,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
               estado().hora,
               visitas,
               cicloEscenaRef.current,
-              obj.objeto
+              obj?.objeto
             );
             void cargarArte(mapaActual, estado(), figuras);
             setMapa({ ...mapaActual, puntos: [...mapaActual.puntos] });
@@ -336,7 +353,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           if (siguienteEntrar) {
             iniciarEscena(siguienteEntrar, alFin);
           } else {
-            alFin();
+            alFin(hecha);
           }
         },
       });
@@ -390,16 +407,15 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     };
 
     // The scenes of this door play one after another, then the child goes through. A scene with `frena` keeps the
-    // child at the door; it plays once, so the next try goes through (contenido/escenas.yaml).
+    // child at the door and is seen once: it counts as done as it appears, so the next try goes through (contenido/escenas.yaml).
     const cruzar = (p: Puerta) => {
       const no = bloqueo(lugarActual, p.horas);
       if (no) return mostrar(`mundo.${no}`, M[no]);
-      const salir = (): void => {
-        const e = escenaPara(lugarActual, `salir:${p.destino}`);
-        if (!e) return irse(p);
-        iniciarEscena(e, e.frena ? () => {} : () => irse(p));
-      };
-      salir();
+      const e = escenaPara(lugarActual, `salir:${p.destino}`);
+      if (!e) return irse(p);
+      if (!e.frena) return iniciarEscena(e, () => irse(p));
+      terminarEscena(e.id, true, 0);
+      iniciarEscena(e);
     };
 
     const irse = (p: Puerta) => {
@@ -418,7 +434,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     }
 
     const objInicial = objetivoActual();
-    void cargarMapa(lugarActual, e0.semilla, estado().dia, estado().hora, visitas, cicloEscenaRef.current, objInicial.objeto).then(async (m) => {
+    void cargarMapa(lugarActual, e0.semilla, estado().dia, estado().hora, visitas, cicloEscenaRef.current, objInicial?.objeto).then(async (m) => {
       mapaActual = m;
       sincronizarFamiliaEnCasa(m);
       quitarAusentes(m, estado().hora);
@@ -457,17 +473,11 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
             ultimoChequeoCercanos = ahora;
             const obj = objetivoActual();
             const nuevos: PuntoInteraccion[] = [];
-            const tieneMama = m.puntos.some((x) => x.nombre === "mama");
-            const tienePapa = m.puntos.some((x) => x.nombre === "papa");
 
             for (const pt of m.puntos) {
               if (!visible(pt, estado().hora)) continue;
               const dist = Math.hypot(pt.x - motor.x, pt.y - motor.y);
-              const esGuia =
-                obj.lugar === lugarActual &&
-                (obj.objeto === pt.nombre ||
-                  (!tieneMama && obj.objeto === "mama" && pt.nombre === "mesa") ||
-                  (!tienePapa && obj.objeto === "papa" && pt.nombre === "sillon"));
+              const esGuia = obj?.lugar === lugarActual && obj?.objeto === pt.nombre;
               const tieneEscena = !!escenaPara(lugarActual, pt.nombre);
               const estaCerca = dist <= 75;
 
@@ -531,7 +541,26 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
             }
 
             conObjetivo = new Set(nuevos.map((n) => n.punto));
-            setEmotes(nuevos);
+            setEmotes((prev) => {
+              const mapaNuevos = new Map(nuevos.map((n) => [n.id, n]));
+              const resultado: PuntoInteraccion[] = [];
+
+              for (const viejo of prev) {
+                if (mapaNuevos.has(viejo.id)) {
+                  const n = mapaNuevos.get(viejo.id)!;
+                  resultado.push({ ...n, fase: viejo.fase === "entrando" ? "entrando" : "staged" });
+                  mapaNuevos.delete(viejo.id);
+                } else if (viejo.fase !== "saliendo") {
+                  resultado.push({ ...viejo, fase: "saliendo" });
+                }
+              }
+
+              for (const n of mapaNuevos.values()) {
+                resultado.push({ ...n, fase: "entrando" });
+              }
+
+              return resultado;
+            });
           }
         },
       });
@@ -641,14 +670,15 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       {!escena && emotes.map((p) => (
         <div
           key={`emote_${p.id}`}
-          className="contenedor-emote"
+          className={`contenedor-emote fase-${p.fase ?? "staged"}`}
           data-mundo-x={p.x}
           data-mundo-y={p.y - p.alto}
         >
           <button
             type="button"
-            className={`emote-mundo nivel-${p.nivel}${p.esGuia ? " guia" : ""}`}
+            className={`emote-mundo nivel-${p.nivel}${p.esGuia ? " guia" : ""} ${p.fase ?? "staged"}`}
             onClick={(ev) => {
+              if (p.fase === "saliendo") return;
               ev.stopPropagation();
               sonarToque();
               accion.current?.interactuar(p.punto);

@@ -2,6 +2,7 @@
 // the app goes to the background, so closing it at any point resumes there.
 import { leer, guardar } from "./almacen";
 import { APARIENCIA_INICIAL, LOOK, type Apariencia, type Direccion } from "../personaje/apariencia";
+import { completarHistoria } from "./progreso";
 
 export interface Estado {
   lugar: string;
@@ -41,11 +42,12 @@ export interface Historia {
   hechas: string[]; // scenes done or skipped: they never start again
   marcas: string[]; // what the child has lived or chosen; scenes ask for them with si and no
   mision: string | null; // the mission on screen
+  progreso: Record<string, number>; // scene id -> the line a paused scene stopped at; gone once the scene is done
 }
 
 export type Hora = "manana" | "tarde" | "noche";
 
-const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, semilla: "", nombre: "", dia: 1, hora: "manana", llegada: null, visitas: {}, historia: { hechas: [], marcas: [], mision: null }, libro: [], opciones: OPCIONES_INICIALES };
+const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, semilla: "", nombre: "", dia: 1, hora: "manana", llegada: null, visitas: {}, historia: { hechas: [], marcas: [], mision: null, progreso: {} }, libro: [], opciones: OPCIONES_INICIALES };
 
 let actual: Estado = NUEVO;
 let leido = false; // never write before the saved game was read, or it would be overwritten
@@ -53,6 +55,8 @@ const escribir = () => leido && void guardar("estado", actual);
 
 export async function cargarEstado(): Promise<Estado> {
   actual = { ...NUEVO, ...(await leer<Estado>("estado")) };
+  // Games saved before the paused lines existed (historia.progreso) get an empty one.
+  actual.historia = completarHistoria(actual.historia);
   // Games saved before the background was procedural get a seed now, and keep it from then on.
   if (!actual.semilla) actual.semilla = crypto.randomUUID();
   // Games saved before 2026-10-21: the neutral body continues as the girl's, and the three separate

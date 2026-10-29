@@ -1,7 +1,8 @@
 # Figuras de la familia que aparecen en la casa. El id es el de su arte (public/assets/figuras/<id>.png)
 # y el de su código en el juego (figuras/<id> en el manifiesto).
 # tipo: adulto. La familia es fija; el niño no la arma.
+# x e y (opcional): su sitio en la casa. Sin sitio no aparece en la casa, y una escena no puede tocarla allí.
 figuras:
-  - [mama, adulto, "Mamá"]
-  - [papa, adulto, "Papá"]
+  - [mama, adulto, "Mamá", 248, 416]
+  - [papa, adulto, "Papá", 144, 480]
   - [tio, adulto, "Tío"]

@@ -1,7 +1,7 @@
 declare const __VERSION_JUEGO__: string;
 
 declare module "virtual:contenido" {
-  // One line of a scene: someone speaks, the child chooses, a minigame runs, a mark is set, a mission shows.
+  // One line of a scene: someone speaks, the child chooses, a minigame runs, a mark is set, an effect shows.
   // Options are [code, text, answer]; the answer is null when it comes later in the scene.
   export type Paso = {
     de?: string;
@@ -9,7 +9,6 @@ declare module "virtual:contenido" {
     texto?: string;
     opciones?: [string, string, string | null][];
     marca?: string;
-    mision?: string;
     minijuego?: string;
     efecto?: string;
   };
@@ -40,12 +39,24 @@ declare module "virtual:contenido" {
     etiqueta: string;
     mision: string;
   }
+  // An objective of the day, in order (contenido/escenas.yaml, hitos): the first one not done is the goal.
+  export interface Hito {
+    dia: number;
+    hora: "manana" | "tarde" | "noche";
+    lugar: string;
+    objeto?: string;
+    puertaDestino?: string;
+    mision: string;
+    etiqueta: string;
+    cumple?: string | string[];
+  }
   const contenido: {
     version: string;
     escenas: Escena[];
     pendientes: Pendiente[];
+    hitos: Hito[];
     textos: Textos;
-    figuras: { id: string; tipo: "adulto"; nombre: string }[];
+    figuras: { id: string; tipo: "adulto"; nombre: string; casa?: { x: number; y: number } }[];
     lugares: string[];
     conexiones: Record<string, string[]>;
     areas: { id: string; nombre: string; familia: string }[];

@@ -13,7 +13,6 @@ escenas:
       - de: pensamiento
         titulo: Tengo hambre
         texto: No he comido nada. Voy a la cocina a ver qué hay de desayunar.
-      - mision: Hablar con mamá en el comedor
   - id: T04
     nombre: El calendario de pared
     donde: casa
@@ -30,9 +29,11 @@ escenas:
   - id: T05
     nombre: Conversación con la madre
     donde: casa
-    al: mesa
+    al: mama
     dia: 1
     hora: manana
+    no:
+      - saco_huevos
     areas:
       - necesidades_fisicas
       - pedir_ayuda
@@ -64,7 +65,30 @@ escenas:
       - de: pensamiento
         titulo: Siempre con prisa
         texto: Últimamente mamá nunca tiene tiempo para desayunar conmigo.
-      - mision: Sacar los huevos del refrigerador en la cocina
+      - marca: hablo_mama
+  - id: T05b
+    nombre: Conversación con la madre, con los huevos ya sacados
+    donde: casa
+    al: mama
+    dia: 1
+    hora: manana
+    si:
+      - saco_huevos
+    no:
+      - hablo_mama
+    areas:
+      - necesidades_fisicas
+      - apoyo_emocional
+    pasos:
+      - de: madre
+        titulo: Ya tienes los huevos
+        texto: ¡Buenos días! Veo que ya sacaste los huevos. Qué bien. Prepárate algo rápido antes de irte.
+      - de: yo
+        titulo: Gracias
+        texto: Gracias, mamá. Ya casi estoy list{o} para salir.
+      - de: pensamiento
+        titulo: Siempre con prisa
+        texto: Mamá tampoco se sienta a desayunar conmigo, pero al menos ya tengo con qué.
       - marca: hablo_mama
   - id: T06
     nombre: El refrigerador
@@ -72,7 +96,6 @@ escenas:
     al: refrigerador
     dia: 1
     hora: manana
-    tras: T05
     areas:
       - necesidades_fisicas
     pasos:
@@ -81,7 +104,6 @@ escenas:
         titulo: Huevos listos
         texto: ¡Encontraste los huevos! Ahora puedes cocinarlos en la estufa.
       - marca: saco_huevos
-      - mision: Preparar el desayuno en la estufa
   - id: T07
     nombre: Preparar el desayuno
     donde: casa
@@ -103,7 +125,6 @@ escenas:
       - de: sistema
         titulo: Alarma escolar
         texto: "Sonó la alarma: es hora de ponerte el uniforme en tu cuarto."
-      - mision: Elegir tu ropa en el ropero de tu habitación
   - id: T08
     nombre: Elegir la ropa
     donde: casa
@@ -116,64 +137,6 @@ escenas:
       - escuela_aprendizaje
     pasos:
       - minijuego: ropero
-      - mision: Salir de casa rumbo a la escuela
-  - id: P-mama
-    nombre: Antes de salir, hablar con mamá
-    donde: casa
-    al: salir:calle
-    dia: 1
-    hora: manana
-    no:
-      - hablo_mama
-    frena: true
-    pasos:
-      - de: pensamiento
-        titulo: Despedirme de mamá
-        texto: Antes de salir a la calle, voy al comedor a hablar con mamá.
-  - id: P-huevos
-    nombre: Antes de salir, sacar los huevos
-    donde: casa
-    al: salir:calle
-    dia: 1
-    hora: manana
-    tras: T05
-    no:
-      - saco_huevos
-    frena: true
-    pasos:
-      - de: pensamiento
-        titulo: Comida pendiente
-        texto: Tengo que sacar los huevos del refri para hacerme de desayunar.
-  - id: P-desayuno
-    nombre: Antes de salir, preparar el desayuno
-    donde: casa
-    al: salir:calle
-    dia: 1
-    hora: manana
-    tras: T06
-    no:
-      - estufa_prendida
-    frena: true
-    pasos:
-      - de: pensamiento
-        titulo: Cocinar desayuno
-        texto: No puedo irme sin desayunar; voy a cocinar los huevos en la estufa.
-  - id: P-ropa
-    nombre: Antes de salir, elegir la ropa
-    donde: casa
-    al: salir:calle
-    dia: 1
-    hora: manana
-    tras: T07
-    no:
-      - ropa_uniforme
-      - ropa_deporte
-      - ropa_casual
-    frena: true
-    pasos:
-      - de: pensamiento
-        titulo: Cambiarme de ropa
-        texto: Antes de salir a la calle, debo ponerme la ropa de la escuela.
   - id: R-estufa
     nombre: Antes de salir, la estufa prendida
     donde: casa
@@ -187,21 +150,6 @@ escenas:
       - de: pensamiento
         titulo: Estufa encendida
         texto: Dejé la lumbre prendida en la cocina. Debo apagarla antes de salir.
-  - id: D-estufa
-    nombre: Salir con la estufa prendida
-    donde: casa
-    al: salir:calle
-    tras: R-estufa
-    si:
-      - estufa_prendida
-    no:
-      - estufa_apagada
-      - dejo_estufa
-    pasos:
-      - de: pensamiento
-        titulo: Se hace tarde
-        texto: Ya no me da tiempo de volver. La estufa se queda prendida.
-      - marca: dejo_estufa
   - id: A-estufa
     nombre: Apagar la estufa
     donde: casa
@@ -221,7 +169,7 @@ escenas:
     al: entrar
     hora: noche
     si:
-      - dejo_estufa
+      - estufa_prendida
     no:
       - consecuencia_estufa
       - estufa_apagada
@@ -277,14 +225,12 @@ escenas:
       - de: sistema
         titulo: Camino libre
         texto: Ya puedes explorar el pueblo, platicar con gente y entrar a la escuela.
-      - mision: Ir a la escuela
   - id: U01a
     nombre: Revisión del uniforme, con ropa de deporte
     donde: escuela_planta_baja
     al: entrar
     dia: 1
     hora: manana
-    tras: T09
     si:
       - ropa_deporte
     areas:
@@ -300,7 +246,6 @@ escenas:
     al: entrar
     dia: 1
     hora: manana
-    tras: T09
     no:
       - ropa_deporte
     areas:
@@ -337,7 +282,6 @@ escenas:
       - de: pensamiento
         titulo: Hora del recreo
         texto: Todavía no conozco bien a nadie aquí. Voy a buscar con quién hablar.
-      - mision: Conocer a tus compañeros
   - id: R02-valeria
     nombre: Valeria y la cuerda
     donde: escuela_planta_baja
@@ -449,7 +393,6 @@ escenas:
     al: entrar
     dia: 1
     hora: tarde
-    tras: T09
     areas:
       - prosocial
       - cuidar_de_mas
@@ -474,7 +417,6 @@ escenas:
         titulo: Compras hechas
         texto: Compraste los ingredientes y regresaste a la calle.
       - marca: compras
-      - mision: Regresar a casa para descansar
   - id: X01
     nombre: ¡Hoy toca examen!
     donde: escuela_planta_baja
@@ -506,14 +448,14 @@ escenas:
             - Haré mi mejor esfuerzo.
             - Con eso es suficiente. Mucho éxito.
       - minijuego: examen
-      - mision: Hablar con Leo en el patio de la escuela
   - id: R05
     nombre: Amistad que crece
     donde: escuela_planta_baja
     al: companero_2
     dia: 2
     hora: manana
-    tras: R02-leo
+    si:
+      - conocio_leo
     areas:
       - companeros
       - apoyo_emocional
@@ -539,7 +481,30 @@ escenas:
           - - EXPRESA_MALESTAR
             - Traigo algo que me preocupa.
             - Cuéntame con confianza, te escucho.
-      - mision: Salir de la escuela para regresar a casa
+      - marca: hablo_leo
+  - id: R05b
+    nombre: Leo, sin conocerlo antes
+    donde: escuela_planta_baja
+    al: companero_2
+    dia: 2
+    hora: manana
+    no:
+      - conocio_leo
+    areas:
+      - companeros
+      - prosocial
+    pasos:
+      - de: leo
+        titulo: Hola otra vez
+        texto: Hola. Estoy pintando aquí en la banca. ¿Quieres sentarte con nosotros?
+      - titulo: ¿Te sientas con Leo?
+        opciones:
+          - - ACEPTA
+            - Sí, me siento un rato.
+            - Qué bien. Aquí hay lugar.
+          - - EVITA
+            - Prefiero caminar un poco.
+            - Está bien. Aquí andamos.
       - marca: hablo_leo
   - id: E2-01
     nombre: Un momento tranquilo
@@ -557,11 +522,10 @@ escenas:
       - de: pensamiento
         titulo: Compartir el dibujo
         texto: Me gustó mucho cómo quedó. Voy a enseñárselo a papá en la sala.
-      - mision: Enseñar el dibujo a papá en la sala
   - id: E2-02
     nombre: Encuentro con el padre
     donde: casa
-    al: sillon
+    al: papa
     dia: 2
     hora: noche
     tras: E2-01
@@ -624,7 +588,6 @@ escenas:
         titulo: Falta de apoyo
         texto: Con todo lo que te doy, al menos deberías agradecer que te corrija.
       - marca: visto_papa
-      - mision: Regresar a tu cama en tu habitación
   - id: E2-04
     nombre: Consecuencia emocional
     donde: casa
@@ -657,7 +620,6 @@ escenas:
           - - COMPARTE
             - Enseñárselo mañana a un compañero.
             - null
-      - mision: Dormir en tu cama para descansar
   - id: E2-05
     nombre: Reconocimiento y apoyo
     donde: escuela_planta_baja
@@ -679,7 +641,6 @@ escenas:
       - de: leo
         titulo: Palabras de apoyo
         texto: No tiene que gustarle a todos. Lo que importa es que tú lo disfrutes.
-      - mision: Hablar con la orientadora en la planta baja de la escuela
       - marca: reconocio_dibujo
   - id: O01
     nombre: Hablar con la orientadora
@@ -720,7 +681,6 @@ escenas:
         titulo: Apoyo escolar
         texto: Lo que sientes sí importa. Pensaremos juntos cómo ayudarte.
       - marca: hablo_orientadora
-      - mision: Preparar el proyecto en parejas en el salón
   - id: C02
     nombre: Un proyecto entre dos
     donde: escuela_planta_baja
@@ -751,79 +711,6 @@ escenas:
             - ¿Y si juntamos las dos ideas?
             - Me parece muy bien. Lo combinamos.
       - marca: proyecto_pareja
-      - mision: Salir de la escuela para regresar a casa
-  - id: P-recreo
-    nombre: Antes de irse, hablar con Leo
-    donde: escuela_planta_baja
-    al: salir:calle
-    dia: 1
-    hora: manana
-    tras:
-      - U01a
-      - U01b
-    no:
-      - conocio_leo
-    frena: true
-    pasos:
-      - de: pensamiento
-        titulo: Aún hay recreo
-        texto: Sigue la hora del descanso; voy a platicar con mis compañeros en el patio.
-  - id: P-leo-2
-    nombre: Antes de irse, platicar con Leo
-    donde: escuela_planta_baja
-    al: salir:calle
-    dia: 2
-    hora: manana
-    tras: X01
-    no:
-      - hablo_leo
-    frena: true
-    pasos:
-      - de: pensamiento
-        titulo: Buscar a Leo
-        texto: Antes de irme a casa, voy a platicar con Leo aquí en el patio.
-  - id: P-leo-3
-    nombre: Antes de irse, hablar con Leo
-    donde: escuela_planta_baja
-    al: salir:calle
-    dia: 3
-    hora: manana
-    tras: E2-04
-    no:
-      - reconocio_dibujo
-    frena: true
-    pasos:
-      - de: pensamiento
-        titulo: Hablar con Leo
-        texto: Primero voy a buscar a Leo en el patio de la escuela.
-  - id: P-orientadora
-    nombre: Antes de irse, hablar con la orientadora
-    donde: escuela_planta_baja
-    al: salir:calle
-    dia: 3
-    hora: manana
-    tras: E2-05
-    no:
-      - hablo_orientadora
-    frena: true
-    pasos:
-      - de: pensamiento
-        titulo: Cita pendiente
-        texto: Antes de salir de la escuela, tengo que hablar con la orientadora.
-  - id: P-proyecto
-    nombre: Antes de irse, el proyecto en parejas
-    donde: escuela_planta_baja
-    al: salir:calle
-    dia: 3
-    hora: manana
-    tras: O01
-    no:
-      - proyecto_pareja
-    frena: true
-    pasos:
-      - de: pensamiento
-        titulo: Proyecto escolar
-        texto: Falta organizar el proyecto en parejas antes de salir a la calle.
 pendientes:
   - id: apagar-estufa
     abre: estufa_prendida
@@ -839,3 +726,35 @@ pendientes:
     objeto: fregadero
     etiqueta: Fregadero
     mision: Lavar el sartén quemado
+# Objetivos en orden, por parte del día. En cada parte, el primero que no está cumplido es el que guía al jugador.
+# `cumple` son escenas: basta una. Un hito sin `cumple` dura hasta que cambia la parte del día.
+hitos:
+  - { dia: 1, hora: manana, lugar: casa, mision: Despertar en tu habitación, etiqueta: Casa, cumple: [T03, T05, T05b] }
+  - { dia: 1, hora: manana, lugar: casa, objeto: mama, mision: Hablar con mamá en el comedor, etiqueta: Hablar con Mamá, cumple: [T05, T05b] }
+  - { dia: 1, hora: manana, lugar: casa, objeto: refrigerador, mision: Sacar los huevos del refrigerador en la cocina, etiqueta: Refrigerador, cumple: [T06] }
+  - { dia: 1, hora: manana, lugar: casa, objeto: estufa, mision: Preparar el desayuno en la estufa, etiqueta: Estufa, cumple: [T07] }
+  - { dia: 1, hora: manana, lugar: casa, objeto: ropero, mision: Elegir tu ropa en el ropero de tu habitación, etiqueta: Ropero, cumple: [T08] }
+  - { dia: 1, hora: manana, lugar: casa, puertaDestino: calle, mision: Salir de casa rumbo a la escuela, etiqueta: Salir a la calle, cumple: [T09] }
+  - { dia: 1, hora: manana, lugar: escuela_planta_baja, mision: Ir a la escuela, etiqueta: Escuela, cumple: [U01a, U01b] }
+  - { dia: 1, hora: manana, lugar: escuela_planta_baja, mision: Salir al patio de la escuela para el recreo, etiqueta: Patio, cumple: [R01] }
+  - { dia: 1, hora: manana, lugar: escuela_planta_baja, objeto: companero_1, mision: Hablar con Valeria en el patio de la escuela, etiqueta: Valeria, cumple: [R02-valeria] }
+  - { dia: 1, hora: manana, lugar: escuela_planta_baja, objeto: companero_2, mision: Hablar con Leo en el patio de la escuela, etiqueta: Leo, cumple: [R02-leo] }
+  - { dia: 1, hora: manana, lugar: escuela_planta_baja, objeto: companero_3, mision: Hablar con Sam en los salones de la planta baja, etiqueta: Sam, cumple: [R02-sam] }
+  - { dia: 1, hora: manana, lugar: calle, mision: Salir de la escuela a la calle para volver a casa, etiqueta: Salir a la calle }
+  - { dia: 1, hora: tarde, lugar: calle, mision: Salir a la calle para ayudar con las compras, etiqueta: Calle, cumple: [C03] }
+  - { dia: 1, hora: tarde, lugar: casa, mision: Regresar a casa para descansar, etiqueta: Casa }
+  - { dia: 1, hora: noche, lugar: casa, objeto: cama, mision: Ir a tu cama para dormir, etiqueta: A dormir }
+  - { dia: 2, hora: manana, lugar: escuela_planta_baja, mision: Ir a la escuela para el examen, etiqueta: Escuela, cumple: [X01] }
+  - { dia: 2, hora: manana, lugar: escuela_planta_baja, objeto: companero_2, mision: Hablar con Leo en el patio de la escuela, etiqueta: Leo, cumple: [R05, R05b] }
+  - { dia: 2, hora: manana, lugar: calle, mision: Salir de la escuela para regresar a casa, etiqueta: Salir a la calle }
+  - { dia: 2, hora: tarde, lugar: casa, mision: Regresar a casa después de clases, etiqueta: Casa }
+  - { dia: 2, hora: noche, lugar: casa, objeto: cama, mision: Ir a tu cama para dibujar un rato, etiqueta: Dibujar, cumple: [E2-01] }
+  - { dia: 2, hora: noche, lugar: casa, objeto: papa, mision: Enseñar el dibujo a papá en la sala, etiqueta: Hablar con Papá, cumple: [E2-02] }
+  - { dia: 2, hora: noche, lugar: casa, objeto: cama, mision: Regresar a tu cama en tu habitación, etiqueta: Ir a la cama, cumple: [E2-04] }
+  - { dia: 2, hora: noche, lugar: casa, objeto: cama, mision: Dormir en tu cama para descansar, etiqueta: A dormir }
+  - { dia: 3, hora: manana, lugar: escuela_planta_baja, objeto: companero_2, mision: Ir al patio de la escuela para hablar con Leo, etiqueta: Leo, cumple: [E2-05] }
+  - { dia: 3, hora: manana, lugar: escuela_planta_baja, objeto: orientadora, mision: Hablar con la orientadora en la planta baja, etiqueta: Orientadora, cumple: [O01] }
+  - { dia: 3, hora: manana, lugar: escuela_planta_baja, mision: Preparar el proyecto en parejas en el salón, etiqueta: Escuela, cumple: [C02] }
+  - { dia: 3, hora: manana, lugar: calle, mision: Salir de la escuela para regresar a casa, etiqueta: Salir a la calle }
+  - { dia: 3, hora: tarde, lugar: casa, mision: Regresar a casa, etiqueta: Casa }
+  - { dia: 3, hora: noche, lugar: casa, objeto: cama, mision: Dormir en tu cama para terminar la historia, etiqueta: A dormir }

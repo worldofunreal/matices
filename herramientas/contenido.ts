@@ -78,16 +78,17 @@ export function validar() {
     if (/^personaje\/(ropa_|calzado_)/.test(p.id) && !textos.creacion?.color_de?.[p.id.split("/")[1]]) err("textos creacion.color_de", `falta ${p.id.split("/")[1]}`);
 
   // Family figures: each one needs its figure and its art (FIGURAS).
-  const { figuras: listaFiguras } = parse(readFileSync(join(DIR, "figuras.yaml"), "utf8")) as { figuras: [string, string, string][] };
+  const { figuras: listaFiguras } = parse(readFileSync(join(DIR, "figuras.yaml"), "utf8")) as { figuras: [string, string, string, number?, number?][] };
   const manifiesto = leerManifiesto();
   const piezas = new Set(manifiesto.piezas.map((p) => p.id));
-  const figuras = listaFiguras.map(([id, tipo, nombre]) => {
+  const figuras = listaFiguras.map(([id, tipo, nombre, x, y]) => {
     if (tipo !== "adulto") err(`figuras ${id}`, `tipo inválido ${tipo}`);
+    if ((x === undefined) !== (y === undefined)) err(`figuras ${id}`, "su sitio en la casa lleva x e y juntas");
     if (!piezas.has(`figuras/${id}`)) err(`figuras ${id}`, `falta figuras/${id} en el manifiesto`);
     if (!FIGURAS[id]) err(`figuras ${id}`, "falta en FIGURAS (herramientas/arte.ts)");
     if (FIGURAS[id] && FIGURAS[id].alto > (manifiesto.piezas.find((p) => p.id === `figuras/${id}`)?.medida[1] ?? 0) - 2) err(`figuras ${id}`, "no cabe en su cuadro");
     texto(`figuras ${id}`, nombre);
-    return { id, tipo, nombre };
+    return { id, tipo, nombre, casa: x !== undefined && y !== undefined ? { x, y } : undefined };
   });
 
   // Maps: one per place with art (lugares/<lugar>/fondo); doors lead to a place and an arrival point
@@ -162,9 +163,15 @@ export function validar() {
   // Scenes (contenido/escenas.yaml): where and when each one starts, its lines and its options. A delicate
   // scene must be skippable, so the child is never held in one; the validator refuses it otherwise.
   const hablantes = new Set(Object.keys(textos.escena?.hablantes ?? {}));
-  const { escenas, pendientes = [] } = parse(readFileSync(join(DIR, "escenas.yaml"), "utf8")) as { escenas: Escena[]; pendientes?: Pendiente[] };
+  const { escenas, pendientes = [], hitos = [] } = parse(readFileSync(join(DIR, "escenas.yaml"), "utf8")) as { escenas: Escena[]; pendientes?: Pendiente[]; hitos?: Hito[] };
   const ids = new Set<string>();
   const marcasDelJuego = new Set([...escenas.flatMap((x) => x.pasos.flatMap((p) => (p.marca ? [p.marca] : []))), ...Object.values(MINIJUEGOS).flat()]);
+  // What a place can be touched for: its objects and people, and in the house the family figures that have a spot there.
+  const tocable = (lugar: string, nombre: string) => {
+    const mapa = mapas[lugar];
+    if (!mapa) return false;
+    return objetosDe(mapa).some((o) => (o.type === "objeto" || o.type === "npc") && o.name === nombre) || (lugar === "casa" && figuras.some((f) => f.id === nombre && f.casa !== undefined));
+  };
   for (const x of escenas) {
     const d = `escenas ${x.id}`;
     if (!/^[A-Za-z0-9-]+$/.test(x.id) || ids.has(x.id)) err(d, "id repetido o inválido");
@@ -174,8 +181,7 @@ export function validar() {
     if (x.al.startsWith("salir:")) {
       if (!mapas[x.al.slice("salir:".length)]) err(d, `al: ${x.al} lleva a un lugar que no existe`);
     } else if (x.al !== "entrar") {
-      const m = mapas[x.donde];
-      if (m && !objetosDe(m).some((o) => (o.type === "objeto" || o.type === "npc") && o.name === x.al)) err(d, `al: ${x.al} no es un objeto ni una persona de ${x.donde}`);
+      if (mapas[x.donde] && !tocable(x.donde, x.al)) err(d, `al: ${x.al} no es un objeto ni una persona de ${x.donde}`);
     }
     if (x.dia !== undefined && !(Number.isInteger(x.dia) && x.dia >= 1 && x.dia <= DIAS)) err(d, `dia debe ser de 1 a ${DIAS}`);
     if (x.hora !== undefined && !HORAS.has(x.hora)) err(d, `hora inválida ${x.hora}`);
@@ -184,12 +190,13 @@ export function validar() {
     (x.areas ?? []).forEach((a) => area(`${d} areas`, a));
     if (x.delicada && !x.saltable) err(d, "una escena delicada debe ser saltable: pausar, saltar y pedir ayuda siempre a la mano");
     if (x.frena && !x.al.startsWith("salir:")) err(d, "frena solo va en una salida (al: salir:<lugar>)");
+    if (x.frena && !(x.si ?? []).some((m) => pendientes.some((p) => p.abre === m))) err(d, "un recordatorio (frena) pide en si: la marca que abre un pendiente");
     if (!x.pasos?.length) err(d, "sin pasos");
     let ultimo: string | null = null; // who spoke last: the answer to an option comes from them
     x.pasos.forEach((p, i) => {
       const dp = `${d} paso ${i + 1}`;
-      const clases = ["de", "opciones", "marca", "mision", "minijuego", "efecto"].filter((k) => k in p);
-      if (clases.length !== 1) return err(dp, "cada paso es una sola cosa: de, opciones, marca, mision, minijuego o efecto");
+      const clases = ["de", "opciones", "marca", "minijuego", "efecto"].filter((k) => k in p);
+      if (clases.length !== 1) return err(dp, "cada paso es una sola cosa: de, opciones, marca, minijuego o efecto");
       if (p.de !== undefined) {
         if (!hablantes.has(p.de)) err(dp, `no se sabe quién habla: ${p.de}`);
         if (p.titulo !== undefined) texto(`${dp} titulo`, p.titulo);
@@ -207,8 +214,6 @@ export function validar() {
         });
       } else if (p.marca !== undefined) {
         if (!/^[a-z0-9_]+$/.test(p.marca)) err(dp, `marca inválida ${p.marca}`);
-      } else if (p.mision !== undefined) {
-        texto(dp, p.mision);
       } else if (p.minijuego !== undefined) {
         if (!(p.minijuego in MINIJUEGOS)) err(dp, `minijuego desconocido ${p.minijuego}`);
       } else if (p.efecto !== undefined) {
@@ -233,17 +238,41 @@ export function validar() {
     texto(`${d} etiqueta`, p.etiqueta);
     texto(`${d} mision`, p.mision);
   }
+  // Objectives (hitos): the place and part of the day they belong to, what they point at, and the scenes that finish them
+  // (cumple; any one is enough). A hito without cumple lasts until the part of the day changes, so it must be the last
+  // one of its part of the day; otherwise the ones after it could never be reached.
+  hitos.forEach((h, i) => {
+    const d = `hitos ${i + 1}`;
+    if (!(Number.isInteger(h.dia) && h.dia >= 1 && h.dia <= DIAS)) err(d, `dia debe ser de 1 a ${DIAS}`);
+    if (!HORAS.has(h.hora)) err(d, `hora inválida ${h.hora}`);
+    const mapa = mapas[h.lugar];
+    if (!mapa) err(d, `lugar: ${h.lugar} no es un mapa`);
+    if (h.objeto && !tocable(h.lugar, h.objeto)) err(d, `objeto: ${h.objeto} no se puede tocar en ${h.lugar}`);
+    if (h.puertaDestino && !(mapa && objetosDe(mapa).some((o) => o.type === "puerta" && propiedades(o).destino === h.puertaDestino)))
+      err(d, `puertaDestino: ${h.puertaDestino} no sale de ${h.lugar}`);
+    for (const c of ([] as string[]).concat(h.cumple ?? [])) {
+      const s = escenas.find((x) => x.id === c);
+      if (!s) err(d, `cumple: ${c} no es una escena`);
+      else if (s.donde !== h.lugar || (s.dia !== undefined && s.dia !== h.dia) || (s.hora !== undefined && s.hora !== h.hora))
+        err(d, `cumple: ${c} no se puede jugar en ${h.lugar}, día ${h.dia}, ${h.hora}`);
+    }
+    if (h.cumple === undefined && hitos.slice(i + 1).some((x) => x.dia === h.dia && x.hora === h.hora))
+      err(d, "sin cumple, tiene que ser el último de su parte del día");
+    texto(`${d} mision`, h.mision);
+    texto(`${d} etiqueta`, h.etiqueta);
+  });
   if (errores.length) throw new Error(`Contenido inválido:\n- ${errores.join("\n- ")}`);
   // Doors: the places each place leads to. The world's guide walks this graph toward where the day goes next.
   const conexiones = Object.fromEntries(Object.entries(mapas).map(([l, m]) => [l, m ? objetosDe(m).filter((o) => o.type === "puerta").map((o) => propiedades(o).destino) : []]));
   // What can be touched in each place (the dashboard's "never touched").
   const objetos = Object.fromEntries(Object.entries(mapas).map(([l, m]) => [l, m ? objetosDe(m).filter((o) => o.type === "objeto").map((o) => o.name) : []]));
-  return { version: version(), escenas, textos, figuras, lugares, conexiones, objetos, areas: areasDelMarco(), pendientes };
+  return { version: version(), escenas, textos, figuras, lugares, conexiones, objetos, areas: areasDelMarco(), pendientes, hitos };
 }
 
-type Paso = { de?: string; titulo?: string; texto?: string; opciones?: [string, string, string | null][]; marca?: string; mision?: string; minijuego?: string; efecto?: string };
+type Paso = { de?: string; titulo?: string; texto?: string; opciones?: [string, string, string | null][]; marca?: string; minijuego?: string; efecto?: string };
 type Escena = { id: string; nombre: string; donde: string; al: string; dia?: number; hora?: string; tras?: string | string[]; si?: string[]; no?: string[]; areas?: string[]; delicada?: boolean; saltable?: boolean; frena?: boolean; sugerida?: boolean; pasos: Paso[] };
 type Pendiente = { id: string; abre: string; cierra: string; lugar: string; objeto: string; etiqueta: string; mision: string };
+type Hito = { dia: number; hora: string; lugar: string; objeto?: string; puertaDestino?: string; mision: string; etiqueta: string; cumple?: string | string[] };
 
 type ObjetoMapa = { name: string; type: string; properties?: { name: string; value: string }[] };
 type Mapa = { width: number; height: number; layers: { name: string; objects?: ObjetoMapa[] }[] };

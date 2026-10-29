@@ -1,4 +1,4 @@
-// npm test: camera smoothing, zoom center anchoring, and alternative scene prerequisites.
+// npm test: camera smoothing and zoom center anchoring.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
@@ -50,48 +50,4 @@ test("el zoom suave mantiene invariante el centro del mundo en pantalla", () => 
 
   assert.equal(Math.round(nuevoCentroMundoX * 100), Math.round(centroMundoX * 100));
   assert.equal(Math.round(nuevoCentroMundoY * 100), Math.round(centroMundoY * 100));
-});
-
-test("prerrequisitos alternativos (tras con arreglo) desbloquean la escena con cualquiera de las opciones", () => {
-  const cumplePrerrequisito = (tras: string[] | string | undefined, hechas: string[]) => {
-    const lista = ([] as string[]).concat(tras ?? []);
-    return lista.length === 0 || lista.some((t) => hechas.includes(t));
-  };
-
-  // R01 requires [U01a, U01b]
-  const trasR01 = ["U01a", "U01b"];
-  assert.equal(cumplePrerrequisito(trasR01, []), false);
-  assert.equal(cumplePrerrequisito(trasR01, ["U01a"]), true);
-  assert.equal(cumplePrerrequisito(trasR01, ["U01b"]), true);
-
-  // T05 has no tras (can trigger directly when talking to mamá in morning)
-  assert.equal(cumplePrerrequisito(undefined, []), true);
-
-  // T06 requires T05
-  const trasT06 = "T05";
-  assert.equal(cumplePrerrequisito(trasT06, []), false);
-  assert.equal(cumplePrerrequisito(trasT06, ["T05"]), true);
-});
-
-test("al completar T05 todas las marcas y misiones de sus pasos quedan registradas", () => {
-  const pasosT05 = [
-    { de: "madre", texto: "¡Buenos días!" },
-    { de: "yo", texto: "Buenos días, mamá." },
-    { de: "madre", texto: "Hay huevos en la cocina." },
-    { opciones: [["ACEPTA", "Está bien."]] },
-    { de: "pensamiento", texto: "Siempre con prisa." },
-    { mision: "Sacar los huevos del refrigerador en la cocina" },
-    { marca: "hablo_mama" },
-  ];
-
-  const marcasRegistradas: string[] = [];
-  let misionActiva = "Hablar con mamá en el comedor";
-
-  for (const paso of pasosT05) {
-    if (paso.marca) marcasRegistradas.push(paso.marca);
-    if (paso.mision) misionActiva = paso.mision;
-  }
-
-  assert.ok(marcasRegistradas.includes("hablo_mama"));
-  assert.equal(misionActiva, "Sacar los huevos del refrigerador en la cocina");
 });
