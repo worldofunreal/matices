@@ -343,21 +343,13 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
 
       {p.opciones && !respuesta && (
         <div className="escena-contenedor-dialogo con-opciones">
-          <div className="respuestas-integradas" role="group">
-            {orden.map((j, n) => (
-              <button key={j} className="boton principal respuesta-btn" onClick={() => elegir(j)}>
-                <span className="escena-numero">{n + 1}</span>
-                <span>{conGenero(p.opciones![j][1])}</span>
-              </button>
-            ))}
-          </div>
           {(() => {
             const pasoPrevio = [...pasos.slice(0, i)].reverse().find((x) => x.texto);
             const hablantePrevio = ultimoAntes(pasos, i);
             const tituloPregunta = p.titulo ? conGenero(p.titulo) : pasoPrevio?.titulo ? conGenero(pasoPrevio.titulo) : "¿Qué respondes?";
             const textoPregunta = pasoPrevio ? conGenero(pasoPrevio.texto!) : "¿Qué quieres responder?";
             return (
-              <div className="escena-caja fija" role="status">
+              <div className="escena-caja fija opciones-libro" role="status">
                 <div className="escena-nombre-placa">
                   <span>{hablante(hablantePrevio)}</span>
                 </div>
@@ -371,6 +363,14 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
               </div>
             );
           })()}
+          <div className="respuestas-integradas" role="group">
+            {orden.map((j, n) => (
+              <button key={j} className="boton principal respuesta-btn" onClick={() => elegir(j)}>
+                <span className="escena-numero">{n + 1}</span>
+                <span>{conGenero(p.opciones![j][1])}</span>
+              </button>
+            ))}
+          </div>
         </div>
       )}
       {p.opciones && respuesta && linea(hablante(ultimoAntes(pasos, i)), respuesta, ultimoAntes(pasos, i), "Respuesta")}
