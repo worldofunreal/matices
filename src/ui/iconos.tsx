@@ -124,4 +124,10 @@ export const Icono = {
       <path d="M4 9h10a6 6 0 0 1 0 12h-4" />
     </>,
   ),
+  descargar: svg(
+    <>
+      <path d="M12 3v13M7 11l5 5 5-5" />
+      <path d="M5 21h14" />
+    </>,
+  ),
 };

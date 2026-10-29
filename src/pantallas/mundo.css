@@ -18,15 +18,16 @@
 .velo-mundo {
   position: absolute;
   inset: 0;
-  z-index: 25;
-  background: #1d1a24;
+  z-index: 35;
+  background: radial-gradient(circle at center, rgba(29, 26, 36, 0.95) 0%, #15131a 100%);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 220ms ease;
+  transition: opacity 260ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .velo-mundo.cubierto {
   opacity: 1;
+  pointer-events: auto;
 }
 
 /* Zoom buttons in the bottom-left corner, clear of the top bar and Opciones. */
@@ -282,4 +283,49 @@
 .mision-icono {
   font-size: 16px;
   line-height: 1;
+}
+
+/* Banner de ubicación al llegar a una nueva zona */
+.banner-ubicacion {
+  position: absolute;
+  top: max(62px, calc(env(safe-area-inset-top) + 62px));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 22;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 18px;
+  border-radius: 999px;
+  background: rgba(254, 250, 243, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(175, 125, 60, 0.28);
+  box-shadow: 0 8px 24px rgba(29, 26, 36, 0.2), 0 2px 6px rgba(29, 26, 36, 0.1);
+  color: #1d1a24;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  animation: banner-ubicacion-anim 2.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.banner-ubicacion-icono {
+  font-size: 18px;
+  line-height: 1;
+}
+
+@keyframes banner-ubicacion-anim {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -14px) scale(0.9);
+  }
+  14%, 78% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -8px) scale(0.96);
+  }
 }

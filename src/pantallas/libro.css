@@ -37,16 +37,29 @@
   margin: 0;
   font-size: 24px;
   font-weight: 800;
+  color: var(--tinta, #1d1a24);
+}
+
+.libro-cabecera-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.libro-contenido {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
 }
 
 .libro-paginas {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   align-content: start;
-  gap: 12px;
+  gap: 14px;
 }
 
 .libro-pagina-tarjeta {
@@ -54,16 +67,65 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 14px 10px;
-  border: 0;
+  padding: 12px 10px;
+  border: 1.5px solid rgba(43, 34, 51, 0.08);
   border-radius: var(--radio);
-  background: var(--tarjeta);
-  box-shadow: var(--sombra);
+  background: var(--tarjeta, #ffffff);
+  box-shadow: 0 4px 12px rgba(29, 26, 36, 0.07);
   color: inherit;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 750;
   text-align: center;
   cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.libro-pagina-tarjeta:hover,
+.libro-pagina-tarjeta:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(29, 26, 36, 0.12);
+}
+
+.libro-nueva {
+  background: linear-gradient(135deg, rgba(254, 248, 238, 1), rgba(250, 238, 218, 1));
+  border: 1.5px dashed rgba(160, 110, 50, 0.35);
+}
+
+.libro-nueva .libro-lapiz svg {
+  color: #a06a42;
+}
+
+.libro-tarjeta-etiqueta {
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(29, 26, 36, 0.7);
+}
+
+.libro-vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 10px;
+  padding: 32px 20px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: var(--radio);
+  border: 1px dashed rgba(43, 34, 51, 0.15);
+  max-width: 420px;
+  margin: 10px auto;
+}
+
+.libro-vacio-icono {
+  font-size: 38px;
+  line-height: 1;
+}
+
+.libro-vacio-texto {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: rgba(29, 26, 36, 0.75);
 }
 
 .libro-lapiz svg {
@@ -77,6 +139,7 @@
   object-fit: contain;
   border-radius: 8px;
   background: #faf6ee;
+  border: 1px solid rgba(43, 34, 51, 0.08);
 }
 
 .libro-detalle {
@@ -85,13 +148,26 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 10px;
+}
+
+.libro-dibujo-marco {
+  padding: 12px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(29, 26, 36, 0.15);
+  border: 1.5px solid rgba(43, 34, 51, 0.08);
+  display: flex;
+  justify-content: center;
+  max-width: min(100%, 600px);
 }
 
 .libro-dibujo {
-  width: min(100%, 520px);
-  border-radius: 14px;
+  width: 100%;
+  border-radius: 10px;
   background: #faf6ee;
-  box-shadow: var(--sombra);
+  display: block;
 }

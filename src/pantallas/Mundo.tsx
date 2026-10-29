@@ -19,6 +19,18 @@ import "./mundo.css";
 const M = contenido.textos.mundo;
 const CAIDA = 6; // the walker's body center sits 6 game pixels above the feet
 
+const ICONOS_LUGAR: Record<string, string> = {
+  casa: "🏡",
+  calle: "🌳",
+  tiendita: "🛒",
+  parque: "⛲",
+  escuela_planta_baja: "🏫",
+  escuela_planta_alta: "🏫",
+  escuela_patio: "🏀",
+  biblioteca_planta_baja: "📚",
+  biblioteca_planta_alta: "📖",
+};
+
 const dentro = (r: { x: number; y: number; w: number; h: number }, x: number, y: number) => x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h;
 
 // The first door on the shortest way from one place to another, over the door graph of all maps.
@@ -160,6 +172,8 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const [guia, setGuia] = useState<ReturnType<typeof guiaDe>>(null);
   const [emotes, setEmotes] = useState<PuntoInteraccion[]>([]);
   const [saludoAmbiental, setSaludoAmbiental] = useState<SaludoAmbiental | null>(null);
+  const [anuncioLugar, setAnuncioLugar] = useState<{ id: number; icono: string; nombre: string } | null>(null);
+  const temporizadorLugar = useRef(0);
   const [corriendo, setCorriendo] = useState(false);
   // A scene of the story is on: the world stands still under it, and the mission shows once it is over.
   const [escena, setEscena] = useState<{ escena: Escena; alFin: () => void } | null>(null);
@@ -293,7 +307,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       sincronizarHistoria();
       setMision(estado().historia.mision);
       setCubierto(true);
-      window.setTimeout(() => setRecarga((r) => r + 1), 220);
+      window.setTimeout(() => setRecarga((r) => r + 1), 260);
     };
 
     const figuras: Figura[] = [];
@@ -418,6 +432,11 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       setGuia(g);
       motor.iniciar();
       setCubierto(false);
+      const nombreLugar = M.lugares[lugarActual] ?? lugarActual;
+      const iconoLugar = ICONOS_LUGAR[lugarActual] ?? "📍";
+      setAnuncioLugar({ id: Date.now(), icono: iconoLugar, nombre: nombreLugar });
+      clearTimeout(temporizadorLugar.current);
+      temporizadorLugar.current = window.setTimeout(() => setAnuncioLugar(null), 2800);
     });
 
     return () => {
@@ -425,6 +444,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       accion.current = null;
       clearTimeout(temporizador.current);
       clearTimeout(temporizadorSaludo.current);
+      clearTimeout(temporizadorLugar.current);
       setEmotes([]);
       setSaludoAmbiental(null);
       if (activo) {
@@ -547,6 +567,12 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
 
       {/* keyed by scene: a scene chained right after another starts from its first step */}
       {escena && <EscenaEnCurso key={escena.escena.id} escena={escena.escena} alTerminar={escena.alFin} />}
+      {anuncioLugar && !escena && (
+        <aside key={anuncioLugar.id} className="banner-ubicacion" role="status" aria-live="polite">
+          <span className="banner-ubicacion-icono" aria-hidden="true">{anuncioLugar.icono}</span>
+          <span className="banner-ubicacion-texto">{anuncioLugar.nombre}</span>
+        </aside>
+      )}
       {mision && !escena && (
         <div className="mision-mundo">
           <span className="mision-icono" aria-hidden="true">⭐</span>

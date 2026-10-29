@@ -68,14 +68,28 @@
 
 .dibujo-colores {
   display: grid;
-  grid-template-columns: repeat(6, 36px);
+  grid-template-columns: repeat(6, 38px);
   gap: 8px;
 }
 
 .dibujo-colores .muestra {
-  width: 36px;
-  height: 36px;
-  border-width: 3px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2.5px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.dibujo-colores .muestra:hover {
+  transform: scale(1.08);
+}
+
+.dibujo-colores .muestra[aria-pressed="true"] {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 3.5px var(--girasol), 0 4px 10px rgba(0, 0, 0, 0.25);
+  z-index: 2;
 }
 
 .dibujo-grosores,
@@ -95,6 +109,11 @@
   background: var(--tarjeta);
   box-shadow: var(--sombra);
   cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.grosor:hover {
+  transform: scale(1.05);
 }
 
 .grosor span {
@@ -104,11 +123,14 @@
 }
 
 .grosor[aria-pressed="true"] {
-  box-shadow: 0 0 0 4px var(--girasol), var(--sombra-alta);
+  box-shadow: 0 0 0 3.5px var(--girasol), var(--sombra-alta);
+  transform: scale(1.08);
 }
 
 .dibujo-acciones .boton.redondo[aria-pressed="true"] {
-  box-shadow: 0 0 0 4px var(--girasol), var(--sombra-alta);
+  background: var(--girasol);
+  color: var(--tinta);
+  box-shadow: 0 0 0 3.5px rgba(242, 193, 78, 0.6), var(--sombra);
 }
 
 .dibujo-pie {
