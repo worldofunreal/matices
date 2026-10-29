@@ -100,3 +100,78 @@ export function sonarToque() {
   osc.start(t0);
   osc.stop(t0 + 0.05);
 }
+
+// Physical character action: Jump (springy rising pitch)
+export function sonarSalto() {
+  const c = getContext();
+  const vol = volumenEfectos();
+  if (!c || vol <= 0) return;
+
+  const t0 = c.currentTime;
+  const osc = c.createOscillator();
+  const gain = c.createGain();
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(180, t0);
+  osc.frequency.exponentialRampToValueAtTime(360, t0 + 0.14);
+
+  gain.gain.setValueAtTime(0.001, t0);
+  gain.gain.exponentialRampToValueAtTime(vol * 0.6, t0 + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.16);
+
+  osc.connect(gain);
+  gain.connect(c.destination);
+
+  osc.start(t0);
+  osc.stop(t0 + 0.18);
+}
+
+// Physical character action: Punch / Golpe (percussive mid-low impact)
+export function sonarGolpe() {
+  const c = getContext();
+  const vol = volumenEfectos();
+  if (!c || vol <= 0) return;
+
+  const t0 = c.currentTime;
+  const osc = c.createOscillator();
+  const gain = c.createGain();
+
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(280, t0);
+  osc.frequency.exponentialRampToValueAtTime(75, t0 + 0.09);
+
+  gain.gain.setValueAtTime(0.001, t0);
+  gain.gain.exponentialRampToValueAtTime(vol * 0.75, t0 + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.11);
+
+  osc.connect(gain);
+  gain.connect(c.destination);
+
+  osc.start(t0);
+  osc.stop(t0 + 0.12);
+}
+
+// Physical character action: Kick / Patada (deep thud with swoosh)
+export function sonarPatada() {
+  const c = getContext();
+  const vol = volumenEfectos();
+  if (!c || vol <= 0) return;
+
+  const t0 = c.currentTime;
+  const osc = c.createOscillator();
+  const gain = c.createGain();
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(210, t0);
+  osc.frequency.exponentialRampToValueAtTime(50, t0 + 0.12);
+
+  gain.gain.setValueAtTime(0.001, t0);
+  gain.gain.exponentialRampToValueAtTime(vol * 0.8, t0 + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.14);
+
+  osc.connect(gain);
+  gain.connect(c.destination);
+
+  osc.start(t0);
+  osc.stop(t0 + 0.15);
+}

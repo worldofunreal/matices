@@ -25,11 +25,23 @@ declare module "virtual:contenido" {
     areas?: string[];
     delicada?: boolean;
     saltable?: boolean;
+    frena?: boolean;
     pasos: Paso[];
+  }
+  // A pending thing the child can leave undone: a mark opens it and another closes it (contenido/escenas.yaml).
+  export interface Pendiente {
+    id: string;
+    abre: string;
+    cierra: string;
+    lugar: string;
+    objeto: string;
+    etiqueta: string;
+    mision: string;
   }
   const contenido: {
     version: string;
     escenas: Escena[];
+    pendientes: Pendiente[];
     textos: Textos;
     figuras: { id: string; tipo: "adulto"; nombre: string }[];
     lugares: string[];

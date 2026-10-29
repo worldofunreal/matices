@@ -82,6 +82,8 @@ El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tie
 - Una escena delicada siempre permite pausar, saltar la secuencia sensible y pedir ayuda. La ruta de protección no depende de elegir bien una opción.
 - Elegir callar, obedecer o retirarse nunca se presenta como responsabilidad del protagonista.
 - Las escenas de abuso sugieren la transgresión y cortan a negro. No se muestra violencia sexual. Lo que se nombra en lenguaje claro, según la edad, lo revisan los especialistas.
+- Lo que el niño deja sin hacer (apagar la estufa, hablar con mamá, platicar con Leo) lo retiene la puerta una vez: se le recuerda y, si insiste, puede salir. El juego no le pregunta si lo va a hacer: lee lo que hace.
+- Al volver, la consecuencia llega como escena y como hecho (la comida quemada; mamá tuvo que apagar la estufa porque le avisaron). No es un juicio: el juego registra qué hace después, por ejemplo si limpia el sartén.
 
 ## Lo que el juego nunca hace
 

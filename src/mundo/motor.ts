@@ -41,6 +41,17 @@ export interface Figura {
   piel: number;
 }
 
+export type AccionPersonaje = "brincar" | "golpear" | "patear";
+
+export interface ResultadoAccion {
+  accion: AccionPersonaje;
+  objetivo: string | null;
+  tipo_objetivo: "npc" | "fauna" | "objeto" | "muro" | "nada";
+  distancia: number | null;
+  x: number;
+  y: number;
+}
+
 export interface OpcionesMotor {
   canvas: HTMLCanvasElement;
   mapa: Mapa;
@@ -93,6 +104,9 @@ export class Motor {
   private acumulado = 0; // wheel movement not yet turned into a zoom step
   private shift = false;
   private perro: Perro | null = null;
+  private accionActiva: { tipo: AccionPersonaje; t0: number; duracion: number } | null = null;
+  private sacudidas = new Map<string, { t0: number; duracion: number; dx: number; dy: number }>();
+  private efectosImpacto: { x: number; y: number; t0: number; texto: string; duracion: number }[] = [];
 
   constructor(o: OpcionesMotor) {
     this.o = o;
@@ -114,6 +128,109 @@ export class Motor {
   // Running right now: moving with the run button on, Shift held, tap-and-hold or double-tap.
   get rapido() {
     return this.moviendo && (this.corriendo || this.shift || this.corriendoSostenido || this.correrAlDestino);
+  }
+
+  // Executes a physical character action (jump, punch, kick), detects front target, and records analytical outcome
+  ejecutarAccion(tipo: AccionPersonaje): ResultadoAccion {
+    const duraciones: Record<AccionPersonaje, number> = {
+      brincar: 360,
+      golpear: 240,
+      patear: 280,
+    };
+    const duracion = duraciones[tipo];
+    this.accionActiva = { tipo, t0: this.tiempo, duracion };
+
+    const dirOffsets: Record<Direccion, [number, number]> = {
+      abajo: [0, 1],
+      arriba: [0, -1],
+      izq: [-1, 0],
+      der: [1, 0],
+    };
+    const [dx, dy] = dirOffsets[this.dir];
+    const alcance = tipo === "patear" ? 48 : tipo === "golpear" ? 38 : 34;
+    const centroX = this.x + (tipo === "brincar" ? 0 : dx * (alcance / 2));
+    const centroY = this.y + (tipo === "brincar" ? 0 : dy * (alcance / 2));
+
+    let objetivoPunto: Punto | null = null;
+    let menorDist = Infinity;
+
+    // Search for entities in front (or nearby if jump)
+    for (const p of this.o.mapa.puntos) {
+      if (!visible(p, this.o.hora)) continue;
+      const d = Math.hypot(p.x - centroX, p.y - centroY);
+      if (d <= alcance && d < menorDist) {
+        menorDist = d;
+        objetivoPunto = p;
+      }
+    }
+
+    // Also check figures (e.g. dog)
+    if (!objetivoPunto && this.perro) {
+      const d = Math.hypot(this.perro.f.x - centroX, this.perro.f.y - centroY);
+      if (d <= alcance) {
+        menorDist = d;
+        objetivoPunto = {
+          nombre: "perro",
+          tipo: "fauna",
+          x: this.perro.f.x,
+          y: this.perro.f.y,
+          arte: "figuras/perro",
+        };
+      }
+    }
+
+    // Check if hitting a solid wall/obstacle in front
+    const celdaFrente = celdaDe(this.x + dx * TILE, this.y + dy * TILE - PIE.alto / 2);
+    const esMuro = !libre(this.o.mapa, celdaFrente.tx, celdaFrente.ty);
+
+    if (objetivoPunto) {
+      this.sacudidas.set(objetivoPunto.nombre, {
+        t0: this.tiempo,
+        duracion: 180,
+        dx: dx * 3,
+        dy: dy * 3,
+      });
+      this.efectosImpacto.push({
+        x: objetivoPunto.x,
+        y: objetivoPunto.y - 18,
+        t0: this.tiempo,
+        texto: tipo === "golpear" ? "💥" : tipo === "patear" ? "💨" : "✨",
+        duracion: 280,
+      });
+    } else if (esMuro && tipo !== "brincar") {
+      this.efectosImpacto.push({
+        x: this.x + dx * 24,
+        y: this.y + dy * 24 - 16,
+        t0: this.tiempo,
+        texto: "💥",
+        duracion: 240,
+      });
+    } else if (tipo === "brincar") {
+      // Dust puff on jump launch
+      this.particulasPolvo.push({ x: this.x - 4, y: this.y, t0: this.tiempo, r: 3 });
+      this.particulasPolvo.push({ x: this.x + 4, y: this.y, t0: this.tiempo, r: 3 });
+    }
+
+    return {
+      accion: tipo,
+      objetivo: objetivoPunto?.nombre ?? (esMuro ? "muro" : null),
+      tipo_objetivo: objetivoPunto?.tipo ?? (esMuro ? "muro" : "nada"),
+      distancia: menorDist < Infinity ? Math.round(menorDist) : null,
+      x: Math.round(this.x),
+      y: Math.round(this.y),
+    };
+  }
+
+  brincar(): ResultadoAccion {
+    return this.ejecutarAccion("brincar");
+  }
+
+  golpear(): ResultadoAccion {
+    return this.ejecutarAccion("golpear");
+  }
+
+  patear(): ResultadoAccion {
+    return this.ejecutarAccion("patear");
   }
 
   iniciar() {
@@ -621,6 +738,17 @@ export class Motor {
     const cosas: { y: number; dibujar: () => void }[] = [];
     for (const p of m.puntos) {
       if (!visible(p, this.o.hora)) continue;
+      const shakeInfo = this.sacudidas.get(p.nombre);
+      let shakeX = 0;
+      if (shakeInfo) {
+        const dtShake = this.tiempo - shakeInfo.t0;
+        if (dtShake < shakeInfo.duracion) {
+          const factor = 1 - dtShake / shakeInfo.duracion;
+          shakeX = Math.sin(dtShake / 22) * 3.5 * factor;
+        } else {
+          this.sacudidas.delete(p.nombre);
+        }
+      }
       if (p.tipo === "npc") {
         const distJugador = Math.hypot(p.x - this.x, p.y - this.y);
         const miraJugador = distJugador < 72;
@@ -631,7 +759,7 @@ export class Motor {
             cosas.push({
               y: p.y,
               dibujar: () => {
-                const x = Math.round(p.x - hoja.width / 2);
+                const x = Math.round(p.x + shakeX - hoja.width / 2);
                 const y = Math.round(p.y - hoja.height);
                 if (!voltear) {
                   ctx.drawImage(hoja, x, y);
@@ -647,7 +775,7 @@ export class Motor {
           }
         } else {
           const img = piezaYa(p.arte);
-          if (img) cosas.push({ y: p.y, dibujar: () => this.cuadro(img, 0, 0, p.x, p.y, voltear) });
+          if (img) cosas.push({ y: p.y, dibujar: () => this.cuadro(img, 0, 0, p.x + shakeX, p.y, voltear) });
         }
       } else {
         const img = piezaYa(p.arte);
@@ -655,7 +783,7 @@ export class Motor {
           cosas.push({
             y: p.y,
             dibujar: () => {
-              ctx.drawImage(img, Math.round(p.x - img.width / 2), Math.round(p.y - img.height));
+              ctx.drawImage(img, Math.round(p.x + shakeX - img.width / 2), Math.round(p.y - img.height));
             },
           });
         }
@@ -689,8 +817,81 @@ export class Motor {
     const capasListas = capas(a)
       .map((id) => piezaYa(id, coloresDe(a)))
       .filter((hoja): hoja is HTMLCanvasElement => !!hoja);
-    cosas.push({ y: this.y, dibujar: () => capasListas.forEach((hoja) => this.cuadro(hoja, columna, fila, this.x, this.y, voltear)) });
+
+    // Action animation offsets for protagonist
+    let saltoY = 0;
+    let avanceX = 0;
+    let avanceY = 0;
+    if (this.accionActiva) {
+      const transcurrido = this.tiempo - this.accionActiva.t0;
+      if (transcurrido < this.accionActiva.duracion) {
+        const prog = transcurrido / this.accionActiva.duracion;
+        const dirOffsets: Record<Direccion, [number, number]> = {
+          abajo: [0, 1],
+          arriba: [0, -1],
+          izq: [-1, 0],
+          der: [1, 0],
+        };
+        const [dirX, dirY] = dirOffsets[this.dir];
+        if (this.accionActiva.tipo === "brincar") {
+          saltoY = Math.sin(prog * Math.PI) * 16;
+        } else if (this.accionActiva.tipo === "golpear") {
+          const lunge = Math.sin(prog * Math.PI) * 7;
+          avanceX = dirX * lunge;
+          avanceY = dirY * lunge;
+        } else if (this.accionActiva.tipo === "patear") {
+          const lunge = Math.sin(prog * Math.PI) * 9;
+          avanceX = dirX * lunge;
+          avanceY = dirY * lunge;
+        }
+      } else {
+        if (this.accionActiva.tipo === "brincar") {
+          this.particulasPolvo.push({ x: this.x - 5, y: this.y, t0: this.tiempo, r: 2.5 });
+          this.particulasPolvo.push({ x: this.x + 5, y: this.y, t0: this.tiempo, r: 2.5 });
+        }
+        this.accionActiva = null;
+      }
+    }
+
+    if (saltoY > 0) {
+      cosas.push({
+        y: this.y - 0.1,
+        dibujar: () => {
+          ctx.save();
+          ctx.beginPath();
+          const escala = Math.max(0.45, 1 - saltoY / 28);
+          ctx.ellipse(this.x, this.y, 13 * escala, 5 * escala, 0, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(0, 0, 0, 0.28)";
+          ctx.fill();
+          ctx.restore();
+        },
+      });
+    }
+
+    cosas.push({
+      y: this.y,
+      dibujar: () =>
+        capasListas.forEach((hoja) =>
+          this.cuadro(hoja, columna, fila, this.x + avanceX, this.y + avanceY - saltoY, voltear)
+        ),
+    });
     cosas.sort((p, q) => p.y - q.y).forEach((cosa) => cosa.dibujar());
+
+    // Floating impact particles (stars, dust, bursts)
+    const ahoraImpacto = this.tiempo;
+    this.efectosImpacto = this.efectosImpacto.filter((e) => ahoraImpacto - e.t0 < e.duracion);
+    for (const e of this.efectosImpacto) {
+      const prog = (ahoraImpacto - e.t0) / e.duracion;
+      const alfa = 1 - prog;
+      const y = e.y - prog * 12;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, alfa);
+      ctx.font = "18px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(e.texto, e.x, y);
+      ctx.restore();
+    }
 
     const luz = LUZ[this.o.hora];
     if (luz) {

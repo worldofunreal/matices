@@ -108,7 +108,7 @@ function Estufa({ alTerminar }: Alto) {
         if (sig >= 100) {
           setCompletado(true);
           if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate([25, 45, 25]);
-          setTimeout(() => alTerminar(), 500);
+          setTimeout(() => alTerminar({ marca: "estufa_prendida" }), 500);
         }
         return sig;
       });

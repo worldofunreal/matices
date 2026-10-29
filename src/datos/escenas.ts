@@ -46,8 +46,18 @@ export function sincronizarHistoria(): Objetivo {
   return obj;
 }
 
-// Returns the exact current goal (place, target object/person or door, mission banner and guide badge).
+// The first pending thing the child left open in the place it is in (contenido/escenas.yaml, pendientes): it leads the
+// mission and the guide until its closing mark is given. Anywhere else the story's own goal shows.
+export function pendienteAbierta() {
+  const { lugar, historia } = estado();
+  return contenido.pendientes.find((p) => p.lugar === lugar && historia.marcas.includes(p.abre) && !historia.marcas.includes(p.cierra)) ?? null;
+}
+
+// Returns the exact current goal (place, target object/person or door, mission banner and guide badge). An open
+// pending thing comes first.
 export function objetivoActual(): Objetivo {
+  const abierta = pendienteAbierta();
+  if (abierta) return { lugar: abierta.lugar, objeto: abierta.objeto, mision: abierta.mision, etiqueta: abierta.etiqueta };
   const { dia, hora, historia } = estado();
   const h = historia.hechas;
 
@@ -149,18 +159,12 @@ export function objetivoActual(): Objetivo {
   return { lugar: "casa", objeto: "cama", mision: "Dormir en tu cama para terminar la historia", etiqueta: "A dormir" };
 }
 
-// Friendly hint if the child tries to leave a place before finishing its required step or taps a tutorial step out of order.
+// Friendly hint when the child touches an object before its step. Leaving a place is held by scenes (frena, in contenido/escenas.yaml).
 export function pistaPaso(lugar: string, al: string): string | null {
   const { dia, hora, historia } = estado();
   const h = historia.hechas;
 
   if (lugar === "casa" && dia === 1 && hora === "manana") {
-    if (al === "salir:calle" && !h.includes("T08")) {
-      if (!h.includes("T05")) return "Primero voy a hablar con mamá en el comedor para ver qué hay de desayunar.";
-      if (!h.includes("T06")) return "Primero voy a buscar los huevos en el refrigerador de la cocina.";
-      if (!h.includes("T07")) return "Primero voy a preparar mi desayuno en la estufa.";
-      return "Primero voy a elegir mi ropa en el ropero de mi habitación antes de salir.";
-    }
     if (al === "refrigerador" && !h.includes("T05")) {
       return "Mamá está en el comedor; primero voy a preguntarle qué dejó para desayunar.";
     }
@@ -170,22 +174,6 @@ export function pistaPaso(lugar: string, al: string): string | null {
     }
     if (al === "ropero" && !h.includes("T07")) {
       return "Primero voy a desayunar en la cocina y luego elijo mi ropa.";
-    }
-  }
-
-  if (lugar === "escuela_planta_baja" && al === "salir:calle" && hora === "manana") {
-    if (dia === 1) {
-      if (!h.includes("U01a") && !h.includes("U01b")) return "Acabo de llegar a la escuela; primero voy con la maestra.";
-      if (!h.includes("R02-leo")) return "Todavía es hora del recreo; voy a hablar con mis compañeros en el patio antes de irme.";
-    }
-    if (dia === 2) {
-      if (!h.includes("X01")) return "Primero tengo que presentar el examen.";
-      if (!h.includes("R05")) return "Antes de irme a casa, voy a platicar con Leo aquí en el patio.";
-    }
-    if (dia === 3) {
-      if (!h.includes("E2-05")) return "Primero voy a hablar con Leo aquí en el patio.";
-      if (!h.includes("O01")) return "Antes de irme, tengo que hablar con la orientadora.";
-      if (!h.includes("C02")) return "Antes de irme, falta preparar el proyecto en parejas.";
     }
   }
 

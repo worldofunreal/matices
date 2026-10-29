@@ -46,6 +46,59 @@
   color: var(--tinta);
 }
 
+/* Action buttons cluster in the bottom-right corner, accessible next to Opciones */
+.mundo-acciones {
+  position: absolute;
+  right: calc(max(16px, env(safe-area-inset-right)) + 64px);
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.mundo-acciones .accion-btn {
+  width: 48px;
+  height: 48px;
+  background: rgba(254, 250, 243, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(43, 34, 51, 0.15);
+  box-shadow: 0 4px 14px rgba(29, 26, 36, 0.18);
+  color: var(--tinta, #1d1a24);
+  transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
+}
+
+.mundo-acciones .accion-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.mundo-acciones .accion-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 18px rgba(29, 26, 36, 0.28);
+}
+
+.mundo-acciones .accion-btn:active {
+  transform: translateY(1px) scale(0.92);
+  box-shadow: 0 2px 6px rgba(29, 26, 36, 0.2);
+}
+
+.mundo-acciones .accion-btn.brincar:active {
+  background: #eef6d8;
+  border-color: #8bb53e;
+}
+
+.mundo-acciones .accion-btn.golpear:active {
+  background: #fde8e4;
+  border-color: #d94f4f;
+}
+
+.mundo-acciones .accion-btn.patear:active {
+  background: #e5f1f9;
+  border-color: #5b8fd6;
+}
+
 /* HTML over the world (motor.ts places each one on its world point every frame). Never catches a tap. */
 .letrero,
 .globo-figura,

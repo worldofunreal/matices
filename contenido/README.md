@@ -1,6 +1,6 @@
 # Contenido
 
-Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.3.0` (borrador, sin revisión clínica).
+Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.4.0` (borrador, sin revisión clínica).
 
 | Archivo | Qué es |
 | --- | --- |
@@ -37,6 +37,25 @@ Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual
 ```
 
 Cada paso hace una sola cosa: una línea (`de`), unas opciones, un minijuego, una marca, una misión o un efecto (`inquietud`, `miedo`, `intensidad`, `acompanamiento` o `alegria`; la intensidad la gradúa Efectos en Opciones).
+
+Una salida (`al: salir:<lugar>`) puede llevar `frena: true`. Entonces la puerta retiene al niño con el recordatorio de la escena la primera vez que intenta salir. Cada escena de salida se da una sola vez: al volver a intentarlo, pasa a la siguiente escena o sale.
+
+## Pendientes
+
+Lo que el niño puede dejar sin hacer se declara en `pendientes:`, al final de `escenas.yaml`:
+
+```yaml
+pendientes:
+  - id: apagar-estufa                  # único
+    abre: estufa_prendida              # la marca que lo abre
+    cierra: estufa_apagada             # la marca que lo cierra
+    lugar: casa                        # solo cuenta mientras el niño está aquí
+    objeto: estufa                     # lo que toca el niño para cerrarlo
+    etiqueta: Estufa                   # el nombre en la guía amarilla
+    mision: "Apagar la estufa"         # el letrero de arriba mientras está abierto
+```
+
+Mientras está abierto y el niño está en ese lugar, el letrero y la guía lo muestran primero. El validador exige que una escena de ese objeto dé la marca de cierre, para que ningún pendiente quede sin salida.
 
 ## Reglas
 

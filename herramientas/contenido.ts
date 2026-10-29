@@ -16,7 +16,7 @@ const README = join(DIR, "README.md");
 const MODULOS: Record<string, () => unknown> = { "virtual:contenido": validar, "virtual:arte": validarArte };
 
 // What each minigame leaves behind: the marks it sets in the child's story. Scenes can ask for them (si, no).
-const MINIJUEGOS: Record<string, string[]> = { refri: [], estufa: [], ropero: ["ropa_uniforme", "ropa_deporte", "ropa_casual"], cuerda: [], dibujo: [], pistas: [], examen: [], tienda: [] };
+const MINIJUEGOS: Record<string, string[]> = { refri: [], estufa: ["estufa_prendida"], ropero: ["ropa_uniforme", "ropa_deporte", "ropa_casual"], cuerda: [], dibujo: [], pistas: [], examen: [], tienda: [] };
 // The effects a scene can set on screen, as the story asks for them (src/pantallas/escena.css); Opciones scales them.
 const EFECTOS = new Set(["inquietud", "miedo", "intensidad", "acompanamiento", "alegria"]);
 const HORAS = new Set(["manana", "tarde", "noche"]);
@@ -162,7 +162,7 @@ export function validar() {
   // Scenes (contenido/escenas.yaml): where and when each one starts, its lines and its options. A delicate
   // scene must be skippable, so the child is never held in one; the validator refuses it otherwise.
   const hablantes = new Set(Object.keys(textos.escena?.hablantes ?? {}));
-  const { escenas } = parse(readFileSync(join(DIR, "escenas.yaml"), "utf8")) as { escenas: Escena[] };
+  const { escenas, pendientes = [] } = parse(readFileSync(join(DIR, "escenas.yaml"), "utf8")) as { escenas: Escena[]; pendientes?: Pendiente[] };
   const ids = new Set<string>();
   const marcasDelJuego = new Set([...escenas.flatMap((x) => x.pasos.flatMap((p) => (p.marca ? [p.marca] : []))), ...Object.values(MINIJUEGOS).flat()]);
   for (const x of escenas) {
@@ -183,6 +183,7 @@ export function validar() {
     for (const m of [...(x.si ?? []), ...(x.no ?? [])]) if (!marcasDelJuego.has(m)) err(d, `la marca ${m} nunca se da`);
     (x.areas ?? []).forEach((a) => area(`${d} areas`, a));
     if (x.delicada && !x.saltable) err(d, "una escena delicada debe ser saltable: pausar, saltar y pedir ayuda siempre a la mano");
+    if (x.frena && !x.al.startsWith("salir:")) err(d, "frena solo va en una salida (al: salir:<lugar>)");
     if (!x.pasos?.length) err(d, "sin pasos");
     let ultimo: string | null = null; // who spoke last: the answer to an option comes from them
     x.pasos.forEach((p, i) => {
@@ -213,16 +214,34 @@ export function validar() {
       }
     });
   }
+  // Pending things (pendientes): a mark opens each one and another closes it. The child closes it by touching `objeto`
+  // in `lugar`, so a scene there must give the closing mark; otherwise nobody could ever close it.
+  const pendientesIds = new Set<string>();
+  for (const p of pendientes) {
+    const d = `pendientes ${p.id}`;
+    if (!/^[A-Za-z0-9-]+$/.test(p.id) || pendientesIds.has(p.id)) err(d, "id repetido o inválido");
+    pendientesIds.add(p.id);
+    if (!marcasDelJuego.has(p.abre)) err(d, `la marca ${p.abre} nunca se da`);
+    if (!marcasDelJuego.has(p.cierra)) err(d, `la marca ${p.cierra} nunca se da`);
+    const mapa = mapas[p.lugar];
+    if (!mapa) err(d, `lugar: ${p.lugar} no es un mapa`);
+    else if (!objetosDe(mapa).some((o) => o.type === "objeto" && o.name === p.objeto)) err(d, `objeto: ${p.objeto} no es un objeto de ${p.lugar}`);
+    if (!escenas.some((x) => x.donde === p.lugar && x.al === p.objeto && x.pasos.some((s) => s.marca === p.cierra)))
+      err(d, `nadie la cierra: ninguna escena de ${p.objeto} da la marca ${p.cierra}`);
+    texto(`${d} etiqueta`, p.etiqueta);
+    texto(`${d} mision`, p.mision);
+  }
   if (errores.length) throw new Error(`Contenido inválido:\n- ${errores.join("\n- ")}`);
   // Doors: the places each place leads to. The world's guide walks this graph toward where the day goes next.
   const conexiones = Object.fromEntries(Object.entries(mapas).map(([l, m]) => [l, m ? objetosDe(m).filter((o) => o.type === "puerta").map((o) => propiedades(o).destino) : []]));
   // What can be touched in each place (the dashboard's "never touched").
   const objetos = Object.fromEntries(Object.entries(mapas).map(([l, m]) => [l, m ? objetosDe(m).filter((o) => o.type === "objeto").map((o) => o.name) : []]));
-  return { version: version(), escenas, textos, figuras, lugares, conexiones, objetos, areas: areasDelMarco() };
+  return { version: version(), escenas, textos, figuras, lugares, conexiones, objetos, areas: areasDelMarco(), pendientes };
 }
 
 type Paso = { de?: string; texto?: string; opciones?: [string, string, string | null][]; marca?: string; mision?: string; minijuego?: string; efecto?: string };
-type Escena = { id: string; nombre: string; donde: string; al: string; dia?: number; hora?: string; tras?: string | string[]; si?: string[]; no?: string[]; areas?: string[]; delicada?: boolean; saltable?: boolean; pasos: Paso[] };
+type Escena = { id: string; nombre: string; donde: string; al: string; dia?: number; hora?: string; tras?: string | string[]; si?: string[]; no?: string[]; areas?: string[]; delicada?: boolean; saltable?: boolean; frena?: boolean; pasos: Paso[] };
+type Pendiente = { id: string; abre: string; cierra: string; lugar: string; objeto: string; etiqueta: string; mision: string };
 
 type ObjetoMapa = { name: string; type: string; properties?: { name: string; value: string }[] };
 type Mapa = { width: number; height: number; layers: { name: string; objects?: ObjetoMapa[] }[] };

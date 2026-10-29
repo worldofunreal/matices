@@ -16,7 +16,7 @@ const E = contenido.textos.escena;
 const hablante = (de: string) => E.hablantes[de]?.replace("{nombre}", estado().nombre) ?? de;
 
 function RetratoHablante({ de }: { de: string }) {
-  if (de === "sistema") return null;
+  if (de === "sistema" || de === "mensaje_mama") return null;
   if (de === "yo" || de === "pensamiento") {
     return (
       <div className="escena-retrato" aria-hidden="true">

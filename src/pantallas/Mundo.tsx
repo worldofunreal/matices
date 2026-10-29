@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import contenido, { type Escena } from "virtual:contenido";
 import { cargarMapa, libre, quitarAusentes, visible, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
-import { Motor, type Figura } from "../mundo/motor";
+import { Motor, type Figura, type AccionPersonaje } from "../mundo/motor";
 import { pieza } from "../lienzo/arte";
 import { capas, coloresDe } from "../personaje/apariencia";
 import { estado, cambiarEstado, type Estado } from "../datos/guardado";
@@ -14,7 +14,7 @@ import { registrar } from "../datos/eventos";
 import { Bocina } from "../ui/Bocina";
 import { Icono } from "../ui/iconos";
 import { useSuperpuesto } from "../ui/Siempre";
-import { sonarMision, sonarProximidad, sonarToque } from "../ui/sonido";
+import { sonarGolpe, sonarMision, sonarPatada, sonarProximidad, sonarSalto, sonarToque } from "../ui/sonido";
 import "./mundo.css";
 
 const M = contenido.textos.mundo;
@@ -206,6 +206,41 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     if (motorRef.current) motorRef.current.corriendo = corriendo;
   }, [corriendo]);
 
+  const dispararAccion = (tipo: AccionPersonaje) => {
+    if (!motorRef.current || motorRef.current.pausado || escena || superpuesto) return;
+    if (tipo === "brincar") sonarSalto();
+    else if (tipo === "golpear") sonarGolpe();
+    else if (tipo === "patear") sonarPatada();
+
+    const res = motorRef.current.ejecutarAccion(tipo);
+    registrar("accion_personaje", {
+      accion: res.accion,
+      objetivo: res.objetivo,
+      tipo_objetivo: res.tipo_objetivo,
+      distancia: res.distancia,
+      lugar: estado().lugar,
+      x: res.x,
+      y: res.y,
+    });
+  };
+
+  useEffect(() => {
+    const alTeclado = (ev: KeyboardEvent) => {
+      if (escena || superpuesto) return;
+      if (ev.target instanceof HTMLInputElement || ev.target instanceof HTMLTextAreaElement) return;
+      if (ev.code === "Space" || ev.key === " ") {
+        ev.preventDefault();
+        dispararAccion("brincar");
+      } else if (ev.code === "KeyZ" || ev.code === "KeyJ") {
+        dispararAccion("golpear");
+      } else if (ev.code === "KeyX" || ev.code === "KeyK") {
+        dispararAccion("patear");
+      }
+    };
+    addEventListener("keydown", alTeclado);
+    return () => removeEventListener("keydown", alTeclado);
+  }, [escena, superpuesto]);
+
   // One place per run of this effect: a door, a new day or a return from the mirror starts it again.
   useEffect(() => {
     sincronizarHistoria();
@@ -307,17 +342,17 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       mostrar(`mundo.animal.${p.nombre}`, saludos[i], { x: p.x, y: p.y });
     };
 
+    // The scenes of this door play one after another, then the child goes through. A scene with `frena` keeps the
+    // child at the door; it plays once, so the next try goes through (contenido/escenas.yaml).
     const cruzar = (p: Puerta) => {
       const no = bloqueo(lugarActual, p.horas);
       if (no) return mostrar(`mundo.${no}`, M[no]);
-      const pista = pistaPaso(lugarActual, `salir:${p.destino}`);
-      if (pista) {
-        activo?.parar();
-        return mostrar(`mundo.pista.salir.${p.destino}`, pista);
-      }
-      const e = escenaPara(lugarActual, `salir:${p.destino}`);
-      if (e) return iniciarEscena(e, () => irse(p));
-      irse(p);
+      const salir = (): void => {
+        const e = escenaPara(lugarActual, `salir:${p.destino}`);
+        if (!e) return irse(p);
+        iniciarEscena(e, e.frena ? () => {} : () => irse(p));
+      };
+      salir();
     };
 
     const irse = (p: Puerta) => {
@@ -586,6 +621,38 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           {Icono.correr}
         </button>
       </div>
+
+      {!escena && (
+        <div className="mundo-acciones" role="toolbar" aria-label="Acciones del personaje">
+          <button
+            type="button"
+            className="boton redondo accion-btn brincar"
+            aria-label="Brincar"
+            title="Brincar (Espacio)"
+            onClick={() => dispararAccion("brincar")}
+          >
+            {Icono.brincar}
+          </button>
+          <button
+            type="button"
+            className="boton redondo accion-btn golpear"
+            aria-label="Golpear"
+            title="Golpear (Z o J)"
+            onClick={() => dispararAccion("golpear")}
+          >
+            {Icono.golpear}
+          </button>
+          <button
+            type="button"
+            className="boton redondo accion-btn patear"
+            aria-label="Patear"
+            title="Patear (X o K)"
+            onClick={() => dispararAccion("patear")}
+          >
+            {Icono.patear}
+          </button>
+        </div>
+      )}
 
       {burbuja && (burbuja.x !== undefined && burbuja.y !== undefined ? (
         <div

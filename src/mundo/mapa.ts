@@ -119,17 +119,39 @@ function variante(arte: string, semilla: string) {
 function vidaProcedural(m: Mapa, semillaBase: string, lugar: string, dia: number, hora: Hora): Punto[] {
   const r = azar(`${semillaBase}:${lugar}:${dia}:${hora}`);
   const sitios: Punto[] = [];
-  const ocupadas = new Set([
-    ...m.puntos.map((p) => celdaDe(p.x, p.y)),
-    ...m.puertas.map((d) => celdaDe(d.x, d.y)),
-    celdaDe(m.inicio.x, m.inicio.y),
-    ...Object.values(m.llegadas).map((l) => celdaDe(l.x, l.y)),
-  ].map((c) => `${c.tx},${c.ty}`));
 
-  const buscarLibre = (intentos = 150): Celda | null => {
+  // Protect all doors, doorsteps and arrival points from having procedural objects/vehicles blocking them.
+  const ocupadas = new Set<string>();
+
+  // Static points and arrival spots
+  for (const p of m.puntos) ocupadas.add(`${Math.floor(p.x / TILE)},${Math.floor((p.y - 1) / TILE)}`);
+  for (const l of Object.values(m.llegadas)) {
+    const cx = Math.floor(l.x / TILE);
+    const cy = Math.floor(l.y / TILE);
+    for (let dx = -1; dx <= 1; dx++) {
+      for (let dy = -1; dy <= 1; dy++) {
+        ocupadas.add(`${cx + dx},${cy + dy}`);
+      }
+    }
+  }
+
+  // Generous door clearance (minimum 3 tiles in front of every door entrance)
+  for (const d of m.puertas) {
+    const minTx = Math.floor(d.x / TILE) - 1;
+    const maxTx = Math.ceil((d.x + d.w) / TILE);
+    const minTy = Math.floor(d.y / TILE) - 1;
+    const maxTy = Math.ceil((d.y + d.h) / TILE) + 3;
+    for (let tx = minTx; tx <= maxTx; tx++) {
+      for (let ty = minTy; ty <= maxTy; ty++) {
+        ocupadas.add(`${tx},${ty}`);
+      }
+    }
+  }
+
+  const buscarLibre = (intentos = 150, minFila = 0): Celda | null => {
     for (let i = 0; i < intentos; i++) {
       const tx = Math.floor(r.frac() * m.columnas);
-      const ty = Math.floor(r.frac() * m.filas);
+      const ty = minFila + Math.floor(r.frac() * (m.filas - minFila));
       if (libre(m, tx, ty) && !ocupadas.has(`${tx},${ty}`)) {
         ocupadas.add(`${tx},${ty}`);
         return { tx, ty };
@@ -191,8 +213,9 @@ function vidaProcedural(m: Mapa, semillaBase: string, lugar: string, dia: number
   }
 
   // 5. Vehículos en la calle (bicicletas, moto, carro)
+  // Only parked in the roadway / curb area (rows 11-15), never on the pedestrian sidewalk or store entrance.
   if (lugar === "calle") {
-    const cBici = buscarLibre();
+    const cBici = buscarLibre(150, 11);
     if (cBici) {
       sitios.push({
         nombre: "bicicleta",
@@ -202,7 +225,7 @@ function vidaProcedural(m: Mapa, semillaBase: string, lugar: string, dia: number
         arte: "lugares/calle/bicicleta",
       });
     }
-    const cMoto = buscarLibre();
+    const cMoto = buscarLibre(150, 11);
     if (cMoto) {
       sitios.push({
         nombre: "moto",
@@ -212,15 +235,23 @@ function vidaProcedural(m: Mapa, semillaBase: string, lugar: string, dia: number
         arte: "lugares/calle/moto",
       });
     }
-    const cCarro = buscarLibre();
-    if (cCarro) {
-      sitios.push({
-        nombre: "carro",
-        tipo: "objeto",
-        x: cCarro.tx * TILE + TILE / 2,
-        y: cCarro.ty * TILE + TILE - 1,
-        arte: "lugares/calle/carro",
-      });
+
+    // Car needs 3 horizontal tiles and sits strictly on the lower roadway
+    for (let intento = 0; intento < 100; intento++) {
+      const tx = 4 + Math.floor(r.frac() * (m.columnas - 8));
+      const ty = 12 + Math.floor(r.frac() * 3); // rows 12, 13, 14
+      const despejado = [0, 1, 2].every((dx) => libre(m, tx + dx, ty) && !ocupadas.has(`${tx + dx},${ty}`));
+      if (despejado) {
+        [0, 1, 2].forEach((dx) => ocupadas.add(`${tx + dx},${ty}`));
+        sitios.push({
+          nombre: "carro",
+          tipo: "objeto",
+          x: (tx + 1) * TILE + TILE / 2,
+          y: ty * TILE + TILE - 1,
+          arte: "lugares/calle/carro",
+        });
+        break;
+      }
     }
   }
 

@@ -42,6 +42,7 @@ escenas:
           - [EXPRESA_MALESTAR, "No tengo muchas ganas de cocinar.", "Hay algo sencillo que puedes preparar. Luego hablamos."]
       - {de: pensamiento, texto: "Últimamente siempre tiene mucha prisa."}
       - {mision: "Sacar los huevos del refrigerador en la cocina"}
+      - {marca: hablo_mama}
 
   - id: T06
     nombre: El refrigerador
@@ -54,6 +55,7 @@ escenas:
     pasos:
       - {minijuego: refri}
       - {de: sistema, texto: "¡Encontraste los huevos! Ahora puedes preparar el desayuno."}
+      - {marca: saco_huevos}
       - {mision: "Preparar el desayuno en la estufa"}
 
   - id: T07
@@ -82,6 +84,116 @@ escenas:
     pasos:
       - {minijuego: ropero}
       - {mision: "Salir de casa rumbo a la escuela"}
+
+  # Lo que el niño deja sin hacer al salir de casa: pensamientos opcionales sin frenar la salida si decide salir libremente.
+  - id: P-mama
+    nombre: Antes de salir, hablar con mamá
+    donde: casa
+    al: salir:calle
+    dia: 1
+    hora: manana
+    tras: T03
+    no: [hablo_mama]
+    pasos:
+      - {de: pensamiento, texto: "Primero voy a hablar con mamá en el comedor para ver qué hay de desayunar."}
+
+  - id: P-huevos
+    nombre: Antes de salir, sacar los huevos
+    donde: casa
+    al: salir:calle
+    dia: 1
+    hora: manana
+    tras: T05
+    no: [saco_huevos]
+    pasos:
+      - {de: pensamiento, texto: "Primero voy a buscar los huevos en el refrigerador de la cocina."}
+
+  - id: P-desayuno
+    nombre: Antes de salir, preparar el desayuno
+    donde: casa
+    al: salir:calle
+    dia: 1
+    hora: manana
+    tras: T06
+    no: [estufa_prendida]
+    pasos:
+      - {de: pensamiento, texto: "Primero voy a preparar mi desayuno en la estufa."}
+
+  - id: P-ropa
+    nombre: Antes de salir, elegir la ropa
+    donde: casa
+    al: salir:calle
+    dia: 1
+    hora: manana
+    tras: T07
+    no: [ropa_uniforme, ropa_deporte, ropa_casual]
+    pasos:
+      - {de: pensamiento, texto: "Primero voy a elegir mi ropa en el ropero de mi habitación antes de salir."}
+
+  - id: R-estufa
+    nombre: Antes de salir, la estufa prendida
+    donde: casa
+    al: salir:calle
+    si: [estufa_prendida]
+    no: [estufa_apagada]
+    frena: true
+    pasos:
+      - {de: pensamiento, texto: "La estufa sigue prendida. Mejor la apago antes de salir."}
+
+  - id: D-estufa
+    nombre: Salir con la estufa prendida
+    donde: casa
+    al: salir:calle
+    tras: R-estufa
+    si: [estufa_prendida]
+    no: [estufa_apagada, dejo_estufa]
+    pasos:
+      - {de: pensamiento, texto: "Ya no me da tiempo. La estufa se queda prendida."}
+      - {marca: dejo_estufa}
+
+  - id: A-estufa
+    nombre: Apagar la estufa
+    donde: casa
+    al: estufa
+    si: [estufa_prendida]
+    no: [estufa_apagada]
+    pasos:
+      - {de: pensamiento, texto: "Apago la estufa."}
+      - {marca: estufa_apagada}
+
+  - id: C-estufa
+    nombre: Al volver, la comida quemada
+    donde: casa
+    al: entrar
+    hora: noche
+    si: [dejo_estufa]
+    no: [consecuencia_estufa, estufa_apagada]
+    pasos:
+      - {efecto: inquietud}
+      - {de: sistema, texto: "Huele a quemado. La comida se quemó en el sartén."}
+      - {de: mensaje_mama, texto: "Me avisaron del humo y tuve que ir a apagar la estufa. Límpialo, por favor."}
+      - {marca: estufa_apagada}
+      - {marca: consecuencia_estufa}
+
+  - id: L-sarten
+    nombre: Lavar el sartén quemado
+    donde: casa
+    al: fregadero
+    si: [consecuencia_estufa]
+    no: [limpio_estufa]
+    pasos:
+      - {de: pensamiento, texto: "Lavo el sartén quemado."}
+      - {marca: limpio_estufa}
+
+  - id: R-sarten
+    nombre: Antes de salir, el sartén quemado
+    donde: casa
+    al: salir:calle
+    si: [consecuencia_estufa]
+    no: [limpio_estufa]
+    frena: true
+    pasos:
+      - {de: pensamiento, texto: "Antes de salir, lavo el sartén quemado."}
 
   - id: T09
     nombre: Salir de casa
@@ -247,6 +359,7 @@ escenas:
           - [EVITA, "No tengo muchas ganas de hablar.", "Está bien. Aquí estoy si cambias de idea."]
           - [EXPRESA_MALESTAR, "Hay algo que me preocupa.", "Cuéntame, te escucho."]
       - {mision: "Salir de la escuela para regresar a casa"}
+      - {marca: hablo_leo}
 
   - id: E2-01
     nombre: Un momento tranquilo
@@ -327,6 +440,7 @@ escenas:
       - {de: yo, texto: "Sí, aunque en mi casa no les gustó mucho."}
       - {de: leo, texto: "Bueno, no tiene que gustarle a todo el mundo. Lo importante es que disfrutes hacerlo."}
       - {mision: "Hablar con la orientadora en la planta baja de la escuela"}
+      - {marca: reconocio_dibujo}
 
   - id: O01
     nombre: Hablar con la orientadora
@@ -368,3 +482,81 @@ escenas:
           - [PROPONE, "¿Y si combinamos las dos?", "Me gusta. Hagámoslo así."]
       - {marca: proyecto_pareja}
       - {mision: "Salir de la escuela para regresar a casa"}
+
+  # En la escuela, lo que el niño deja sin hacer: la salida lo frena una vez y luego lo deja salir.
+  - id: P-recreo
+    nombre: Antes de irse, hablar con Leo
+    donde: escuela_planta_baja
+    al: salir:calle
+    dia: 1
+    hora: manana
+    tras: [U01a, U01b]
+    no: [conocio_leo]
+    frena: true
+    pasos:
+      - {de: pensamiento, texto: "Todavía es hora del recreo; voy a hablar con mis compañeros en el patio antes de irme."}
+
+  - id: P-leo-2
+    nombre: Antes de irse, platicar con Leo
+    donde: escuela_planta_baja
+    al: salir:calle
+    dia: 2
+    hora: manana
+    tras: X01
+    no: [hablo_leo]
+    frena: true
+    pasos:
+      - {de: pensamiento, texto: "Antes de irme a casa, voy a platicar con Leo aquí en el patio."}
+
+  - id: P-leo-3
+    nombre: Antes de irse, hablar con Leo
+    donde: escuela_planta_baja
+    al: salir:calle
+    dia: 3
+    hora: manana
+    tras: E2-04
+    no: [reconocio_dibujo]
+    frena: true
+    pasos:
+      - {de: pensamiento, texto: "Primero voy a hablar con Leo aquí en el patio."}
+
+  - id: P-orientadora
+    nombre: Antes de irse, hablar con la orientadora
+    donde: escuela_planta_baja
+    al: salir:calle
+    dia: 3
+    hora: manana
+    tras: E2-05
+    no: [hablo_orientadora]
+    frena: true
+    pasos:
+      - {de: pensamiento, texto: "Antes de irme, tengo que hablar con la orientadora."}
+
+  - id: P-proyecto
+    nombre: Antes de irse, el proyecto en parejas
+    donde: escuela_planta_baja
+    al: salir:calle
+    dia: 3
+    hora: manana
+    tras: O01
+    no: [proyecto_pareja]
+    frena: true
+    pasos:
+      - {de: pensamiento, texto: "Antes de irme, falta preparar el proyecto en parejas."}
+
+pendientes:
+  # Lo que el niño deja abierto: una marca lo abre y otra lo cierra. Lo cierra una escena al tocar su objeto.
+  - id: apagar-estufa
+    abre: estufa_prendida
+    cierra: estufa_apagada
+    lugar: casa
+    objeto: estufa
+    etiqueta: Estufa
+    mision: "Apagar la estufa"
+  - id: lavar-sarten
+    abre: consecuencia_estufa
+    cierra: limpio_estufa
+    lugar: casa
+    objeto: fregadero
+    etiqueta: Fregadero
+    mision: "Lavar el sartén quemado"

@@ -130,4 +130,30 @@ export const Icono = {
       <path d="M5 21h14" />
     </>,
   ),
+  // Acciones físicas del personaje:
+  brincar: svg(
+    <>
+      <circle cx="12" cy="5" r="2.5" />
+      <path d="M9 13l3-3 3 2 3-2" />
+      <path d="M10 17l2-4 2 3 2 4" />
+      <path d="M6 21c3-2 9-2 12 0" />
+    </>,
+  ),
+  golpear: svg(
+    <>
+      <rect x="5" y="7" width="11" height="12" rx="3" />
+      <path d="M16 10h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2" />
+      <path d="M8 7v4M11 7v4M14 7v4" />
+      <path d="M2 13h2" />
+    </>,
+  ),
+  patear: svg(
+    <>
+      <circle cx="9" cy="5" r="2" />
+      <path d="M9 7v6l6-1 5 3" />
+      <path d="M9 13l-2 7" />
+      <path d="M17 19l2-1-1-2" />
+      <path d="M21 13l2-1" />
+    </>,
+  ),
 };

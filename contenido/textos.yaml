@@ -58,6 +58,7 @@ escena:
     orientadora: "Orientadora"
     pensamiento: "Pensamiento"
     sistema: "Sistema"
+    mensaje_mama: "Mensaje de mamá"
   seguir: "Seguir"
   saltar: "Saltar"
   pausar: "Pausar"
