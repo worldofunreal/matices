@@ -551,11 +551,26 @@ export class Motor {
       ctx.drawImage(fondo, sx, sy, sw, sh, sx, sy, sw, sh);
     }
 
-    // Guide path dots on the floor
-    if (this.rutaGuia.length > 0 && !this.pausado) {
+    // Soft floor halo under the active target's feet (drawn on floor layer, beneath all figures)
+    if (this.guia && !this.pausado) {
+      const k = 0.5 + 0.5 * Math.sin(this.tiempo / 450);
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(this.guia.x, this.guia.y, 16 + 2 * k, 8 + 1 * k, 0, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(242, 193, 78, 0.25)";
+      ctx.fill();
+      ctx.strokeStyle = "rgba(242, 193, 78, 0.65)";
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Guide path dots on the floor (only when not immediately next to the goal)
+    const distGuia = this.guia ? Math.hypot(this.guia.x - this.x, this.guia.y - this.y) : 0;
+    if (this.rutaGuia.length > 1 && !this.pausado && distGuia > 110) {
       const ahora = this.tiempo;
       ctx.save();
-      for (let i = 0; i < this.rutaGuia.length; i++) {
+      for (let i = 0; i < this.rutaGuia.length - 1; i++) {
         const c = this.rutaGuia[i];
         const cx = c.tx * TILE + TILE / 2;
         const cy = c.ty * TILE + TILE / 2;
@@ -686,34 +701,6 @@ export class Motor {
       ctx.restore();
     }
 
-    // The ring goes over the light of the time of day, so it keeps its color at night.
-    if (this.guia) {
-      const k = 0.5 + 0.5 * Math.sin(this.tiempo / 450);
-      ctx.save();
-      ctx.globalAlpha = 1 - 0.35 * k;
-      ctx.beginPath();
-      ctx.arc(this.guia.x, this.guia.y, 14 + 6 * k, 0, Math.PI * 2);
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = "#f2c14e";
-      ctx.stroke();
-      ctx.restore();
-
-      // Golden sparkles rising over the guided object
-      const ahoraDestellos = this.tiempo;
-      this.destellosGuia = this.destellosGuia.filter((d) => ahoraDestellos - d.t0 < 550);
-      for (const d of this.destellosGuia) {
-        const prog = (ahoraDestellos - d.t0) / 550;
-        const x = d.x;
-        const y = d.y - prog * d.dy;
-        const escala = Math.sin(prog * Math.PI);
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, escala * 0.85);
-        ctx.fillStyle = "#f2c14e";
-        ctx.font = `${Math.round(8 + 4 * escala)}px monospace`;
-        ctx.fillText("✦", x, y);
-        ctx.restore();
-      }
-    }
     const flecha = this.guia && !this.pausado ? this.flechaGuia(this.guia) : null; // a cover over the world hides the ring; no arrow then
     this.ponerHtml(flecha);
   }

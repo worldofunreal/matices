@@ -14,6 +14,7 @@ import { registrar } from "../datos/eventos";
 import { Bocina } from "../ui/Bocina";
 import { Icono } from "../ui/iconos";
 import { useSuperpuesto } from "../ui/Siempre";
+import { sonarMision, sonarProximidad, sonarToque } from "../ui/sonido";
 import "./mundo.css";
 
 const M = contenido.textos.mundo;
@@ -81,15 +82,22 @@ function guiaDe(m: Mapa): { x: number; y: number; nombre: string; puerta: string
       if (puerta) return { x: puerta.x + puerta.w / 2, y: puerta.y + puerta.h / 2, nombre: obj.etiqueta, puerta: puerta.nombre };
     }
     if (obj.objeto) {
-      const respaldo = obj.objeto === "mama" ? "mesa" : obj.objeto === "papa" ? "sillon" : null;
+      const tieneMama = m.puntos.some((x) => x.nombre === "mama");
+      const tienePapa = m.puntos.some((x) => x.nombre === "papa");
+      const respaldo = obj.objeto === "mama" && !tieneMama ? "mesa" : obj.objeto === "papa" && !tienePapa ? "sillon" : null;
       const p = m.puntos.find((x) => x.nombre === obj.objeto) ?? (respaldo ? m.puntos.find((x) => x.nombre === respaldo) : undefined);
-      if (p) return { x: p.x, y: p.y - 16, nombre: obj.etiqueta, puerta: null };
+      if (p) return { x: p.x, y: p.y, nombre: obj.etiqueta, puerta: null };
     }
   }
 
+  const tieneMama = m.puntos.some((x) => x.nombre === "mama");
+  const tienePapa = m.puntos.some((x) => x.nombre === "papa");
   for (const p of m.puntos) {
-    if (p.nombre !== "calendario" && escenaPara(m.lugar, p.nombre)) {
-      return { x: p.x, y: p.y - 16, nombre: M.nombres[p.nombre] ?? M.objetos[m.lugar]?.[p.nombre] ?? M.objetos.comun[p.nombre] ?? p.nombre, puerta: null };
+    if (p.nombre === "calendario") continue;
+    if (p.nombre === "mesa" && tieneMama) continue;
+    if (p.nombre === "sillon" && tienePapa) continue;
+    if (escenaPara(m.lugar, p.nombre)) {
+      return { x: p.x, y: p.y, nombre: M.nombres[p.nombre] ?? M.objetos[m.lugar]?.[p.nombre] ?? M.objetos.comun[p.nombre] ?? p.nombre, puerta: null };
     }
   }
 
@@ -102,6 +110,16 @@ function guiaDe(m: Mapa): { x: number; y: number; nombre: string; puerta: string
   }
 
   return null;
+}
+
+function alturaEntidad(pt: Punto): number {
+  const ADULTOS = ["mama", "papa", "maestra", "director", "abuelo", "abuela", "tio", "tia", "don_chuy", "padrastro", "madrastra", "otra_persona"];
+  if (ADULTOS.includes(pt.nombre)) return 82;
+  if (pt.tipo === "npc") return 66;
+  if (pt.tipo === "fauna") return 34;
+  const MUEBLES_ALTOS = ["refrigerador", "ropero", "cama", "tinaco", "arbol", "arbol_grande", "kiosko", "poste"];
+  if (MUEBLES_ALTOS.includes(pt.nombre)) return 66;
+  return 44;
 }
 
 // Where the child starts: the arrival of a door, or where they stopped, or where they put their
@@ -139,6 +157,7 @@ interface PuntoInteraccion {
   icono: string;
   etiqueta: string;
   esGuia: boolean;
+  nivel: 1 | 2;
   punto: Punto;
 }
 
@@ -224,6 +243,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     // a changed look is drawn again, any chained "entrar" scene starts, and `alFin` goes on.
     const iniciarEscena = (e: Escena, alFin: () => void = () => {}) => {
       const antes = estado().apariencia;
+      sonarMision();
       setEscena({
         escena: e,
         alFin: () => {
@@ -353,23 +373,43 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
             ultimoChequeoCercanos = ahora;
             const obj = objetivoActual();
             const nuevos: PuntoInteraccion[] = [];
+            const tieneMama = m.puntos.some((x) => x.nombre === "mama");
+            const tienePapa = m.puntos.some((x) => x.nombre === "papa");
+
             for (const pt of m.puntos) {
               if (!visible(pt, estado().hora)) continue;
               const dist = Math.hypot(pt.x - motor.x, pt.y - motor.y);
               const esGuia =
                 obj.lugar === lugarActual &&
-                (obj.objeto === pt.nombre || (obj.objeto === "mama" && pt.nombre === "mesa") || (obj.objeto === "papa" && pt.nombre === "sillon"));
+                (obj.objeto === pt.nombre ||
+                  (!tieneMama && obj.objeto === "mama" && pt.nombre === "mesa") ||
+                  (!tienePapa && obj.objeto === "papa" && pt.nombre === "sillon"));
               const tieneEscena = !!escenaPara(lugarActual, pt.nombre);
-              const estaCerca = dist <= 85;
+              const estaCerca = dist <= 75;
 
-              if (esGuia || (estaCerca && (pt.tipo === "npc" || pt.tipo === "fauna" || tieneEscena || pt.nombre === "espejo" || (pt.nombre === "cama" && estado().hora === "noche")))) {
-                let icono = "👋";
-                if (esGuia) icono = "!";
-                else if (pt.tipo === "fauna") icono = "🐾";
-                else if (tieneEscena) icono = "💬";
-                else if (pt.nombre === "cama") icono = "💤";
+              // Nivel 1: Objetivo Principal activo de la historia
+              if (esGuia) {
+                const icono = pt.tipo === "npc" ? "💬" : "✨";
+                const etiqueta = M.nombres[pt.nombre] ?? M.objetos[lugarActual]?.[pt.nombre] ?? M.objetos.comun[pt.nombre] ?? pt.nombre;
+                nuevos.push({
+                  id: `${pt.nombre}_${pt.x}_${pt.y}`,
+                  nombre: pt.nombre,
+                  tipo: pt.tipo,
+                  x: pt.x,
+                  y: pt.y,
+                  alto: alturaEntidad(pt) + 12,
+                  icono,
+                  etiqueta,
+                  esGuia: true,
+                  nivel: 1,
+                  punto: pt,
+                });
+              } else if (estaCerca && (pt.tipo === "fauna" || tieneEscena || pt.nombre === "espejo" || (pt.nombre === "cama" && estado().hora === "noche"))) {
+                // Nivel 2: Acción Secundaria Cercana
+                let icono = "💬";
+                if (pt.tipo === "fauna") icono = "🐾";
                 else if (pt.nombre === "espejo") icono = "🪞";
-                else if (pt.tipo === "objeto") icono = "🔍";
+                else if (pt.nombre === "cama") icono = "💤";
 
                 const etiqueta = M.nombres[pt.nombre] ?? M.objetos[lugarActual]?.[pt.nombre] ?? M.objetos.comun[pt.nombre] ?? pt.nombre;
                 nuevos.push({
@@ -378,10 +418,11 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
                   tipo: pt.tipo,
                   x: pt.x,
                   y: pt.y,
-                  alto: pt.tipo === "npc" ? 54 : 36,
+                  alto: alturaEntidad(pt) + 10,
                   icono,
                   etiqueta,
-                  esGuia,
+                  esGuia: false,
+                  nivel: 2,
                   punto: pt,
                 });
               }
@@ -400,6 +441,11 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
                 }
               }
             }
+
+            if (nuevos.some((n) => n.nivel === 2 && !emotes.some((e) => e.id === n.id))) {
+              sonarProximidad();
+            }
+
             setEmotes(nuevos);
           }
         },
@@ -483,17 +529,12 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           </div>
         );
       })}
-      {/* Floating yellow badge over the active mission object or person in this room. */}
-      {guia && !guia.puerta && !escena && (
-        <div className="letrero guia" data-mundo-x={guia.x} data-mundo-y={guia.y - 26} aria-hidden="true">
-          <span>{guia.nombre}</span>
-        </div>
-      )}
+      {/* Edge arrow text when the guided target is outside the screen */}
       <div className="letrero guia flecha-texto" data-flecha hidden aria-hidden="true">
         <span>{guia?.nombre}</span>
       </div>
 
-      {/* Interactive Emotes over nearby people, pets and usable objects */}
+      {/* Interactive comic balloons over the active goal or nearby characters/activities */}
       {!escena && emotes.map((p) => (
         <div
           key={`emote_${p.id}`}
@@ -503,9 +544,10 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         >
           <button
             type="button"
-            className={`emote-mundo${p.esGuia ? " guia" : ""}`}
+            className={`emote-mundo nivel-${p.nivel}${p.esGuia ? " guia" : ""}`}
             onClick={(ev) => {
               ev.stopPropagation();
+              sonarToque();
               accion.current?.interactuar(p.punto);
             }}
             aria-label={p.etiqueta}
