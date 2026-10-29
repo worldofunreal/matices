@@ -139,6 +139,14 @@ export const Icono = {
       <path d="M6 21c3-2 9-2 12 0" />
     </>,
   ),
+  atacar: svg(
+    <>
+      <rect x="6" y="7" width="10" height="11" rx="2.5" />
+      <path d="M16 10h2a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-2" />
+      <path d="M9 7v4M12 7v4" />
+      <path d="M2 12l2-1v2zM3 6l2 2M3 18l2-2" />
+    </>,
+  ),
   golpear: svg(
     <>
       <rect x="5" y="7" width="11" height="12" rx="3" />

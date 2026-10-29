@@ -126,8 +126,8 @@ export function sonarSalto() {
   osc.stop(t0 + 0.18);
 }
 
-// Physical character action: Punch / Golpe (percussive mid-low impact)
-export function sonarGolpe() {
+// Physical character action: Combo Step 1 - Quick Jab
+export function sonarGolpe1() {
   const c = getContext();
   const vol = volumenEfectos();
   if (!c || vol <= 0) return;
@@ -137,22 +137,80 @@ export function sonarGolpe() {
   const gain = c.createGain();
 
   osc.type = "triangle";
-  osc.frequency.setValueAtTime(280, t0);
-  osc.frequency.exponentialRampToValueAtTime(75, t0 + 0.09);
+  osc.frequency.setValueAtTime(320, t0);
+  osc.frequency.exponentialRampToValueAtTime(110, t0 + 0.08);
 
   gain.gain.setValueAtTime(0.001, t0);
-  gain.gain.exponentialRampToValueAtTime(vol * 0.75, t0 + 0.01);
-  gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.11);
+  gain.gain.exponentialRampToValueAtTime(vol * 0.7, t0 + 0.008);
+  gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.1);
 
   osc.connect(gain);
   gain.connect(c.destination);
 
   osc.start(t0);
-  osc.stop(t0 + 0.12);
+  osc.stop(t0 + 0.11);
 }
 
-// Physical character action: Kick / Patada (deep thud with swoosh)
-export function sonarPatada() {
+// Physical character action: Combo Step 2 - Heavy Cross
+export function sonarGolpe2() {
+  const c = getContext();
+  const vol = volumenEfectos();
+  if (!c || vol <= 0) return;
+
+  const t0 = c.currentTime;
+  const osc = c.createOscillator();
+  const gain = c.createGain();
+
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(260, t0);
+  osc.frequency.exponentialRampToValueAtTime(70, t0 + 0.1);
+
+  gain.gain.setValueAtTime(0.001, t0);
+  gain.gain.exponentialRampToValueAtTime(vol * 0.85, t0 + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.13);
+
+  osc.connect(gain);
+  gain.connect(c.destination);
+
+  osc.start(t0);
+  osc.stop(t0 + 0.14);
+}
+
+// Physical character action: Combo Step 3 - Finisher Kick with wind whoosh
+export function sonarPatadaRemate() {
+  const c = getContext();
+  const vol = volumenEfectos();
+  if (!c || vol <= 0) return;
+
+  const t0 = c.currentTime;
+  const osc1 = c.createOscillator();
+  const osc2 = c.createOscillator();
+  const gain = c.createGain();
+
+  osc1.type = "sine";
+  osc1.frequency.setValueAtTime(220, t0);
+  osc1.frequency.exponentialRampToValueAtTime(45, t0 + 0.15);
+
+  osc2.type = "triangle";
+  osc2.frequency.setValueAtTime(140, t0);
+  osc2.frequency.exponentialRampToValueAtTime(35, t0 + 0.16);
+
+  gain.gain.setValueAtTime(0.001, t0);
+  gain.gain.exponentialRampToValueAtTime(vol * 0.95, t0 + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.18);
+
+  osc1.connect(gain);
+  osc2.connect(gain);
+  gain.connect(c.destination);
+
+  osc1.start(t0);
+  osc2.start(t0);
+  osc1.stop(t0 + 0.19);
+  osc2.stop(t0 + 0.19);
+}
+
+// Physical character action: Ground Pound / Jump Landing Impact
+export function sonarImpactoCaida() {
   const c = getContext();
   const vol = volumenEfectos();
   if (!c || vol <= 0) return;
@@ -162,16 +220,20 @@ export function sonarPatada() {
   const gain = c.createGain();
 
   osc.type = "sine";
-  osc.frequency.setValueAtTime(210, t0);
-  osc.frequency.exponentialRampToValueAtTime(50, t0 + 0.12);
+  osc.frequency.setValueAtTime(150, t0);
+  osc.frequency.exponentialRampToValueAtTime(38, t0 + 0.16);
 
   gain.gain.setValueAtTime(0.001, t0);
-  gain.gain.exponentialRampToValueAtTime(vol * 0.8, t0 + 0.015);
-  gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.14);
+  gain.gain.exponentialRampToValueAtTime(vol * 0.9, t0 + 0.012);
+  gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.2);
 
   osc.connect(gain);
   gain.connect(c.destination);
 
   osc.start(t0);
-  osc.stop(t0 + 0.15);
+  osc.stop(t0 + 0.22);
 }
+
+// Compatibility aliases
+export const sonarGolpe = sonarGolpe1;
+export const sonarPatada = sonarPatadaRemate;

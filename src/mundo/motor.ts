@@ -41,15 +41,17 @@ export interface Figura {
   piel: number;
 }
 
-export type AccionPersonaje = "brincar" | "golpear" | "patear";
+export type AccionPersonaje = "brincar" | "golpear_1" | "golpear_2" | "patada_remate" | "golpear" | "patear";
 
 export interface ResultadoAccion {
   accion: AccionPersonaje;
+  combo_paso: number; // 0: salto, 1: golpe 1, 2: golpe 2, 3: patada remate
   objetivo: string | null;
   tipo_objetivo: "npc" | "fauna" | "objeto" | "muro" | "nada";
   distancia: number | null;
   x: number;
   y: number;
+  es_caida?: boolean;
 }
 
 export interface OpcionesMotor {
@@ -105,8 +107,13 @@ export class Motor {
   private shift = false;
   private perro: Perro | null = null;
   private accionActiva: { tipo: AccionPersonaje; t0: number; duracion: number } | null = null;
+  private pasoCombo = 0; // 0: golpe 1, 1: golpe 2, 2: patada remate
+  private tUltimoAtaque = 0;
+  private hitFlashes = new Map<string, number>(); // entity name -> expire timestamp
   private sacudidas = new Map<string, { t0: number; duracion: number; dx: number; dy: number }>();
-  private efectosImpacto: { x: number; y: number; t0: number; texto: string; duracion: number }[] = [];
+  private chispasHit: { x: number; y: number; t0: number; duracion: number; color: string; vx: number; vy: number; r: number }[] = [];
+  private polvoAterrizaje: { x: number; y: number; t0: number; duracion: number; vx: number; r: number }[] = [];
+  alCaerSalto: ((res: ResultadoAccion) => void) | null = null;
 
   constructor(o: OpcionesMotor) {
     this.o = o;
@@ -130,15 +137,74 @@ export class Motor {
     return this.moviendo && (this.corriendo || this.shift || this.corriendoSostenido || this.correrAlDestino);
   }
 
-  // Executes a physical character action (jump, punch, kick), detects front target, and records analytical outcome
+  private generarHitSparks(cx: number, cy: number, dx: number, dy: number) {
+    const colores = ["#ffffff", "#ffeb3b", "#ff9800", "#ff5722"];
+    for (let i = 0; i < 7; i++) {
+      const angulo = Math.atan2(dy, dx) + (Math.random() - 0.5) * 1.8;
+      const rap = 45 + Math.random() * 65;
+      this.chispasHit.push({
+        x: cx,
+        y: cy,
+        t0: this.tiempo,
+        duracion: 220 + Math.random() * 100,
+        color: colores[Math.floor(Math.random() * colores.length)],
+        vx: Math.cos(angulo) * rap,
+        vy: Math.sin(angulo) * rap,
+        r: 1.5 + Math.random() * 2,
+      });
+    }
+  }
+
+  private generarPolvoAterrizaje(cx: number, cy: number) {
+    for (let i = 0; i < 3; i++) {
+      const vxIzq = -(22 + i * 14 + Math.random() * 8);
+      const vxDer = +(22 + i * 14 + Math.random() * 8);
+      this.polvoAterrizaje.push({
+        x: cx - 4,
+        y: cy + (Math.random() * 2 - 1),
+        t0: this.tiempo,
+        duracion: 320 + i * 40,
+        vx: vxIzq,
+        r: 3 + i * 1.5,
+      });
+      this.polvoAterrizaje.push({
+        x: cx + 4,
+        y: cy + (Math.random() * 2 - 1),
+        t0: this.tiempo,
+        duracion: 320 + i * 40,
+        vx: vxDer,
+        r: 3 + i * 1.5,
+      });
+    }
+  }
+
+  // Unified attack action with chaining combos: Golpe 1 -> Golpe 2 -> Patada Remate
+  atacar(): ResultadoAccion {
+    const ahora = this.tiempo;
+    if (ahora - this.tUltimoAtaque < 480) {
+      this.pasoCombo = (this.pasoCombo + 1) % 3;
+    } else {
+      this.pasoCombo = 0;
+    }
+    this.tUltimoAtaque = ahora;
+
+    const tipos: AccionPersonaje[] = ["golpear_1", "golpear_2", "patada_remate"];
+    const tipo = tipos[this.pasoCombo];
+    return this.ejecutarAccion(tipo);
+  }
+
+  // Executes a physical character action (jump or combo step), detects front target, and records analytical outcome
   ejecutarAccion(tipo: AccionPersonaje): ResultadoAccion {
-    const duraciones: Record<AccionPersonaje, number> = {
-      brincar: 360,
-      golpear: 240,
-      patear: 280,
+    const configAccion: Record<AccionPersonaje, { duracion: number; alcance: number; lunge: number; paso: number }> = {
+      brincar: { duracion: 360, alcance: 34, lunge: 0, paso: 0 },
+      golpear_1: { duracion: 220, alcance: 36, lunge: 7, paso: 1 },
+      golpear_2: { duracion: 240, alcance: 40, lunge: 9, paso: 2 },
+      patada_remate: { duracion: 300, alcance: 52, lunge: 14, paso: 3 },
+      golpear: { duracion: 220, alcance: 36, lunge: 7, paso: 1 },
+      patear: { duracion: 300, alcance: 52, lunge: 14, paso: 3 },
     };
-    const duracion = duraciones[tipo];
-    this.accionActiva = { tipo, t0: this.tiempo, duracion };
+    const cfg = configAccion[tipo] ?? configAccion.golpear_1;
+    this.accionActiva = { tipo, t0: this.tiempo, duracion: cfg.duracion };
 
     const dirOffsets: Record<Direccion, [number, number]> = {
       abajo: [0, 1],
@@ -147,9 +213,8 @@ export class Motor {
       der: [1, 0],
     };
     const [dx, dy] = dirOffsets[this.dir];
-    const alcance = tipo === "patear" ? 48 : tipo === "golpear" ? 38 : 34;
-    const centroX = this.x + (tipo === "brincar" ? 0 : dx * (alcance / 2));
-    const centroY = this.y + (tipo === "brincar" ? 0 : dy * (alcance / 2));
+    const centroX = this.x + (tipo === "brincar" ? 0 : dx * (cfg.alcance / 2));
+    const centroY = this.y + (tipo === "brincar" ? 0 : dy * (cfg.alcance / 2));
 
     let objetivoPunto: Punto | null = null;
     let menorDist = Infinity;
@@ -158,7 +223,7 @@ export class Motor {
     for (const p of this.o.mapa.puntos) {
       if (!visible(p, this.o.hora)) continue;
       const d = Math.hypot(p.x - centroX, p.y - centroY);
-      if (d <= alcance && d < menorDist) {
+      if (d <= cfg.alcance && d < menorDist) {
         menorDist = d;
         objetivoPunto = p;
       }
@@ -167,7 +232,7 @@ export class Motor {
     // Also check figures (e.g. dog)
     if (!objetivoPunto && this.perro) {
       const d = Math.hypot(this.perro.f.x - centroX, this.perro.f.y - centroY);
-      if (d <= alcance) {
+      if (d <= cfg.alcance) {
         menorDist = d;
         objetivoPunto = {
           nombre: "perro",
@@ -184,27 +249,17 @@ export class Motor {
     const esMuro = !libre(this.o.mapa, celdaFrente.tx, celdaFrente.ty);
 
     if (objetivoPunto) {
+      // Elastic shake + Hit Flash on the entity!
       this.sacudidas.set(objetivoPunto.nombre, {
         t0: this.tiempo,
-        duracion: 180,
-        dx: dx * 3,
-        dy: dy * 3,
+        duracion: 220,
+        dx: dx * (cfg.paso === 3 ? 5 : 3),
+        dy: dy * (cfg.paso === 3 ? 5 : 3),
       });
-      this.efectosImpacto.push({
-        x: objetivoPunto.x,
-        y: objetivoPunto.y - 18,
-        t0: this.tiempo,
-        texto: tipo === "golpear" ? "💥" : tipo === "patear" ? "💨" : "✨",
-        duracion: 280,
-      });
+      this.hitFlashes.set(objetivoPunto.nombre, this.tiempo + 90);
+      this.generarHitSparks(objetivoPunto.x, objetivoPunto.y - 18, dx, dy);
     } else if (esMuro && tipo !== "brincar") {
-      this.efectosImpacto.push({
-        x: this.x + dx * 24,
-        y: this.y + dy * 24 - 16,
-        t0: this.tiempo,
-        texto: "💥",
-        duracion: 240,
-      });
+      this.generarHitSparks(this.x + dx * 22, this.y + dy * 22 - 16, -dx, -dy);
     } else if (tipo === "brincar") {
       // Dust puff on jump launch
       this.particulasPolvo.push({ x: this.x - 4, y: this.y, t0: this.tiempo, r: 3 });
@@ -213,6 +268,7 @@ export class Motor {
 
     return {
       accion: tipo,
+      combo_paso: cfg.paso,
       objetivo: objetivoPunto?.nombre ?? (esMuro ? "muro" : null),
       tipo_objetivo: objetivoPunto?.tipo ?? (esMuro ? "muro" : "nada"),
       distancia: menorDist < Infinity ? Math.round(menorDist) : null,
@@ -221,16 +277,70 @@ export class Motor {
     };
   }
 
+  // Evaluates ground pound / offensive landing impact on nearby entities
+  evaluarImpactoCaida(): ResultadoAccion | null {
+    this.generarPolvoAterrizaje(this.x, this.y);
+
+    const radioImpacto = 38;
+    let objetivoPunto: Punto | null = null;
+    let menorDist = Infinity;
+
+    for (const p of this.o.mapa.puntos) {
+      if (!visible(p, this.o.hora)) continue;
+      const d = Math.hypot(p.x - this.x, p.y - this.y);
+      if (d <= radioImpacto && d < menorDist) {
+        menorDist = d;
+        objetivoPunto = p;
+      }
+    }
+
+    if (!objetivoPunto && this.perro) {
+      const d = Math.hypot(this.perro.f.x - this.x, this.perro.f.y - this.y);
+      if (d <= radioImpacto) {
+        menorDist = d;
+        objetivoPunto = {
+          nombre: "perro",
+          tipo: "fauna",
+          x: this.perro.f.x,
+          y: this.perro.f.y,
+          arte: "figuras/perro",
+        };
+      }
+    }
+
+    if (objetivoPunto) {
+      this.sacudidas.set(objetivoPunto.nombre, {
+        t0: this.tiempo,
+        duracion: 240,
+        dx: (Math.random() - 0.5) * 6,
+        dy: 4,
+      });
+      this.hitFlashes.set(objetivoPunto.nombre, this.tiempo + 90);
+      this.generarHitSparks(objetivoPunto.x, objetivoPunto.y - 12, 0, 1);
+      return {
+        accion: "brincar",
+        combo_paso: 0,
+        objetivo: objetivoPunto.nombre,
+        tipo_objetivo: objetivoPunto.tipo,
+        distancia: Math.round(menorDist),
+        x: Math.round(this.x),
+        y: Math.round(this.y),
+        es_caida: true,
+      };
+    }
+    return null;
+  }
+
   brincar(): ResultadoAccion {
     return this.ejecutarAccion("brincar");
   }
 
   golpear(): ResultadoAccion {
-    return this.ejecutarAccion("golpear");
+    return this.atacar();
   }
 
   patear(): ResultadoAccion {
-    return this.ejecutarAccion("patear");
+    return this.atacar();
   }
 
   iniciar() {
@@ -740,15 +850,35 @@ export class Motor {
       if (!visible(p, this.o.hora)) continue;
       const shakeInfo = this.sacudidas.get(p.nombre);
       let shakeX = 0;
+      let deformX = 1;
+      let deformY = 1;
       if (shakeInfo) {
         const dtShake = this.tiempo - shakeInfo.t0;
         if (dtShake < shakeInfo.duracion) {
           const factor = 1 - dtShake / shakeInfo.duracion;
-          shakeX = Math.sin(dtShake / 22) * 3.5 * factor;
+          shakeX = Math.sin(dtShake / 20) * shakeInfo.dx * factor;
+          // Disney elastic squash & stretch bounce
+          const bounce = Math.sin((dtShake / shakeInfo.duracion) * Math.PI * 2) * factor * 0.12;
+          deformX = 1 + bounce;
+          deformY = 1 - bounce;
         } else {
           this.sacudidas.delete(p.nombre);
         }
       }
+      const esFlash = (this.hitFlashes.get(p.nombre) ?? 0) > this.tiempo;
+
+      const aplicarTransformHit = (dibujo: () => void) => {
+        ctx.save();
+        if (esFlash) ctx.filter = "brightness(0) invert(1)";
+        if (deformX !== 1 || deformY !== 1 || shakeX !== 0) {
+          ctx.translate(p.x + shakeX, p.y);
+          ctx.scale(deformX, deformY);
+          ctx.translate(-(p.x + shakeX), -p.y);
+        }
+        dibujo();
+        ctx.restore();
+      };
+
       if (p.tipo === "npc") {
         const distJugador = Math.hypot(p.x - this.x, p.y - this.y);
         const miraJugador = distJugador < 72;
@@ -759,23 +889,34 @@ export class Motor {
             cosas.push({
               y: p.y,
               dibujar: () => {
-                const x = Math.round(p.x + shakeX - hoja.width / 2);
-                const y = Math.round(p.y - hoja.height);
-                if (!voltear) {
-                  ctx.drawImage(hoja, x, y);
-                } else {
-                  ctx.save();
-                  ctx.translate(x + hoja.width, y);
-                  ctx.scale(-1, 1);
-                  ctx.drawImage(hoja, 0, 0);
-                  ctx.restore();
-                }
+                aplicarTransformHit(() => {
+                  const x = Math.round(p.x + shakeX - hoja.width / 2);
+                  const y = Math.round(p.y - hoja.height);
+                  if (!voltear) {
+                    ctx.drawImage(hoja, x, y);
+                  } else {
+                    ctx.save();
+                    ctx.translate(x + hoja.width, y);
+                    ctx.scale(-1, 1);
+                    ctx.drawImage(hoja, 0, 0);
+                    ctx.restore();
+                  }
+                });
               },
             });
           }
         } else {
           const img = piezaYa(p.arte);
-          if (img) cosas.push({ y: p.y, dibujar: () => this.cuadro(img, 0, 0, p.x + shakeX, p.y, voltear) });
+          if (img) {
+            cosas.push({
+              y: p.y,
+              dibujar: () => {
+                aplicarTransformHit(() => {
+                  this.cuadro(img, 0, 0, p.x + shakeX, p.y, voltear);
+                });
+              },
+            });
+          }
         }
       } else {
         const img = piezaYa(p.arte);
@@ -783,7 +924,9 @@ export class Motor {
           cosas.push({
             y: p.y,
             dibujar: () => {
-              ctx.drawImage(img, Math.round(p.x + shakeX - img.width / 2), Math.round(p.y - img.height));
+              aplicarTransformHit(() => {
+                ctx.drawImage(img, Math.round(p.x + shakeX - img.width / 2), Math.round(p.y - img.height));
+              });
             },
           });
         }
@@ -798,12 +941,25 @@ export class Motor {
       const img = lado ?? hoja, w = lado ? CUADRO.ancho : hoja.width;
       const col = lado ? [0, 1, 0, 2][Math.floor(this.tiempo / PERRO_PASO_MS) % 4] : 0;
       const voltear = lado ? !perro!.izq : !!perro?.izq;
+      const shakePerro = this.sacudidas.get("perro");
+      let shakePX = 0;
+      if (shakePerro) {
+        const dtP = this.tiempo - shakePerro.t0;
+        if (dtP < shakePerro.duracion) {
+          shakePX = Math.sin(dtP / 20) * shakePerro.dx * (1 - dtP / shakePerro.duracion);
+        } else {
+          this.sacudidas.delete("perro");
+        }
+      }
+      const esFlashPerro = (this.hitFlashes.get("perro") ?? 0) > this.tiempo;
+
       cosas.push({
         y: f.y,
         dibujar: () => {
-          const x = Math.round(f.x - w / 2);
+          const x = Math.round(f.x + shakePX - w / 2);
           const y = Math.round(f.y - img.height) - salto;
           ctx.save();
+          if (esFlashPerro) ctx.filter = "brightness(0) invert(1)";
           ctx.translate(voltear ? x + w : x, y);
           if (voltear) ctx.scale(-1, 1);
           ctx.drawImage(img, col * w, 0, w, img.height, 0, 0, w, img.height);
@@ -818,10 +974,13 @@ export class Motor {
       .map((id) => piezaYa(id, coloresDe(a)))
       .filter((hoja): hoja is HTMLCanvasElement => !!hoja);
 
-    // Action animation offsets for protagonist
+    // Action animation offsets and Disney Squash & Stretch for protagonist
     let saltoY = 0;
     let avanceX = 0;
     let avanceY = 0;
+    let protaScaleX = 1;
+    let protaScaleY = 1;
+
     if (this.accionActiva) {
       const transcurrido = this.tiempo - this.accionActiva.t0;
       if (transcurrido < this.accionActiva.duracion) {
@@ -833,21 +992,59 @@ export class Motor {
           der: [1, 0],
         };
         const [dirX, dirY] = dirOffsets[this.dir];
+
         if (this.accionActiva.tipo === "brincar") {
-          saltoY = Math.sin(prog * Math.PI) * 16;
-        } else if (this.accionActiva.tipo === "golpear") {
-          const lunge = Math.sin(prog * Math.PI) * 7;
+          // Arc trajectory
+          saltoY = Math.sin(prog * Math.PI) * 18;
+          // Disney Squash & Stretch:
+          // 0.00 .. 0.16 -> Anticipation squash (crouch before leaping)
+          // 0.16 .. 0.78 -> Airborne stretch along vertical leap
+          // 0.78 .. 1.00 -> Impact compression on touchdown
+          if (prog < 0.16) {
+            const f = prog / 0.16;
+            protaScaleX = 1 + (1 - f) * 0.16;
+            protaScaleY = 1 - (1 - f) * 0.18;
+          } else if (prog < 0.78) {
+            const v = Math.sin(((prog - 0.16) / 0.62) * Math.PI);
+            protaScaleX = 1 - v * 0.12;
+            protaScaleY = 1 + v * 0.14;
+          } else {
+            const f = (prog - 0.78) / 0.22;
+            const squash = Math.sin(f * Math.PI);
+            protaScaleX = 1 + squash * 0.22;
+            protaScaleY = 1 - squash * 0.24;
+          }
+        } else {
+          // Attack actions (golpear_1, golpear_2, patada_remate, golpear, patear)
+          const lungeDist =
+            this.accionActiva.tipo === "patada_remate" || this.accionActiva.tipo === "patear"
+              ? 13
+              : this.accionActiva.tipo === "golpear_2"
+              ? 9
+              : 7;
+          const lunge = Math.sin(prog * Math.PI) * lungeDist;
           avanceX = dirX * lunge;
           avanceY = dirY * lunge;
-        } else if (this.accionActiva.tipo === "patear") {
-          const lunge = Math.sin(prog * Math.PI) * 9;
-          avanceX = dirX * lunge;
-          avanceY = dirY * lunge;
+
+          // Anticipation & punch stretch
+          if (prog < 0.25) {
+            protaScaleX = 0.94;
+            protaScaleY = 1.06;
+          } else if (prog < 0.65) {
+            protaScaleX = 1.14;
+            protaScaleY = 0.92;
+          } else {
+            const f = (prog - 0.65) / 0.35;
+            protaScaleX = 1 + (1 - f) * 0.08;
+            protaScaleY = 1 - (1 - f) * 0.08;
+          }
         }
       } else {
         if (this.accionActiva.tipo === "brincar") {
-          this.particulasPolvo.push({ x: this.x - 5, y: this.y, t0: this.tiempo, r: 2.5 });
-          this.particulasPolvo.push({ x: this.x + 5, y: this.y, t0: this.tiempo, r: 2.5 });
+          const resCaida = this.evaluarImpactoCaida();
+          if (resCaida && this.alCaerSalto) {
+            this.alCaerSalto(resCaida);
+          }
         }
         this.accionActiva = null;
       }
@@ -859,7 +1056,7 @@ export class Motor {
         dibujar: () => {
           ctx.save();
           ctx.beginPath();
-          const escala = Math.max(0.45, 1 - saltoY / 28);
+          const escala = Math.max(0.4, 1 - saltoY / 28);
           ctx.ellipse(this.x, this.y, 13 * escala, 5 * escala, 0, 0, Math.PI * 2);
           ctx.fillStyle = "rgba(0, 0, 0, 0.28)";
           ctx.fill();
@@ -870,26 +1067,70 @@ export class Motor {
 
     cosas.push({
       y: this.y,
-      dibujar: () =>
+      dibujar: () => {
+        ctx.save();
+        const pieX = this.x + avanceX;
+        const pieY = this.y + avanceY - saltoY;
+        if (protaScaleX !== 1 || protaScaleY !== 1) {
+          ctx.translate(pieX, pieY);
+          ctx.scale(protaScaleX, protaScaleY);
+          ctx.translate(-pieX, -pieY);
+        }
         capasListas.forEach((hoja) =>
-          this.cuadro(hoja, columna, fila, this.x + avanceX, this.y + avanceY - saltoY, voltear)
-        ),
+          this.cuadro(hoja, columna, fila, pieX, pieY, voltear)
+        );
+        ctx.restore();
+      },
     });
     cosas.sort((p, q) => p.y - q.y).forEach((cosa) => cosa.dibujar());
 
-    // Floating impact particles (stars, dust, bursts)
-    const ahoraImpacto = this.tiempo;
-    this.efectosImpacto = this.efectosImpacto.filter((e) => ahoraImpacto - e.t0 < e.duracion);
-    for (const e of this.efectosImpacto) {
-      const prog = (ahoraImpacto - e.t0) / e.duracion;
+    // Hit Sparks (Arcade diamond / radiant stars)
+    const ahora = this.tiempo;
+    this.chispasHit = this.chispasHit.filter((s) => ahora - s.t0 < s.duracion);
+    for (const s of this.chispasHit) {
+      const dt = (ahora - s.t0) / 1000;
+      const prog = (ahora - s.t0) / s.duracion;
       const alfa = 1 - prog;
-      const y = e.y - prog * 12;
+      const px = s.x + s.vx * dt;
+      const py = s.y + s.vy * dt;
+      const r = s.r * (1 + prog * 0.8);
       ctx.save();
       ctx.globalAlpha = Math.max(0, alfa);
-      ctx.font = "18px sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText(e.texto, e.x, y);
+      ctx.fillStyle = s.color;
+      // Draw 4-point radiant diamond star
+      ctx.beginPath();
+      ctx.moveTo(px, py - r * 2.2);
+      ctx.lineTo(px + r * 0.7, py);
+      ctx.lineTo(px, py + r * 2.2);
+      ctx.lineTo(px - r * 0.7, py);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(px - r * 2.2, py);
+      ctx.lineTo(px, py + r * 0.7);
+      ctx.lineTo(px + r * 2.2, py);
+      ctx.lineTo(px, py - r * 0.7);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Landing Dust clouds (fan-shaped expanding puffs)
+    this.polvoAterrizaje = this.polvoAterrizaje.filter((p) => ahora - p.t0 < p.duracion);
+    for (const p of this.polvoAterrizaje) {
+      const dt = (ahora - p.t0) / 1000;
+      const prog = (ahora - p.t0) / p.duracion;
+      const alfa = (1 - prog) * 0.75;
+      const px = p.x + p.vx * dt;
+      const py = p.y - Math.sin(prog * Math.PI) * 4;
+      const radio = p.r * (1 + prog * 1.6);
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, alfa);
+      ctx.fillStyle = "#e0d3c1";
+      ctx.beginPath();
+      ctx.arc(px, py, radio, 0, Math.PI * 2);
+      ctx.fill();
       ctx.restore();
     }
 

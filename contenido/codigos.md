@@ -37,7 +37,7 @@ Todos llevan: código del participante, sesión, versión del contenido y del ju
 | `explora` | Al tocar un objeto o a una persona fija (lugar y cuál), y al salir de un lugar (lugar, ms de permanencia, visitas) | Qué busca, evita, repite |
 | `tramo` | Día y parte del día que empieza (`manana`, `tarde`, `noche`, `fin`) | Ritmo de la partida |
 | `corre` | Lugar y ms que corrió, al dejar de correr | Cuánto corre y dónde |
-| `accion_personaje` | Acción realizada (`brincar`, `golpear`, `patear`), lugar, objetivo alcanzado (`objetivo`), tipo (`npc`, `fauna`, `objeto`, `muro`, `nada`), coordenadas `x`, `y` y `distancia` | Patrones de exploración física, motricidad, impulsividad o interacción hacia personas, animales u objetos |
+| `accion_personaje` | Acción motriz ejecutada (salto o combos de ataque estilo arcade: `combo_1`, `combo_2`, `combo_remate`, e impacto de caída al aterrizar: `impacto_caida`), paso del combo (`0` a `3`), objetivo alcanzado (`objetivo`), tipo (`npc`, `fauna`, `objeto`, `muro`, `nada`), distancia en píxeles, coordenadas `x`, `y` | Patrones de exploración física, motricidad, impulsividad, ritmo de pulsaciones e interacción hacia personas, animales u objetos |
 | `dibujo` | Trazos con color, grosor, goma y tiempo de cada punto, cuántos deshizo, tiempo, imagen final | El dibujo y su proceso |
 | `quiero_hablar` | Pantalla y hora | Dispara el aviso |
 | `repetir_voz` | Pantalla y línea que pidió oír | Separar duda de dificultad para leer |

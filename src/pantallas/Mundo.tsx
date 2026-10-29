@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import contenido, { type Escena } from "virtual:contenido";
 import { cargarMapa, libre, quitarAusentes, visible, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
-import { Motor, type Figura, type AccionPersonaje } from "../mundo/motor";
+import { Motor, type Figura } from "../mundo/motor";
 import { pieza } from "../lienzo/arte";
 import { capas, coloresDe } from "../personaje/apariencia";
 import { estado, cambiarEstado, type Estado } from "../datos/guardado";
@@ -14,7 +14,7 @@ import { registrar } from "../datos/eventos";
 import { Bocina } from "../ui/Bocina";
 import { Icono } from "../ui/iconos";
 import { useSuperpuesto } from "../ui/Siempre";
-import { sonarGolpe, sonarMision, sonarPatada, sonarProximidad, sonarSalto, sonarToque } from "../ui/sonido";
+import { sonarGolpe1, sonarGolpe2, sonarImpactoCaida, sonarMision, sonarPatadaRemate, sonarProximidad, sonarSalto, sonarToque } from "../ui/sonido";
 import "./mundo.css";
 
 const M = contenido.textos.mundo;
@@ -206,15 +206,35 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     if (motorRef.current) motorRef.current.corriendo = corriendo;
   }, [corriendo]);
 
-  const dispararAccion = (tipo: AccionPersonaje) => {
+  const dispararSalto = () => {
     if (!motorRef.current || motorRef.current.pausado || escena || superpuesto) return;
-    if (tipo === "brincar") sonarSalto();
-    else if (tipo === "golpear") sonarGolpe();
-    else if (tipo === "patear") sonarPatada();
+    sonarSalto();
+    const res = motorRef.current.brincar();
+    registrar("accion_personaje", {
+      accion: "brincar",
+      combo_paso: 0,
+      sub_tipo: "salto",
+      objetivo: res.objetivo,
+      tipo_objetivo: res.tipo_objetivo,
+      distancia: res.distancia,
+      lugar: estado().lugar,
+      x: res.x,
+      y: res.y,
+    });
+  };
 
-    const res = motorRef.current.ejecutarAccion(tipo);
+  const dispararAtaque = () => {
+    if (!motorRef.current || motorRef.current.pausado || escena || superpuesto) return;
+    const res = motorRef.current.atacar();
+    if (res.combo_paso === 1) sonarGolpe1();
+    else if (res.combo_paso === 2) sonarGolpe2();
+    else if (res.combo_paso === 3) sonarPatadaRemate();
+
+    const subTipo = res.combo_paso === 1 ? "combo_1" : res.combo_paso === 2 ? "combo_2" : "combo_remate";
     registrar("accion_personaje", {
       accion: res.accion,
+      combo_paso: res.combo_paso,
+      sub_tipo: subTipo,
       objetivo: res.objetivo,
       tipo_objetivo: res.tipo_objetivo,
       distancia: res.distancia,
@@ -230,11 +250,9 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       if (ev.target instanceof HTMLInputElement || ev.target instanceof HTMLTextAreaElement) return;
       if (ev.code === "Space" || ev.key === " ") {
         ev.preventDefault();
-        dispararAccion("brincar");
-      } else if (ev.code === "KeyZ" || ev.code === "KeyJ") {
-        dispararAccion("golpear");
-      } else if (ev.code === "KeyX" || ev.code === "KeyK") {
-        dispararAccion("patear");
+        dispararSalto();
+      } else if (ev.code === "KeyZ" || ev.code === "KeyJ" || ev.code === "KeyX" || ev.code === "KeyK") {
+        dispararAtaque();
       }
     };
     addEventListener("keydown", alTeclado);
@@ -511,6 +529,20 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       };
       setMapa(m);
       setGuia(g);
+      motor.alCaerSalto = (res) => {
+        sonarImpactoCaida();
+        registrar("accion_personaje", {
+          accion: "brincar",
+          combo_paso: 0,
+          sub_tipo: "impacto_caida",
+          objetivo: res.objetivo,
+          tipo_objetivo: res.tipo_objetivo,
+          distancia: res.distancia,
+          lugar: lugarActual,
+          x: res.x,
+          y: res.y,
+        });
+      };
       motor.iniciar();
       setCubierto(false);
       const nombreLugar = M.lugares[lugarActual] ?? lugarActual;
@@ -629,27 +661,18 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
             className="boton redondo accion-btn brincar"
             aria-label="Brincar"
             title="Brincar (Espacio)"
-            onClick={() => dispararAccion("brincar")}
+            onClick={dispararSalto}
           >
             {Icono.brincar}
           </button>
           <button
             type="button"
-            className="boton redondo accion-btn golpear"
-            aria-label="Golpear"
-            title="Golpear (Z o J)"
-            onClick={() => dispararAccion("golpear")}
+            className="boton redondo accion-btn atacar"
+            aria-label="Atacar"
+            title="Atacar (Z o J) - Combo de 3 golpes"
+            onClick={dispararAtaque}
           >
-            {Icono.golpear}
-          </button>
-          <button
-            type="button"
-            className="boton redondo accion-btn patear"
-            aria-label="Patear"
-            title="Patear (X o K)"
-            onClick={() => dispararAccion("patear")}
-          >
-            {Icono.patear}
+            {Icono.atacar}
           </button>
         </div>
       )}

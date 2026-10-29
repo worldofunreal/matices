@@ -89,14 +89,10 @@
   border-color: #8bb53e;
 }
 
-.mundo-acciones .accion-btn.golpear:active {
+.mundo-acciones .accion-btn.atacar:active {
   background: #fde8e4;
   border-color: #d94f4f;
-}
-
-.mundo-acciones .accion-btn.patear:active {
-  background: #e5f1f9;
-  border-color: #5b8fd6;
+  box-shadow: 0 0 12px rgba(217, 79, 79, 0.45);
 }
 
 /* HTML over the world (motor.ts places each one on its world point every frame). Never catches a tap. */
