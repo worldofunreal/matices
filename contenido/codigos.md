@@ -31,7 +31,7 @@ Todos llevan: código del participante, sesión, versión del contenido y del ju
 | --- | --- | --- |
 | `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, color de cada prenda, tenis y extra que lleva (`colores`), si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
 | `escena` | Escena (`escena`), paso (`inicio`, `opcion`, `fin`), quién habla, opciones en el orden mostrado, la elegida (código) y ms para decidir desde que aparecen. En `fin`, si se saltó (`saltada`) o pausó (`pausada`) | Qué hace, qué contesta y si deja una escena a medias |
-| `minijuego` | Minijuego, resultado (`completado`), ms que duró y, si lo tiene, el código de la elección | Cómo juega |
+| `minijuego` | Minijuego, resultado (`completado`, `saltado` o `abortado`), motivo si se omitió o se dejó, ms y, si lo tiene, el código de la elección | Cómo juega y cuándo decide dejar una actividad |
 | `explora` | Al tocar un objeto o a una persona fija (lugar y cuál), y al salir de un lugar (lugar, ms de permanencia, visitas) | Qué busca, evita, repite |
 | `tramo` | Día y parte del día que empieza (`manana`, `tarde`, `noche`, `fin`) | Ritmo de la partida |
 | `corre` | Lugar y ms que corrió, al dejar de correr | Cuánto corre y dónde |

@@ -300,9 +300,7 @@
   align-items: center;
   gap: 4px 10px;
   padding: 10px 10px 10px 16px;
-  border-radius: 20px;
-  background: var(--tarjeta);
-  box-shadow: var(--sombra-alta);
+  border-radius: var(--radio);
   pointer-events: auto;
   animation: aparecer var(--rapido) both;
 }
@@ -310,11 +308,13 @@
 .globo-figura-caja::after {
   content: "";
   position: absolute;
-  left: 50%;
-  bottom: -8px;
+  inset: auto auto -8px 50%;
+  width: 0;
+  height: 0;
   border: 8px solid transparent;
   border-bottom: 0;
-  border-top-color: var(--tarjeta);
+  border-top-color: #f4e9d3;
+  background: none;
   transform: translateX(-50%);
 }
 

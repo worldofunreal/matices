@@ -9,7 +9,7 @@
   flex-direction: column;
   gap: 12px;
   padding: max(12px, env(safe-area-inset-top)) var(--espacio) max(12px, env(safe-area-inset-bottom));
-  background: var(--papel);
+  background: var(--pergamino);
   animation: aparecer var(--suave) both;
 }
 
@@ -60,9 +60,6 @@
   display: grid;
   gap: 10px;
   padding: 12px;
-  border-radius: var(--radio-chico);
-  background: var(--tarjeta);
-  box-shadow: var(--sombra);
 }
 
 .preferencia-cabecera {

@@ -7,8 +7,19 @@
   flex-direction: column;
   gap: 10px;
   padding: max(12px, env(safe-area-inset-top)) var(--espacio) max(12px, env(safe-area-inset-bottom));
-  background: var(--papel);
+  background: var(--pergamino);
   animation: aparecer var(--suave) both;
+}
+
+.dibujo-actividad {
+  position: relative;
+  inset: auto;
+  z-index: auto;
+  min-height: 0;
+  padding: 0;
+  gap: 8px;
+  background: transparent;
+  animation: none;
 }
 
 .dibujo-cabecera {
@@ -28,6 +39,12 @@
   flex: none;
 }
 
+.dibujo-cabecera-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .dibujo-cuerpo {
   flex: 1;
   min-height: 0;
@@ -45,9 +62,6 @@
   max-width: 100%;
   aspect-ratio: 4 / 3;
   min-height: 0;
-  border-radius: 14px;
-  background: #faf6ee;
-  box-shadow: var(--sombra-alta);
   overflow: hidden;
 }
 
@@ -135,8 +149,59 @@
 
 .dibujo-pie {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dibujo-pie > .boton {
+  flex: 1 1 120px;
+  min-height: var(--toque);
+}
+
+.dibujo-actividad .dibujo-cabecera p {
+  font-size: 16px;
+}
+
+.dibujo-actividad .dibujo-cuerpo {
+  flex: none;
+  gap: 8px;
+}
+
+.dibujo-actividad .dibujo-hoja {
+  width: min(100%, 320px);
+  height: auto;
+  aspect-ratio: 4 / 3;
+}
+
+.dibujo-actividad .dibujo-herramientas {
+  gap: 6px;
+}
+
+.dibujo-actividad .dibujo-colores {
+  grid-template-columns: repeat(6, 30px);
+  gap: 5px;
+}
+
+.dibujo-actividad .dibujo-colores .muestra {
+  width: 30px;
+  height: 30px;
+}
+
+.dibujo-actividad .dibujo-grosores,
+.dibujo-actividad .dibujo-acciones {
+  gap: 5px;
+}
+
+.dibujo-actividad .grosor,
+.dibujo-actividad .dibujo-acciones .boton.redondo {
+  width: 42px;
+  height: 42px;
+  min-height: 42px;
+}
+
+.dibujo-actividad .dibujo-pie > .boton {
+  flex: 0 1 160px;
 }
 
 @media (orientation: landscape) {
@@ -147,6 +212,10 @@
   .dibujo-herramientas {
     flex-direction: column;
   }
+
+  .dibujo-actividad .dibujo-cuerpo {
+    flex-direction: row;
+  }
 }
 
 /* The corner buttons' band stays free (estilos.css, --franja). */
@@ -155,11 +224,19 @@
     padding-top: calc(var(--franja) + env(safe-area-inset-top));
     padding-bottom: calc(var(--franja) + env(safe-area-inset-bottom));
   }
+
+  .dibujo-actividad {
+    padding: 0;
+  }
 }
 
 @media (orientation: landscape) {
   .dibujo {
     padding-left: calc(var(--franja) + env(safe-area-inset-left));
     padding-right: calc(var(--franja) + env(safe-area-inset-right));
+  }
+
+  .dibujo-actividad {
+    padding: 0;
   }
 }

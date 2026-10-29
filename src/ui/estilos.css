@@ -188,9 +188,20 @@ canvas.pixel {
 .panel {
   position: relative;
   background: var(--pergamino);
-  border: 2px solid var(--contorno);
+  border: 6px solid var(--madera);
   border-radius: var(--radio);
-  box-shadow: var(--sombra-alta);
+  box-shadow: 0 6px 0 var(--contorno), var(--sombra-alta);
+}
+
+.panel-compacto {
+  border-width: 3px;
+  border-radius: var(--radio-chico);
+  box-shadow: 0 3px 0 var(--contorno), var(--sombra);
+}
+
+.panel.panel-compacto::after {
+  inset: 4px;
+  background-size: 10px 1.5px, 1.5px 10px, 10px 1.5px, 1.5px 10px, 10px 1.5px, 1.5px 10px, 10px 1.5px, 1.5px 10px;
 }
 
 /* Gold corner brackets on the parchment panels and on the dialogue box (escena.css): eight short lines, two per corner. */

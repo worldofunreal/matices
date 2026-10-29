@@ -90,7 +90,7 @@ export function Libro({ alCerrar }: { alCerrar: () => void }) {
         <div className="libro-contenido">
           <div className="libro-paginas">
             <button
-              className="libro-pagina-tarjeta libro-nueva"
+              className="libro-pagina-tarjeta panel panel-compacto libro-nueva"
               onClick={() => {
                 enDetalle("dibujo");
                 setDibujando(true);
@@ -102,7 +102,7 @@ export function Libro({ alCerrar }: { alCerrar: () => void }) {
             {paginas.map((pagina, i) => (
               <button
                 key={i}
-                className="libro-pagina-tarjeta"
+                className="libro-pagina-tarjeta panel panel-compacto"
                 aria-label={`Dibujo ${i + 1}`}
                 onClick={() => setAbierta(i)}
               >
@@ -113,7 +113,7 @@ export function Libro({ alCerrar }: { alCerrar: () => void }) {
           </div>
 
           {paginas.length === 0 && (
-            <div className="libro-vacio">
+            <div className="libro-vacio panel panel-compacto">
               <span className="libro-vacio-icono" aria-hidden="true">🎨</span>
               <p className="libro-vacio-texto">
                 Tu libro de recuerdos está listo para tus dibujos. ¡Toca "Dibujar" para empezar tu primera obra!

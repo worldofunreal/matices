@@ -85,6 +85,8 @@ declare module "virtual:contenido" {
       seguir: string;
       saltar: string;
       pausar: string;
+      seguir_despues: string;
+      omitir_objetivo: string;
       mision: string;
     };
     mundo: {

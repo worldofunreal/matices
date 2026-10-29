@@ -62,6 +62,8 @@ escena:
   seguir: "Seguir"
   saltar: "Saltar"
   pausar: "Pausar"
+  seguir_despues: "Seguir después"
+  omitir_objetivo: "Omitir objetivo"
   mision: "Misión"
 
 # Mundo. Los personajes fijos solo saludan y dicen cosas neutras: nunca preguntan

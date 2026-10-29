@@ -2,7 +2,7 @@
 // marks and effects. Nothing runs by itself: the child goes on with "Seguir", and a scene never ends on its own.
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import contenido, { type Escena, type Paso } from "virtual:contenido";
-import { cambiarEstado, estado } from "../datos/guardado";
+import { estado } from "../datos/guardado";
 import { azar } from "../datos/azar";
 import { registrar, semilla } from "../datos/eventos";
 import { conGenero, marcar, pasoGuardado, terminarEscena } from "../datos/escenas";
@@ -141,7 +141,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
   // Over: finished (hecha), skipped (hecha, saltada) or paused (not hecha: it goes on from this line next time).
   const terminar = (hecha: boolean, motivo?: "saltada" | "pausada", datos: Record<string, unknown> = {}) => {
     registrar("escena", { escena: escena.id, paso: "fin", ...(motivo ? { [motivo]: true } : {}), ...datos });
-    if (hecha) {
+    if (hecha && motivo !== "saltada") {
       for (const paso of pasos) {
         if (paso.marca) marcar(paso.marca);
       }
@@ -208,13 +208,6 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
 
   const esMain = !escena.sugerida;
 
-  const marcasPorDefecto: Record<string, Resultado> = {
-    estufa: { marca: "estufa_prendida" },
-    ropero: { marca: "ropa_uniforme", codigo: "ELIGE_UNIFORME" },
-    examen: { marca: "hizo_examen" },
-    tienda: { marca: "hizo_compras" },
-  };
-
   // A minigame reports its result: the mark it leaves, the code of the choice, and the log.
   const alJuego = (r?: Resultado) => {
     registrar("minijuego", { minijuego: p.minijuego, resultado: "completado", ms: Math.round(performance.now() - t0.current), ...(r?.codigo ? { codigo: r.codigo } : {}) });
@@ -222,7 +215,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
     avanzar(i + 1);
   };
 
-  const abortarMinijuego = (motivo: "click_fuera" | "boton_cerrar") => {
+  const abortarMinijuego = (motivo: "click_fuera" | "boton_cerrar" | "boton_pausar") => {
     if (!p?.minijuego) return;
     const ms = Math.round(performance.now() - t0.current);
     registrar("minijuego", {
@@ -242,8 +235,8 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
       ms,
     });
 
-    if (esMain) {
-      terminar(false, "pausada", { motivo, minijuego: p.minijuego, es_main: true });
+    if (esMain || motivo === "boton_pausar") {
+      terminar(false, "pausada", { motivo, minijuego: p.minijuego, es_main: esMain });
     } else {
       terminar(true, "saltada", { motivo, minijuego: p.minijuego, es_main: false });
     }
@@ -255,7 +248,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
     registrar("minijuego", {
       minijuego: p.minijuego,
       resultado: "saltado",
-      motivo: "boton_saltar",
+      motivo: "omitir_objetivo",
       ms,
       escena: escena.id,
       es_main: esMain,
@@ -263,17 +256,13 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
     registrar("escena", {
       escena: escena.id,
       paso: "minijuego_saltado",
+      motivo: "omitir_objetivo",
       minijuego: p.minijuego,
       es_main: esMain,
       ms,
     });
 
-    const resDefecto = marcasPorDefecto[p.minijuego];
-    if (resDefecto?.marca) marcar(resDefecto.marca);
-    if (p.minijuego === "ropero") {
-      cambiarEstado({ apariencia: { ...estado().apariencia, ropa: "uniforme" } }, true);
-    }
-    avanzar(i + 1);
+    terminar(true, "saltada", { motivo: "omitir_objetivo", minijuego: p.minijuego, es_main: esMain });
   };
 
   // Lines of a scene: RPG-style dialogue box docked at the bottom with title and 1-2 line description.
@@ -284,7 +273,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
     const tituloFinal = titulo ? conGenero(titulo) : null;
     return (
       <div className={`escena-contenedor-dialogo fase-${fasePaso}`}>
-        <div className={`escena-caja interactiva fase-${fasePaso}`} role="status" style={{ cursor: "pointer" }}>
+        <div className={`escena-caja interactiva panel fase-${fasePaso}`} role="status" style={{ cursor: "pointer" }}>
           {quien && (
             <div className="escena-nombre-placa">
               <span>{quien}</span>
@@ -337,7 +326,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
   // Tapping the dialogue box advances it or completes its typewriter text; a tap anywhere else does nothing, so a stray
   // touch never skips a line. In minigames, tapping outside the game area aborts the activity.
   const alTocarPantalla = (e: React.MouseEvent<HTMLElement>) => {
-    if (e.target instanceof Element && e.target.closest(".escena-controles, .bocina, .minijuego-barra-superior, .respuesta-btn")) return;
+    if (e.target instanceof Element && e.target.closest(".escena-controles, .bocina, .minijuego-acciones, .respuesta-btn")) return;
     if (p.minijuego) {
       if (e.target instanceof Element && e.target.closest(".juego, .dibujo")) return;
       abortarMinijuego("click_fuera");
@@ -351,16 +340,18 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
   return (
     <section className="escena" aria-label={escena.nombre} onClick={alTocarPantalla}>
       {efecto && fuerza > 0 && <div className={`escena-efecto ${efecto}`} style={{ "--fuerza": fuerza } as CSSProperties} />}
-      <div className="escena-controles">
-        {escena.saltable && (
-          <button className="boton" onClick={() => terminar(true, "saltada")}>
-            {E.saltar}
+      {!p.minijuego && (
+        <div className="escena-controles">
+          {escena.saltable && (
+            <button className="boton" onClick={() => terminar(true, "saltada")}>
+              {E.saltar}
+            </button>
+          )}
+          <button className="boton" onClick={() => terminar(false, "pausada")}>
+            {E.pausar}
           </button>
-        )}
-        <button className="boton" onClick={() => terminar(false, "pausada")}>
-          {E.pausar}
-        </button>
-      </div>
+        </div>
+      )}
 
       {p.de !== undefined && linea(hablante(p.de), p.texto!, p.de, p.titulo)}
 
@@ -372,7 +363,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
             const tituloPregunta = p.titulo ? conGenero(p.titulo) : pasoPrevio?.titulo ? conGenero(pasoPrevio.titulo) : "¿Qué respondes?";
             const textoPregunta = pasoPrevio ? conGenero(pasoPrevio.texto!) : "¿Qué quieres responder?";
             return (
-              <div className={`escena-caja fija opciones-libro fase-${fasePaso}`} role="status">
+              <div className={`escena-caja fija opciones-libro panel fase-${fasePaso}`} role="status">
                 <div className="escena-nombre-placa">
                   <span>{hablante(hablantePrevio)}</span>
                 </div>
@@ -405,28 +396,31 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
 
       {p.minijuego && (
         <div className="escena-contenedor-minijuego" onClick={(e) => e.stopPropagation()}>
-          <div className="minijuego-barra-superior" role="toolbar" aria-label="Controles de actividad">
-            <button
-              type="button"
-              className="boton suave boton-cerrar-minijuego"
-              onClick={() => abortarMinijuego("boton_cerrar")}
-              aria-label={esMain ? "Volver al mapa" : "Cerrar actividad"}
-            >
-              ✕ {esMain ? "Volver" : "Cerrar"}
-            </button>
-            <button
-              type="button"
-              className="boton principal boton-saltar-minijuego"
-              onClick={saltarMinijuego}
-              aria-label="Saltar actividad"
-            >
-              ⏭ Saltar actividad
-            </button>
+          <div className="minijuego-panel panel">
+            {JUEGOS[p.minijuego]({
+              alTerminar: alJuego,
+              alOmitirObjetivo: saltarMinijuego,
+              alPausar: () => abortarMinijuego("boton_pausar"),
+            })}
+            <div className="minijuego-acciones" role="toolbar" aria-label="Opciones de actividad">
+              <button
+                type="button"
+                className="boton suave boton-cerrar-minijuego"
+                onClick={() => abortarMinijuego("boton_pausar")}
+                aria-label={E.seguir_despues}
+              >
+                {E.seguir_despues}
+              </button>
+              <button
+                type="button"
+                className="boton principal boton-saltar-minijuego"
+                onClick={saltarMinijuego}
+                aria-label={E.omitir_objetivo}
+              >
+                {E.omitir_objetivo}
+              </button>
+            </div>
           </div>
-          {JUEGOS[p.minijuego]({
-            alTerminar: alJuego,
-            alAbortar: () => abortarMinijuego("boton_cerrar"),
-          })}
         </div>
       )}
     </section>

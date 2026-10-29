@@ -698,7 +698,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           data-mundo-y={saludoAmbiental.y - 52}
           role="status"
         >
-          <div className="globo-figura-caja">
+          <div className="globo-figura-caja panel panel-compacto">
             <span className="globo-quien">{saludoAmbiental.quien}</span>
             <p>{saludoAmbiental.texto}</p>
           </div>
@@ -751,7 +751,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           data-mundo-y={burbuja.y - 48}
           role="status"
         >
-          <div className="globo-figura-caja">
+          <div className="globo-figura-caja panel panel-compacto">
             <p>{burbuja.texto}</p>
             <Bocina clave={burbuja.clave} texto={burbuja.texto} />
           </div>

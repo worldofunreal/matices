@@ -1,55 +1,59 @@
-/* The minigames: a card over the world, with big buttons. */
+/* The minigame card stays at the bottom, leaving the world and the activity visible. */
 .escena-contenedor-minijuego {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  padding: max(12px, env(safe-area-inset-top)) var(--espacio) max(12px, env(safe-area-inset-bottom));
   z-index: 20;
   pointer-events: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .escena-contenedor-minijuego > * {
   pointer-events: auto;
 }
 
-.minijuego-barra-superior {
-  position: absolute;
-  top: max(16px, env(safe-area-inset-top));
-  right: max(16px, env(safe-area-inset-right));
+.minijuego-panel {
+  width: min(calc(100% - 2 * var(--franja)), 560px);
+  max-height: 100%;
+  display: grid;
+  gap: 12px;
+  margin-top: auto;
+  padding: clamp(12px, 2vw, 20px);
+  overflow-y: auto;
+}
+
+.minijuego-acciones {
   display: flex;
   align-items: center;
-  gap: 10px;
-  z-index: 25;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .boton-cerrar-minijuego,
 .boton-saltar-minijuego {
-  min-height: 44px;
-  padding: 8px 16px;
+  min-height: var(--toque);
+  padding: 8px 14px;
   font-size: 15px;
-  font-weight: 750;
-  border-radius: 999px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  font-weight: 800;
+  border-radius: var(--radio-chico);
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   cursor: pointer;
 }
 
 .juego {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: min(calc(100% - 2 * 84px), 560px);
+  position: relative;
+  width: 100%;
   display: grid;
   gap: 14px;
-  padding: 20px;
-  border-radius: 24px;
-  background: var(--tarjeta);
-  box-shadow: var(--sombra-alta);
   text-align: center;
 }
 
@@ -157,4 +161,40 @@
 .juego-cuenta {
   margin: 0;
   font-size: 18px;
+}
+
+@media (max-width: 820px), (max-height: 560px), (orientation: portrait) {
+  body:has(.escena .escena-contenedor-minijuego) .siempre > button,
+  body:has(.escena .escena-contenedor-minijuego) .mundo-controles {
+    display: none;
+  }
+
+  .minijuego-panel {
+    width: min(100%, 560px);
+  }
+
+  .minijuego-acciones > button {
+    flex: 1 1 0;
+  }
+}
+
+@media (max-height: 560px) {
+  .minijuego-panel {
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .juego {
+    gap: 8px;
+  }
+
+  .juego h2 {
+    font-size: 18px;
+  }
+
+  .juego-mantener,
+  .juego-saltar {
+    min-height: 52px;
+    font-size: 18px;
+  }
 }

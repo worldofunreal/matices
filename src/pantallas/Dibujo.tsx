@@ -38,11 +38,13 @@ export function Dibujo({
   consigna,
   alTerminar,
   alAbortar,
+  modoActividad = false,
 }: {
   origen: string;
   consigna: string;
   alTerminar: (imagen: string | null) => void;
   alAbortar?: () => void;
+  modoActividad?: boolean;
 }) {
   const hoja = useRef<HTMLCanvasElement>(null);
   const trazos = useRef<Trazo[]>([]);
@@ -108,20 +110,15 @@ export function Dibujo({
   };
 
   return (
-    <section className="dibujo" aria-label={consigna}>
+    <section className={`dibujo${modoActividad ? " dibujo-actividad" : ""}`} aria-label={consigna}>
       <header className="dibujo-cabecera">
         <p>{consigna}</p>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div className="dibujo-cabecera-acciones">
           <Bocina clave={`dibujo.${origen}`} texto={consigna} />
-          {alAbortar && (
-            <button className="boton suave" type="button" onClick={alAbortar} style={{ minHeight: 40, borderRadius: 999 }}>
-              ✕ Salir
-            </button>
-          )}
         </div>
       </header>
       <div className="dibujo-cuerpo">
-        <div className="dibujo-hoja">
+        <div className="dibujo-hoja panel panel-compacto">
           <canvas
             ref={hoja}
             onPointerDown={empezar}
@@ -164,6 +161,11 @@ export function Dibujo({
         </div>
       </div>
       <footer className="dibujo-pie">
+        {alAbortar && (
+          <button className="boton suave" type="button" onClick={alAbortar}>
+            Salir
+          </button>
+        )}
         <button className="boton principal" onClick={listo}>
           {Icono.listo}
           {contenido.textos.libro.listo}

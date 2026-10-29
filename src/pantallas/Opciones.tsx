@@ -18,7 +18,7 @@ export const aplicarLectura = (on: boolean) => document.documentElement.classLis
 // One setting: its icon, its name (with the speaker, like every line of text) and its control.
 function Fila({ icono, texto, clave, children }: { icono: ReactNode; texto: string; clave: string; children: ReactNode }) {
   return (
-    <div className="preferencia">
+    <div className="preferencia panel panel-compacto">
       <div className="preferencia-cabecera">
         <span className="preferencia-icono">{icono}</span>
         <p>{texto}</p>
