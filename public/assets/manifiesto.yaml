@@ -885,8 +885,8 @@ grupos:
       fondo:
         que: Interior de la tiendita
         medida:
-          - 480
-          - 320
+          - 1024
+          - 672
         generacion:
           prompt: |-
             The first attached image is a pixel art game character, a child of about 9, on a flat magenta background: it shows the art style. The second attached image is the layout of a place in the game, seen from above: the dark blocks are walls, the light area is the floor, each small square is one tile, and the child is about two tiles tall. Draw this place as a top-down game background in exactly the same art style as the child: the same pixel size, the same dark outline, the same flat colors with soft shading. The place: the inside of a small neighborhood corner store. Follow the layout exactly: walls where the dark blocks are, openings where the layout leaves gaps, plain floor where small dark blocks stand inside a room. Only the floors, the walls and the ground: no shelves, no counter, no fridges, no plants; they are drawn apart. Do NOT draw the child. Create ONE image with the same proportions as the layout (480 by 320), filling it edge to edge. No text, no labels, no people.

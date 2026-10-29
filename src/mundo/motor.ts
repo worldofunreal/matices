@@ -922,16 +922,19 @@ export class Motor {
           }
         }
       } else {
-        const img = piezaYa(p.arte);
-        if (img) {
-          cosas.push({
-            y: p.y,
-            dibujar: () => {
-              aplicarTransformHit(() => {
-                ctx.drawImage(img, Math.round(p.x + shakeX - img.width / 2), Math.round(p.y - img.height));
-              });
-            },
-          });
+        // Objects integrated directly into the pre-rendered room background are interactable without duplicate sprites
+        if (m.lugar !== "tiendita") {
+          const img = piezaYa(p.arte);
+          if (img) {
+            cosas.push({
+              y: p.y,
+              dibujar: () => {
+                aplicarTransformHit(() => {
+                  ctx.drawImage(img, Math.round(p.x + shakeX - img.width / 2), Math.round(p.y - img.height));
+                });
+              },
+            });
+          }
         }
       }
     }

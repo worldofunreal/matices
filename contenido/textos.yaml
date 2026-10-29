@@ -161,8 +161,11 @@ mundo:
       resbaladilla: "La resbaladilla."
       arbol_grande: "Un árbol grande."
     tiendita:
-      refrigerador_refrescos: "El refri de los refrescos."
-      estante: "Dulces y papitas."
+      refrigerador_refrescos: "El refri de los refrescos bien fríos."
+      estante: "Dulces, papitas y frituras surtidas."
+      mesa_pan: "Pan dulce calientito: conchas, bolillos y empanadas."
+      estante_salsas: "Salsas picantes y latas de chiles."
+      arroz: "Costales de arroz y harina en la bodega."
     biblioteca_planta_alta:
       sillon_cuentera: "Un sillón para leer."
   correr: "Correr"

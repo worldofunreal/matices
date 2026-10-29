@@ -193,10 +193,23 @@ export function vidaProcedural(
     }
   }
 
-  // Specifically in tiendita: clear the entire central walking aisle between door and counter
+  // Specifically in tiendita (32x21 layout): keep entrances, checkout area and behind-counter clear
   if (lugar === "tiendita") {
-    for (let tx = 5; tx <= 9; tx++) {
-      for (let ty = 3; ty <= 8; ty++) {
+    // 1. Clear entrance door and welcome mat
+    for (let tx = 13; tx <= 17; tx++) {
+      for (let ty = 16; ty <= 18; ty++) {
+        ocupadas.add(`${tx},${ty}`);
+      }
+    }
+    // 2. Clear customer spot directly in front of cash register
+    for (let tx = 11; tx <= 14; tx++) {
+      for (let ty = 14; ty <= 16; ty++) {
+        ocupadas.add(`${tx},${ty}`);
+      }
+    }
+    // 3. Clear space behind counter (exclusive to Don Chuy)
+    for (let tx = 11; tx <= 21; tx++) {
+      for (let ty = 11; ty <= 13; ty++) {
         ocupadas.add(`${tx},${ty}`);
       }
     }
@@ -225,11 +238,28 @@ export function vidaProcedural(
 
   // 1. Gatos
   if (LUGARES_CON_FAUNA.includes(lugar)) {
-    // In tiendita, at most 1 cozy cat (or 0), while streets have 2-4
+    // In tiendita, at most 1 cozy cat (or 0) in cute spots: green rug by window, bodega, or counter side
     const cuantosGatos = lugar === "tiendita" ? (r.frac() > 0.4 ? 1 : 0) : 2 + Math.floor(r.frac() * 3);
     const gatos = r.barajar(GATOS);
     for (let i = 0; i < cuantosGatos; i++) {
-      const c = buscarLibre();
+      let c: Celda | null = null;
+      if (lugar === "tiendita") {
+        const anclasGato = [
+          { minTx: 14, maxTx: 17, minTy: 6, maxTy: 7 }, // Tapete verde frente a ventana
+          { minTx: 7, maxTx: 9, minTy: 15, maxTy: 16 },  // Al costado del mostrador
+        ];
+        const a = anclasGato[Math.floor(r.frac() * anclasGato.length)];
+        for (let it = 0; it < 20; it++) {
+          const tx = a.minTx + Math.floor(r.frac() * (a.maxTx - a.minTx + 1));
+          const ty = a.minTy + Math.floor(r.frac() * (a.maxTy - a.minTy + 1));
+          if (libre(m, tx, ty) && !ocupadas.has(`${tx},${ty}`)) {
+            ocupadas.add(`${tx},${ty}`);
+            c = { tx, ty };
+            break;
+          }
+        }
+      }
+      if (!c) c = buscarLibre();
       if (!c) break;
       const nombre = gatos[i % gatos.length];
       sitios.push({
@@ -258,20 +288,23 @@ export function vidaProcedural(
 
   // 4. Transeúntes y clientes al azar
   if (lugar === "tiendita") {
-    // Small store (15x10): max 1 customer or empty (55% chance of 1 shopper, 45% empty)
-    const hayCliente = r.frac() > 0.45;
-    if (hayCliente) {
-      // Anchors: right side (shelves / abarrotes) or left side (cooler / refrescos)
-      const anclas = [
-        { minTx: 10, maxTx: 12, minTy: 5, maxTy: 7 }, // Estante de abarrotes (derecha)
-        { minTx: 2, maxTx: 4, minTy: 5, maxTy: 7 },   // Refrigerador de bebidas (izquierda)
-        { minTx: 11, maxTx: 13, minTy: 7, maxTy: 8 }, // Esquina lateral
-      ];
-      const ancla = anclas[Math.floor(r.frac() * anclas.length)];
+    // 0, 1 or 2 shoppers depending on the visit
+    const roll = r.frac();
+    const cuantasPersonas = roll > 0.75 ? 2 : roll > 0.35 ? 1 : 0;
+    const anclas = [
+      { minTx: 13, maxTx: 19, minTy: 10, maxTy: 11 }, // Mesa central de pan dulce
+      { minTx: 19, maxTx: 22, minTy: 8, maxTy: 9 },   // Refrigerador Coca-Cola
+      { minTx: 7, maxTx: 9, minTy: 10, maxTy: 13 },   // Estante de Sabritas
+      { minTx: 22, maxTx: 24, minTy: 10, maxTy: 14 }, // Estante de salsas
+      { minTx: 17, maxTx: 20, minTy: 15, maxTy: 16 }, // Esperando a un lado del mostrador
+    ];
+    const personas = r.barajar(PERSONAS_FONDO);
+    for (let i = 0; i < cuantasPersonas; i++) {
+      const a = anclas[(Math.floor(r.frac() * anclas.length) + i) % anclas.length];
       let celdaCliente: Celda | null = null;
       for (let intento = 0; intento < 30; intento++) {
-        const tx = ancla.minTx + Math.floor(r.frac() * (ancla.maxTx - ancla.minTx + 1));
-        const ty = ancla.minTy + Math.floor(r.frac() * (ancla.maxTy - ancla.minTy + 1));
+        const tx = a.minTx + Math.floor(r.frac() * (a.maxTx - a.minTx + 1));
+        const ty = a.minTy + Math.floor(r.frac() * (a.maxTy - a.minTy + 1));
         if (libre(m, tx, ty) && !ocupadas.has(`${tx},${ty}`)) {
           ocupadas.add(`${tx},${ty}`);
           celdaCliente = { tx, ty };
@@ -280,8 +313,7 @@ export function vidaProcedural(
       }
       if (!celdaCliente) celdaCliente = buscarLibre(50);
       if (celdaCliente) {
-        const personas = r.barajar(PERSONAS_FONDO);
-        const figura = personas[0];
+        const figura = personas[i % personas.length];
         const piel = Math.floor(r.frac() * 8);
         sitios.push({
           nombre: "vecino_generico",
