@@ -101,6 +101,20 @@ export function Opciones({ alCerrar, alEspejo }: { alCerrar: () => void; alEspej
       </header>
 
       <div className="preferencias-lista">
+        {alEspejo && (
+          <>
+            <Fila icono={Icono.cuerpo} texto={O.personaje} clave="personaje">
+              <div className="preferencia-control">
+                <button className="boton" onClick={alEspejo}>
+                  {O.cambiar}
+                </button>
+              </div>
+            </Fila>
+            <Fila icono={Icono.siguiente} texto={O.partida} clave="partida">
+              <EmpezarDeNuevo />
+            </Fila>
+          </>
+        )}
         <Fila icono={Icono.bocina} texto={O.voz} clave="voz">
           {nivel("voz", 1)}
         </Fila>
@@ -122,20 +136,6 @@ export function Opciones({ alCerrar, alEspejo }: { alCerrar: () => void; alEspej
         <Fila icono={Icono.lectura} texto={O.lectura} clave="lectura">
           {sino("lectura")}
         </Fila>
-        {alEspejo && (
-          <>
-            <Fila icono={Icono.cuerpo} texto={O.personaje} clave="personaje">
-              <div className="preferencia-control">
-                <button className="boton" onClick={alEspejo}>
-                  {O.cambiar}
-                </button>
-              </div>
-            </Fila>
-            <Fila icono={Icono.siguiente} texto={O.partida} clave="partida">
-              <EmpezarDeNuevo />
-            </Fila>
-          </>
-        )}
       </div>
     </section>
   );

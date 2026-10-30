@@ -98,6 +98,7 @@ declare module "virtual:contenido" {
       dia: string;
       fin: string;
       ensena_salto: string;
+      ensena_salto_teclado: string;
       saludos: Record<string, string[]>;
       nombres: Record<string, string>;
       objetos: Record<string, Record<string, string>>;

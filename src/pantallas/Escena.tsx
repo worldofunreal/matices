@@ -379,8 +379,8 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
                 <div className="escena-cuerpo">
                   <RetratoHablante de={hablantePrevio} />
                   <div className="escena-texto-col">
-                    <h3 className="escena-titulo">{tituloPregunta}</h3>
                     <p className="escena-descripcion">{textoPregunta}</p>
+                    <h3 className="escena-titulo" data-tipo="sistema">{tituloPregunta}</h3>
                   </div>
                 </div>
               </div>

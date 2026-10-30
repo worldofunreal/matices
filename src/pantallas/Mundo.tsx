@@ -71,6 +71,9 @@ function sincronizarFamiliaEnCasa(m: Mapa) {
   }
 }
 
+// How to jump, said for the device in hand: a phone has no Space bar.
+const ENSENA_SALTO = matchMedia("(hover: none)").matches ? ["mundo.ensena_salto", M.ensena_salto] : ["mundo.ensena_salto_teclado", M.ensena_salto_teclado];
+
 // The furniture of the child's room wears the color they chose in the mirror.
 function tenirMuebles(m: Mapa) {
   for (const p of m.puntos) if (p.mueble) p.tinte = TINTES[estado().muebles[p.nombre] ?? 0];
@@ -208,14 +211,21 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const [ensenaSalto, setEnsenaSalto] = useState(false);
 
   useEffect(() => {
-    if (!ensenaSalto || escena || superpuesto) return;
+    if (!ensenaSalto) return;
+    if (escena) return setEnsenaSalto(false); // the story went on: the lesson is over and does not come back after the scene
+    if (superpuesto) return;
     const demostrar = () => {
-      if (!motorRef.current || motorRef.current.pausado) return;
-      sonarSalto();
-      motorRef.current.brincar(true);
+      const m = motorRef.current;
+      if (m && !m.pausado && !m.moviendo) m.brincar(true); // never over the child's own walk
     };
-    const pendientes = [setTimeout(demostrar, 300), setTimeout(demostrar, 1800), setTimeout(() => setEnsenaSalto(false), 12000)];
-    return () => pendientes.forEach(clearTimeout);
+    const primero = setTimeout(() => (sonarSalto(), demostrar()), 300);
+    const otros = setInterval(demostrar, 2000);
+    const fin = setTimeout(() => setEnsenaSalto(false), 12000);
+    return () => {
+      clearTimeout(primero);
+      clearInterval(otros);
+      clearTimeout(fin);
+    };
   }, [ensenaSalto, escena, superpuesto]);
 
   // Lifecyle for world emotes: Entrada (180ms pop-in), Staged (idle loop), Salida (140ms shrink)
@@ -738,8 +748,8 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         <div className="mundo-acciones" role="toolbar" aria-label="Acciones del personaje">
           {ensenaSalto && (
             <div className="ensena-salto panel panel-compacto" data-tipo="sistema" role="status">
-              <p>{M.ensena_salto}</p>
-              <Bocina clave="mundo.ensena_salto" texto={M.ensena_salto} />
+              <p>{ENSENA_SALTO[1]}</p>
+              <Bocina clave={ENSENA_SALTO[0]} texto={ENSENA_SALTO[1]} />
             </div>
           )}
           <button
@@ -750,6 +760,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
             onClick={dispararSalto}
           >
             {Icono.brincar}
+            <span className="accion-nombre">Saltar</span>
           </button>
           <button
             type="button"
@@ -759,6 +770,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
             onClick={dispararAtaque}
           >
             {Icono.atacar}
+            <span className="accion-nombre">Atacar</span>
           </button>
         </div>
       )}
@@ -791,7 +803,8 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           <span className="banner-ubicacion-texto">{anuncioLugar.nombre}</span>
         </aside>
       )}
-      {mision && !escena && (
+      {/* one at a time: a long mission takes the place name's spot on a phone */}
+      {mision && !escena && !anuncioLugar && (
         <div className="mision-mundo" data-tipo="sistema">
           <span className="mision-icono" aria-hidden="true">⭐</span>
           <span className="mision-texto">{mision}</span>

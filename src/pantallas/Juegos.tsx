@@ -1,6 +1,6 @@
 // The minigames of the story (contenido/escenas.yaml, `minijuego: <nombre>`). Each one covers the world and
 // ends with alTerminar; the scene goes on from there. Every minigame is simple and has no wrong answer.
-import { useEffect, useRef, useState, type ReactElement } from "react";
+import { useEffect, useRef, useState, type ReactElement, type ReactNode } from "react";
 import { Dibujo } from "./Dibujo";
 import { Personaje } from "../lienzo/Personaje";
 import { Icono } from "../ui/iconos";
@@ -38,6 +38,16 @@ const ICONOS_ITEMS: Record<string, string> = {
   Gis: "🖍️",
 };
 
+// What the game asks of the child: the voice of the game, not of the story (estilos.css, data-tipo).
+function Instruccion({ titulo, children }: { titulo: ReactNode; children?: ReactNode }) {
+  return (
+    <div className="juego-instruccion" data-tipo="sistema">
+      <h2>{titulo}</h2>
+      {children}
+    </div>
+  );
+}
+
 // Find what is needed among things on a shelf: all the marked ones.
 function Buscar({ titulo, items, alTerminar, alProgreso }: Alto & { titulo: string; items: { nombre: string; buscado?: boolean }[] }) {
   const [tocados, setTocados] = useState<number[]>([]);
@@ -66,7 +76,7 @@ function Buscar({ titulo, items, alTerminar, alProgreso }: Alto & { titulo: stri
   };
   return (
     <div className={`juego${completado ? " exito" : ""}`}>
-      <h2>{titulo}</h2>
+      <Instruccion titulo={titulo} />
       <div className="juego-cuadricula">
         {items.map((x, i) => {
           const tocada = tocados.includes(i);
@@ -137,7 +147,7 @@ function Estufa({ alTerminar, alProgreso }: Alto) {
   }, [apretando, completado, alProgreso]);
   return (
     <div className={`juego${completado ? " exito" : ""}`}>
-      <h2>{completado ? "¡Estufa lista! 🔥" : "Prende la estufa"}</h2>
+      <Instruccion titulo={completado ? "¡Estufa lista! 🔥" : "Prende la estufa"} />
       <div className="juego-barra">
         <span style={{ width: `${nivel}%` }} />
       </div>
@@ -181,7 +191,7 @@ function Ropero({ alTerminar, alProgreso }: Alto) {
   };
   return (
     <div className="juego">
-      <h2>¿Qué te pones hoy?</h2>
+      <Instruccion titulo="¿Qué te pones hoy?" />
       <div className="juego-opciones">
         {ROPA.map((o) => (
           <button key={o.marca} className="boton principal juego-ropa-btn" onClick={() => elegir(o)}>
@@ -194,14 +204,24 @@ function Ropero({ alTerminar, alProgreso }: Alto) {
   );
 }
 
-// Tap when the rope is low: five times is enough. A miss only means the next try.
+// Tap when the rope is low: five times is enough. A miss only means the next try. The first turns only show it: the
+// character jumps by itself, the button says when, and nothing counts yet.
+const DEMOSTRACIONES = 2;
 function Cuerda({ alTerminar, alProgreso }: Alto) {
   const [ronda, setRonda] = useState(0);
   const [ventana, setVentana] = useState(false);
   const [aciertos, setAciertos] = useState(0);
   const [intentos, setIntentos] = useState(0);
   const [fallos, setFallos] = useState(0);
-  useEffect(() => alProgreso({ etapa: ventana ? "oportunidad" : "espera", ronda: ronda + 1, aciertos, intentos, fallos }), [alProgreso, ventana, ronda, aciertos, intentos, fallos]);
+  const demostrando = ronda < DEMOSTRACIONES;
+  const turno = ronda - DEMOSTRACIONES + 1;
+  const figura = useRef<HTMLDivElement>(null);
+  // The child's own character, with the sound and the icon of the jump in the world.
+  const animarSalto = () => {
+    figura.current?.animate([{ transform: "none" }, { transform: "translateY(-40px)" }, { transform: "none" }], { duration: 360, easing: "ease-out" });
+    sonarSalto();
+  };
+  useEffect(() => alProgreso(demostrando ? { etapa: "demostracion" } : { etapa: ventana ? "oportunidad" : "espera", ronda: turno, aciertos, intentos, fallos }), [alProgreso, demostrando, ventana, turno, aciertos, intentos, fallos]);
   useEffect(() => {
     if (aciertos >= 5) return;
     const a = setTimeout(() => setVentana(true), 900);
@@ -209,30 +229,30 @@ function Cuerda({ alTerminar, alProgreso }: Alto) {
       setVentana(false);
       setRonda((r) => r + 1);
     }, 1700);
+    const c = demostrando ? setTimeout(animarSalto, 1110) : undefined; // highest while the rope is at the feet
     return () => {
       clearTimeout(a);
       clearTimeout(b);
+      clearTimeout(c);
     };
   }, [ronda, aciertos]);
   useEffect(() => {
     if (aciertos < 5) return;
-    alProgreso({ etapa: "completado", ronda: ronda + 1, aciertos, intentos, fallos });
+    alProgreso({ etapa: "completado", ronda: turno, aciertos, intentos, fallos });
     alTerminar();
-  }, [aciertos, ronda, intentos, fallos, alProgreso, alTerminar]);
-  const figura = useRef<HTMLDivElement>(null);
-  // The child's own character jumps on every press, with the sound and the icon of the jump in the world.
+  }, [aciertos, turno, intentos, fallos, alProgreso, alTerminar]);
   const saltar = () => {
-    figura.current?.animate([{ transform: "none" }, { transform: "translateY(-40px)" }, { transform: "none" }], { duration: 360, easing: "ease-out" });
-    sonarSalto();
+    if (demostrando) return;
+    animarSalto();
     const nuevosIntentos = intentos + 1;
     setIntentos(nuevosIntentos);
     if (!ventana) {
       const nuevosFallos = fallos + 1;
       setFallos(nuevosFallos);
-      alProgreso({ etapa: "espera", ronda: ronda + 1, aciertos, intentos: nuevosIntentos, fallos: nuevosFallos });
+      alProgreso({ etapa: "espera", ronda: turno, aciertos, intentos: nuevosIntentos, fallos: nuevosFallos });
       return;
     }
-    alProgreso({ etapa: aciertos + 1 === 5 ? "completado" : "salto", ronda: ronda + 1, aciertos: aciertos + 1, intentos: nuevosIntentos, fallos });
+    alProgreso({ etapa: aciertos + 1 === 5 ? "completado" : "salto", ronda: turno, aciertos: aciertos + 1, intentos: nuevosIntentos, fallos });
     setVentana(false);
     setAciertos((n) => n + 1);
   };
@@ -248,8 +268,9 @@ function Cuerda({ alTerminar, alProgreso }: Alto) {
   });
   return (
     <div className="juego">
-      <h2>Salta la cuerda</h2>
-      <p className="juego-pregunta">Salta cuando la cuerda llegue a tus pies.</p>
+      <Instruccion titulo="Salta la cuerda">
+        <p className="juego-pregunta">{demostrando ? "Mira: salta cuando la cuerda llega a los pies." : "Ahora tú: salta cuando la cuerda llegue a tus pies."}</p>
+      </Instruccion>
       <div className="cuerda-escenario" aria-hidden="true">
         {/* keyed by turn: the rope reaches the feet in the middle of the moment to jump */}
         <span key={`${ronda}-${aciertos}`} className="cuerda-arco" />
@@ -258,7 +279,7 @@ function Cuerda({ alTerminar, alProgreso }: Alto) {
         </div>
       </div>
       <p className="juego-cuenta">{aciertos} de 5</p>
-      <button className={`boton principal juego-saltar${ventana ? " lista" : ""}`} title="Saltar (Espacio)" onClick={saltar}>
+      <button className={`boton principal juego-saltar${ventana ? " lista" : ""}`} title="Saltar (Espacio)" aria-disabled={demostrando} onClick={saltar}>
         {Icono.brincar}
         {ventana ? "¡Ahora!" : "Saltar"}
       </button>
@@ -316,10 +337,9 @@ function Examen({ preguntas, alTerminar, alProgreso }: Alto & { preguntas: { pre
   const q = preguntas[i];
   return (
     <div className="juego">
-      <h2>
-        Examen {i + 1} de {preguntas.length}
-      </h2>
-      <p className="juego-pregunta">{q.pregunta}</p>
+      <Instruccion titulo={`Examen ${i + 1} de ${preguntas.length}`}>
+        <p className="juego-pregunta">{q.pregunta}</p>
+      </Instruccion>
       <div className="juego-opciones">
         {q.opciones.map((o) => (
           <button key={o} className="boton principal" onClick={() => responder(o)}>
@@ -361,7 +381,7 @@ function Tienda({ items, alTerminar, alProgreso }: Alto & { items: { nombre: str
   };
   return (
     <div className="juego">
-      <h2>Compras · ${PRESUPUESTO}</h2>
+      <Instruccion titulo={`Compras · $${PRESUPUESTO}`} />
       <div className="juego-cuadricula">
         {items.map((x, i) => {
           const sube = !carrito.includes(i) && total + x.precio > PRESUPUESTO;

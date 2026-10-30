@@ -423,6 +423,9 @@ canvas.pixel {
 .globo[data-tipo="sistema"],
 .globo-figura-caja[data-tipo="sistema"],
 .ensena-salto[data-tipo="sistema"],
+.juego-instruccion[data-tipo="sistema"],
+.dibujo-cabecera[data-tipo="sistema"],
+.escena-titulo[data-tipo="sistema"],
 .mision-mundo[data-tipo="sistema"] {
   background: var(--sistema);
   color: var(--papel);

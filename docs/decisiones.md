@@ -4,6 +4,7 @@ Cada cambio de dirección, con su razón. La más reciente arriba.
 
 | Fecha | Decisión | Por qué | Quién |
 | --- | --- | --- | --- |
+| 2026-10-30 | La cuerda empieza con dos vueltas en las que el personaje salta solo y el botón dice cuándo; esas vueltas no cuentan. La misión, las preguntas antes de elegir y lo que pide cada minijuego van con el color de sistema | El tutorial que Dayana probó era la cuerda, y ahí faltaba ver el salto. La pregunta salía con la placa del personaje y el instructivo se confundía con el diálogo | Dayana, Omar |
 | 2026-10-30 | El color de la cama y del ropero del niño se elige en el espejo, entre seis colores que pintan toda la pieza | Dayana lo pidió tras probar el demo. El arte tiene demasiados tonos para cambiar color por color; pintar la pieza entera conserva sus sombras | Dayana, Omar |
 | 2026-10-30 | Al abrir con una partida guardada se elige: Continuar, Cambiar mi personaje o Empezar de nuevo. Mientras Dayana no diga otra cosa, "otra historia" sigue siendo Empezar de nuevo y un personaje nuevo reemplaza al anterior | Dayana pidió encontrarlo sin buscar entre secciones | Dayana, Omar |
 | 2026-10-30 | Negarse a jugar con Valeria, Leo o Sam termina ahí la escena: sin minijuego y sin marcar que se conocieron. "Saltar" es solo el salto del personaje; el botón para pasar una escena dice "Omitir" | Antes el minijuego empezaba aunque el jugador dijera que no, y la misma palabra servía para dos cosas | Dayana, Omar |

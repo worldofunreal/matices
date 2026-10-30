@@ -136,7 +136,7 @@ export function Dibujo({
 
   return (
     <section className={`dibujo${modoActividad ? " dibujo-actividad" : ""}`} aria-label={consigna}>
-      <header className="dibujo-cabecera">
+      <header className="dibujo-cabecera" data-tipo="sistema">
         <p>{consigna}</p>
         <div className="dibujo-cabecera-acciones">
           <Bocina clave={`dibujo.${origen}`} texto={consigna} />

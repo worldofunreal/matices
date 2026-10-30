@@ -76,7 +76,8 @@ mundo:
   dormir: "A dormir."
   dia: "Día {n}"
   fin: "Aquí terminan los tres días."
-  ensena_salto: "Toca este botón o presiona Espacio para saltar."
+  ensena_salto: "Toca este botón para saltar."
+  ensena_salto_teclado: "Toca este botón o presiona Espacio para saltar."
   saludos:
     vecino_1: ["Buenos días.", "Qué calor hace hoy."]
     vecino_2: ["Hola.", "Ya pasó el camión de la basura."]

@@ -61,6 +61,14 @@
   font-size: 22px;
 }
 
+/* What the game asks: its own voice, apart from the story (estilos.css, data-tipo). */
+.juego-instruccion {
+  display: grid;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: var(--radio-chico);
+}
+
 .juego-cuadricula {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -217,6 +225,10 @@
 
   .juego {
     gap: 8px;
+  }
+
+  .juego-instruccion {
+    padding: 6px 10px;
   }
 
   .juego h2 {

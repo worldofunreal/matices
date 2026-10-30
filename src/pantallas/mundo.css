@@ -57,9 +57,25 @@
   gap: 10px;
 }
 
+.mundo-acciones .accion-btn {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
 .mundo-acciones .accion-btn svg {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
+}
+
+.accion-nombre {
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.1;
 }
 
 /* The first jump is taught here: the instruction sits over the button it talks about, and the button calls. */
@@ -80,7 +96,7 @@
 }
 
 .mundo-acciones .accion-btn.ensena {
-  box-shadow: 0 0 0 4px var(--sistema);
+  box-shadow: 0 0 0 5px var(--girasol), 0 0 18px 6px var(--girasol);
   animation: latido 800ms ease-in-out infinite;
 }
 
@@ -413,14 +429,16 @@
   align-items: center;
   gap: 8px;
   padding: 8px 18px;
-  border-radius: 999px;
+  border-radius: 24px;
   background: var(--tarjeta);
   border: 2px solid var(--contorno);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
   font-size: 15px;
   font-weight: 800;
   color: var(--tinta, #1d1a24);
-  white-space: nowrap;
+  width: max-content;
+  max-width: calc(100% - 2 * var(--franja)); /* a long one wraps: it never goes under the corner buttons */
+  text-align: center;
   animation: aparecer 220ms ease both;
 }
 
