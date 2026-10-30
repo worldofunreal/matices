@@ -51,10 +51,13 @@ function participante(i: number) {
       if (Math.random() < 0.3) continue;
       ev("escena", { escena: x.id, paso: "inicio" }, 500);
       let saltada = false;
+      let negada = false;
       for (const p of x.pasos) {
         if (p.opciones) {
           const opciones = p.opciones.map((o) => o[0]).sort(() => Math.random() - 0.5);
-          ev("escena", { escena: x.id, paso: "opcion", de: "yo", opciones, elegida: azar(opciones), ms_decidir: entre(1500, 9000) });
+          const elegida = azar(p.opciones);
+          ev("escena", { escena: x.id, paso: "opcion", de: "yo", opciones, elegida: elegida[0], ms_decidir: entre(1500, 9000) });
+          if (elegida[3]) { negada = true; break; }
         }
         if (p.minijuego) {
           const resultado = Math.random() < 0.15 ? "abortado" : p.minijuego === "dibujo" && Math.random() < 0.1 ? "sin_respuesta" : "completado";
@@ -63,7 +66,7 @@ function participante(i: number) {
         }
         if (x.saltable && Math.random() < 0.2) { saltada = true; break; }
       }
-      ev("escena", { escena: x.id, paso: "fin", ...(saltada ? { saltada: true } : {}) });
+      ev("escena", { escena: x.id, paso: "fin", ...(saltada ? { saltada: true } : {}), ...(negada ? { negada: true } : {}) });
       if (Math.random() < 0.1) ev("quiero_hablar", { pantalla: "mundo" });
     }
     if (Math.random() < 0.15) ev("inactividad", { pantalla: "mundo", ms: entre(30, 120) * 1000 });

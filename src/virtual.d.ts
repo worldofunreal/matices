@@ -2,12 +2,12 @@ declare const __VERSION_JUEGO__: string;
 
 declare module "virtual:contenido" {
   // One line of a scene: someone speaks, the child chooses, a minigame runs, a mark is set, an effect shows.
-  // Options are [code, text, answer]; the answer is null when it comes later in the scene.
+  // Options are [code, text, answer]; the answer is null when it comes later in the scene. A fourth "cierra": the scene ends after the answer.
   export type Paso = {
     de?: string;
     titulo?: string;
     texto?: string;
-    opciones?: [string, string, string | null][];
+    opciones?: [string, string, string | null, "cierra"?][];
     marca?: string;
     minijuego?: string;
     efecto?: string;
@@ -27,6 +27,7 @@ declare module "virtual:contenido" {
     saltable?: boolean;
     frena?: boolean;
     sugerida?: boolean;
+    ensena?: "salto";
     pasos: Paso[];
   }
   // A pending thing the child can leave undone: a mark opens it and another closes it (contenido/escenas.yaml).
@@ -69,7 +70,7 @@ declare module "virtual:contenido" {
       listo: string;
       siguiente: string;
       atras: string;
-      pasos: Record<"cuerpo" | "piel" | "cabello" | "color_cabello" | "ropa" | "extras" | "color_mochila" | "nombre", string>;
+      pasos: Record<"cuerpo" | "piel" | "cabello" | "color_cabello" | "ropa" | "extras" | "color_mochila" | "cuarto" | "nombre", string>;
       cuerpo: Record<"nina" | "nino", string>;
       ropa: Record<"uniforme_pantalon" | "uniforme_falda" | "casa", string>;
       extras: Record<"lentes" | "aretes" | "gorra" | "mochila", string>;
@@ -77,13 +78,15 @@ declare module "virtual:contenido" {
       piel: string;
       color_cabello: string;
       color_mochila: string;
+      muebles: Record<string, string>;
+      color_original: string;
       escribir_nombre: string;
       nombres: string[];
     };
     escena: {
       hablantes: Record<string, string>;
       seguir: string;
-      saltar: string;
+      omitir: string;
       pausar: string;
       seguir_despues: string;
       mision: string;
@@ -94,6 +97,7 @@ declare module "virtual:contenido" {
       dormir: string;
       dia: string;
       fin: string;
+      ensena_salto: string;
       saludos: Record<string, string[]>;
       nombres: Record<string, string>;
       objetos: Record<string, Record<string, string>>;
@@ -102,6 +106,7 @@ declare module "virtual:contenido" {
       lugares: Record<string, string>;
       lugares_dentro: Record<string, string>;
     };
+    portada: { continuar: string; cambiar: string };
     libro: { titulo: string; dibujar: string; consigna: string; listo: string };
     siempre: { mi_libro: string; quiero_hablar: string; opciones: string; aviso: string; seguir: string };
     opciones: {

@@ -33,6 +33,12 @@
   --acento-claro: #efe6ff;
 }
 
+[data-paso="cuarto"] {
+  --acento: #d0894a;
+  --acento-oscuro: #8f5420;
+  --acento-claro: #f8e8d6;
+}
+
 [data-paso="nombre"] {
   --acento: #f0619f;
   --acento-oscuro: #b02c68;
@@ -358,6 +364,47 @@
   min-width: 0;
   height: auto;
   aspect-ratio: 1;
+}
+
+/* A piece of furniture beside its colors; the first color is the original, marked with the undo arrow. */
+.creacion .fila-mueble {
+  flex-basis: 100%;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 18px;
+  background: #fbf6f0;
+}
+
+.creacion .fila-mueble .fila-colores {
+  grid-column: auto;
+  padding: 0;
+  background: none;
+}
+
+.creacion .fila-mueble .muestra {
+  flex: 0 0 var(--toque);
+  display: grid;
+  place-items: center;
+  color: var(--tinta-suave);
+}
+
+.creacion .opciones.cuarto .muestra svg {
+  width: 60%;
+  height: 60%;
+}
+
+/* The opening screen: the three ways on from a saved game, one under the other. */
+.creacion .portada {
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+}
+
+.creacion .portada .boton {
+  width: 100%;
 }
 
 .creacion .opciones.piel {

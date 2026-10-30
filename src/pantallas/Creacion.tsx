@@ -1,13 +1,15 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import contenido from "virtual:contenido";
-import { Personaje, Cabeza } from "../lienzo/Personaje";
-import { precargar, idsDe, queEs, colorMedio, cuantos, rampaDe, CUADRO } from "../lienzo/arte";
+import { Personaje, Cabeza, Hoja } from "../lienzo/Personaje";
+import { precargar, idsDe, queEs, colorMedio, cuantos, rampaDe, CUADRO, TINTES } from "../lienzo/arte";
+import { cargarMapa, type Punto } from "../mundo/mapa";
 import type { Rampa } from "../../herramientas/arte.ts";
 import { Bocina } from "../ui/Bocina";
 import { Icono } from "../ui/iconos";
 import { estado, cambiarEstado } from "../datos/guardado";
 import { registrar } from "../datos/eventos";
 import { LOOK, capas, type Apariencia, type Extra } from "../personaje/apariencia";
+import { EmpezarDeNuevo } from "./Opciones";
 import "./creacion.css";
 
 const T = contenido.textos.creacion;
@@ -19,6 +21,7 @@ const PESTANAS = [
   { id: "cabello", icono: Icono.cabello, nombre: "Cabello", pregunta: T.pasos.cabello },
   { id: "ropa", icono: Icono.ropa, nombre: "Ropa", pregunta: T.pasos.ropa },
   { id: "extras", icono: Icono.extras, nombre: "Extras", pregunta: T.pasos.extras },
+  { id: "cuarto", icono: Icono.puerta, nombre: "Cuarto", pregunta: T.pasos.cuarto }, // only in the mirror: the room comes after the first scene
   { id: "nombre", icono: Icono.nombre, nombre: "Nombre", pregunta: T.pasos.nombre },
 ] as const;
 type Pestana = (typeof PESTANAS)[number]["id"];
@@ -37,6 +40,33 @@ function useEscala(caja: React.RefObject<HTMLElement | null>) {
   return escala;
 }
 
+// Opening the game with a saved game: the child's character on the same stage, and the three ways on from it.
+export function Portada({ alContinuar, alEspejo }: { alContinuar: () => void; alEspejo: () => void }) {
+  const escenario = useRef<HTMLDivElement>(null);
+  const escala = useEscala(escenario);
+  const { apariencia, nombre } = estado();
+  return (
+    <main className="pantalla creacion" data-paso="cuerpo">
+      <div className="escenario" ref={escenario}>
+        <div className="foco" />
+        <div className="tarima">
+          <Personaje a={apariencia} escala={escala} />
+        </div>
+        <div className="nombre-escenario">{nombre}</div>
+      </div>
+      <section className="taller panel portada">
+        <button className="boton principal" onClick={alContinuar}>
+          {contenido.textos.portada.continuar}
+        </button>
+        <button className="boton" onClick={alEspejo}>
+          {contenido.textos.portada.cambiar}
+        </button>
+        <EmpezarDeNuevo />
+      </section>
+    </main>
+  );
+}
+
 // Character creation: everything on one screen, one tap per choice, the character changes
 // as the child chooses, and each step leads to the next. Also opened from the mirror in the house (modo "espejo").
 export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTerminar: () => void }) {
@@ -45,6 +75,9 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
   const [pestana, setPestana] = useState<Pestana>("cuerpo");
   const [listo, setListo] = useState(false);
   const [vacila, setVacila] = useState(false);
+  const [muebles, setMuebles] = useState(estado().muebles);
+  const [piezasCuarto, setPiezasCuarto] = useState<Punto[]>([]);
+  const pasos = modo === "espejo" ? PESTANAS : PESTANAS.filter((x) => x.id !== "cuarto");
   const toques = useRef(0);
   const t0 = useRef(performance.now());
   // Skin tones in a new random order each time, so the first one is never "the normal one".
@@ -54,6 +87,8 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
 
   useEffect(() => {
     void precargar(idsDe("personaje/")).then(() => setListo(true));
+    // The same furniture the room draws for this game, each with its own variant of the art.
+    if (modo === "espejo") void cargarMapa("casa", estado().semilla).then((m) => setPiezasCuarto(m.puntos.filter((p) => p.mueble)));
   }, []);
 
   const cambiar = (c: Partial<Apariencia>) => {
@@ -102,19 +137,20 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
           .filter((r) => r !== undefined && r !== "mochila")
           .map((r) => [r, color(r) + 1]),
       ),
+      muebles: Object.fromEntries(piezasCuarto.map((p) => [p.nombre, (muebles[p.nombre] ?? 0) + 1])),
       nombre_de_lista: T.nombres.includes(nombre),
       toques: toques.current,
       ms: Math.round(performance.now() - t0.current),
     });
-    cambiarEstado({ apariencia: a, nombre, creado: true }, true);
+    cambiarEstado({ apariencia: a, nombre, creado: true, muebles }, true);
     alTerminar();
   };
 
   // The tabs are also a path: the footer leads to the next step, and the last one finishes.
-  const n = PESTANAS.findIndex((x) => x.id === pestana);
-  const p = PESTANAS[n]!;
-  const anterior = PESTANAS[n - 1];
-  const siguiente = PESTANAS[n + 1];
+  const n = pasos.findIndex((x) => x.id === pestana);
+  const p = pasos[n]!;
+  const anterior = pasos[n - 1];
+  const siguiente = pasos[n + 1];
 
   return (
     <main className="pantalla creacion" data-paso={pestana}>
@@ -135,7 +171,7 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
 
       <section className="taller panel">
         <nav className="pestanas" role="tablist">
-          {PESTANAS.map((x) => (
+          {pasos.map((x) => (
             <button key={x.id} role="tab" aria-selected={x.id === pestana} className="pestana" data-paso={x.id} onClick={() => setPestana(x.id)}>
               <span className="icono-paso">{x.icono}</span>
               <span>{x.nombre}</span>
@@ -196,6 +232,31 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
               {EXTRAS.filter((e) => a.extras.includes(e)).map((e) => filaColores(rampaDe(`personaje/extra_${e}`)!, T.extras[e]))}
             </>
           )}
+
+          {pestana === "cuarto" &&
+            piezasCuarto.map((m) => {
+              const elegido = muebles[m.nombre] ?? 0;
+              return (
+                <div key={m.nombre} className="fila-mueble">
+                  <Hoja id={m.arte} tinte={TINTES[elegido]} escala={2} />
+                  <div className="fila-colores">
+                    <span className="nombre-fila">{T.muebles[m.nombre]}</span>
+                    {TINTES.map((t, i) => (
+                      <button
+                        key={i}
+                        className="muestra"
+                        aria-pressed={elegido === i}
+                        aria-label={t ? `${T.muebles[m.nombre]} ${i}` : T.color_original}
+                        style={{ background: t ?? "var(--tarjeta)" }}
+                        onClick={() => ((toques.current += 1), setMuebles((x) => ({ ...x, [m.nombre]: i })))}
+                      >
+                        {!t && Icono.deshacer}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
 
           {pestana === "nombre" && (
             <>

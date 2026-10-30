@@ -46,6 +46,8 @@ export interface Punto {
   arte: string;
   horas?: string;
   piel?: number;
+  mueble?: boolean; // furniture of the child's room: they choose its color in the mirror
+  tinte?: string; // the color chosen, when it is not the original
 }
 export interface Mapa {
   lugar: string;
@@ -98,6 +100,7 @@ export async function cargarMapa(
       y: o.y,
       arte: o.type === "npc" ? `personajes/${o.name}` : variante(propiedad(o, "arte") ?? `lugares/${lugar}/${o.name}`, `${semilla}:${lugar}:${o.x},${o.y}`),
       horas: propiedad(o, "horas"),
+      mueble: !!propiedad(o, "mueble"),
     }));
 
   const m: Mapa = {

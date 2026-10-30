@@ -41,7 +41,9 @@ La propuesta organiza la historia en seis capítulos. Son una guía de escenas, 
 
 Nombre y apariencia los elige el jugador: cuerpo, piel, cabello, ropa, extras, tenis, y colores de cada prenda. El avatar se dibuja con las hojas de referencia del guion (pixel art juvenil, el mismo lenguaje visual del resto del juego). Se cambia en el espejo de la casa o en Opciones.
 
-**Empezar de nuevo**, en Opciones y al terminar los tres días, borra la partida y Mi libro después de preguntar, y cuenta como otro participante. Hay una sola historia, así que no se promete "otra historia".
+**Al abrir con una partida guardada** se elige: Continuar, Cambiar mi personaje o Empezar de nuevo. En el espejo también se elige el color de la cama y del ropero del cuarto.
+
+**Empezar de nuevo**, al abrir, en Opciones y al terminar los tres días, borra la partida y Mi libro después de preguntar, y cuenta como otro participante. Hay una sola historia, así que no se promete "otra historia".
 
 ## Personas
 
@@ -87,7 +89,7 @@ El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tie
 - Tocar fuera de un diálogo no hace nada. Para dejar una escena a medias está Pausar, que aparece en todas las escenas: la escena guarda la línea donde iba y, al volver, sigue ahí.
 - El orden es permisivo: una escena que llega antes no bloquea el juego; se juega su variante. Solo unas pocas escenas esperan a otra. `tras` lo anuncia con "Primero: …"; `si` espera una marca sin anunciarlo. Ninguna escena espera en la cama (`contenido/README.md`).
 - Cada opción lleva un código que **describe** lo que hizo. El código no dice si fue bueno o malo.
-- Una escena delicada siempre permite saltarla, pausarla y pedir ayuda con el botón de siempre. La ruta de protección no depende de elegir bien una opción ni de haber vivido otra escena.
+- Una escena delicada siempre permite omitirla, pausarla y pedir ayuda con el botón de siempre. La ruta de protección no depende de elegir bien una opción ni de haber vivido otra escena.
 - Elegir callar, obedecer o retirarse nunca se presenta como responsabilidad del protagonista.
 - Las escenas de abuso sugieren la transgresión y cortan a negro. No se muestra violencia sexual. Lo que se nombra en lenguaje claro, según la edad, lo revisan los especialistas.
 - Lo que el niño deja sin hacer, como apagar la estufa, lo retiene la puerta una vez: se le recuerda y, si insiste, puede salir. El juego no le pregunta si lo va a hacer: lee lo que hace.

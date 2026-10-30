@@ -3,8 +3,10 @@
 import arte from "virtual:arte";
 import type { Rampa } from "../../herramientas/arte.ts";
 
-export type Colores = Partial<Record<Rampa, number>>;
+// `tinte` colors the whole piece over its shading: for art with too many tones to have ramps, like the furniture.
+export type Colores = Partial<Record<Rampa, number>> & { tinte?: string };
 export const CUADRO = { ancho: 48, alto: 64 }; // one frame of a character sheet (wide enough for big hair)
+export const TINTES = [undefined, "#f2a7a0", "#a7c9f2", "#a8dcae", "#f4dc8e", "#c9b1ee"]; // the first one is the original
 
 const piezas = new Map(arte.piezas.map((p) => [p.id, p]));
 const imagenes = new Map<string, Promise<HTMLImageElement>>();
@@ -30,7 +32,7 @@ const hex = (h: string) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16))
 
 function clave(id: string, colores: Colores) {
   const usa = piezas.get(id)?.colores ?? [];
-  return [id, ...usa.filter((r) => (colores[r] ?? 0) > 0).map((r) => `${r}${colores[r]}`)].join("~");
+  return [id, ...usa.filter((r) => (colores[r] ?? 0) > 0).map((r) => `${r}${colores[r]}`), ...(colores.tinte ? [colores.tinte] : [])].join("~");
 }
 
 // The piece as a canvas with its key colors swapped. Built once per color combination.
@@ -59,6 +61,14 @@ export async function pieza(id: string, colores: Colores = {}): Promise<HTMLCanv
       if (nuevo) [px[i], px[i + 1], px[i + 2]] = nuevo;
     }
     ctx.putImageData(datos, 0, 0);
+  }
+  if (colores.tinte) {
+    ctx.globalCompositeOperation = "color"; // keeps each pixel's lightness: dark wood takes the color as well as a pale sheet
+    ctx.fillStyle = colores.tinte;
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.globalCompositeOperation = "destination-in"; // the fill covered the empty pixels too: back to the piece's shape
+    ctx.drawImage(img, 0, 0);
+    ctx.globalCompositeOperation = "source-over";
   }
   listos.set(k, c);
   return c;

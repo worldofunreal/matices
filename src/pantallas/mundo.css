@@ -62,6 +62,34 @@
   height: 24px;
 }
 
+/* The first jump is taught here: the instruction sits over the button it talks about, and the button calls. */
+.ensena-salto {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 14px);
+  width: min(280px, 62vw);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+}
+
+.ensena-salto p {
+  margin: 0;
+  flex: 1;
+}
+
+.mundo-acciones .accion-btn.ensena {
+  box-shadow: 0 0 0 4px var(--sistema);
+  animation: latido 800ms ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mundo-acciones .accion-btn.ensena {
+    animation: none;
+  }
+}
+
 .mundo-acciones .accion-btn:hover {
   transform: translateY(-2px) scale(1.05);
   box-shadow: 0 6px 18px rgba(29, 26, 36, 0.28);

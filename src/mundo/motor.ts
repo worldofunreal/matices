@@ -90,6 +90,7 @@ export class Motor {
   private acumulado = 0; // wheel movement not yet turned into a zoom step
   private shift = false;
   private accionActiva: { tipo: AccionPersonaje; t0: number; duracion: number } | null = null;
+  private saltoDemostracion = false;
   private pasoCombo = 0; // 0: golpe 1, 1: golpe 2, 2: patada remate
   private tUltimoAtaque = 0;
   private hitFlashes = new Map<string, number>(); // entity name -> expire timestamp
@@ -283,7 +284,9 @@ export class Motor {
     return null;
   }
 
-  brincar(): ResultadoAccion {
+  // `demostracion`: the game shows the jump by itself, so its landing is not the child's action.
+  brincar(demostracion = false): ResultadoAccion {
+    this.saltoDemostracion = demostracion;
     return this.ejecutarAccion("brincar");
   }
 
@@ -509,7 +512,7 @@ export class Motor {
     let mejor: Punto | null = null;
     for (const p of this.o.mapa.puntos) {
       if (!visible(p, this.o.hora)) continue;
-      const img = p.tipo === "npc" && p.piel !== undefined ? piezaYa(p.arte, { piel: p.piel }) : piezaYa(p.arte);
+      const img = p.tipo === "npc" && p.piel !== undefined ? piezaYa(p.arte, { piel: p.piel }) : piezaYa(p.arte, { tinte: p.tinte });
       const w = p.tipo === "npc" && p.piel === undefined ? CUADRO.ancho : (img?.width ?? 24);
       const h = p.tipo === "npc" && p.piel === undefined ? CUADRO.alto : (img?.height ?? 24);
       if (x >= p.x - w / 2 - 8 && x <= p.x + w / 2 + 8 && y >= p.y - h - 18 && y <= p.y + 8 && (!mejor || p.y > mejor.y)) mejor = p;
@@ -925,7 +928,7 @@ export class Motor {
       } else {
         // Objects integrated directly into the pre-rendered room background are interactable without duplicate sprites; animals are never in it
         if (m.lugar !== "tiendita" || p.tipo === "fauna") {
-          const img = piezaYa(p.arte);
+          const img = piezaYa(p.arte, { tinte: p.tinte });
           if (img) {
             const voltear = this.o.vigila(p) && this.x > p.x;
             cosas.push({
@@ -1022,7 +1025,7 @@ export class Motor {
       } else {
         if (this.accionActiva.tipo === "brincar") {
           const resCaida = this.evaluarImpactoCaida();
-          if (resCaida && this.alCaerSalto) {
+          if (resCaida && this.alCaerSalto && !this.saltoDemostracion) {
             this.alCaerSalto(resCaida);
           }
         }

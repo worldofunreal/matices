@@ -46,18 +46,18 @@ export function Cabeza({ a, escala }: { a: Apariencia; escala: number }) {
 }
 
 // A figure of the house: one still frame, facing the viewer, at its own size (feet at the bottom).
-export function Hoja({ id, piel = 0, escala }: { id: string; piel?: number; escala: number }) {
+export function Hoja({ id, piel = 0, tinte, escala }: { id: string; piel?: number; tinte?: string; escala: number }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const [w, h] = medidaDe(id);
   useEffect(() => {
-    void pieza(id, { piel }).then((l) => {
+    void pieza(id, { piel, tinte }).then((l) => {
       const ctx = ref.current?.getContext("2d");
       if (!ctx) return; // the picture left the screen before it loaded
       ctx.imageSmoothingEnabled = false;
       ctx.clearRect(0, 0, w, h);
       ctx.drawImage(l, 0, 0);
     });
-  }, [id, piel, w, h]);
+  }, [id, piel, tinte, w, h]);
   return <canvas ref={ref} className="pixel" width={w} height={h} style={{ width: w * escala, height: h * escala }} />;
 }
 

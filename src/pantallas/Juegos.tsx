@@ -249,7 +249,7 @@ function Cuerda({ alTerminar, alProgreso }: Alto) {
   return (
     <div className="juego">
       <h2>Salta la cuerda</h2>
-      <p className="juego-pregunta">Brinca cuando la cuerda llegue a tus pies.</p>
+      <p className="juego-pregunta">Salta cuando la cuerda llegue a tus pies.</p>
       <div className="cuerda-escenario" aria-hidden="true">
         {/* keyed by turn: the rope reaches the feet in the middle of the moment to jump */}
         <span key={`${ronda}-${aciertos}`} className="cuerda-arco" />
@@ -258,9 +258,9 @@ function Cuerda({ alTerminar, alProgreso }: Alto) {
         </div>
       </div>
       <p className="juego-cuenta">{aciertos} de 5</p>
-      <button className={`boton principal juego-saltar${ventana ? " lista" : ""}`} title="Brincar (Espacio)" onClick={saltar}>
+      <button className={`boton principal juego-saltar${ventana ? " lista" : ""}`} title="Saltar (Espacio)" onClick={saltar}>
         {Icono.brincar}
-        {ventana ? "¡Ahora!" : "Brincar"}
+        {ventana ? "¡Ahora!" : "Saltar"}
       </button>
     </div>
   );

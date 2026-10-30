@@ -17,7 +17,10 @@ creacion:
     ropa: "¿Qué ropa trae?"
     extras: "¿Algo más? Puedes elegir varios o ninguno."
     color_mochila: "¿De qué color es su mochila?"
+    cuarto: "¿De qué color quieres tus muebles?"
     nombre: "¿Cómo se llama?"
+  muebles: { cama: "Tu cama", ropero: "Tu ropero" }
+  color_original: "Color original"
   cuerpo:
     nina: "Niña"
     nino: "Niño"
@@ -60,7 +63,7 @@ escena:
     sistema: "Sistema"
     mensaje_mama: "Mensaje de mamá"
   seguir: "Seguir"
-  saltar: "Saltar"
+  omitir: "Omitir"
   pausar: "Pausar"
   seguir_despues: "Seguir después"
   mision: "Misión"
@@ -73,6 +76,7 @@ mundo:
   dormir: "A dormir."
   dia: "Día {n}"
   fin: "Aquí terminan los tres días."
+  ensena_salto: "Toca este botón o presiona Espacio para saltar."
   saludos:
     vecino_1: ["Buenos días.", "Qué calor hace hoy."]
     vecino_2: ["Hola.", "Ya pasó el camión de la basura."]
@@ -203,6 +207,10 @@ siempre:
 
 # Opciones. Música, efectos, velocidad del texto y lectura sencilla se guardan y
 # quedan listos para conectarse cuando existan.
+portada:
+  continuar: "Continuar"
+  cambiar: "Cambiar mi personaje"
+
 opciones:
   titulo: "Opciones"
   cerrar: "Cerrar"

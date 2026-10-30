@@ -5,7 +5,7 @@ import contenido, { type Escena } from "virtual:contenido";
 import { cargarMapa, libre, quitarAusentes, visible, refrescarVidaProcedural, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
 import { Motor } from "../mundo/motor";
 import { esVigilante } from "../mundo/vigilancia";
-import { pieza } from "../lienzo/arte";
+import { pieza, TINTES } from "../lienzo/arte";
 import { capas, coloresDe } from "../personaje/apariencia";
 import { estado, cambiarEstado, type Estado } from "../datos/guardado";
 import { bloqueo, revisarHora, dormir } from "../datos/dia";
@@ -69,6 +69,11 @@ function sincronizarFamiliaEnCasa(m: Mapa) {
   for (const f of contenido.figuras) {
     if (f.casa && quedaAlgoCon("casa", f.id)) m.puntos.push({ nombre: f.id, tipo: "npc", x: f.casa.x, y: f.casa.y, arte: `figuras/${f.id}`, piel });
   }
+}
+
+// The furniture of the child's room wears the color they chose in the mirror.
+function tenirMuebles(m: Mapa) {
+  for (const p of m.puntos) if (p.mueble) p.tinte = TINTES[estado().muebles[p.nombre] ?? 0];
 }
 
 // The name a world point goes by: on its nameplate, its emote and the guide.
@@ -141,7 +146,7 @@ async function cargarArte(m: Mapa, e: Estado) {
   const piel = e.apariencia.colores.piel ?? 0;
   await Promise.all([
     pieza(`lugares/${m.lugar}/fondo`),
-    ...m.puntos.map((p) => (p.piel !== undefined ? pieza(p.arte, { piel: p.piel }) : pieza(p.arte))),
+    ...m.puntos.map((p) => (p.piel !== undefined ? pieza(p.arte, { piel: p.piel }) : pieza(p.arte, { tinte: p.tinte }))),
     ...(m.lugar === "casa" ? contenido.figuras.filter((f) => f.casa).map((f) => pieza(`figuras/${f.id}`, { piel })) : []),
     ...capas(e.apariencia).map((id) => pieza(id, coloresDe(e.apariencia))),
   ]);
@@ -199,6 +204,19 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   // A scene of the story is on: the world stands still under it, and the mission shows once it is over.
   const [escena, setEscena] = useState<{ escena: Escena; alFin: (hecha: boolean) => void } | null>(null);
   const [mision, setMision] = useState<string | null>(() => sincronizarHistoria()?.mision ?? null);
+  // The scene with `ensena: salto` is over: the jump is shown beside the button that does it, until the child jumps.
+  const [ensenaSalto, setEnsenaSalto] = useState(false);
+
+  useEffect(() => {
+    if (!ensenaSalto || escena || superpuesto) return;
+    const demostrar = () => {
+      if (!motorRef.current || motorRef.current.pausado) return;
+      sonarSalto();
+      motorRef.current.brincar(true);
+    };
+    const pendientes = [setTimeout(demostrar, 300), setTimeout(demostrar, 1800), setTimeout(() => setEnsenaSalto(false), 12000)];
+    return () => pendientes.forEach(clearTimeout);
+  }, [ensenaSalto, escena, superpuesto]);
 
   // Lifecyle for world emotes: Entrada (180ms pop-in), Staged (idle loop), Salida (140ms shrink)
   useEffect(() => {
@@ -236,6 +254,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
 
   const dispararSalto = () => {
     if (!motorRef.current || motorRef.current.pausado || escena || superpuesto) return;
+    setEnsenaSalto(false);
     sonarSalto();
     const res = motorRef.current.brincar();
     registrar("accion_personaje", {
@@ -348,6 +367,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           }
           refrescarGuia();
           if (estado().apariencia !== antes) setRecarga((r) => r + 1);
+          if (hecha && e.ensena === "salto") setEnsenaSalto(true);
           const siguienteEntrar = hecha ? escenaPara(lugarActual, "entrar") : null;
           if (siguienteEntrar) {
             iniciarEscena(siguienteEntrar, alFin);
@@ -431,6 +451,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     void cargarMapa(lugarActual, e0.semilla, estado().dia, estado().hora, visitas, cicloEscenaRef.current, objInicial?.objeto).then(async (m) => {
       mapaActual = m;
       sincronizarFamiliaEnCasa(m);
+      tenirMuebles(m);
       quitarAusentes(m, estado().hora);
       await cargarArte(m, estado());
       if (!vivo) return;
@@ -715,11 +736,17 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
 
       {!escena && (
         <div className="mundo-acciones" role="toolbar" aria-label="Acciones del personaje">
+          {ensenaSalto && (
+            <div className="ensena-salto panel panel-compacto" data-tipo="sistema" role="status">
+              <p>{M.ensena_salto}</p>
+              <Bocina clave="mundo.ensena_salto" texto={M.ensena_salto} />
+            </div>
+          )}
           <button
             type="button"
-            className="boton redondo accion-btn brincar"
-            aria-label="Brincar"
-            title="Brincar (Espacio)"
+            className={`boton redondo accion-btn brincar${ensenaSalto ? " ensena" : ""}`}
+            aria-label="Saltar"
+            title="Saltar (Espacio)"
             onClick={dispararSalto}
           >
             {Icono.brincar}

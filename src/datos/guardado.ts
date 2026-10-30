@@ -20,6 +20,7 @@ export interface Estado {
   historia: Historia; // the scenes of the story (contenido/escenas.yaml)
   libro: Pagina[]; // "Mi libro": the child's drawings
   opciones: Opciones; // the child's settings; saved at once when changed
+  muebles: Record<string, number>; // furniture of their room -> the color chosen in the mirror (lienzo/arte.ts, TINTES)
 }
 
 // Levels go from 0 to 5. The voice never goes silent, so it starts at 1.
@@ -47,7 +48,7 @@ export interface Historia {
 
 export type Hora = "manana" | "tarde" | "noche";
 
-const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, semilla: "", nombre: "", dia: 1, hora: "manana", llegada: null, visitas: {}, historia: { hechas: [], marcas: [], mision: null, progreso: {} }, libro: [], opciones: OPCIONES_INICIALES };
+const NUEVO: Estado = { lugar: "casa", x: null, y: null, direccion: "abajo", apariencia: APARIENCIA_INICIAL, creado: false, semilla: "", nombre: "", dia: 1, hora: "manana", llegada: null, visitas: {}, historia: { hechas: [], marcas: [], mision: null, progreso: {} }, libro: [], opciones: OPCIONES_INICIALES, muebles: {} };
 
 let actual: Estado = NUEVO;
 let leido = false; // never write before the saved game was read, or it would be overwritten

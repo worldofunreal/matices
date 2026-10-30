@@ -29,8 +29,8 @@ Todos llevan: código del participante, sesión, versión del contenido y del ju
 
 | Evento | Datos | Para qué |
 | --- | --- | --- |
-| `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, color de cada prenda, tenis y extra que lleva (`colores`), si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
-| `escena` | Escena (`escena`), paso (`inicio`, `opcion`, `fin`), quién habla, opciones en el orden mostrado, la elegida (código) y ms para decidir desde que aparecen. En `fin`, si se saltó (`saltada`) o pausó (`pausada`) | Qué hace, qué contesta y si deja una escena a medias |
+| `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, color de cada prenda, tenis y extra que lleva (`colores`), color de la cama y del ropero (`muebles`, solo en el espejo; 1 es el original), si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
+| `escena` | Escena (`escena`), paso (`inicio`, `opcion`, `fin`), quién habla, opciones en el orden mostrado, la elegida (código) y ms para decidir desde que aparecen. En `fin`, si se omitió (`saltada`), se negó (`negada`: la opción lleva `cierra`, sin minijuego ni marcas de la escena) o pausó (`pausada`) | Qué hace, qué contesta y si deja una escena a medias |
 | `minijuego` | Minijuego, resultado (`completado`, `sin_respuesta` o `abortado`), motivo, ms, escena y último avance: etapa, elecciones, intentos o respuestas registradas. Los registros anteriores pueden contener `saltado` | Qué alcanza a hacer y dónde deja o confirma una actividad; no es una conclusión clínica |
 | `explora` | Al tocar un objeto o a una persona fija (lugar y cuál), y al salir de un lugar (lugar, ms de permanencia, visitas) | Qué busca, evita, repite |
 | `tramo` | Día y parte del día que empieza (`manana`, `tarde`, `noche`, `fin`) | Ritmo de la partida |

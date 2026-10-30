@@ -193,6 +193,7 @@ export function validar() {
     if (x.frena && !x.al.startsWith("salir:")) err(d, "frena solo va en una salida (al: salir:<lugar>)");
     if (x.frena && !(x.si ?? []).some((m) => pendientes.some((p) => p.abre === m))) err(d, "un recordatorio (frena) pide en si: la marca que abre un pendiente");
     if (!x.pasos?.length) err(d, "sin pasos");
+    if (x.ensena !== undefined && x.ensena !== "salto") err(d, `no se sabe enseñar ${x.ensena}`);
     let ultimo: string | null = null; // who spoke last: the answer to an option comes from them
     x.pasos.forEach((p, i) => {
       const dp = `${d} paso ${i + 1}`;
@@ -209,7 +210,8 @@ export function validar() {
         if (!ultimo) err(dp, "las opciones necesitan una línea antes");
         if (p.titulo !== undefined) texto(`${dp} titulo`, p.titulo);
         p.opciones.forEach((o, j) => {
-          if (!Array.isArray(o) || o.length !== 3) return err(`${dp} opción ${j + 1}`, "debe ser [CÓDIGO, texto, respuesta]");
+          if (!Array.isArray(o) || o.length < 3 || o.length > 4 || (o.length === 4 && o[3] !== "cierra")) return err(`${dp} opción ${j + 1}`, "debe ser [CÓDIGO, texto, respuesta] o [CÓDIGO, texto, respuesta, cierra]");
+          if (o[3] && o[2] === null) err(`${dp} opción ${j + 1}`, "una opción que cierra la escena necesita respuesta");
           codigo(`${dp} opción ${j + 1}`, o[0]);
           texto(`${dp} opción ${j + 1}`, o[1]);
           if (o[2] !== null) texto(`${dp} opción ${j + 1} respuesta`, o[2]);
@@ -274,8 +276,8 @@ export function validar() {
   return { version: version(), escenas, textos, figuras, lugares, conexiones, objetos, areas: areasDelMarco(), pendientes, hitos };
 }
 
-type Paso = { de?: string; titulo?: string; texto?: string; opciones?: [string, string, string | null][]; marca?: string; minijuego?: string; efecto?: string };
-type Escena = { id: string; nombre: string; donde: string; al: string; dia?: number; hora?: string; tras?: string | string[]; si?: string[]; no?: string[]; areas?: string[]; delicada?: boolean; saltable?: boolean; frena?: boolean; sugerida?: boolean; pasos: Paso[] };
+type Paso = { de?: string; titulo?: string; texto?: string; opciones?: [string, string, string | null, "cierra"?][]; marca?: string; minijuego?: string; efecto?: string };
+type Escena = { id: string; nombre: string; donde: string; al: string; dia?: number; hora?: string; tras?: string | string[]; si?: string[]; no?: string[]; areas?: string[]; delicada?: boolean; saltable?: boolean; frena?: boolean; sugerida?: boolean; ensena?: string; pasos: Paso[] };
 type Pendiente = { id: string; abre: string; cierra: string; lugar: string; objeto: string; etiqueta: string; mision: string };
 type Hito = { dia: number; hora: string; lugar: string; objeto?: string; puertaDestino?: string; mision: string; etiqueta: string; cumple?: string | string[] };
 

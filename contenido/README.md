@@ -1,6 +1,6 @@
 # Contenido
 
-Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.5.0` (borrador, sin revisión clínica).
+Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.6.0` (borrador, sin revisión clínica).
 
 | Archivo | Qué es |
 | --- | --- |
@@ -24,10 +24,11 @@ Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual
   no: [ropa_deporte]                   # opcional: marcas que no pueden estar
   areas: [pedir_ayuda]                 # opcional
   delicada: true                       # opcional: siempre con saltable
-  saltable: true                       # se puede saltar
+  saltable: true                       # se puede omitir
+  ensena: salto                        # opcional: al terminar, el juego muestra el salto junto a su botón
   pasos:
     - {de: madre, texto: "¡Buenos días! Ya despertaste."}
-    - opciones:                        # de 2 a 4; cada una: [CÓDIGO, texto, respuesta o null]
+    - opciones:                        # de 2 a 4; cada una: [CÓDIGO, texto, respuesta o null], y `cierra` al final si negarse termina ahí la escena
         - [ACEPTA, "Está bien, mamá.", "Gracias. Nos vemos más tarde."]
         - [PIDE_AYUDA, "¿Podrías ayudarme?", null]
     - {minijuego: refri}               # refri, estufa, ropero, cuerda, dibujo, pistas, examen, tienda

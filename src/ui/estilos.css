@@ -422,6 +422,7 @@ canvas.pixel {
 .escena-caja.interactiva[data-tipo="sistema"],
 .globo[data-tipo="sistema"],
 .globo-figura-caja[data-tipo="sistema"],
+.ensena-salto[data-tipo="sistema"],
 .mision-mundo[data-tipo="sistema"] {
   background: var(--sistema);
   color: var(--papel);

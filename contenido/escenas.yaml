@@ -7,6 +7,7 @@ escenas:
     al: entrar
     dia: 1
     hora: manana
+    ensena: salto
     areas:
       - necesidades_fisicas
     pasos:
@@ -298,6 +299,7 @@ escenas:
           - - POSPONE
             - Tal vez al rato.
             - Está bien. Aquí seguimos jugando.
+            - cierra
       - minijuego: cuerda
       - de: valeria
         texto: ¡Estuvo divertido! ¿Jugamos juntos en el recreo de mañana?
@@ -339,6 +341,7 @@ escenas:
           - - EVITA
             - Prefiero seguir caminando.
             - Está bien. Aquí me quedo dibujando.
+            - cierra
       - minijuego: dibujo
       - marca: conocio_leo
   - id: R02-sam
@@ -368,6 +371,7 @@ escenas:
           - - EVITA
             - Ahorita tengo otra cosa que hacer.
             - Sale. Te aviso si encuentro al dueño.
+            - cierra
       - minijuego: pistas
       - marca: conocio_sam
   - id: C03
@@ -681,8 +685,7 @@ pendientes:
 # Objetivos en orden, por parte del día. En cada parte, el primero que no está cumplido es el que guía al jugador.
 # `cumple` son escenas: basta una. Un hito sin `cumple` dura hasta que cambia la parte del día.
 hitos:
-  - { dia: 1, hora: manana, lugar: casa, mision: Despertar en tu habitación, etiqueta: Casa, cumple: [T03, T05, T05b] }
-  - { dia: 1, hora: manana, lugar: escuela_planta_baja, mision: Ir a la escuela, etiqueta: Escuela, cumple: [U01a, U01b] }
+  - { dia: 1, hora: manana, lugar: escuela_planta_baja, mision: Alistarte e ir a la escuela, etiqueta: Escuela, cumple: [U01a, U01b] }
   - { dia: 1, hora: manana, lugar: escuela_planta_baja, mision: Salir al patio de la escuela para el recreo, etiqueta: Patio, cumple: [R01] }
   - { dia: 1, hora: manana, lugar: calle, mision: Salir de la escuela a la calle para volver a casa, etiqueta: Salir a la calle }
   - { dia: 1, hora: tarde, lugar: calle, mision: Salir a la calle para ayudar con las compras, etiqueta: Calle, cumple: [C03] }

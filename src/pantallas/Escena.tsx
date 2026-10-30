@@ -90,6 +90,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
   const [fasePaso, setFasePaso] = useState<"entrando" | "activo" | "saliendo">("activo");
   const [opcionElegida, setOpcionElegida] = useState<number | null>(null);
   const t0 = useRef(performance.now()); // when the options of this step appeared
+  const cierra = useRef(false); // the option just chosen ends the scene after its answer
   const p = pasos[i];
   const progresoMinijuego = useRef<Record<string, unknown>>({ etapa: "inicio" });
   const alProgreso = useCallback((progreso: Record<string, unknown>) => {
@@ -144,16 +145,18 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
     if (fasePaso === "saliendo") return;
     setFasePaso("saliendo");
     setTimeout(() => {
+      if (cierra.current) return terminar(true, "negada");
       avanzar(i + 1);
       setFasePaso("entrando");
       setTimeout(() => setFasePaso("activo"), 140);
     }, 80);
   };
 
-  // Over: finished (hecha), skipped (hecha, saltada) or paused (not hecha: it goes on from this line next time).
-  const terminar = (hecha: boolean, motivo?: "saltada" | "pausada", datos: Record<string, unknown> = {}) => {
+  // Over: finished (hecha), skipped or refused (hecha, without what the whole scene leaves behind) or paused (not hecha:
+  // it goes on from this line next time).
+  const terminar = (hecha: boolean, motivo?: "saltada" | "negada" | "pausada", datos: Record<string, unknown> = {}) => {
     registrar("escena", { escena: escena.id, paso: "fin", ...(motivo ? { [motivo]: true } : {}), ...datos });
-    if (hecha && motivo !== "saltada") {
+    if (hecha && !motivo) {
       for (const paso of pasos) {
         if (paso.marca) marcar(paso.marca);
       }
@@ -174,7 +177,8 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
   const elegir = (j: number) => {
     sonarToque();
     if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
-    const [codigo, , res] = p.opciones![j];
+    const [codigo, , res, fin] = p.opciones![j];
+    cierra.current = !!fin;
     registrar("escena", {
       escena: escena.id,
       paso: "opcion",
@@ -349,7 +353,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
         <div className="escena-controles">
           {escena.saltable && (
             <button className="boton" onClick={() => terminar(true, "saltada")}>
-              {E.saltar}
+              {E.omitir}
             </button>
           )}
           <button className="boton" onClick={() => terminar(false, "pausada")}>
