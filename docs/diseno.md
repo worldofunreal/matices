@@ -41,9 +41,11 @@ La propuesta organiza la historia en seis capítulos. Son una guía de escenas, 
 
 Nombre y apariencia los elige el jugador: cuerpo, piel, cabello, ropa, extras, tenis, y colores de cada prenda. El avatar se dibuja con las hojas de referencia del guion (pixel art juvenil, el mismo lenguaje visual del resto del juego). Se cambia en el espejo de la casa o en Opciones.
 
-**Al abrir con una partida guardada** se elige: Continuar, Cambiar mi personaje o Empezar de nuevo. En el espejo también se elige el color de la cama y del ropero del cuarto.
+**Al abrir con una partida guardada** se elige: Seguir donde me quedé, Cambiar mi personaje o Empezar de nuevo. Las mismas opciones aparecen después de cambiar de personaje: el nuevo reemplaza al anterior. Cada cambio queda registrado con su momento, para poder separarlo en el análisis. En el espejo también se elige el color de la cama y del ropero del cuarto.
 
-**Empezar de nuevo**, al abrir, en Opciones y al terminar los tres días, borra la partida y Mi libro después de preguntar, y cuenta como otro participante. Hay una sola historia, así que no se promete "otra historia".
+**Empezar de nuevo**, al abrir, en Opciones y al terminar los tres días, borra la partida y Mi libro, y cuenta como otro participante. Pide la clave de un adulto (`opciones.empezar_clave` en `contenido/textos.yaml`) y deja registrado el reinicio en el participante anterior.
+
+**Historias:** por ahora hay una sola. El primer día y el tutorial serán iguales para todos; después la historia podrá seguir caminos distintos según las decisiones, respetando los objetivos de la historia base y sin sesgar lo que se mide. Esos objetivos están por definirse.
 
 ## Personas
 

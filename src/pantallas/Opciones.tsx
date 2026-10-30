@@ -1,8 +1,9 @@
 // Opciones: the child's settings, over the world like Mi libro. Each change is saved at
 // once. The voice (ui/voz.ts) and the ambient effects (Mundo) use them now; music, effects, text speed and
 // simple reading are saved for when they exist.
-import { useState, type ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import contenido from "virtual:contenido";
+import { registrar } from "../datos/eventos";
 import { cambiarEstado, estado, type Opciones as Ajustes } from "../datos/guardado";
 import { Bocina } from "../ui/Bocina";
 import { Icono } from "../ui/iconos";
@@ -29,10 +30,13 @@ function Fila({ icono, texto, clave, children }: { icono: ReactNode; texto: stri
   );
 }
 
-// Starting over erases the game and Mi libro, so it asks first. ?nuevo (main.tsx) does the rest: a new anonymous
-// participant on this device.
+// Starting over erases the game and Mi libro and counts as another child, so it takes an adult with the code.
+// ?nuevo (main.tsx) does the rest: a new anonymous participant on this device; the old one keeps a "reinicio" event.
+// ponytail: the code ships in the game's text; it stops a child at the screen, not someone reading the files. Per-school codes if the pilot needs them.
 export function EmpezarDeNuevo() {
   const [seguro, setSeguro] = useState(false);
+  const [clave, setClave] = useState("");
+  const [mal, setMal] = useState(false);
   if (!seguro)
     return (
       <div className="preferencia-control">
@@ -41,16 +45,32 @@ export function EmpezarDeNuevo() {
         </button>
       </div>
     );
+  const empezar = async (e: FormEvent) => {
+    e.preventDefault();
+    if (clave !== O.empezar_clave) return setMal(true);
+    await registrar("reinicio");
+    location.search = "?nuevo";
+  };
   return (
-    <div className="preferencia-control">
-      <span className="preferencia-aviso">{O.empezar_aviso}</span>
-      <button className="boton principal" onClick={() => (location.search = "?nuevo")}>
+    <form className="preferencia-control" onSubmit={empezar}>
+      <span className="preferencia-aviso">{mal ? O.empezar_mal : O.empezar_aviso}</span>
+      <input
+        className="campo"
+        type="password"
+        inputMode="numeric"
+        autoComplete="off"
+        aria-label={O.empezar_campo}
+        placeholder={O.empezar_campo}
+        value={clave}
+        onChange={(e) => (setClave(e.target.value), setMal(false))}
+      />
+      <button className="boton principal" type="submit">
         {O.empezar_si}
       </button>
-      <button className="boton" onClick={() => setSeguro(false)}>
+      <button className="boton" type="button" onClick={() => (setSeguro(false), setClave(""), setMal(false))}>
         {O.empezar_no}
       </button>
-    </div>
+    </form>
   );
 }
 

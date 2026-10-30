@@ -25,7 +25,7 @@ export function App() {
   // Siempre a la mano sits over every screen, so it wraps whichever one is shown.
   const visible =
     p.nombre === "creacion" ? (
-      <Creacion key={p.modo} modo={p.modo} alTerminar={() => ir(primera())} />
+      <Creacion key={p.modo} modo={p.modo} alTerminar={(otro) => ir(otro ? { nombre: "portada" } : primera())} />
     ) : p.nombre === "portada" ? (
       <Portada alContinuar={() => ir(primera())} alEspejo={alEspejo} />
     ) : (

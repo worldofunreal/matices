@@ -1,6 +1,6 @@
 # Contenido
 
-Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.7.0` (borrador, sin revisión clínica).
+Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.8.0` (borrador, sin revisión clínica).
 
 | Archivo | Qué es |
 | --- | --- |

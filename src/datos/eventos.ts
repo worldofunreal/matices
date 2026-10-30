@@ -40,7 +40,7 @@ export async function iniciarRegistro(): Promise<Partida> {
 export const semilla = () => partida.semilla;
 
 function guardarEvento(evento: object) {
-  void cifrar(evento).then(agregarEvento);
+  return cifrar(evento).then(agregarEvento);
 }
 
 export function registrar(tipo: string, datos: Record<string, unknown> = {}) {
@@ -57,8 +57,8 @@ export function registrar(tipo: string, datos: Record<string, unknown> = {}) {
     cuando: Date.now(),
     tipo,
   };
-  guardarEvento(evento);
   if (import.meta.env.DEV) console.debug("evento", evento);
+  return guardarEvento(evento); // awaited only when the page is about to go away
 }
 
 async function cifrar(evento: object) {

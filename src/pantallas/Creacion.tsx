@@ -69,7 +69,7 @@ export function Portada({ alContinuar, alEspejo }: { alContinuar: () => void; al
 
 // Character creation: everything on one screen, one tap per choice, the character changes
 // as the child chooses, and each step leads to the next. Also opened from the mirror in the house (modo "espejo").
-export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTerminar: () => void }) {
+export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTerminar: (otro: boolean) => void }) {
   const [a, setA] = useState<Apariencia>(() => structuredClone(estado().apariencia));
   const [nombre, setNombre] = useState(estado().nombre);
   const [pestana, setPestana] = useState<Pestana>("cuerpo");
@@ -142,8 +142,10 @@ export function Creacion({ modo, alTerminar }: { modo: "inicio" | "espejo"; alTe
       toques: toques.current,
       ms: Math.round(performance.now() - t0.current),
     });
+    // Another character replaces the first; the child then picks: where they left off, or starting over.
+    const otro = modo === "espejo" && (nombre !== estado().nombre || JSON.stringify(a) !== JSON.stringify(estado().apariencia));
     cambiarEstado({ apariencia: a, nombre, creado: true, muebles }, true);
-    alTerminar();
+    alTerminar(otro);
   };
 
   // The tabs are also a path: the footer leads to the next step, and the last one finishes.

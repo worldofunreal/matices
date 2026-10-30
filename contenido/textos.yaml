@@ -209,7 +209,7 @@ siempre:
 # Opciones. Música, efectos, velocidad del texto y lectura sencilla se guardan y
 # quedan listos para conectarse cuando existan.
 portada:
-  continuar: "Continuar"
+  continuar: "Seguir donde me quedé"
   cambiar: "Cambiar mi personaje"
 
 opciones:
@@ -229,6 +229,9 @@ opciones:
   cambiar: "Cambiar"
   partida: "Mi partida"
   empezar: "Empezar de nuevo"
-  empezar_aviso: "Se borran tu partida y Mi libro."
+  empezar_aviso: "Se borran tu partida y Mi libro. Pide a un adulto que escriba la clave."
+  empezar_mal: "Esa no es la clave. Pídesela a un adulto."
+  empezar_campo: "Clave del adulto"
+  empezar_clave: "4817"
   empezar_si: "Sí, empezar"
   empezar_no: "No"

@@ -407,6 +407,11 @@
   width: 100%;
 }
 
+/* While the adult's code is asked, only that shows: it fits a phone on its side. */
+.creacion .portada:has(form) > .boton {
+  display: none;
+}
+
 .creacion .opciones.piel {
   align-content: center;
   gap: 16px;

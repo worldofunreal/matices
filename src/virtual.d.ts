@@ -128,6 +128,9 @@ declare module "virtual:contenido" {
       partida: string;
       empezar: string;
       empezar_aviso: string;
+      empezar_mal: string;
+      empezar_campo: string;
+      empezar_clave: string;
       empezar_si: string;
       empezar_no: string;
     };

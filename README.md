@@ -21,6 +21,8 @@ Nombre por definir. Un RPG narrativo 2D de vida diaria para adolescentes de secu
 - [ ] Fecha de entrega de la propuesta.
 - [ ] Si los resultados del tamizaje de los alumnos del piloto se podrán comparar con el juego (`docs/validacion.md`).
 - [ ] Cuántas sesiones habrá, de cuánto tiempo, y si hay audífonos.
+- [ ] Objetivos de la historia base y qué caminos siguen después del primer día (Dayana).
+- [ ] Si cambiar de personaje a media historia sesga los datos (Dayana); cada cambio queda registrado.
 - [ ] Si la IA tiene un papel del lado de los especialistas (su herramienta, en línea), no del jugador.
 - [ ] Preguntas de preproducción de la guía de Dayana (`RPG_Salud_Mental_Guiones_Arte.pdf`):
   - [ ] ¿Qué edad precisa tendrá el protagonista y qué actividades domésticas son plausibles y seguras para ella?
