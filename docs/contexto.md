@@ -41,7 +41,8 @@ Para quien se beneficia: la sociedad y las instituciones que atienden a los adol
 ## Qué ofrecemos y qué no
 
 - **Ofrecemos** una metodología que busca reducir el sesgo de la información con la que trabajan, y la herramienta que la aplica (`metodologia.md`). No prometemos romper el sesgo: lo medimos y lo validamos (`validacion.md`).
-- **No tratamos.** No diagnosticamos. No sustituimos a nadie.
+- **Herramientas fáciles para el personal educativo:** la computadora sube sus datos sola cuando tiene internet, y el personal revisa un tablero sencillo que muestra lo más importante y deja ir a fondo si lo necesita. *Hoy: la subida automática. Pendiente: la carga manual y el tablero por relevancia.*
+- **No tratamos.** No diagnosticamos. No sustituimos a nadie. Ayudar a manejar traumas queda como secundario: es trabajo del personal educativo y de salud del Estado.
 - **El juego es su instrumento:**
   - ellos definen qué se mide;
   - ellos leen los resultados;

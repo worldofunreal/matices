@@ -19,7 +19,7 @@ Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual
   al: mesa                             # entrar | salir:<lugar> | un objeto o persona de ese mapa
   dia: 1                               # 1 a 3
   hora: manana                         # manana | tarde | noche
-  tras: T03                            # opcional: una escena o una lista (cualquiera de ellas)
+  tras: T03                            # opcional: una escena o una lista; el juego anuncia la espera (nunca en la cama)
   si: [ropa_deporte]                   # opcional: marcas que tienen que estar
   no: [ropa_deporte]                   # opcional: marcas que no pueden estar
   areas: [pedir_ayuda]                 # opcional
@@ -58,11 +58,11 @@ Mientras está abierto y el niño está en ese lugar, el letrero y la guía lo m
 
 ## Objetivos
 
-Los objetivos del día van en `hitos:`, al final de `escenas.yaml`, en orden. El juego muestra el primero que no se ha cumplido.
+Los objetivos del día van en `hitos:`, al final de `escenas.yaml`, en orden. El juego muestra el primero que no se ha cumplido. Solo nombran lugares y rutinas: nunca una persona ni una escena emocional (regla 12 de `docs/metodologia.md`).
 
 ```yaml
 hitos:
-  - { dia: 1, hora: manana, lugar: casa, objeto: mama, mision: Hablar con mamá en el comedor, etiqueta: Hablar con Mamá, cumple: [T05, T05b] }
+  - { dia: 1, hora: manana, lugar: casa, objeto: refrigerador, mision: Sacar los huevos del refrigerador, etiqueta: Refrigerador, cumple: [T06] }
   - { dia: 1, hora: manana, lugar: casa, puertaDestino: calle, mision: Salir de casa rumbo a la escuela, etiqueta: Salir a la calle, cumple: [T09] }
 ```
 
@@ -75,6 +75,7 @@ hitos:
 
 - Toda opción lleva un código de `codigos.md`. Una opción sin código o con un código que no existe rompe la compilación.
 - Una escena `delicada` siempre es `saltable`: el niño puede saltarla y pedir ayuda en cualquier momento. Las reglas de pausa están en `docs/diseno.md`.
+- Una espera que el juego anuncia (`tras`) nunca va en la cama: impediría dormir. Para esperar sin anunciarlo, usa `si:` con una marca. El validador lo rechaza.
 - Las respuestas (`null` o texto) solo van cuando quien responde ya habló antes en la escena.
 - Un género no se escribe fijo. Donde una palabra cambia con el cuerpo del niño se escribe con la marca `{o}`: `list{o}` sale "listo" o "lista". Sin otras marcas en el texto.
 - Una marca `vigila_<nombre>` (el nombre de la persona o del animal, como en el mapa; por ejemplo `vigila_vecino_1`) hace vigilante a esa persona o animal mientras la marca esté: se voltea hacia el niño según de qué lado esté. Quiénes son vigilantes sin marca están en `src/mundo/vigilancia.ts`.

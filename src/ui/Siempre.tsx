@@ -27,7 +27,7 @@ export function Siempre({ pantalla, children }: { pantalla: string; children: Re
   const alternar = (c: "libro" | "opciones") => setCapa(capa === c ? null : c);
 
   // The record goes to the device's log with the screen and the time (contenido/codigos.md).
-  // The card is the only thing on screen that says someone was called.
+  // The card says only what the sign on screen is: it stays up for an adult who is with the child.
   const quieroHablar = () => {
     registrar("quiero_hablar", { pantalla: capa === "libro" || capa === "opciones" ? capa : (detalleActual() ?? pantalla) });
     setSenal(true);

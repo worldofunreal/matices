@@ -60,7 +60,7 @@ El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tie
 ## Arte y aparato
 
 - Las Chromebooks escolares son de gama baja: el arte es **2D** (pixel art o ilustración plana), sin efectos pesados. 3D queda fuera.
-- Corre en el navegador y funciona sin conexión; los datos se envían cuando hay red.
+- Corre en el navegador. Los datos se guardan en el aparato y se envían cuando hay red. Hoy el juego necesita conexión para abrirse; poder abrirlo sin red está pendiente.
 - Todo lo hablado aparece también escrito. El texto es mínimo: a los adolescentes no les gusta leer, y a los que traen problemas menos.
 
 ## Inmersión y efectos
@@ -80,11 +80,11 @@ El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tie
 ## Escenas, decisiones y registro
 
 - Una escena tiene una línea de alguien, y a veces opciones. Las opciones aparecen en un orden distinto para cada niño.
-- Todo minijuego se puede pausar para retomarlo u omitir como objetivo; tocar fuera también lo pausa. Se registra el último avance, incluidas respuestas vacías y la etapa alcanzada, sin inventar marcas o resultados que no ocurrieron.
+- En una misión principal, tocar fuera o **Seguir después** cierra el panel y deja la escena pendiente; el jugador puede seguir por el mundo y reabrirla al interactuar con el objetivo. Al volver, el minijuego empieza de nuevo y el intento anterior queda en analíticas. Las escenas sugeridas conservan su omisión al tocar fuera. No hay un botón general para omitir objetivos. Se registra el último avance, incluidas respuestas vacías y la etapa alcanzada, sin inventar marcas o resultados que no ocurrieron.
 - Tocar fuera de un diálogo no hace nada. Para dejar una escena a medias está Pausar, que aparece en todas las escenas: la escena guarda la línea donde iba y, al volver, sigue ahí.
-- El orden es permisivo: una escena que llega antes no bloquea el juego; se juega su variante. Solo unas pocas escenas esperan a otra (`tras` en `contenido/README.md`).
+- El orden es permisivo: una escena que llega antes no bloquea el juego; se juega su variante. Solo unas pocas escenas esperan a otra. `tras` lo anuncia con "Primero: …"; `si` espera una marca sin anunciarlo. Ninguna escena espera en la cama (`contenido/README.md`).
 - Cada opción lleva un código que **describe** lo que hizo. El código no dice si fue bueno o malo.
-- Una escena delicada siempre permite saltar la secuencia sensible y pedir ayuda. La ruta de protección no depende de elegir bien una opción.
+- Una escena delicada siempre permite saltarla, pausarla y pedir ayuda con el botón de siempre. La ruta de protección no depende de elegir bien una opción ni de haber vivido otra escena.
 - Elegir callar, obedecer o retirarse nunca se presenta como responsabilidad del protagonista.
 - Las escenas de abuso sugieren la transgresión y cortan a negro. No se muestra violencia sexual. Lo que se nombra en lenguaje claro, según la edad, lo revisan los especialistas.
 - Lo que el niño deja sin hacer, como apagar la estufa, lo retiene la puerta una vez: se le recuerda y, si insiste, puede salir. El juego no le pregunta si lo va a hacer: lee lo que hace.
@@ -95,6 +95,8 @@ El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tie
 - Preguntarle al jugador algo sobre sí mismo. Los personajes de la historia sí hablan con su personaje.
 - Mostrar un marcador, una calificación, un premio o un castigo por lo que se mide.
 - Poner un reloj en pantalla.
+- Decir que avisó a alguien: el botón de ayuda deja una señal en la pantalla y nada más.
+- Poner en un objetivo a una persona o a una escena emocional.
 - Decirle al jugador si lo que eligió estuvo bien o mal.
 - Usar mecánicas adictivas para retenerlo.
 - Matar a alguien o dejar que alguien muera.

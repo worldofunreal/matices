@@ -534,13 +534,14 @@ escenas:
       - de: pensamiento
         titulo: Compartir el dibujo
         texto: Me gustó mucho cómo quedó. Voy a enseñárselo a papá en la sala.
+      - marca: dibujo_listo
   - id: E2-02
     nombre: Encuentro con el padre
     donde: casa
     al: papa
     dia: 2
     hora: noche
-    tras: E2-01
+    si: [dibujo_listo]
     areas:
       - abuso_emocional
       - limites
@@ -606,7 +607,7 @@ escenas:
     al: cama
     dia: 2
     hora: noche
-    tras: E2-02
+    si: [visto_papa]
     areas:
       - sintomas_emocionales
       - apoyo_emocional
@@ -638,7 +639,7 @@ escenas:
     al: companero_2
     dia: 3
     hora: manana
-    tras: E2-04
+    si: [visto_papa]
     areas:
       - companeros
       - apoyo_emocional
@@ -660,7 +661,6 @@ escenas:
     al: orientadora
     dia: 3
     hora: manana
-    tras: E2-05
     areas:
       - pedir_ayuda
       - representacion_adultos
@@ -699,7 +699,6 @@ escenas:
     al: entrar
     dia: 3
     hora: manana
-    tras: O01
     areas:
       - companeros
       - escuela_aprendizaje
@@ -742,30 +741,16 @@ pendientes:
 # `cumple` son escenas: basta una. Un hito sin `cumple` dura hasta que cambia la parte del día.
 hitos:
   - { dia: 1, hora: manana, lugar: casa, mision: Despertar en tu habitación, etiqueta: Casa, cumple: [T03, T05, T05b] }
-  - { dia: 1, hora: manana, lugar: casa, objeto: mama, mision: Hablar con mamá en el comedor, etiqueta: Hablar con Mamá, cumple: [T05, T05b] }
-  - { dia: 1, hora: manana, lugar: casa, objeto: refrigerador, mision: Sacar los huevos del refrigerador en la cocina, etiqueta: Refrigerador, cumple: [T06] }
-  - { dia: 1, hora: manana, lugar: casa, objeto: estufa, mision: Preparar el desayuno en la estufa, etiqueta: Estufa, cumple: [T07] }
-  - { dia: 1, hora: manana, lugar: casa, objeto: ropero, mision: Elegir tu ropa en el ropero de tu habitación, etiqueta: Ropero, cumple: [T08] }
-  - { dia: 1, hora: manana, lugar: casa, puertaDestino: calle, mision: Salir de casa rumbo a la escuela, etiqueta: Salir a la calle, cumple: [T09] }
   - { dia: 1, hora: manana, lugar: escuela_planta_baja, mision: Ir a la escuela, etiqueta: Escuela, cumple: [U01a, U01b] }
   - { dia: 1, hora: manana, lugar: escuela_planta_baja, mision: Salir al patio de la escuela para el recreo, etiqueta: Patio, cumple: [R01] }
-  - { dia: 1, hora: manana, lugar: escuela_planta_baja, objeto: companero_1, mision: Hablar con Valeria en el patio de la escuela, etiqueta: Valeria, cumple: [R02-valeria] }
-  - { dia: 1, hora: manana, lugar: escuela_planta_baja, objeto: companero_2, mision: Hablar con Leo en el patio de la escuela, etiqueta: Leo, cumple: [R02-leo] }
-  - { dia: 1, hora: manana, lugar: escuela_planta_baja, objeto: companero_3, mision: Hablar con Sam en los salones de la planta baja, etiqueta: Sam, cumple: [R02-sam] }
   - { dia: 1, hora: manana, lugar: calle, mision: Salir de la escuela a la calle para volver a casa, etiqueta: Salir a la calle }
   - { dia: 1, hora: tarde, lugar: calle, mision: Salir a la calle para ayudar con las compras, etiqueta: Calle, cumple: [C03] }
   - { dia: 1, hora: tarde, lugar: casa, mision: Regresar a casa para descansar, etiqueta: Casa }
   - { dia: 1, hora: noche, lugar: casa, objeto: cama, mision: Ir a tu cama para dormir, etiqueta: A dormir }
   - { dia: 2, hora: manana, lugar: escuela_planta_baja, mision: Ir a la escuela para el examen, etiqueta: Escuela, cumple: [X01] }
-  - { dia: 2, hora: manana, lugar: escuela_planta_baja, objeto: companero_2, mision: Hablar con Leo en el patio de la escuela, etiqueta: Leo, cumple: [R05, R05b] }
   - { dia: 2, hora: manana, lugar: calle, mision: Salir de la escuela para regresar a casa, etiqueta: Salir a la calle }
   - { dia: 2, hora: tarde, lugar: casa, mision: Regresar a casa después de clases, etiqueta: Casa }
-  - { dia: 2, hora: noche, lugar: casa, objeto: cama, mision: Ir a tu cama para dibujar un rato, etiqueta: Dibujar, cumple: [E2-01] }
-  - { dia: 2, hora: noche, lugar: casa, objeto: papa, mision: Enseñar el dibujo a papá en la sala, etiqueta: Hablar con Papá, cumple: [E2-02] }
-  - { dia: 2, hora: noche, lugar: casa, objeto: cama, mision: Regresar a tu cama en tu habitación, etiqueta: Ir a la cama, cumple: [E2-04] }
   - { dia: 2, hora: noche, lugar: casa, objeto: cama, mision: Dormir en tu cama para descansar, etiqueta: A dormir }
-  - { dia: 3, hora: manana, lugar: escuela_planta_baja, objeto: companero_2, mision: Ir al patio de la escuela para hablar con Leo, etiqueta: Leo, cumple: [E2-05] }
-  - { dia: 3, hora: manana, lugar: escuela_planta_baja, objeto: orientadora, mision: Hablar con la orientadora en la planta baja, etiqueta: Orientadora, cumple: [O01] }
   - { dia: 3, hora: manana, lugar: escuela_planta_baja, mision: Preparar el proyecto en parejas en el salón, etiqueta: Escuela, cumple: [C02] }
   - { dia: 3, hora: manana, lugar: calle, mision: Salir de la escuela para regresar a casa, etiqueta: Salir a la calle }
   - { dia: 3, hora: tarde, lugar: casa, mision: Regresar a casa, etiqueta: Casa }

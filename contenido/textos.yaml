@@ -63,7 +63,6 @@ escena:
   saltar: "Saltar"
   pausar: "Pausar"
   seguir_despues: "Seguir después"
-  omitir_objetivo: "Omitir objetivo"
   mision: "Misión"
 
 # Mundo. Los personajes fijos solo saludan y dicen cosas neutras: nunca preguntan
@@ -199,7 +198,7 @@ siempre:
   mi_libro: "Mi libro"
   quiero_hablar: "Quiero hablar con alguien"
   opciones: "Opciones"
-  aviso: "Ya le avisamos al adulto que te acompaña. Puedes seguir jugando o esperar aquí."
+  aviso: "Quedó una señal en la pantalla. Un adulto que esté contigo puede verla. Puedes seguir jugando o esperar aquí."
   seguir: "Seguir jugando"
 
 # Opciones. Música, efectos, velocidad del texto y lectura sencilla se guardan y

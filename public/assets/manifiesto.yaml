@@ -151,7 +151,6 @@ grupos:
       prima: Prima
       otra_persona: Otra persona adulta
       perro: Perro
-      perro_lado: { que: "Perro de perfil caminando, mirando a la izquierda: quieto y dos pasos", medida: [ 144, 48 ], colores: [] }
       gato: Gato
 
   - carpeta: personajes

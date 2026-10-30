@@ -265,31 +265,6 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
     }
   };
 
-  const saltarMinijuego = () => {
-    if (!p?.minijuego) return;
-    const ms = Math.round(performance.now() - t0.current);
-    registrar("minijuego", {
-      minijuego: p.minijuego,
-      resultado: "saltado",
-      motivo: "omitir_objetivo",
-      ms,
-      escena: escena.id,
-      es_main: esMain,
-      progreso: progresoMinijuego.current,
-    });
-    registrar("escena", {
-      escena: escena.id,
-      paso: "minijuego_saltado",
-      motivo: "omitir_objetivo",
-      minijuego: p.minijuego,
-      es_main: esMain,
-      ms,
-      progreso: progresoMinijuego.current,
-    });
-
-    terminar(true, "saltada", { motivo: "omitir_objetivo", minijuego: p.minijuego, es_main: esMain });
-  };
-
   // Lines of a scene: RPG-style dialogue box docked at the bottom with title and 1-2 line description.
   const linea = (quien: string, texto: string, de?: string, titulo?: string) => {
     const textoCompleto = conGenero(texto);
@@ -443,14 +418,6 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
                   aria-label={E.seguir_despues}
                 >
                   {E.seguir_despues}
-                </button>
-                <button
-                  type="button"
-                  className="boton principal boton-saltar-minijuego"
-                  onClick={saltarMinijuego}
-                  aria-label={E.omitir_objetivo}
-                >
-                  {E.omitir_objetivo}
                 </button>
               </div>
             )}

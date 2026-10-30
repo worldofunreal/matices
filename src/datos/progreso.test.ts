@@ -82,6 +82,12 @@ test("tocar algo cuya escena espera a otra lo señala; si no espera nada, no", (
   assert.equal(esperaTras(escenas, completarHistoria({ hechas: ["T06"] }), 1, "manana", "casa", "estufa"), false);
 });
 
+test("una escena que espera una marca no anuncia espera ni frena la cama", () => {
+  const escenas = [escena({ id: "E2-04", donde: "casa", al: "cama", dia: 2, hora: "noche", si: ["visto_papa"] })];
+  assert.equal(esperaTras(escenas, completarHistoria({}), 2, "noche", "casa", "cama"), false);
+  assert.deepEqual(escenasDisponibles(escenas, completarHistoria({ marcas: ["visto_papa"] }), 2, "noche", "casa", "cama").map((x) => x.id), ["E2-04"]);
+});
+
 test("una persona de la casa se ve mientras quede algo que decirle", () => {
   const escenas = [escena({ id: "T05", donde: "casa", al: "mama", dia: 1, hora: "manana" })];
   assert.equal(escenaPendiente(escenas, completarHistoria({}), 1, "manana", "casa", "mama"), true);

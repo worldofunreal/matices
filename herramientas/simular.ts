@@ -57,8 +57,8 @@ function participante(i: number) {
           ev("escena", { escena: x.id, paso: "opcion", de: "yo", opciones, elegida: azar(opciones), ms_decidir: entre(1500, 9000) });
         }
         if (p.minijuego) {
-          const resultado = Math.random() < 0.15 ? "abortado" : Math.random() < 0.1 ? "saltado" : "completado";
-          const motivo = resultado === "abortado" ? (Math.random() < 0.5 ? "click_fuera" : "boton_cerrar") : resultado === "saltado" ? "boton_saltar" : undefined;
+          const resultado = Math.random() < 0.15 ? "abortado" : p.minijuego === "dibujo" && Math.random() < 0.1 ? "sin_respuesta" : "completado";
+          const motivo = resultado === "abortado" ? (Math.random() < 0.5 ? "click_fuera" : "boton_pausar") : resultado === "sin_respuesta" ? "listo_sin_dibujo" : undefined;
           ev("minijuego", { minijuego: p.minijuego, resultado, ...(motivo ? { motivo } : {}), ms: entre(2, 60) * 1000, ...(p.minijuego === "ropero" ? { codigo: azar(["ELIGE_UNIFORME", "ELIGE_DEPORTE", "ELIGE_CASUAL"]) } : {}) });
         }
         if (x.saltable && Math.random() < 0.2) { saltada = true; break; }

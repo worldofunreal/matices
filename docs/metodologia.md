@@ -33,6 +33,7 @@ El alumno no contesta nada sobre sí mismo. Juega libre, y en el camino toma cie
 9. **Detectar el juego en broma.** Como las escalas de validez de las pruebas psicológicas: hacer clic al azar, correr sin ver o repetir lo mismo para que se rían los demás deja un patrón. Ese tramo se marca y se pesa menos. Jugar "para el público" suele bajar con el tiempo, cuando se mete al juego.
 10. **Orden al azar.** Las escenas y las tareas salen en orden distinto para cada alumno, para que el orden no tuerza el resultado y para que los de al lado no se copien.
 11. **Se guarda lo que pasó, no conclusiones.** El juego registra cada acto con su hora y contexto. La interpretación es aparte y la hacen los especialistas.
+12. **Nada empuja.** Ninguna situación se predispone, ni buena ni mala. Los objetivos solo nombran lugares y rutinas, y ninguna escena se anuncia como buena o mala: lo que el niño busca, lo encuentra por su cuenta.
 
 ## Qué se mide
 

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import contenido, { type Escena } from "virtual:contenido";
 import { cargarMapa, libre, quitarAusentes, visible, refrescarVidaProcedural, type Mapa, type Puerta, type Punto } from "../mundo/mapa";
-import { Motor, type Figura } from "../mundo/motor";
+import { Motor } from "../mundo/motor";
 import { esVigilante } from "../mundo/vigilancia";
 import { pieza } from "../lienzo/arte";
 import { capas, coloresDe } from "../personaje/apariencia";
@@ -136,15 +136,13 @@ function inicioDe(m: Mapa, e: Estado) {
 }
 
 // Everything the place draws is read before the first frame, so the loop never waits.
-async function cargarArte(m: Mapa, e: Estado, figuras: Figura[]) {
+async function cargarArte(m: Mapa, e: Estado) {
   const piel = e.apariencia.colores.piel ?? 0;
   await Promise.all([
     pieza(`lugares/${m.lugar}/fondo`),
     ...m.puntos.map((p) => (p.piel !== undefined ? pieza(p.arte, { piel: p.piel }) : pieza(p.arte))),
-    ...figuras.map((f) => pieza(`figuras/${f.id}`, { piel: f.piel })),
     ...(m.lugar === "casa" ? contenido.figuras.filter((f) => f.casa).map((f) => pieza(`figuras/${f.id}`, { piel })) : []),
     ...capas(e.apariencia).map((id) => pieza(id, coloresDe(e.apariencia))),
-    pieza("figuras/perro_lado"),
   ]);
 }
 
@@ -344,7 +342,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
               cicloEscenaRef.current,
               obj?.objeto
             );
-            void cargarArte(mapaActual, estado(), figuras);
+            void cargarArte(mapaActual, estado());
             setMapa({ ...mapaActual, puntos: [...mapaActual.puntos] });
           }
           refrescarGuia();
@@ -428,17 +426,12 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       window.setTimeout(() => setRecarga((r) => r + 1), 260);
     };
 
-    const figuras: Figura[] = [];
-    if (lugarActual === "calle" || lugarActual === "parque") {
-      figuras.push({ id: "perro", x: 260, y: 460, piel: 0 });
-    }
-
     const objInicial = objetivoActual();
     void cargarMapa(lugarActual, e0.semilla, estado().dia, estado().hora, visitas, cicloEscenaRef.current, objInicial?.objeto).then(async (m) => {
       mapaActual = m;
       sincronizarFamiliaEnCasa(m);
       quitarAusentes(m, estado().hora);
-      await cargarArte(m, estado(), figuras);
+      await cargarArte(m, estado());
       if (!vivo) return;
       const inicio = inicioDe(m, estado());
       puerta = m.puertas.find((d) => dentro(d, inicio.x, inicio.y - CAIDA))?.nombre ?? null;
@@ -450,7 +443,6 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         y: inicio.y,
         dir: estado().direccion,
         apariencia: estado().apariencia,
-        figuras,
         hora: estado().hora,
         alTocar: (cx, cy) => accion.current?.tocar(cx, cy),
         vigila: (p) => esVigilante(p, conObjetivo, estado().historia.marcas),

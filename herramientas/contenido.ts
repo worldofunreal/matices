@@ -186,6 +186,7 @@ export function validar() {
     if (x.dia !== undefined && !(Number.isInteger(x.dia) && x.dia >= 1 && x.dia <= DIAS)) err(d, `dia debe ser de 1 a ${DIAS}`);
     if (x.hora !== undefined && !HORAS.has(x.hora)) err(d, `hora inválida ${x.hora}`);
     for (const t of ([] as string[]).concat(x.tras ?? [])) if (!escenas.some((y) => y.id === t)) err(d, `tras: ${t} no es una escena`);
+    if (x.al === "cama" && x.tras !== undefined) err(d, "una escena de la cama no lleva tras: esa espera impediría dormir (usa si:)");
     for (const m of [...(x.si ?? []), ...(x.no ?? [])]) if (!marcasDelJuego.has(m)) err(d, `la marca ${m} nunca se da`);
     (x.areas ?? []).forEach((a) => area(`${d} areas`, a));
     if (x.delicada && !x.saltable) err(d, "una escena delicada debe ser saltable: pausar, saltar y pedir ayuda siempre a la mano");

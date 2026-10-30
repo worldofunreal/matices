@@ -16,30 +16,8 @@ const ARRASTRE = 8; // screen pixels a finger moves before a tap becomes a drag
 const PIE = { media: 10, alto: 12 }; // the feet box is 20 × 12 px, its bottom edge at the feet
 const LUZ: Record<Hora, string | null> = { manana: null, tarde: "#ffe6c4", noche: "#6f7fb8" }; // multiplied over the map
 const FLECHAS: Record<string, [number, number]> = { ArrowLeft: [-1, 0], KeyA: [-1, 0], ArrowRight: [1, 0], KeyD: [1, 0], ArrowUp: [0, -1], KeyW: [0, -1], ArrowDown: [0, 1], KeyS: [0, 1] };
-const PERRO_CORRE = 150;
-const PERRO_PASO_MS = 140;
-const PERRO_CERCA = 56;
-
-interface Perro {
-  f: Figura;
-  modo: "quieto" | "sigue" | "corre" | "espera";
-  cola: { x: number; y: number }[];
-  ruta: { x: number; y: number }[];
-  hasta: number;
-  izq: boolean;
-  anda: boolean;
-  suelto: boolean;
-}
-
 // The zoom the child picked stays while they walk from place to place.
 let zoomElegido: number | null = null;
-
-export interface Figura {
-  x: number;
-  y: number;
-  id: string;
-  piel: number;
-}
 
 export type AccionPersonaje = "brincar" | "golpear_1" | "golpear_2" | "patada_remate" | "golpear" | "patear";
 
@@ -61,7 +39,6 @@ export interface OpcionesMotor {
   y: number;
   dir: Direccion;
   apariencia: Apariencia;
-  figuras: Figura[];
   hora: Hora;
   alCuadro: () => void; // after every frame, for the rules
   alTocar: (cx: number, cy: number) => void; // a tap on the screen, not the end of a drag
@@ -112,7 +89,6 @@ export class Motor {
   private tUltimoDestello = 0;
   private acumulado = 0; // wheel movement not yet turned into a zoom step
   private shift = false;
-  private perro: Perro | null = null;
   private accionActiva: { tipo: AccionPersonaje; t0: number; duracion: number } | null = null;
   private pasoCombo = 0; // 0: golpe 1, 1: golpe 2, 2: patada remate
   private tUltimoAtaque = 0;
@@ -135,8 +111,6 @@ export class Motor {
         this.y = c.ty * TILE + TILE;
       }
     }
-    const f = o.figuras.find((x) => x.id === "perro");
-    if (f) this.perro = { f, modo: "quieto", cola: [], ruta: [], hasta: 0, izq: false, anda: false, suelto: false };
   }
 
   // Running right now: moving with the run button on, Shift held, tap-and-hold or double-tap.
@@ -236,21 +210,6 @@ export class Motor {
       }
     }
 
-    // Also check figures (e.g. dog)
-    if (!objetivoPunto && this.perro) {
-      const d = Math.hypot(this.perro.f.x - centroX, this.perro.f.y - centroY);
-      if (d <= cfg.alcance) {
-        menorDist = d;
-        objetivoPunto = {
-          nombre: "perro",
-          tipo: "fauna",
-          x: this.perro.f.x,
-          y: this.perro.f.y,
-          arte: "figuras/perro",
-        };
-      }
-    }
-
     // Check if hitting a solid wall/obstacle in front
     const celdaFrente = celdaDe(this.x + dx * TILE, this.y + dy * TILE - PIE.alto / 2);
     const esMuro = !libre(this.o.mapa, celdaFrente.tx, celdaFrente.ty);
@@ -298,20 +257,6 @@ export class Motor {
       if (d <= radioImpacto && d < menorDist) {
         menorDist = d;
         objetivoPunto = p;
-      }
-    }
-
-    if (!objetivoPunto && this.perro) {
-      const d = Math.hypot(this.perro.f.x - this.x, this.perro.f.y - this.y);
-      if (d <= radioImpacto) {
-        menorDist = d;
-        objetivoPunto = {
-          nombre: "perro",
-          tipo: "fauna",
-          x: this.perro.f.x,
-          y: this.perro.f.y,
-          arte: "figuras/perro",
-        };
       }
     }
 
@@ -687,7 +632,6 @@ export class Motor {
     if (vx || vy) this.dir = Math.abs(vx) > Math.abs(vy) ? (vx > 0 ? "der" : "izq") : vy > 0 ? "abajo" : "arriba";
     // Running plays the same steps faster.
     this.tPaso = this.moviendo ? this.tPaso + dt * 1000 * (Math.hypot(vx, vy) / VELOCIDAD) : 0;
-    if (this.perro && !this.pausado) this.moverPerro(dt);
 
     // Smooth hover alpha transition
     const objetivoAlfa = this.entidadHover ? 1 : 0;
@@ -734,75 +678,6 @@ export class Motor {
     } else {
       this.rutaGuia = [];
     }
-  }
-
-  // The dog: follows when close, occasionally runs ahead playfully.
-  private moverPerro(dt: number) {
-    const p = this.perro!;
-    const f = p.f;
-    const lejos = () => Math.hypot(this.x - f.x, this.y - f.y);
-    const avanzar = (lista: { x: number; y: number }[], v: number, basta = () => false) => {
-      let resto = v * dt;
-      while (lista.length && resto > 0 && !basta()) {
-        const meta = lista[0];
-        const d = Math.hypot(meta.x - f.x, meta.y - f.y);
-        if (Math.abs(meta.x - f.x) > 0.5) p.izq = meta.x < f.x;
-        p.anda = true;
-        if (d <= resto) {
-          f.x = meta.x;
-          f.y = meta.y;
-          resto -= d;
-          lista.shift();
-        } else {
-          f.x += ((meta.x - f.x) / d) * resto;
-          f.y += ((meta.y - f.y) / d) * resto;
-          resto = 0;
-        }
-      }
-    };
-    p.anda = false;
-    if (p.modo === "quieto" || p.modo === "espera") {
-      if (lejos() >= PERRO_CERCA) return;
-      p.modo = "sigue";
-      p.cola = [];
-      p.hasta = this.tiempo + 6000 + Math.random() * 5000;
-      return;
-    }
-    if (p.modo === "sigue") {
-      const ultimo = p.cola.at(-1);
-      if (!ultimo || Math.hypot(ultimo.x - this.x, ultimo.y - this.y) > 2) p.cola.push({ x: this.x, y: this.y });
-      const v = p.cola.length > 25 ? CORRER : this.rapido ? CORRER : VELOCIDAD;
-      avanzar(p.cola, v, () => lejos() <= PERRO_CERCA - 4);
-      if (this.tiempo > p.hasta && !this.rapido) {
-        const destino = this.lugarParaPerro();
-        if (destino) {
-          p.ruta = rutaA(this.o.mapa, celdaDe(f.x, f.y - 2), destino).map((c) => ({ x: c.tx * TILE + TILE / 2, y: c.ty * TILE + TILE / 2 + 6 }));
-          p.modo = "corre";
-          p.suelto = false;
-        } else p.hasta = this.tiempo + 3000;
-      }
-      return;
-    }
-    if (lejos() > PERRO_CERCA * 2) p.suelto = true;
-    if (p.suelto && lejos() < PERRO_CERCA) {
-      p.modo = "espera";
-      return;
-    }
-    avanzar(p.ruta, PERRO_CORRE);
-    if (!p.ruta.length) p.modo = "espera";
-  }
-
-  private lugarParaPerro() {
-    const { f } = this.perro!;
-    const desde = celdaDe(f.x, f.y - 2);
-    for (let intento = 0; intento < 20; intento++) {
-      const a = Math.random() * Math.PI * 2;
-      const r = 3 + Math.random() * 4;
-      const tx = Math.round(desde.tx + Math.cos(a) * r);
-      const ty = Math.round(desde.ty + Math.sin(a) * r);
-      if (libre(this.o.mapa, tx, ty) && rutaA(this.o.mapa, desde, { tx, ty }).length) return { tx, ty };
-    }
-    return null;
   }
 
   // Whether the feet box at (x, y) touches a blocked tile (outside the map counts as blocked).
@@ -1071,41 +946,6 @@ export class Motor {
           }
         }
       }
-    }
-    for (const f of this.o.figuras) {
-      const hoja = piezaYa(`figuras/${f.id}`, { piel: f.piel });
-      if (!hoja) continue;
-      const perro = this.perro?.f === f ? this.perro : null;
-      const lado = perro?.anda ? piezaYa("figuras/perro_lado") : undefined;
-      const salto = perro?.anda && !lado ? Math.round(Math.abs(Math.sin(this.tiempo / 70)) * 2) : 0;
-      const img = lado ?? hoja, w = lado ? CUADRO.ancho : hoja.width;
-      const col = lado ? [0, 1, 0, 2][Math.floor(this.tiempo / PERRO_PASO_MS) % 4] : 0;
-      const voltear = lado ? !perro!.izq : !!perro?.izq;
-      const shakePerro = this.sacudidas.get("perro");
-      let shakePX = 0;
-      if (shakePerro) {
-        const dtP = this.tiempo - shakePerro.t0;
-        if (dtP < shakePerro.duracion) {
-          shakePX = Math.sin(dtP / 20) * shakePerro.dx * (1 - dtP / shakePerro.duracion);
-        } else {
-          this.sacudidas.delete("perro");
-        }
-      }
-      const esFlashPerro = (this.hitFlashes.get("perro") ?? 0) > this.tiempo;
-
-      cosas.push({
-        y: f.y,
-        dibujar: () => {
-          const x = Math.round(f.x + shakePX - w / 2);
-          const y = Math.round(f.y - img.height) - salto;
-          ctx.save();
-          if (esFlashPerro) ctx.filter = "brightness(0) invert(1)";
-          ctx.translate(voltear ? x + w : x, y);
-          if (voltear) ctx.scale(-1, 1);
-          ctx.drawImage(img, col * w, 0, w, img.height, 0, 0, w, img.height);
-          ctx.restore();
-        },
-      });
     }
     const a = this.o.apariencia;
     const { fila, voltear } = filaDe(this.dir);

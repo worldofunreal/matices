@@ -35,8 +35,7 @@
   gap: 8px;
 }
 
-.boton-pausar-minijuego,
-.boton-saltar-minijuego {
+.boton-pausar-minijuego {
   min-height: var(--toque);
   padding: 8px 14px;
   font-size: 15px;
