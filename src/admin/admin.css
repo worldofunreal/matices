@@ -1,5 +1,8 @@
-/* The dashboard: the game's colors and buttons, but a page that scrolls and lets text be copied. */
+/* The board: the game's colors and buttons, a page that scrolls, and text that can be copied.
+   Every text here meets WCAG AAA (7:1) on the surface behind it. */
 body.tablero {
+  --texto-suave: #4a4152; /* 7:1 or more on the card and on the page */
+  --alerta-fondo: #fdecea; /* the soft red behind what needs attention */
   overflow: auto;
   user-select: text;
   -webkit-user-select: text;
@@ -13,67 +16,374 @@ body.tablero #raiz {
 .tab {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 20px 16px 60px;
+  padding: 0 16px 60px;
 }
 
-.tab-cabeza {
+.tab :focus-visible,
+.entrada :focus-visible {
+  outline: 3px solid var(--tinta);
+  outline-offset: 2px;
+}
+
+.tab a {
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.tab a {
+  color: var(--tinta);
+}
+
+/* Participant codes read as names: the board's own typeface, not the browser's monospace. */
+.tab code {
+  font-family: inherit;
+  font-weight: 700;
+}
+
+/* ---- Controls: one family for the whole board. Buttons and fields are pills, the icon buttons are plain circles,
+   and nothing here has a 3D edge or a wooden ring (the game's buttons have both). */
+body.tablero .boton {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid transparent;
+  background: var(--tarjeta);
+  color: var(--tinta);
+  box-shadow: none;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+body.tablero .boton.principal {
+  background: var(--tinta);
+  color: var(--papel);
+}
+
+body.tablero .boton.principal:hover {
+  background: var(--texto-suave);
+}
+
+body.tablero .boton.principal:active {
+  box-shadow: none;
+  transform: scale(0.97);
+}
+
+body.tablero .boton.secundario {
+  background: transparent;
+  border-color: var(--tinta-suave);
+}
+
+body.tablero .boton.secundario:hover {
+  background: var(--papel-2);
+}
+
+body.tablero .boton.icono {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+body.tablero .boton.icono:hover {
+  background: var(--papel-2);
+}
+
+body.tablero .campo {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--tinta-suave);
+  background: var(--papel);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+body.tablero .campo:focus {
+  border-color: var(--tinta);
+}
+
+.acciones {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* ---- Top bar: where the educator is on the left, the bell and the avatar on the right. It stays in view. */
+
+.cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 14px 0;
+  background: var(--papel);
+  border-bottom: 1px solid var(--linea);
+}
+
+.cabecera-titulo {
+  min-width: 0;
+}
+
+.cabecera h1 {
+  margin: 0;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+/* The panels open from this group, so both line up with its right edge and stay on the screen. */
+.cabecera-acciones {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+.volver {
+  display: inline-block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* ---- The bell and the avatar: plain icon buttons that open a panel under them. */
+
+.desplegable > .boton {
+  position: relative;
+}
+
+body.tablero .desplegable > .boton[aria-expanded="true"] {
+  background: var(--papel-2);
+}
+
+/* The educator's face: her initials on a soft disc, or the neutral figure. */
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--papel-2);
+  box-shadow: inset 0 0 0 1px var(--linea);
+  color: var(--tinta);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.avatar svg {
+  width: 55%;
+  height: 55%;
+}
+
+/* The count on the bell: dark ink on gold, so it reads at AAA. */
+.insignia {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--girasol);
+  color: var(--tinta);
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 0 0 2px var(--papel);
+}
+
+.desplegable-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 10;
+  width: min(300px, calc(100vw - 32px));
+  padding: 8px;
+  background: var(--tarjeta);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-chico);
+  box-shadow: var(--sombra-alta);
+}
+
+.panel-titulo {
+  margin: 4px 10px 6px;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.menu-cabeza {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 6px;
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid var(--linea);
+}
+
+.menu-cabeza strong {
+  font-size: 17px;
+}
+
+.menu-cabeza span {
+  color: var(--texto-suave);
+  font-size: 14px;
+}
+
+.menu-item {
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
+  width: 100%;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--tinta);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
-.tab-cabeza h1 {
-  font-size: 22px;
+.menu-item:hover {
+  background: var(--papel-2);
+}
+
+.menu-item svg {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+
+.lista-nuevos {
+  display: grid;
+  gap: 6px;
   margin: 0;
-  flex: 1;
+  padding: 0;
+  list-style: none;
 }
 
-.tab-cabeza .boton {
-  min-height: 40px;
-  font-size: 15px;
-  padding: 0 16px;
+.lista-nuevos li {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  background: var(--papel);
 }
+
+/* ---- The educator's own card */
+
+.mi-perfil-cabeza {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.mi-perfil-cabeza h2 {
+  margin-bottom: 2px;
+}
+
+.mi-perfil-cabeza .nota {
+  margin: 0;
+}
+
+.mi-perfil-cabeza .avatar {
+  width: 96px;
+  height: 96px;
+  font-size: 30px;
+}
+
+.formulario {
+  display: grid;
+  gap: 14px;
+  max-width: 480px;
+}
+
+.formulario label {
+  display: grid;
+  gap: 6px;
+  font-weight: 700;
+}
+
+.formulario .campo {
+  width: 100%;
+}
+
+.acciones [role="status"] {
+  font-weight: 700;
+}
+
+.acciones [role="alert"] {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--alerta-fondo);
+  font-weight: 700;
+}
+
+/* ---- Cards: every section is one card with the same padding and headings */
 
 .tab section {
+  margin-bottom: 16px;
+  padding: 20px;
   background: var(--tarjeta);
+  border: 1px solid var(--linea);
   border-radius: var(--radio-chico);
   box-shadow: var(--sombra);
-  padding: 16px;
-  margin-bottom: 16px;
   overflow-x: auto;
 }
 
 .tab h2 {
-  font-size: 17px;
   margin: 0 0 4px;
+  font-size: 18px;
+}
+
+.tab h3 {
+  margin: 0 0 8px;
+  font-size: 15px;
 }
 
 .tab .nota {
-  color: var(--tinta-suave);
-  font-size: 13px;
   margin: 0 0 12px;
+  color: var(--texto-suave);
+  font-size: 14px;
 }
 
 .tab table {
-  border-collapse: collapse;
   width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
   font-variant-numeric: tabular-nums;
 }
 
 .tab th,
 .tab td {
-  text-align: left;
-  padding: 6px 10px 6px 0;
+  padding: 8px 12px 8px 0;
   border-bottom: 1px solid var(--linea);
+  text-align: left;
   vertical-align: top;
 }
 
 .tab th {
-  color: var(--tinta-suave);
-  font-weight: 700;
+  color: var(--texto-suave);
   font-size: 13px;
+  font-weight: 700;
+}
+
+.tab .num {
+  text-align: right;
 }
 
 .tab tr.fila-clic {
@@ -84,24 +394,33 @@ body.tablero #raiz {
   background: var(--papel);
 }
 
-.tab .num {
-  text-align: right;
+/* Who asked to talk: the row stays tinted so it is found first. */
+.tab tr.fila-aviso {
+  background: var(--alerta-fondo);
 }
 
 .cifras {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   gap: 12px;
+}
+
+.cifra {
+  padding: 12px 14px;
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  background: var(--papel);
 }
 
 .cifra strong {
   display: block;
-  font-size: 26px;
+  font-size: 28px;
+  line-height: 1.1;
 }
 
 .cifra span {
-  color: var(--tinta-suave);
-  font-size: 13px;
+  color: var(--texto-suave);
+  font-size: 14px;
 }
 
 /* One-hue bar: the length is the value, the number is written next to it. */
@@ -113,29 +432,56 @@ body.tablero #raiz {
 }
 
 .barra {
+  width: calc(var(--v) * 100%);
   height: 12px;
   border-radius: 0 4px 4px 0;
   background: var(--terracota);
-  width: calc(var(--v) * 100%);
-  min-width: 2px;
 }
 
-.alerta {
-  background: #fdecea;
-  box-shadow: inset 0 0 0 2px var(--terracota) !important;
+/* The second series of a comparison: the same length rule in another hue, its name written beside it. */
+.barra-otra {
+  background: var(--azul);
 }
 
-.perfil-arriba {
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-  flex-wrap: wrap;
+.areas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 12px;
+}
+
+.area {
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  background: var(--papel);
+}
+
+.comparar + .comparar {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--linea);
+}
+
+.comparar > p {
+  margin: 0 0 6px;
+  font-weight: 700;
+}
+
+.tab section.alerta {
+  background: var(--alerta-fondo);
+  border-color: var(--terracota-oscuro);
+}
+
+.alerta ul {
+  margin: 0;
+  padding-left: 20px;
 }
 
 .dibujos {
   display: flex;
-  gap: 16px;
   flex-wrap: wrap;
+  gap: 16px;
 }
 
 .dibujos figure {
@@ -144,36 +490,153 @@ body.tablero #raiz {
 
 .dibujos img,
 .dibujos canvas {
-  width: 260px;
-  border-radius: var(--radio-chico);
-  box-shadow: inset 0 0 0 1px var(--linea);
-  background: #fff; /* papel del dibujo: blanco a propósito */
   display: block;
+  width: 260px;
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  background: #fff; /* papel del dibujo: blanco a propósito */
 }
 
 .dibujos figcaption {
-  font-size: 13px;
-  color: var(--tinta-suave);
   margin: 6px 0;
+  color: var(--texto-suave);
+  font-size: 14px;
 }
 
+/* ---- Sign-in */
+
 .entrada {
-  max-width: 340px;
-  margin: 18vh auto 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  max-width: 340px;
+  margin: 18vh auto 0;
   padding: 0 16px;
 }
 
-.entrada input {
-  min-height: var(--toque);
-  border-radius: 999px;
-  border: 2px solid var(--linea);
-  padding: 0 18px;
-  background: var(--tarjeta);
+.entrada h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
 }
 
-.tab code {
-  font-size: 13px;
+/* ---- Small pieces: people, badges, progress */
+
+.quien {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rostro {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 64px;
+  overflow: hidden;
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  background: var(--papel);
+}
+
+.rostro canvas {
+  display: block;
+}
+
+.pastilla {
+  display: inline-block;
+  padding: 2px 10px;
+  border: 1px solid var(--linea);
+  border-radius: 999px;
+  background: var(--papel-2);
+  color: var(--tinta);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.pastilla.pastilla-aviso {
+  background: var(--alerta-fondo);
+  border-color: var(--terracota-oscuro);
+}
+
+.progreso {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.progreso-cajas {
+  display: flex;
+  gap: 4px;
+}
+
+.progreso-cajas span {
+  width: 26px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--linea);
+}
+
+.progreso-cajas span.hecho {
+  background: var(--terracota-oscuro);
+}
+
+/* ---- The participant's card: the character, then the facts */
+
+.tab section.ficha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.ficha-figura {
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  border: 1px solid var(--linea);
+  border-radius: 12px;
+  background: var(--papel);
+}
+
+.ficha-datos {
+  flex: 1;
+  min-width: 260px;
+}
+
+.ficha-datos .progreso {
+  margin: 8px 0 12px;
+}
+
+/* ---- Folded technical details */
+
+.tecnico summary {
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.tecnico details > *:not(summary) {
+  margin-top: 12px;
+}
+
+@media (max-width: 640px) {
+  .tab {
+    padding-bottom: 40px;
+  }
+
+  .cabecera h1 {
+    font-size: 20px;
+  }
+
+  .ancho-amplio {
+    display: none;
+  }
+
+  .cifras {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }

@@ -66,6 +66,12 @@ export const Icono = {
       <path d="M12 6.4V19" />
     </>,
   ),
+  campana: svg(
+    <>
+      <path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z" />
+      <path d="M10 20.5a2 2 0 0 0 4 0" />
+    </>,
+  ),
   hablar: svg(
     <>
       <path fill="#fff" d="M9 3.5h8.5A2.5 2.5 0 0 1 20 6v4.5a2.5 2.5 0 0 1-2.5 2.5H17v3l-3-3H9a2.5 2.5 0 0 1-2.5-2.5V6A2.5 2.5 0 0 1 9 3.5z" />

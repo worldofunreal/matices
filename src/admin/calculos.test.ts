@@ -1,7 +1,7 @@
 // npm test: the dashboard's counts on a few made-up events.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { porParticipante, resumen, codigosPorArea, referencia, escenas, minijuegos, usoPorPantalla, aparienciaDe, avance, type Evento, type Contenido } from "./calculos.ts";
+import { porParticipante, resumen, codigosPorArea, referencia, escenas, minijuegos, usoPorPantalla, aparienciaDe, avance, tipoDe, iniciales, nuevos, type Evento, type Contenido } from "./calculos.ts";
 
 let id = 0;
 const ev = (nino: string, tipo: string, t_ms: number, datos: Record<string, unknown> = {}): Evento => ({ nino, id: ++id, tipo, sesion: 1, t_ms, cuando: 1000 + t_ms, ...datos });
@@ -37,6 +37,23 @@ test("cuenta por participante, por área, la referencia de todos y lo que eligi�
   assert.deepEqual(referencia(todos, "conducta", "PIDE_AYUDA"), { N: 2, mediana: 0.5, min: 0, max: 1 });
   assert.deepEqual(escenas(g.get("a")!).get("T05"), { veces: 1, saltada: 1, pausada: 0, elecciones: [{ codigo: "PIDE_AYUDA", de: "madre", segundos: 4.1 }] });
   assert.deepEqual(minijuegos(g.get("a")!), [{ minijuego: "ropero", resultado: "completado", segundos: 2.5, codigo: "ELIGE_DEPORTE" }]);
+});
+
+test("el aparato se dice como lo entiende un educador", () => {
+  assert.equal(tipoDe("Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0 Safari/537.36"), "Computadora");
+  assert.equal(tipoDe("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Version/17.0 Mobile/15E148 Safari/604.1"), "Celular");
+  assert.equal(tipoDe("Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) Version/17.0 Mobile/15E148 Safari/604.1"), "Tableta");
+  assert.equal(tipoDe("Mozilla/5.0 (Linux; Android 14; SM-S911B) AppleWebKit/537.36 Chrome/120.0 Mobile Safari/537.36"), "Celular");
+  assert.equal(tipoDe("Mozilla/5.0 (Linux; Android 13; SM-X200) AppleWebKit/537.36 Chrome/120.0 Safari/537.36"), "Tableta");
+});
+
+test("las iniciales de la educadora y quién llegó después de la última vez", () => {
+  assert.equal(iniciales("Laura Gómez Pérez"), "LP");
+  assert.equal(iniciales("  ana "), "A");
+  assert.equal(iniciales(""), "");
+  const lista = [{ nino: "a" }, { nino: "b" }];
+  assert.deepEqual(nuevos(lista, null), []); // la primera vez nadie es nuevo
+  assert.deepEqual(nuevos(lista, ["a"]), [{ nino: "b" }]);
 });
 
 test("uso por pantalla, avance y apariencia", () => {

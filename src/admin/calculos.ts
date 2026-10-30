@@ -34,6 +34,27 @@ export function aparatoDe(ua: string | undefined) {
   return `${sistema} · ${navegador}`;
 }
 
+// What the educator calls the device: "Celular", "Tableta" or "Computadora".
+export function tipoDe(ua: string | undefined) {
+  if (!ua) return "—";
+  if (/iPad|Tablet|Android(?!.*Mobile)/.test(ua)) return "Tableta";
+  if (/iPhone|Android|Mobile/.test(ua)) return "Celular";
+  return "Computadora";
+}
+
+// Two letters for the educator's avatar: "Laura Gómez Pérez" → "LP". A blank name gives nothing.
+export function iniciales(nombre: string) {
+  const partes = nombre.trim().split(/\s+/).filter(Boolean);
+  if (!partes.length) return "";
+  const ultima = partes.length > 1 ? partes[partes.length - 1] : "";
+  return (partes[0][0] + (ultima[0] ?? "")).toUpperCase();
+}
+
+// The participants this browser has not shown yet. Before the browser remembers anyone, nobody is new.
+export function nuevos<T extends { nino: string }>(resumenes: T[], vistos: string[] | null) {
+  return vistos ? resumenes.filter((r) => !vistos.includes(r.nino)) : [];
+}
+
 // Minutes played: each session lasts until its last event.
 export function minutos(evs: Evento[]) {
   const fin = new Map<number, number>();
@@ -57,6 +78,7 @@ export function resumen(nino: string, evs: Evento[]) {
     minijuegos: de(evs, "minijuego").length,
     quiereHablar: de(evs, "quiero_hablar").length,
     aparato: aparatoDe(ultimo(evs, "aparato")?.navegador),
+    dispositivo: tipoDe(ultimo(evs, "aparato")?.navegador),
     errores: de(evs, "error").length,
     ultimaPantalla: ultimo(evs, "pantalla")?.pantalla ?? "—",
   };
@@ -66,11 +88,11 @@ export type Resumen = ReturnType<typeof resumen>;
 // How far each participant got, in the order of the game.
 export function avance(grupos: Map<string, Evento[]>) {
   const pasos: [string, (evs: Evento[]) => boolean][] = [
-    ["Personaje", (evs) => evs.some((e) => e.tipo === "personaje")],
-    ["Mundo", (evs) => evs.some((e) => e.tipo === "pantalla" && e.pantalla === "mundo")],
-    ["Día 2", (evs) => evs.some((e) => e.tipo === "tramo" && e.dia >= 2)],
-    ["Día 3", (evs) => evs.some((e) => e.tipo === "tramo" && e.dia >= 3)],
-    ["Final", (evs) => evs.some((e) => e.tipo === "tramo" && e.hora === "fin")],
+    ["Creó su personaje", (evs) => evs.some((e) => e.tipo === "personaje")],
+    ["Entró al juego", (evs) => evs.some((e) => e.tipo === "pantalla" && e.pantalla === "mundo")],
+    ["Llegó al día 2", (evs) => evs.some((e) => e.tipo === "tramo" && e.dia >= 2)],
+    ["Llegó al día 3", (evs) => evs.some((e) => e.tipo === "tramo" && e.dia >= 3)],
+    ["Terminó", (evs) => evs.some((e) => e.tipo === "tramo" && e.hora === "fin")],
   ];
   const todos = [...grupos.values()];
   return pasos.map(([nombre, llego]) => ({ nombre, n: todos.filter(llego).length, de: todos.length }));
