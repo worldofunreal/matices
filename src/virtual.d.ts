@@ -117,6 +117,13 @@ declare module "virtual:contenido" {
       apagado: string;
       bajar: string;
       subir: string;
+      personaje: string;
+      cambiar: string;
+      partida: string;
+      empezar: string;
+      empezar_aviso: string;
+      empezar_si: string;
+      empezar_no: string;
     };
   }
   export default contenido;

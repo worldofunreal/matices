@@ -18,12 +18,12 @@ export function App() {
   // Every screen shown is recorded, the first one included (funnels and drop-off).
   useEffect(() => pantalla(p.nombre), [p]);
   const ir = setP;
+  const alEspejo = () => ir({ nombre: "creacion", modo: "espejo" });
   // Siempre a la mano sits over every screen, so it wraps whichever one is shown.
-  const visible =
-    p.nombre === "creacion" ? (
-      <Creacion key={p.modo} modo={p.modo} alTerminar={() => ir(primera())} />
-    ) : (
-      <Mundo alEspejo={() => ir({ nombre: "creacion", modo: "espejo" })} />
-    );
-  return <Siempre pantalla={p.nombre}>{visible}</Siempre>;
+  const visible = p.nombre === "creacion" ? <Creacion key={p.modo} modo={p.modo} alTerminar={() => ir(primera())} /> : <Mundo alEspejo={alEspejo} />;
+  return (
+    <Siempre pantalla={p.nombre} alEspejo={p.nombre === "mundo" ? alEspejo : undefined}>
+      {visible}
+    </Siempre>
+  );
 }

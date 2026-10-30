@@ -1,6 +1,6 @@
 # Contenido
 
-Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.4.1` (borrador, sin revisión clínica).
+Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.5.0` (borrador, sin revisión clínica).
 
 | Archivo | Qué es |
 | --- | --- |
@@ -32,7 +32,7 @@ Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual
         - [PIDE_AYUDA, "¿Podrías ayudarme?", null]
     - {minijuego: refri}               # refri, estufa, ropero, cuerda, dibujo, pistas, examen, tienda
     - {marca: conocio_valeria}         # una marca que otras escenas pueden pedir con si y no
-    - {de: sistema, texto: "Has conocido mejor a Valeria."}
+    - {de: sistema, titulo: "Alarma escolar", texto: "Es hora de ponerte el uniforme en tu cuarto."}
 ```
 
 Cada paso hace una sola cosa: una línea (`de`), unas opciones, un minijuego, una marca o un efecto (`inquietud`, `miedo`, `intensidad`, `acompanamiento` o `alegria`; la intensidad la gradúa Efectos en Opciones).
@@ -77,6 +77,8 @@ hitos:
 - Una escena `delicada` siempre es `saltable`: el niño puede saltarla y pedir ayuda en cualquier momento. Las reglas de pausa están en `docs/diseno.md`.
 - Una espera que el juego anuncia (`tras`) nunca va en la cama: impediría dormir. Para esperar sin anunciarlo, usa `si:` con una marca. El validador lo rechaza.
 - Las respuestas (`null` o texto) solo van cuando quien responde ya habló antes en la escena.
+- `sistema` es solo para instrucciones del juego; lo que pasa en la historia va como `pensamiento` o como línea de alguien. Cada voz se ve distinta en pantalla, y no se repite con una línea lo que el jugador acaba de hacer.
+- Solo una línea de `sistema` lleva `titulo`; las opciones también pueden llevarlo. El validador rechaza un título en una línea de la historia.
 - Un género no se escribe fijo. Donde una palabra cambia con el cuerpo del niño se escribe con la marca `{o}`: `list{o}` sale "listo" o "lista". Sin otras marcas en el texto.
 - Una marca `vigila_<nombre>` (el nombre de la persona o del animal, como en el mapa; por ejemplo `vigila_vecino_1`) hace vigilante a esa persona o animal mientras la marca esté: se voltea hacia el niño según de qué lado esté. Quiénes son vigilantes sin marca están en `src/mundo/vigilancia.ts`.
 - Textos para secundaria, en español de México, sin violencia explícita, sin groserías. Puede ser ruda en el tono, nunca grosera en las palabras.

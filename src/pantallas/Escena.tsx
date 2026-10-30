@@ -16,6 +16,10 @@ const E = contenido.textos.escena;
 
 const hablante = (de: string) => E.hablantes[de]?.replace("{nombre}", estado().nombre) ?? de;
 
+// Whose voice a line is in: thoughts and the game's own instructions each have their look (estilos.css, data-tipo).
+export type TipoLinea = "dialogo" | "pensamiento" | "sistema";
+const tipoDeLinea = (de: string): TipoLinea => (de === "pensamiento" || de === "sistema" ? de : "dialogo");
+
 function RetratoHablante({ de }: { de: string }) {
   if (de === "sistema" || de === "mensaje_mama") return null;
   if (de === "yo" || de === "pensamiento") {
@@ -199,6 +203,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
   useEffect(() => {
     const tecla = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (p?.minijuego) return; // a minigame owns its keys: Space or Enter never skip it
       if (e.code === "Space" || e.code === "Enter") {
         if (!p?.opciones || respuesta) {
           e.preventDefault();
@@ -265,22 +270,22 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
     }
   };
 
-  // Lines of a scene: RPG-style dialogue box docked at the bottom with title and 1-2 line description.
-  const linea = (quien: string, texto: string, de?: string, titulo?: string) => {
+  // Lines of a scene: RPG-style dialogue box docked at the bottom. Only the game's own instructions carry a title.
+  const linea = (quien: string, texto: string, de: string, titulo?: string) => {
     const textoCompleto = conGenero(texto);
     const visible = letrasVisibles >= textoCompleto.length ? textoCompleto : textoCompleto.slice(0, letrasVisibles);
     const estaCompleto = letrasVisibles >= textoCompleto.length;
     const tituloFinal = titulo ? conGenero(titulo) : null;
     return (
       <div className={`escena-contenedor-dialogo fase-${fasePaso}`}>
-        <div className={`escena-caja interactiva panel fase-${fasePaso}`} role="status" style={{ cursor: "pointer" }}>
+        <div className={`escena-caja interactiva panel fase-${fasePaso}`} data-tipo={tipoDeLinea(de)} role="status" style={{ cursor: "pointer" }}>
           {quien && (
             <div className="escena-nombre-placa">
               <span>{quien}</span>
             </div>
           )}
           <div className={`escena-cuerpo fase-${fasePaso}`}>
-            {de && <RetratoHablante de={de} />}
+            <RetratoHablante de={de} />
             <div className="escena-texto-col">
               {tituloFinal && <h3 className="escena-titulo">{tituloFinal}</h3>}
               <p className="escena-descripcion">
@@ -360,10 +365,10 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
           {(() => {
             const pasoPrevio = [...pasos.slice(0, i)].reverse().find((x) => x.texto);
             const hablantePrevio = ultimoAntes(pasos, i);
-            const tituloPregunta = p.titulo ? conGenero(p.titulo) : pasoPrevio?.titulo ? conGenero(pasoPrevio.titulo) : "¿Qué respondes?";
+            const tituloPregunta = p.titulo ? conGenero(p.titulo) : "¿Qué respondes?";
             const textoPregunta = pasoPrevio ? conGenero(pasoPrevio.texto!) : "¿Qué quieres responder?";
             return (
-              <div className={`escena-caja fija opciones-libro panel fase-${fasePaso}`} role="status">
+              <div className={`escena-caja fija opciones-libro panel fase-${fasePaso}`} data-tipo={tipoDeLinea(hablantePrevio)} role="status">
                 <div className="escena-nombre-placa">
                   <span>{hablante(hablantePrevio)}</span>
                 </div>
@@ -392,7 +397,7 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
           </div>
         </div>
       )}
-      {p.opciones && respuesta && linea(hablante(ultimoAntes(pasos, i)), respuesta, ultimoAntes(pasos, i), "Respuesta")}
+      {p.opciones && respuesta && linea(hablante(ultimoAntes(pasos, i)), respuesta, ultimoAntes(pasos, i))}
 
       {p.minijuego && (
         <div

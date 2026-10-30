@@ -156,6 +156,38 @@
   transform: scale(1.08);
 }
 
+/* The rope: an arc that turns around the child's character, from over the head to the feet. */
+.cuerda-escenario {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding-top: 40px; /* room for the jump */
+}
+
+.cuerda-arco {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 150px;
+  height: 128px;
+  margin-left: -75px;
+  border-bottom: 4px solid var(--terracota-oscuro);
+  border-radius: 50%;
+  animation: cuerda-vuelta 1700ms ease-in-out both;
+}
+
+@keyframes cuerda-vuelta {
+  0% {
+    transform: scaleY(-1);
+  }
+  76% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(-1);
+  }
+}
+
 .juego-pregunta,
 .juego-cuenta {
   margin: 0;
@@ -195,5 +227,20 @@
   .juego-saltar {
     min-height: 52px;
     font-size: 18px;
+  }
+
+  .cuerda-escenario {
+    padding-top: 16px;
+  }
+
+  .cuerda-escenario canvas {
+    width: 48px !important;
+    height: 64px !important;
+  }
+
+  .cuerda-arco {
+    width: 84px;
+    height: 64px;
+    margin-left: -42px;
   }
 }

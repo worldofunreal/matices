@@ -10,7 +10,8 @@ import { capas, coloresDe } from "../personaje/apariencia";
 import { estado, cambiarEstado, type Estado } from "../datos/guardado";
 import { bloqueo, revisarHora, dormir } from "../datos/dia";
 import { escenaPara, objetivoActual, pistaPaso, quedaAlgoCon, sincronizarHistoria, terminarEscena } from "../datos/escenas";
-import { Escena as EscenaEnCurso } from "./Escena";
+import { Escena as EscenaEnCurso, type TipoLinea } from "./Escena";
+import { EmpezarDeNuevo } from "./Opciones";
 import { registrar } from "../datos/eventos";
 import { Bocina } from "../ui/Bocina";
 import { Icono } from "../ui/iconos";
@@ -185,8 +186,8 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
   const superpuesto = useSuperpuesto();
   const [recarga, setRecarga] = useState(0);
   const [cubierto, setCubierto] = useState(true);
-  const [burbuja, setBurbuja] = useState<{ id: number; clave: string; texto: string; x?: number; y?: number } | null>(null);
-  const [cartel, setCartel] = useState<{ texto: string } | null>(null);
+  const [burbuja, setBurbuja] = useState<{ id: number; tipo: TipoLinea; clave: string; texto: string; x?: number; y?: number } | null>(null);
+  const [cartel, setCartel] = useState<{ texto: string; final?: boolean } | null>(null);
   const [mapa, setMapa] = useState<Mapa | null>(null);
   const [guia, setGuia] = useState<ReturnType<typeof guiaDe>>(null);
   const [emotes, setEmotes] = useState<PuntoInteraccion[]>([]);
@@ -303,8 +304,8 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
     setBurbuja(null);
     setMision(e0.historia.mision);
 
-    const mostrar = (clave: string, texto: string, punto?: { x: number; y: number }) => {
-      setBurbuja({ id: Date.now(), clave, texto, x: punto?.x, y: punto?.y });
+    const mostrar = (tipo: TipoLinea, clave: string, texto: string, punto?: { x: number; y: number }) => {
+      setBurbuja({ id: Date.now(), tipo, clave, texto, x: punto?.x, y: punto?.y });
       clearTimeout(temporizador.current);
       temporizador.current = window.setTimeout(() => setBurbuja(null), Math.max(3500, texto.length * 70));
     };
@@ -359,10 +360,10 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
 
     const dormirse = () => {
       activo?.pausar(true);
-      mostrar("mundo.dormir", M.dormir);
+      mostrar("pensamiento", "mundo.dormir", M.dormir);
       window.setTimeout(() => {
         const dia = dormir();
-        if (dia === null) return setCartel({ texto: M.fin });
+        if (dia === null) return setCartel({ texto: M.fin, final: true });
         sincronizarHistoria();
         setMision(estado().historia.mision);
         setCartel({ texto: M.dia.replace("{n}", String(dia)) });
@@ -377,11 +378,11 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       const e = escenaPara(lugarActual, p.nombre);
       if (e) return iniciarEscena(e);
       const pista = pistaPaso(lugarActual, p.nombre);
-      if (pista) return mostrar(`mundo.pista.${p.nombre}`, pista, { x: p.x, y: p.y });
+      if (pista) return mostrar("sistema", `mundo.pista.${p.nombre}`, pista, { x: p.x, y: p.y });
       registrar("explora", { lugar: lugarActual, objeto: p.nombre });
       if (p.nombre === "espejo") return alEspejoRef.current();
       if (p.nombre === "cama" && estado().hora === "noche") return dormirse();
-      mostrar(`mundo.objetos.${lugarActual}.${p.nombre}`, M.objetos[lugarActual]?.[p.nombre] ?? M.objetos.comun[p.nombre], { x: p.x, y: p.y });
+      mostrar("pensamiento", `mundo.objetos.${lugarActual}.${p.nombre}`, M.objetos[lugarActual]?.[p.nombre] ?? M.objetos.comun[p.nombre], { x: p.x, y: p.y });
     };
 
     // Fixed people greet or start their story scene.
@@ -389,11 +390,11 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       const e = escenaPara(lugarActual, p.nombre);
       if (e) return iniciarEscena(e);
       const pista = pistaPaso(lugarActual, p.nombre);
-      if (pista) return mostrar(`mundo.pista.${p.nombre}`, pista, { x: p.x, y: p.y });
+      if (pista) return mostrar("sistema", `mundo.pista.${p.nombre}`, pista, { x: p.x, y: p.y });
       registrar("explora", { lugar: lugarActual, persona: p.nombre });
       const saludos = M.saludos[p.nombre] ?? M.saludos.vecino_generico ?? ["Buenos días.", "Hola."];
       const i = (estado().visitas[lugarActual] ?? 0) % saludos.length;
-      mostrar(`mundo.saludos.${p.nombre}.${i}`, saludos[i], { x: p.x, y: p.y });
+      mostrar("dialogo", `mundo.saludos.${p.nombre}.${i}`, saludos[i], { x: p.x, y: p.y });
     };
 
     const acariciar = (p: Punto) => {
@@ -401,14 +402,14 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       const esGato = p.nombre.startsWith("gato");
       const saludos = (esGato ? M.saludos.gato : M.saludos.perro) ?? (esGato ? ["¡Miau!"] : ["¡Guau!"]);
       const i = (estado().visitas[lugarActual] ?? 0) % saludos.length;
-      mostrar(`mundo.animal.${p.nombre}`, saludos[i], { x: p.x, y: p.y });
+      mostrar("dialogo", `mundo.animal.${p.nombre}`, saludos[i], { x: p.x, y: p.y });
     };
 
     // The scenes of this door play one after another, then the child goes through. A scene with `frena` keeps the
     // child at the door and is seen once: it counts as done as it appears, so the next try goes through (contenido/escenas.yaml).
     const cruzar = (p: Puerta) => {
       const no = bloqueo(lugarActual, p.horas);
-      if (no) return mostrar(`mundo.${no}`, M[no]);
+      if (no) return mostrar(no === "noche" ? "pensamiento" : "sistema", `mundo.${no}`, M[no]);
       const e = escenaPara(lugarActual, `salir:${p.destino}`);
       if (!e) return irse(p);
       if (!e.frena) return iniciarEscena(e, () => irse(p));
@@ -743,13 +744,13 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
           data-mundo-y={burbuja.y - 48}
           role="status"
         >
-          <div className="globo-figura-caja panel panel-compacto">
+          <div className="globo-figura-caja panel panel-compacto" data-tipo={burbuja.tipo}>
             <p>{burbuja.texto}</p>
             <Bocina clave={burbuja.clave} texto={burbuja.texto} />
           </div>
         </div>
       ) : (
-        <div key={burbuja.id} className="globo" role="status">
+        <div key={burbuja.id} className="globo" data-tipo={burbuja.tipo} role="status">
           <p>{burbuja.texto}</p>
           <Bocina clave={burbuja.clave} texto={burbuja.texto} />
         </div>
@@ -764,7 +765,7 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         </aside>
       )}
       {mision && !escena && (
-        <div className="mision-mundo">
+        <div className="mision-mundo" data-tipo="sistema">
           <span className="mision-icono" aria-hidden="true">⭐</span>
           <span className="mision-texto">{mision}</span>
         </div>
@@ -774,7 +775,10 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
 
       {cartel && (
         <div className="cartel" role="status">
-          <p>{cartel.texto}</p>
+          <div className="cartel-contenido">
+            <p>{cartel.texto}</p>
+            {cartel.final && <EmpezarDeNuevo />}
+          </div>
         </div>
       )}
     </main>

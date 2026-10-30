@@ -2,6 +2,9 @@
 // ends with alTerminar; the scene goes on from there. Every minigame is simple and has no wrong answer.
 import { useEffect, useRef, useState, type ReactElement } from "react";
 import { Dibujo } from "./Dibujo";
+import { Personaje } from "../lienzo/Personaje";
+import { Icono } from "../ui/iconos";
+import { sonarSalto } from "../ui/sonido";
 import { cambiarEstado, estado } from "../datos/guardado";
 import { azar } from "../datos/azar";
 import { semilla } from "../datos/eventos";
@@ -216,7 +219,11 @@ function Cuerda({ alTerminar, alProgreso }: Alto) {
     alProgreso({ etapa: "completado", ronda: ronda + 1, aciertos, intentos, fallos });
     alTerminar();
   }, [aciertos, ronda, intentos, fallos, alProgreso, alTerminar]);
+  const figura = useRef<HTMLDivElement>(null);
+  // The child's own character jumps on every press, with the sound and the icon of the jump in the world.
   const saltar = () => {
+    figura.current?.animate([{ transform: "none" }, { transform: "translateY(-40px)" }, { transform: "none" }], { duration: 360, easing: "ease-out" });
+    sonarSalto();
     const nuevosIntentos = intentos + 1;
     setIntentos(nuevosIntentos);
     if (!ventana) {
@@ -229,12 +236,31 @@ function Cuerda({ alTerminar, alProgreso }: Alto) {
     setVentana(false);
     setAciertos((n) => n + 1);
   };
+  // Space jumps here as it does in the world.
+  useEffect(() => {
+    const tecla = (e: KeyboardEvent) => {
+      if (e.code !== "Space" || e.repeat) return;
+      e.preventDefault();
+      saltar();
+    };
+    addEventListener("keydown", tecla);
+    return () => removeEventListener("keydown", tecla);
+  });
   return (
     <div className="juego">
       <h2>Salta la cuerda</h2>
+      <p className="juego-pregunta">Brinca cuando la cuerda llegue a tus pies.</p>
+      <div className="cuerda-escenario" aria-hidden="true">
+        {/* keyed by turn: the rope reaches the feet in the middle of the moment to jump */}
+        <span key={`${ronda}-${aciertos}`} className="cuerda-arco" />
+        <div ref={figura}>
+          <Personaje a={estado().apariencia} escala={2} />
+        </div>
+      </div>
       <p className="juego-cuenta">{aciertos} de 5</p>
-      <button className={`boton principal juego-saltar${ventana ? " lista" : ""}`} onClick={saltar}>
-        {ventana ? "¡Ahora!" : "Espera"}
+      <button className={`boton principal juego-saltar${ventana ? " lista" : ""}`} title="Brincar (Espacio)" onClick={saltar}>
+        {Icono.brincar}
+        {ventana ? "¡Ahora!" : "Brincar"}
       </button>
     </div>
   );

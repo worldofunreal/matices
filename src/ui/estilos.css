@@ -23,6 +23,9 @@
   --girasol: #f2b83a;
   --verde: #3e9e7a;
   --azul: #3b6fb6;
+  --pensamiento: #dfd6f3; /* the character's thoughts */
+  --pensamiento-oscuro: #5b4590;
+  --sistema: #2a4258; /* the game speaking: instructions, never the story */
   --sombra: 0 1px 2px rgb(43 34 51 / 0.06), 0 6px 18px rgb(43 34 51 / 0.08);
   --sombra-alta: 0 2px 4px rgb(43 34 51 / 0.08), 0 14px 34px rgb(43 34 51 / 0.14);
   --radio: 20px;
@@ -112,6 +115,7 @@ canvas.pixel {
   border: 2px solid var(--contorno);
   border-radius: 999px;
   background: var(--tarjeta);
+  color: var(--tinta); /* the button's own, whatever the color of what's behind it */
   box-shadow: var(--sombra);
   font-weight: 750;
   font-size: 18px;
@@ -385,6 +389,67 @@ canvas.pixel {
   font-size: clamp(24px, 6vmin, 40px);
   font-weight: 800;
   text-align: center;
+}
+
+.cartel-contenido {
+  display: grid;
+  justify-items: center;
+  gap: 24px;
+}
+
+/* Whose voice a text is in (data-tipo), wherever it shows: dialogue keeps the parchment, a thought is lilac and
+   slanted, an instruction of the game is dark. Shape changes with the color, for those who can't tell colors apart. */
+.escena-caja.interactiva[data-tipo="pensamiento"],
+.globo[data-tipo="pensamiento"],
+.globo-figura-caja[data-tipo="pensamiento"] {
+  background: linear-gradient(180deg, #ebe5f9, var(--pensamiento));
+}
+
+.escena-caja[data-tipo="pensamiento"] .escena-descripcion,
+.globo[data-tipo="pensamiento"] p,
+.globo-figura-caja[data-tipo="pensamiento"] p {
+  font-style: italic;
+}
+
+.escena-caja.interactiva[data-tipo="pensamiento"] .escena-nombre-placa {
+  background: var(--pensamiento-oscuro);
+}
+
+.globo-figura-caja[data-tipo="pensamiento"]::after {
+  border-top-color: var(--pensamiento);
+}
+
+.escena-caja.interactiva[data-tipo="sistema"],
+.globo[data-tipo="sistema"],
+.globo-figura-caja[data-tipo="sistema"],
+.mision-mundo[data-tipo="sistema"] {
+  background: var(--sistema);
+  color: var(--papel);
+}
+
+.escena-caja.interactiva[data-tipo="sistema"] .escena-descripcion {
+  color: var(--papel);
+}
+
+.escena-caja.interactiva[data-tipo="sistema"] .escena-titulo {
+  color: var(--girasol);
+}
+
+.escena-caja.interactiva[data-tipo="sistema"] .escena-nombre-placa {
+  background: var(--girasol);
+  color: var(--tinta);
+}
+
+.escena-caja.interactiva[data-tipo="sistema"] .escena-cuerpo {
+  padding-top: 8px; /* with no portrait, the title starts right under the nameplate */
+}
+
+.escena-caja.interactiva[data-tipo="sistema"] .escena-pie {
+  border-top-color: rgb(255 255 255 / 0.18);
+}
+
+.globo-figura-caja[data-tipo="sistema"]::after {
+  border-top-color: var(--sistema);
 }
 
 /* Lectura sencilla: bigger letters and more air for the text the child reads.

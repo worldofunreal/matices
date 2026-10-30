@@ -19,7 +19,7 @@ const Superpuesto = createContext(false);
 // True while Mi libro, Opciones or the card of "Quiero hablar" lie over the screen.
 export const useSuperpuesto = () => useContext(Superpuesto);
 
-export function Siempre({ pantalla, children }: { pantalla: string; children: ReactNode }) {
+export function Siempre({ pantalla, alEspejo, children }: { pantalla: string; alEspejo?: () => void; children: ReactNode }) {
   const [capa, setCapa] = useState<Capa | null>(null);
   // The mark for the adult. It stays until the game is closed.
   const [senal, setSenal] = useState(false);
@@ -39,7 +39,7 @@ export function Siempre({ pantalla, children }: { pantalla: string; children: Re
       {children}
 
       {capa === "libro" && <Libro alCerrar={() => setCapa(null)} />}
-      {capa === "opciones" && <Opciones alCerrar={() => setCapa(null)} />}
+      {capa === "opciones" && <Opciones alCerrar={() => setCapa(null)} alEspejo={alEspejo && (() => (setCapa(null), alEspejo()))} />}
       {capa === "hablar" && (
         <div className="siempre-velo">
           <section className="siempre-aviso panel" role="dialog" aria-label={S.quiero_hablar}>

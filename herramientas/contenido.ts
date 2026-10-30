@@ -200,6 +200,7 @@ export function validar() {
       if (clases.length !== 1) return err(dp, "cada paso es una sola cosa: de, opciones, marca, minijuego o efecto");
       if (p.de !== undefined) {
         if (!hablantes.has(p.de)) err(dp, `no se sabe quién habla: ${p.de}`);
+        if (p.titulo !== undefined && p.de !== "sistema") err(dp, "solo una línea de sistema lleva título: en una línea de la historia es una voz de más");
         if (p.titulo !== undefined) texto(`${dp} titulo`, p.titulo);
         texto(dp, p.texto);
         ultimo = p.de;

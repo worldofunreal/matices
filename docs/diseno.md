@@ -39,7 +39,9 @@ La propuesta organiza la historia en seis capítulos. Son una guía de escenas, 
 
 ## Protagonista
 
-Nombre y apariencia los elige el jugador: cuerpo, piel, cabello, ropa, extras, tenis, y colores de cada prenda. El avatar se dibuja con las hojas de referencia del guion (pixel art juvenil, el mismo lenguaje visual del resto del juego).
+Nombre y apariencia los elige el jugador: cuerpo, piel, cabello, ropa, extras, tenis, y colores de cada prenda. El avatar se dibuja con las hojas de referencia del guion (pixel art juvenil, el mismo lenguaje visual del resto del juego). Se cambia en el espejo de la casa o en Opciones.
+
+**Empezar de nuevo**, en Opciones y al terminar los tres días, borra la partida y Mi libro después de preguntar, y cuenta como otro participante. Hay una sola historia, así que no se promete "otra historia".
 
 ## Personas
 
@@ -80,6 +82,7 @@ El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tie
 ## Escenas, decisiones y registro
 
 - Una escena tiene una línea de alguien, y a veces opciones. Las opciones aparecen en un orden distinto para cada niño.
+- Tres voces, cada una con su aspecto, en escenas y en globos del mundo: diálogo (pergamino), pensamiento (lila y cursiva) y sistema (oscuro, con título). Sistema es solo para instrucciones del juego; la historia nunca va en esa voz.
 - En una misión principal, tocar fuera o **Seguir después** cierra el panel y deja la escena pendiente; el jugador puede seguir por el mundo y reabrirla al interactuar con el objetivo. Al volver, el minijuego empieza de nuevo y el intento anterior queda en analíticas. Las escenas sugeridas conservan su omisión al tocar fuera. No hay un botón general para omitir objetivos. Se registra el último avance, incluidas respuestas vacías y la etapa alcanzada, sin inventar marcas o resultados que no ocurrieron.
 - Tocar fuera de un diálogo no hace nada. Para dejar una escena a medias está Pausar, que aparece en todas las escenas: la escena guarda la línea donde iba y, al volver, sigue ahí.
 - El orden es permisivo: una escena que llega antes no bloquea el juego; se juega su variante. Solo unas pocas escenas esperan a otra. `tras` lo anuncia con "Primero: …"; `si` espera una marca sin anunciarlo. Ninguna escena espera en la cama (`contenido/README.md`).

@@ -4,6 +4,9 @@ Cada cambio de dirección, con su razón. La más reciente arriba.
 
 | Fecha | Decisión | Por qué | Quién |
 | --- | --- | --- | --- |
+| 2026-10-30 | Diálogo, pensamiento y sistema se ven distintos. Sistema queda solo para instrucciones, y solo esas líneas llevan título | Dayana lo pidió tras probar el demo: se confundía la historia con las indicaciones; el título en cada línea era una voz de más | Dayana (comentarios del demo), Omar |
+| 2026-10-30 | Empezar de nuevo cuenta como otro participante | Es lo que permite usar la misma computadora con otro alumno. Antes del piloto se decide si el botón se queda: quien repite la historia ya sabe qué pasa | Omar |
+| 2026-10-30 | El color de los muebles queda para después | No sirve a ninguno de los tres objetivos y el arte actual no se puede recolorear sin limpiarlo antes | Dayana (comentarios del demo), Omar |
 | 2026-10-29 | El botón "Quiero hablar con alguien" no avisa a nadie: deja una señal en la pantalla para el adulto que esté con el niño. En la escuela no se espera internet, así que no hay aviso remoto | No hay forma de avisar al instructor desde el juego; decir "ya avisamos" era falso | Omar |
 | 2026-10-29 | Los objetivos solo nombran lugares y rutinas. Ninguno manda a hablar con una persona ni a una escena emocional (regla 12 de `metodologia.md`) | Empujar a un personaje o a una situación predispone la conducta que se mide | Omar |
 | 2026-10-29 | Una espera que el juego anuncia (`tras`) nunca va en la cama. La que no se anuncia usa una marca (`si`) | Un "Primero: …" en la cama impedía dormir, y el día no terminaba | Omar |

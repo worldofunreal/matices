@@ -98,6 +98,12 @@
   gap: 10px;
 }
 
+.preferencia-aviso {
+  flex-basis: 100%;
+  text-align: center;
+  font-weight: 700;
+}
+
 .preferencia-control .chip {
   min-height: var(--toque);
   padding: 0 18px;

@@ -29,7 +29,32 @@ function Fila({ icono, texto, clave, children }: { icono: ReactNode; texto: stri
   );
 }
 
-export function Opciones({ alCerrar }: { alCerrar: () => void }) {
+// Starting over erases the game and Mi libro, so it asks first. ?nuevo (main.tsx) does the rest: a new anonymous
+// participant on this device.
+export function EmpezarDeNuevo() {
+  const [seguro, setSeguro] = useState(false);
+  if (!seguro)
+    return (
+      <div className="preferencia-control">
+        <button className="boton" onClick={() => setSeguro(true)}>
+          {O.empezar}
+        </button>
+      </div>
+    );
+  return (
+    <div className="preferencia-control">
+      <span className="preferencia-aviso">{O.empezar_aviso}</span>
+      <button className="boton principal" onClick={() => (location.search = "?nuevo")}>
+        {O.empezar_si}
+      </button>
+      <button className="boton" onClick={() => setSeguro(false)}>
+        {O.empezar_no}
+      </button>
+    </div>
+  );
+}
+
+export function Opciones({ alCerrar, alEspejo }: { alCerrar: () => void; alEspejo?: () => void }) {
   const [o, setO] = useState<Ajustes>(() => estado().opciones);
   const cambiar = <K extends keyof Ajustes>(clave: K, valor: Ajustes[K]) => {
     const nuevas: Ajustes = { ...o, [clave]: valor };
@@ -97,6 +122,20 @@ export function Opciones({ alCerrar }: { alCerrar: () => void }) {
         <Fila icono={Icono.lectura} texto={O.lectura} clave="lectura">
           {sino("lectura")}
         </Fila>
+        {alEspejo && (
+          <>
+            <Fila icono={Icono.cuerpo} texto={O.personaje} clave="personaje">
+              <div className="preferencia-control">
+                <button className="boton" onClick={alEspejo}>
+                  {O.cambiar}
+                </button>
+              </div>
+            </Fila>
+            <Fila icono={Icono.siguiente} texto={O.partida} clave="partida">
+              <EmpezarDeNuevo />
+            </Fila>
+          </>
+        )}
       </div>
     </section>
   );

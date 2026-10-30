@@ -11,7 +11,6 @@ escenas:
       - necesidades_fisicas
     pasos:
       - de: pensamiento
-        titulo: Tengo hambre
         texto: No he comido nada. Voy a la cocina a ver qué hay de desayunar.
   - id: T04
     nombre: El calendario de pared
@@ -23,7 +22,6 @@ escenas:
       - escuela_aprendizaje
     pasos:
       - de: pensamiento
-        titulo: Calendario escolar
         texto: Hoy es jueves. Me toca clase de educación física.
       - marca: vio_calendario
   - id: T05
@@ -40,13 +38,10 @@ escenas:
       - apoyo_emocional
     pasos:
       - de: madre
-        titulo: Prisa en la mañana
         texto: ¡Buenos días! Se me hizo un poco tarde y ya salgo a trabajar.
       - de: yo
-        titulo: Desayuno pendiente
         texto: Buenos días, mamá. ¿Dejaste algo listo para desayunar?
       - de: madre
-        titulo: Huevos en el refri
         texto: Hay huevos en la cocina. Prepárate algo rápido antes de irte.
       - titulo: ¿Qué le respondes?
         opciones:
@@ -63,7 +58,6 @@ escenas:
             - No tengo muchas ganas de cocinar.
             - Hay algo sencillo en la cocina. Al rato hablamos.
       - de: pensamiento
-        titulo: Siempre con prisa
         texto: Últimamente mamá nunca tiene tiempo para desayunar conmigo.
       - marca: hablo_mama
   - id: T05b
@@ -81,13 +75,10 @@ escenas:
       - apoyo_emocional
     pasos:
       - de: madre
-        titulo: Ya tienes los huevos
         texto: ¡Buenos días! Veo que ya sacaste los huevos. Qué bien. Prepárate algo rápido antes de irte.
       - de: yo
-        titulo: Gracias
         texto: Gracias, mamá. Ya casi estoy list{o} para salir.
       - de: pensamiento
-        titulo: Siempre con prisa
         texto: Mamá tampoco se sienta a desayunar conmigo, pero al menos ya tengo con qué.
       - marca: hablo_mama
   - id: T06
@@ -117,10 +108,8 @@ escenas:
     pasos:
       - minijuego: estufa
       - de: pensamiento
-        titulo: Desayunando a solas
         texto: Hoy tampoco alcanzó a sentarse conmigo a la mesa.
       - de: pensamiento
-        titulo: Hora de alistarse
         texto: Mejor termino de comer rápido para no llegar tarde a clases.
       - de: sistema
         titulo: Alarma escolar
@@ -148,7 +137,6 @@ escenas:
     frena: true
     pasos:
       - de: pensamiento
-        titulo: Estufa encendida
         texto: Dejé la lumbre prendida en la cocina. Debo apagarla antes de salir.
   - id: A-estufa
     nombre: Apagar la estufa
@@ -160,7 +148,6 @@ escenas:
       - estufa_apagada
     pasos:
       - de: pensamiento
-        titulo: Estufa apagada
         texto: Giro la perilla y apago la estufa para evitar accidentes.
       - marca: estufa_apagada
   - id: C-estufa
@@ -175,11 +162,9 @@ escenas:
       - estufa_apagada
     pasos:
       - efecto: inquietud
-      - de: sistema
-        titulo: Olor a quemado
+      - de: pensamiento
         texto: Huele a humo en toda la casa. El sartén se quemó en la estufa.
       - de: mensaje_mama
-        titulo: Aviso de mamá
         texto: Me avisaron del humo y vine a apagar la estufa. Límpialo, por favor.
       - marca: estufa_apagada
       - marca: consecuencia_estufa
@@ -193,7 +178,6 @@ escenas:
       - limpio_estufa
     pasos:
       - de: pensamiento
-        titulo: Limpiar la cocina
         texto: Pongo jabón y lavo el sartén quemado en el fregadero.
       - marca: limpio_estufa
   - id: R-sarten
@@ -207,7 +191,6 @@ escenas:
     frena: true
     pasos:
       - de: pensamiento
-        titulo: Sartén sucio
         texto: Antes de salir a la calle, tengo que lavar el sartén quemado.
   - id: C-sarten
     nombre: Al volver, el sartén sin lavar
@@ -218,8 +201,7 @@ escenas:
     no:
       - limpio_estufa
     pasos:
-      - de: sistema
-        titulo: Sartén quemado
+      - de: pensamiento
         texto: El sartén quemado sigue en el fregadero.
   - id: T09
     nombre: Salir de casa
@@ -232,7 +214,6 @@ escenas:
       - escuela_aprendizaje
     pasos:
       - de: pensamiento
-        titulo: Rumbo a la escuela
         texto: Espero que hoy sea un buen día con mis compañeros.
       - de: sistema
         titulo: Camino libre
@@ -250,7 +231,6 @@ escenas:
       - conducta
     pasos:
       - de: lucia
-        titulo: Ropa de deportes
         texto: ¡Buenos días! Qué bien que viniste list{o} para educación física.
   - id: U01b
     nombre: Revisión del uniforme, con otra ropa
@@ -266,7 +246,6 @@ escenas:
       - prosocial
     pasos:
       - de: lucia
-        titulo: Clase de deportes
         texto: Buenos días. Hoy toca educación física; puedes jugar sin ropa deportiva.
       - titulo: ¿Qué le respondes a la maestra?
         opciones:
@@ -292,7 +271,6 @@ escenas:
       - companeros
     pasos:
       - de: pensamiento
-        titulo: Hora del recreo
         texto: Todavía no conozco bien a nadie aquí. Voy a buscar con quién hablar.
   - id: R02-valeria
     nombre: Valeria y la cuerda
@@ -308,7 +286,6 @@ escenas:
       - prosocial
     pasos:
       - de: valeria
-        titulo: Jugar a la cuerda
         texto: ¡Hola! Nos falta una persona para saltar la cuerda. ¿Quieres jugar?
       - titulo: ¿Entras a jugar con Valeria?
         opciones:
@@ -323,7 +300,6 @@ escenas:
             - Está bien. Aquí seguimos jugando.
       - minijuego: cuerda
       - de: valeria
-        titulo: ¿Otro recreo?
         texto: ¡Estuvo divertido! ¿Jugamos juntos en el recreo de mañana?
       - titulo: ¿Qué le dices a Valeria?
         opciones:
@@ -337,9 +313,6 @@ escenas:
             - A veces prefiero caminar, pero platicamos.
             - Claro, cuando quieras.
       - marca: conocio_valeria
-      - de: sistema
-        titulo: Nueva amistad
-        texto: Platicaste y conociste mejor a Valeria.
   - id: R02-leo
     nombre: Leo y el dibujo
     donde: escuela_planta_baja
@@ -354,7 +327,6 @@ escenas:
       - prosocial
     pasos:
       - de: leo
-        titulo: Terminar el dibujo
         texto: Estoy pintando este dibujo del patio. ¿Me ayudas a terminarlo?
       - titulo: ¿Ayudas a Leo con el dibujo?
         opciones:
@@ -384,7 +356,6 @@ escenas:
       - escuela_aprendizaje
     pasos:
       - de: sam
-        titulo: Libreta perdida
         texto: Encontré algo en el patio. Alguien perdió su libreta de apuntes.
       - titulo: ¿Ayudas a Sam a investigar?
         opciones:
@@ -411,7 +382,6 @@ escenas:
       - supervision
     pasos:
       - de: madre
-        titulo: Encargo de comida
         texto: ¿Me ayudas a comprar? Faltan cosas para la comida en la tiendita.
       - titulo: ¿Qué le dices a mamá?
         opciones:
@@ -425,9 +395,6 @@ escenas:
             - Sí voy, pero dame la lista.
             - Aquí la tienes. Regresa pronto a casa.
       - minijuego: tienda
-      - de: sistema
-        titulo: Compras hechas
-        texto: Compraste los ingredientes y regresaste a la calle.
       - marca: compras
   - id: X01
     nombre: ¡Hoy toca examen!
@@ -440,10 +407,8 @@ escenas:
       - sintomas_emocionales
     pasos:
       - de: lucia
-        titulo: Examen de hoy
         texto: Buenos días. Hoy tenemos el examen que repasamos. Guarden sus cosas.
       - de: pensamiento
-        titulo: Repaso mental
         texto: ¡Es cierto, el examen! Espero acordarme bien de lo que estudié.
       - titulo: ¿Cómo te sientes con el examen?
         opciones:
@@ -474,10 +439,8 @@ escenas:
       - pedir_ayuda
     pasos:
       - de: leo
-        titulo: El dibujo de ayer
         texto: ¿Te acuerdas del dibujo que empezamos? Hoy podemos acabarlo.
       - de: leo
-        titulo: ¿Cómo estás?
         texto: Te noto algo callad{o}. ¿Quieres jugar o platicamos en la banca?
       - titulo: ¿Qué prefieres hacer con Leo?
         opciones:
@@ -507,7 +470,6 @@ escenas:
       - prosocial
     pasos:
       - de: leo
-        titulo: Hola otra vez
         texto: Hola. Estoy pintando aquí en la banca. ¿Quieres sentarte con nosotros?
       - titulo: ¿Te sientas con Leo?
         opciones:
@@ -528,11 +490,7 @@ escenas:
       - apoyo_emocional
     pasos:
       - minijuego: dibujo
-      - de: sistema
-        titulo: Dibujo terminado
-        texto: Terminaste tu dibujo en el cuaderno.
       - de: pensamiento
-        titulo: Compartir el dibujo
         texto: Me gustó mucho cómo quedó. Voy a enseñárselo a papá en la sala.
       - marca: dibujo_listo
   - id: E2-02
@@ -551,16 +509,12 @@ escenas:
     pasos:
       - efecto: inquietud
       - de: yo
-        titulo: Mostrar el dibujo
         texto: Papá, mira lo que dibujé en mi cuaderno.
       - de: papa
-        titulo: Reclamo de papá
         texto: ¿Otra vez perdiendo el tiempo con esos rayones?
       - de: yo
-        titulo: Tiempo libre
         texto: Lo terminé en mi tiempo libre después de la tarea.
       - de: papa
-        titulo: Palabras duras
         texto: Deberías ponerte a hacer algo útil en vez de entretenerte con tonterías.
       - titulo: ¿Qué le contestas a papá?
         opciones:
@@ -577,10 +531,8 @@ escenas:
             - Quedarme callad{o}.
             - null
       - de: papa
-        titulo: Exigencia de papá
         texto: Cuando hagas algo útil de verdad, vienes a enseñarme tus cosas.
       - de: papa
-        titulo: Por tu bien
         texto: Y no pongas esa cara. Te digo las cosas por tu bien.
       - titulo: ¿Cómo reaccionas ante lo que dijo?
         opciones:
@@ -598,7 +550,6 @@ escenas:
             - null
       - efecto: intensidad
       - de: papa
-        titulo: Falta de apoyo
         texto: Con todo lo que te doy, al menos deberías agradecer que te corrija.
       - marca: visto_papa
   - id: E2-04
@@ -614,10 +565,8 @@ escenas:
     pasos:
       - efecto: acompanamiento
       - de: pensamiento
-        titulo: Ilusión rota
         texto: Estaba content{o} con mi dibujo antes de bajar a la sala.
       - de: pensamiento
-        titulo: Duda personal
         texto: Ahora ya no sé si quiero que alguien más lo vea.
       - titulo: ¿Qué decides hacer con el dibujo?
         opciones:
@@ -646,13 +595,10 @@ escenas:
     pasos:
       - efecto: alegria
       - de: leo
-        titulo: Opinión de Leo
         texto: ¡Oye, qué padre te quedó el dibujo! ¿Lo hiciste tú?
       - de: yo
-        titulo: Lo que pasó en casa
         texto: Sí, aunque en mi casa dijeron que era una tontería.
       - de: leo
-        titulo: Palabras de apoyo
         texto: No tiene que gustarle a todos. Lo que importa es que tú lo disfrutes.
       - marca: reconocio_dibujo
   - id: O01
@@ -670,10 +616,8 @@ escenas:
     pasos:
       - efecto: acompanamiento
       - de: yo
-        titulo: Pedir hablar
         texto: Maestra, ¿puedo hablar con usted a solas un momento?
       - de: orientadora
-        titulo: Espacio seguro
         texto: Claro. Pasa y cuéntame con toda calma qué pasó.
       - titulo: ¿Qué decides contarle a la orientadora?
         opciones:
@@ -690,7 +634,6 @@ escenas:
             - Prefiero regresar después.
             - Está bien. Aquí tienes la puerta abierta.
       - de: orientadora
-        titulo: Apoyo escolar
         texto: Lo que sientes sí importa. Pensaremos juntos cómo ayudarte.
       - marca: hablo_orientadora
   - id: C02
@@ -705,10 +648,8 @@ escenas:
       - prosocial
     pasos:
       - de: lucia
-        titulo: Trabajo en parejas
         texto: Para mañana prepararán un proyecto en parejas. Elijan con quién trabajar.
       - de: valeria
-        titulo: Propuesta de Valeria
         texto: Tengo una idea para armar el trabajo juntos. ¿Qué opinas?
       - titulo: ¿Qué le dices a Valeria para el trabajo?
         opciones:
