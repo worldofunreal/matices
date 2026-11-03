@@ -60,6 +60,7 @@ Organizado como la mayoría de los tamizajes para adolescentes: lo que se ve por
 | Aislamiento | Acepta o no invitaciones; tiempo solo; a quién se acerca y a quién nunca |
 | Respuesta al aburrimiento | Qué hace en los momentos vacíos (`diseno.md`): se daña, daña a otros, se va al celular del juego, explora, espera |
 | Cambio tras algo fuerte | Las mismas conductas antes y después de los momentos fuertes de la historia (regla 5) |
+| Emociones que expresa | La emoción de cada opción que elige (`emocion` en el registro) y el pensamiento de su personaje antes de dormir en cada día libre. Lo que importa es cuál se repite y si cambia después de algo fuerte |
 
 ### Lo que protege
 
@@ -104,7 +105,38 @@ La psicología ya tiene tareas que miden por conducta y no por lo que la persona
 - Por alumno (con código, sin nombre): sus medidas, qué tanto confiar en cada una y qué actos las sostienen. Nunca un diagnóstico ni una etiqueta.
 - La lista de casos que no coinciden con el tamizaje, con la explicación de por qué.
 - Por grupo y escuela: cómo se ve cada medida.
-- Las reglas de qué se marca y cuándo las escriben ellos.
+- Las reglas de qué se marca y cuándo las corrigen ellos. La primera versión está abajo.
+
+### Cómo llega al adulto
+
+El juego detecta; no diagnostica (`decisiones.md`, 2026-11-02).
+
+1. Un modelo de IA lee el registro del niño, las reglas de abajo y la comparación contra su grupo.
+2. Escribe un reporte de unas cinco líneas para el adulto a cargo:
+   - Primero, si tocó "Quiero hablar con alguien": cuándo y en qué pantalla.
+   - Después, hasta tres señales. Cada una dice qué revisar, con qué tanta confianza y qué actos la sostienen, en palabras de la vida diaria. Por ejemplo: "en el recreo nunca se acercó a nadie en tres días; dos noches eligió un pensamiento de soledad".
+   - Nunca una etiqueta, un diagnóstico ni un puntaje.
+3. El adulto decide si platica con el niño o lo canaliza con el protocolo que ya tiene la escuela.
+
+En el piloto, el reporte se escribe después de la sesión. Entra al tablero cuando el piloto muestre qué señales sí sirven. Si el modelo y las reglas no coinciden, mandan las reglas.
+
+### Reglas de qué se marca (versión 0, sin revisión clínica)
+
+**Confianza:**
+- Una señal se marca solo si coinciden al menos **dos tipos** de indicador (elección, tiempo, movimiento o emoción), o el mismo indicador en **dos días distintos**.
+- Con un solo dato no se marca: queda "a observar".
+- Es **alta** cuando coinciden tres tipos y se repite en días distintos.
+- "Más que su grupo" quiere decir entre el cuarto más alto del grupo que jugó la misma sesión. Si juegan menos de ocho, se compara contra el propio niño (regla 5).
+- Los tramos jugados en broma (regla 9) no cuentan.
+
+| Señal | Qué revisar | Indicadores que la sostienen |
+| --- | --- | --- |
+| **Pidió ayuda** | Siempre va primero, sin regla de confianza | Tocó "Quiero hablar con alguien" (`quiero_hablar`); eligió `CUENTA` o `PIDE_AYUDA` con la orientadora (O01) |
+| **Falta de cuidados** | Si en casa hay quien lo atienda: comida, supervisión | No come en casa en dos o más mañanas libres (la escena libre del refrigerador no ocurre); en la historia pide ayuda o expresa malestar con la madre (T05); deja la estufa prendida o el sartén sin lavar; se duerme mucho más tarde que su grupo |
+| **Pérdida del gusto** | Tristeza, desgano | En el trabajo de la tiendita, el fácil casi siempre o "Ya no quiero" antes que su grupo; explora menos lugares y objetos que su grupo; pausas largas (`inactividad`) más que su grupo; pensamientos de tristeza o de desgano en noches libres; guarda el dibujo en un cajón (E2-04) |
+| **Aislamiento** | Soledad, rechazo de pares | En los recreos libres no se acerca a ningún compañero, o rechaza sus invitaciones (`POSPONE`, `EVITA`) en dos o más días; en la historia evita a Valeria, Leo o Sam; pensamientos de soledad |
+| **Ansiedad, evitar** | Nervios en lo social y en la escuela | Decide más lento que su propia mediana en escenas con otras personas; emoción de nervios o miedo (examen X01, noches libres); evita entrar a lugares con gente |
+| **Cambio tras el padre** | El efecto de E2-02 (crítica y humillación) | La reacción que eligió (`CALLA`, `SE_RETIRA`, `EXPRESA_MALESTAR`) y si al día siguiente explora menos, se acerca menos o elige pensamientos más tristes que antes de E2-02 (regla 5) |
 
 ## Transparencia
 

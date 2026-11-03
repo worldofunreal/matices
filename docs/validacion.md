@@ -18,7 +18,7 @@ Nada de la metodología se da por cierto hasta probarlo. Este documento dice qu�
 | Fase | Qué se hace | Para pasar a la siguiente |
 | --- | --- | --- |
 | 0. Revisión de expertos | CESMA y Psicopedagogía revisan que cada conducta tenga sentido para lo que se supone que mide | Que cada medida tenga al menos tres indicadores aprobados |
-| 1. Prueba de la experiencia | Pocos alumnos juegan; se mide si lo entienden sin ayuda, si se quedan y dónde se atoran | Una vuelta sin nada importante que corregir |
+| 1. Prueba de la experiencia | Pocos alumnos juegan una sesión de una hora: la historia de tres días y después los días libres hasta completar la hora (`diseno.md`). Se mide si lo entienden sin ayuda, si se quedan y dónde se atoran. Después de la sesión, la IA escribe el reporte de cada niño con las reglas de `metodologia.md`, y se revisa con los especialistas | Una vuelta sin nada importante que corregir |
 | 2. Piloto contra el tamizaje | Un grupo de secundaria juega; se compara con su cuestionario (H1, H2, H4, H5, H6) | Criterio de éxito fijado antes de empezar |
 | 3. Repetición | Parte del grupo vuelve a jugar (H3) | Que las señales se mantengan |
 

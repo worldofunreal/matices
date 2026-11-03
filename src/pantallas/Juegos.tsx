@@ -405,7 +405,71 @@ function Tienda({ items, alTerminar, alProgreso }: Alto & { items: { nombre: str
   );
 }
 
+// Effort for reward (EEfRT, Treadway 2009; docs/metodologia.md): each round the child picks the easy job that pays little
+// or the heavy one that pays more, then does it by tapping. "Ya no quiero" ends it at any moment; that is data too.
+// ponytail: no chance of not being paid, as the original task has; add it if the pilot shows every child picks the same.
+const RONDAS = 4;
+const TRABAJOS = {
+  facil: { que: "Acomodar 5 latas", toques: 5, paga: 5 },
+  pesado: { que: "Acomodar 20 cajas", toques: 20, paga: 15 },
+};
+type Tipo = keyof typeof TRABAJOS;
+function Trabajo({ alTerminar, alProgreso }: Alto) {
+  const [rondas, setRondas] = useState<{ trabajo: Tipo; ms_decidir: number; ms_hacer: number }[]>([]);
+  const [actual, setActual] = useState<{ trabajo: Tipo; ms_decidir: number } | null>(null);
+  const [toques, setToques] = useState(0);
+  const desde = useRef(performance.now());
+  const ganado = rondas.reduce((a, r) => a + TRABAJOS[r.trabajo].paga, 0);
+  const terminado = rondas.length === RONDAS;
+  useEffect(() => alProgreso({ etapa: "eleccion", rondas: [], ganado: 0 }), [alProgreso]);
+  const elegir = (trabajo: Tipo) => {
+    setActual({ trabajo, ms_decidir: Math.round(performance.now() - desde.current) });
+    setToques(0);
+    desde.current = performance.now();
+  };
+  const acomodar = () => {
+    if (!actual) return;
+    if (toques + 1 < TRABAJOS[actual.trabajo].toques) return setToques(toques + 1);
+    const nuevas = [...rondas, { ...actual, ms_hacer: Math.round(performance.now() - desde.current) }];
+    setRondas(nuevas);
+    setActual(null);
+    desde.current = performance.now();
+    alProgreso({ etapa: nuevas.length === RONDAS ? "completado" : "eleccion", rondas: nuevas, ganado: ganado + TRABAJOS[actual.trabajo].paga });
+    if (nuevas.length === RONDAS) setTimeout(() => alTerminar(), 900);
+  };
+  const dejar = () => {
+    alProgreso({ etapa: "ya_no_quiero", rondas, en_curso: actual?.trabajo ?? null, toques, ganado });
+    alTerminar({ motivo: "ya_no_quiero" });
+  };
+  return (
+    <div className={`juego${terminado ? " exito" : ""}`}>
+      <Instruccion titulo={actual ? TRABAJOS[actual.trabajo].que : `Tanda ${Math.min(rondas.length + 1, RONDAS)} de ${RONDAS}: ¿qué acomodas?`} />
+      {!actual && !terminado && (
+        <div className="juego-cuadricula">
+          {(Object.keys(TRABAJOS) as Tipo[]).map((t) => (
+            <button key={t} className="boton juego-celda" onClick={() => elegir(t)}>
+              {TRABAJOS[t].que} · ${TRABAJOS[t].paga}
+            </button>
+          ))}
+        </div>
+      )}
+      {actual && (
+        <button className="boton principal" onClick={acomodar}>
+          Acomodar · {toques} de {TRABAJOS[actual.trabajo].toques}
+        </button>
+      )}
+      <p className="juego-cuenta">Llevas ${ganado}</p>
+      {!terminado && (
+        <button className="boton" onClick={dejar}>
+          Ya no quiero
+        </button>
+      )}
+    </div>
+  );
+}
+
 export const JUEGOS: Record<string, (p: Alto) => ReactElement> = {
+  trabajo: (p) => <Trabajo {...p} />,
   refri: (p) => <Buscar titulo="Busca lo del desayuno" items={generarRefri(`${semilla()}:${estado().dia}`)} {...p} />,
   estufa: (p) => <Estufa {...p} />,
   ropero: (p) => <Ropero {...p} />,

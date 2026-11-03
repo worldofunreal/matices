@@ -247,7 +247,7 @@ escenas:
       - prosocial
     pasos:
       - de: lucia
-        texto: Buenos días. Hoy toca educación física; puedes jugar sin ropa deportiva.
+        texto: Buenos días. Hoy toca educación física. Si no trajiste ropa deportiva, puedes jugar con la ropa que traes.
       - titulo: ¿Qué le respondes a la maestra?
         opciones:
           - - ACEPTA
@@ -419,15 +419,19 @@ escenas:
           - - ACEPTA
             - ¡Estoy list{o}!
             - Muy bien. Mucho éxito con tus respuestas.
+            - tranquilidad
           - - EXPRESA_MALESTAR
             - Tengo un poco de nervios.
-            - Respira tranquilo. Las preguntas son sencillas.
+            - Respira con calma. Las preguntas son sencillas.
+            - nervios
           - - EXPRESA_MALESTAR
             - Debí repasar un poco más.
             - Contesta con calma lo que recuerdes.
+            - nervios
           - - ACEPTA
             - Haré mi mejor esfuerzo.
             - Con eso es suficiente. Mucho éxito.
+            - tranquilidad
       - minijuego: examen
   - id: R05
     nombre: Amistad que crece
@@ -457,9 +461,11 @@ escenas:
           - - EVITA
             - No tengo muchas ganas de hablar.
             - Está bien. Aquí estoy por si cambias de opinión.
+            - tristeza
           - - EXPRESA_MALESTAR
             - Traigo algo que me preocupa.
             - Cuéntame con confianza, te escucho.
+            - nervios
       - marca: hablo_leo
   - id: R05b
     nombre: Leo, sin conocerlo antes
@@ -543,6 +549,7 @@ escenas:
           - - EXPRESA_MALESTAR
             - Me hace sentir mal cómo me hablas.
             - null
+            - tristeza
           - - DESACUERDO
             - No estoy de acuerdo con lo que dices.
             - null
@@ -667,6 +674,145 @@ escenas:
             - ¿Y si juntamos las dos ideas?
             - Me parece muy bien. Lo combinamos.
       - marca: proyecto_pareja
+  # Días libres, después de la historia (docs/diseno.md): cada escena libre se repite una vez por día.
+  # Nadie las anuncia (regla 12 de docs/metodologia.md): si el niño come, se acerca o trabaja, es por su cuenta.
+  - id: L-comer
+    nombre: Comer en casa (día libre)
+    donde: casa
+    al: refrigerador
+    libre: true
+    hora: manana
+    areas:
+      - necesidades_fisicas
+      - supervision
+    pasos:
+      - minijuego: refri
+  - id: L-recreo
+    nombre: Llegar a la escuela (día libre)
+    donde: escuela_planta_baja
+    al: entrar
+    libre: true
+    hora: manana
+    pasos:
+      - de: pensamiento
+        texto: Ya casi es la hora del recreo.
+  - id: L-valeria
+    nombre: Valeria invita a la cuerda (día libre)
+    donde: escuela_planta_baja
+    al: companero_1
+    libre: true
+    hora: manana
+    saltable: true
+    areas:
+      - companeros
+    pasos:
+      - de: valeria
+        texto: ¡Hola! Estamos saltando la cuerda. ¿Quieres jugar?
+      - titulo: ¿Juegas con Valeria?
+        opciones:
+          - - ACEPTA
+            - ¡Va, vamos!
+            - ¡Sale! Entras en la siguiente vuelta.
+          - - POSPONE
+            - Ahorita no, gracias.
+            - Está bien. Aquí andamos.
+            - cierra
+      - minijuego: cuerda
+  - id: L-leo
+    nombre: Leo invita a dibujar (día libre)
+    donde: escuela_planta_baja
+    al: companero_2
+    libre: true
+    hora: manana
+    saltable: true
+    areas:
+      - companeros
+    pasos:
+      - de: leo
+        texto: Estoy dibujando en la banca. ¿Te sientas a dibujar conmigo?
+      - titulo: ¿Dibujas con Leo?
+        opciones:
+          - - ACEPTA
+            - Sí, un rato.
+            - Qué bien. Aquí hay colores.
+          - - POSPONE
+            - Hoy no, gracias.
+            - Sale, otro día.
+            - cierra
+      - minijuego: dibujo
+  - id: L-sam
+    nombre: Sam invita a buscar (día libre)
+    donde: escuela_planta_baja
+    al: companero_3
+    libre: true
+    hora: manana
+    saltable: true
+    areas:
+      - companeros
+    pasos:
+      - de: sam
+        texto: Alguien dejó cosas regadas en el patio. ¿Me ayudas a buscarlas?
+      - titulo: ¿Buscas con Sam?
+        opciones:
+          - - ACEPTA
+            - Va, te ayudo.
+            - ¡Vamos! Tú busca de aquel lado.
+          - - POSPONE
+            - Ahorita no, gracias.
+            - Sale. Si las ves, me avisas.
+            - cierra
+      - minijuego: pistas
+  - id: L-trabajo
+    nombre: Ayudar en la tiendita (día libre)
+    donde: tiendita
+    al: don_chuy
+    libre: true
+    hora: tarde
+    saltable: true
+    areas:
+      - sintomas_emocionales
+    pasos:
+      - de: don_chuy
+        texto: ¿Me echas la mano a acomodar la mercancía? Te pago por cada tanda.
+      - titulo: ¿Le ayudas a don Chuy?
+        opciones:
+          - - ACEPTA
+            - Sí, le ayudo.
+            - Órale, gracias. Tú escoges qué acomodar.
+          - - POSPONE
+            - Ahorita no puedo.
+            - No pasa nada. Otro día.
+            - cierra
+      - minijuego: trabajo
+  - id: L-noche
+    nombre: Antes de dormir (día libre)
+    donde: casa
+    al: cama
+    libre: true
+    hora: noche
+    areas:
+      - sintomas_emocionales
+    pasos:
+      - de: pensamiento
+        texto: Ya se acabó el día.
+      - titulo: ¿Qué piensa tu personaje antes de dormir?
+        opciones:
+          - - EXPRESA_AGRADO
+            - Hoy fue un buen día.
+            - null
+            - alegria
+          - - EXPRESA_MALESTAR
+            - Me sentí sol{o} casi todo el día.
+            - null
+            - soledad
+          - - EXPRESA_MALESTAR
+            - No tuve ganas de hacer nada.
+            - null
+            - tristeza
+          - - EXPRESA_MALESTAR
+            - Algo me tiene preocupad{o}.
+            - null
+            - nervios
 pendientes:
   - id: apagar-estufa
     abre: estufa_prendida
@@ -699,3 +845,8 @@ hitos:
   - { dia: 3, hora: manana, lugar: calle, mision: Salir de la escuela para regresar a casa, etiqueta: Salir a la calle }
   - { dia: 3, hora: tarde, lugar: casa, mision: Regresar a casa, etiqueta: Casa }
   - { dia: 3, hora: noche, lugar: casa, objeto: cama, mision: Dormir en tu cama para terminar la historia, etiqueta: A dormir }
+  # Días libres: solo la rutina, sin historia (docs/diseno.md).
+  - { libre: true, hora: manana, lugar: escuela_planta_baja, mision: Ir a la escuela, etiqueta: Escuela, cumple: [L-recreo] }
+  - { libre: true, hora: manana, lugar: calle, mision: Salir de la escuela para regresar a casa, etiqueta: Salir a la calle }
+  - { libre: true, hora: tarde, lugar: casa, mision: Regresar a casa, etiqueta: Casa }
+  - { libre: true, hora: noche, lugar: casa, objeto: cama, mision: Dormir en tu cama, etiqueta: A dormir }

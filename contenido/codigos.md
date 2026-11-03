@@ -23,6 +23,20 @@ El juego guarda eventos con hora exacta, no conclusiones. Cada opción de cada e
 | `ELIGE_DEPORTE` | Elige la ropa de educación física (minijuego del ropero) | — |
 | `ELIGE_CASUAL` | Elige ropa casual (minijuego del ropero) | — |
 
+## Emociones
+
+Una opción que expresa una emoción la lleva después de la respuesta: `[EXPRESA_MALESTAR, "Tengo un poco de nervios.", "Respira con calma.", nervios]`. Va en el registro como `emocion`. Solo se marca cuando la emoción se dice claro en el texto; una opción sin emoción no lleva ninguna.
+
+| Emoción | Cuándo |
+| --- | --- |
+| `alegria` | Dice que algo le gustó o que fue un buen día |
+| `tranquilidad` | Dice que está listo, en calma o con confianza |
+| `tristeza` | Dice que se siente mal, sin ganas o desanimado |
+| `soledad` | Dice que se siente solo o que no tiene con quién estar |
+| `nervios` | Dice que está nervioso, preocupado o que algo le inquieta |
+| `miedo` | Dice que tiene miedo |
+| `enojo` | Dice que está enojado |
+
 ## Eventos
 
 Todos llevan: código del participante, sesión, versión del contenido y del juego, semilla de orden, milisegundos desde el inicio de la sesión (`t_ms`), hora (`cuando`) y su número en el aparato (`id`).
@@ -30,10 +44,10 @@ Todos llevan: código del participante, sesión, versión del contenido y del ju
 | Evento | Datos | Para qué |
 | --- | --- | --- |
 | `personaje` | Al crearlo (`inicio`) y en cada cambio en el espejo (`espejo`): cuerpo, tono, orden en que se mostraron los tonos, cabello y su color, ropa, extras, color de mochila, color de cada prenda, tenis y extra que lleva (`colores`), color de la cama y del ropero (`muebles`, solo en el espejo; 1 es el original), si el nombre salió de la lista, toques y tiempo. Nunca el nombre | Contexto; no se interpreta solo |
-| `escena` | Escena (`escena`), paso (`inicio`, `opcion`, `fin`), quién habla, opciones en el orden mostrado, la elegida (código) y ms para decidir desde que aparecen. En `fin`, si se omitió (`saltada`), se negó (`negada`: la opción lleva `cierra`, sin minijuego ni marcas de la escena) o pausó (`pausada`) | Qué hace, qué contesta y si deja una escena a medias |
-| `minijuego` | Minijuego, resultado (`completado`, `sin_respuesta` o `abortado`), motivo, ms, escena y último avance: etapa, elecciones, intentos o respuestas registradas. Los registros anteriores pueden contener `saltado` | Qué alcanza a hacer y dónde deja o confirma una actividad; no es una conclusión clínica |
+| `escena` | Escena (`escena`), paso (`inicio`, `opcion`, `fin`), quién habla, opciones en el orden mostrado, la elegida (código), su emoción si la lleva (`emocion`) y ms para decidir desde que aparecen. En `fin`, si se omitió (`saltada`), se negó (`negada`: la opción lleva `cierra`, sin minijuego ni marcas de la escena) o pausó (`pausada`) | Qué hace, qué contesta y si deja una escena a medias |
+| `minijuego` | Minijuego, resultado (`completado`, `sin_respuesta` o `abortado`), motivo, ms, escena y último avance: etapa, elecciones, intentos o respuestas registradas. Los registros anteriores pueden contener `saltado` | Qué alcanza a hacer y dónde deja o confirma una actividad; no es una conclusión clínica. En `trabajo` (esfuerzo por premio), cada ronda: `facil` o `pesado`, ms para decidir y ms para hacerlo; si tocó "Ya no quiero", `motivo: ya_no_quiero` y en qué ronda |
 | `explora` | Al tocar un objeto o a una persona fija (lugar y cuál), y al salir de un lugar (lugar, ms de permanencia, visitas) | Qué busca, evita, repite |
-| `tramo` | Día y parte del día que empieza (`manana`, `tarde`, `noche`, `fin`) | Ritmo de la partida |
+| `tramo` | Día y parte del día que empieza (`manana`, `tarde`, `noche`); `fin` cuando termina la historia. Los días después del 3 son días libres | Ritmo de la partida; cuánto juega después de la historia |
 | `corre` | Lugar y ms que corrió, al dejar de correr | Cuánto corre y dónde |
 | `accion_personaje` | Acción motriz ejecutada (salto o combos de ataque estilo arcade: `combo_1`, `combo_2`, `combo_remate`, e impacto de caída al aterrizar: `impacto_caida`), paso del combo (`0` a `3`), objetivo alcanzado (`objetivo`), tipo (`npc`, `fauna`, `objeto`, `muro`, `nada`), distancia en píxeles, coordenadas `x`, `y` | Patrones de exploración física, motricidad, impulsividad, ritmo de pulsaciones e interacción hacia personas, animales u objetos |
 | `dibujo` | Si confirmó un dibujo vacío o uno con trazos, cantidad de trazos y puntos, trazos con color/grosor/goma, cuántos deshizo, tiempo e imagen final | El dibujo y su proceso; Listo vacío queda distinguido de una omisión explícita |

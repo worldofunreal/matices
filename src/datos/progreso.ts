@@ -5,13 +5,22 @@ import type { Historia, Hora } from "./guardado";
 
 const ids = (x: string | string[] | undefined): string[] => ([] as string[]).concat(x ?? []);
 
+// The days of the story. After them come the free days, all alike (docs/diseno.md).
+export const DIAS = 3;
+
+// A free-day scene or objective (`libre`) belongs to every day after the story; the rest to their day, or to any day.
+const deHoy = (x: { dia?: number; libre?: boolean }, dia: number) => (x.libre ? dia > DIAS : x.dia === undefined || x.dia === dia);
+
+// The name a scene is done under: a free-day one is done once per day, so it comes back the next day.
+export const claveEscena = (x: { id: string; libre?: boolean }, dia: number) => (x.libre ? `${x.id}@${dia}` : x.id);
+
 // Due here and now: right place, time and marks, and not done yet. Its earlier scenes (tras) are not checked here.
 const aqui = (x: Escena, historia: Historia, dia: number, hora: Hora, lugar: string, al: string) =>
   x.donde === lugar &&
   x.al === al &&
-  (x.dia === undefined || x.dia === dia) &&
+  deHoy(x, dia) &&
   (x.hora === undefined || x.hora === hora) &&
-  !historia.hechas.includes(x.id) &&
+  !historia.hechas.includes(claveEscena(x, dia)) &&
   (x.si ?? []).every((m) => historia.marcas.includes(m)) &&
   (x.no ?? []).every((m) => !historia.marcas.includes(m));
 
@@ -56,7 +65,7 @@ export function pendienteAbierta(pendientes: Pendiente[], historia: Historia, lu
 // The objective of the moment: the first one of this part of the day that is not done. One without `cumple` lasts
 // until the part of the day changes.
 export function hitoActual(hitos: Hito[], hechas: string[], dia: number, hora: Hora): Hito | undefined {
-  return hitos.find((h) => h.dia === dia && h.hora === hora && !ids(h.cumple).some((id) => hechas.includes(id)));
+  return hitos.find((h) => deHoy(h, dia) && h.hora === hora && !ids(h.cumple).some((id) => hechas.includes(claveEscena({ id, libre: h.libre }, dia))));
 }
 
 // A saved game from before a field existed keeps what it had and gets the new field empty.

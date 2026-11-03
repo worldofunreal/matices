@@ -392,10 +392,10 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
       activo?.pausar(true);
       mostrar("pensamiento", "mundo.dormir", M.dormir);
       window.setTimeout(() => {
-        const dia = dormir();
-        if (dia === null) return setCartel({ texto: M.fin, final: true });
+        const { dia, fin } = dormir();
         sincronizarHistoria();
         setMision(estado().historia.mision);
+        if (fin) return setCartel({ texto: M.fin, final: true });
         setCartel({ texto: M.dia.replace("{n}", String(dia)) });
         window.setTimeout(() => {
           setCartel(null);
@@ -406,6 +406,8 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
 
     const usar = (p: Punto) => {
       const e = escenaPara(lugarActual, p.nombre);
+      // A free day's scene at the bed is the last thing before sleeping (docs/diseno.md).
+      if (e?.libre && p.nombre === "cama") return iniciarEscena(e, () => dormirse());
       if (e) return iniciarEscena(e);
       const pista = pistaPaso(lugarActual, p.nombre);
       if (pista) return mostrar("sistema", `mundo.pista.${p.nombre}`, pista, { x: p.x, y: p.y });
@@ -817,7 +819,18 @@ export function Mundo({ alEspejo }: { alEspejo: () => void }) {
         <div className="cartel" role="status">
           <div className="cartel-contenido">
             <p>{cartel.texto}</p>
-            {cartel.final && <EmpezarDeNuevo />}
+            {/* the story is over: the free days go on (docs/diseno.md) */}
+            {cartel.final && (
+              <>
+                <button className="boton principal" onClick={() => {
+                  setCartel(null);
+                  setRecarga((r) => r + 1);
+                }}>
+                  {M.seguir_jugando}
+                </button>
+                <EmpezarDeNuevo />
+              </>
+            )}
           </div>
         </div>
       )}

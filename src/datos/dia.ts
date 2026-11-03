@@ -3,10 +3,10 @@
 //   morning → afternoon: leaving the school for the street
 //   afternoon → night: being at home
 //   night → next day: going to bed
+// After the days of the story (DIAS) come the free days, all alike (docs/diseno.md).
 import { estado, cambiarEstado, type Hora } from "./guardado";
 import { registrar } from "./eventos";
-
-export const DIAS = 3;
+import { DIAS } from "./progreso";
 
 // Why a door can't be crossed now, or null. Texts in contenido/textos.yaml, section mundo.
 export function bloqueo(desde: string, horas: string | undefined): "noche" | "cerrado" | null {
@@ -30,14 +30,12 @@ function pasarA(hora: Hora): Hora {
   return hora;
 }
 
-// Going to bed at night ends the day. Returns the new day, or null after the last one.
-export function dormir(): number | null {
+// Going to bed at night ends the day. `fin`: the night that just ended was the story's last one.
+export function dormir(): { dia: number; fin: boolean } {
   const { dia } = estado();
-  if (dia >= DIAS) {
-    registrar("tramo", { dia, hora: "fin" });
-    return null;
-  }
+  const fin = dia === DIAS;
+  if (fin) registrar("tramo", { dia, hora: "fin" });
   cambiarEstado({ dia: dia + 1, hora: "manana", lugar: "casa", x: null, y: null, llegada: null }, true);
   registrar("tramo", { dia: dia + 1, hora: "manana" });
-  return dia + 1;
+  return { dia: dia + 1, fin };
 }

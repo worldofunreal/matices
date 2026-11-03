@@ -2,12 +2,13 @@ declare const __VERSION_JUEGO__: string;
 
 declare module "virtual:contenido" {
   // One line of a scene: someone speaks, the child chooses, a minigame runs, a mark is set, an effect shows.
-  // Options are [code, text, answer]; the answer is null when it comes later in the scene. A fourth "cierra": the scene ends after the answer.
+  // Options are [code, text, answer]; the answer is null when it comes later in the scene. After it, "cierra" (the scene
+  // ends after the answer) and an emotion from contenido/codigos.md, in any order.
   export type Paso = {
     de?: string;
     titulo?: string;
     texto?: string;
-    opciones?: [string, string, string | null, "cierra"?][];
+    opciones?: [string, string, string | null, ...string[]][];
     marca?: string;
     minijuego?: string;
     efecto?: string;
@@ -18,6 +19,7 @@ declare module "virtual:contenido" {
     donde: string;
     al: string;
     dia?: number;
+    libre?: boolean; // every free day after the story, once per day
     hora?: "manana" | "tarde" | "noche";
     tras?: string | string[];
     si?: string[];
@@ -42,7 +44,8 @@ declare module "virtual:contenido" {
   }
   // An objective of the day, in order (contenido/escenas.yaml, hitos): the first one not done is the goal.
   export interface Hito {
-    dia: number;
+    dia?: number; // or libre: every free day after the story
+    libre?: boolean;
     hora: "manana" | "tarde" | "noche";
     lugar: string;
     objeto?: string;
@@ -97,6 +100,7 @@ declare module "virtual:contenido" {
       dormir: string;
       dia: string;
       fin: string;
+      seguir_jugando: string;
       ensena_salto: string;
       ensena_salto_teclado: string;
       saludos: Record<string, string[]>;

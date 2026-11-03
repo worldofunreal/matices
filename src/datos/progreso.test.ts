@@ -3,7 +3,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import type { Escena, Hito, Pendiente } from "virtual:contenido";
-import { cerrarEscena, completarHistoria, cumpleTras, escenaPendiente, escenasDisponibles, esperaTras, hitoActual, pasoDeEscena, pendienteAbierta } from "./progreso.ts";
+import { cerrarEscena, claveEscena, completarHistoria, cumpleTras, DIAS, escenaPendiente, escenasDisponibles, esperaTras, hitoActual, pasoDeEscena, pendienteAbierta } from "./progreso.ts";
 
 const escena = (x: Partial<Escena> & { id: string; donde: string; al: string }) => ({ nombre: x.id, pasos: [], ...x }) as Escena;
 
@@ -101,4 +101,24 @@ test("una partida guardada de antes abre sin cambios y sin líneas guardadas", (
     mision: "Sacar los huevos",
     progreso: {},
   });
+});
+
+test("una escena libre sale solo después de la historia, una vez por día, y su objetivo sigue la rutina", () => {
+  const escenas = [escena({ id: "L-comer", donde: "casa", al: "refrigerador", libre: true, hora: "manana" })];
+  const hitos: Hito[] = [
+    { libre: true, hora: "manana", lugar: "escuela_planta_baja", mision: "Ir a la escuela", etiqueta: "Escuela", cumple: ["L-comer"] },
+    { libre: true, hora: "manana", lugar: "calle", mision: "Salir", etiqueta: "Calle" },
+  ];
+  const libre = DIAS + 1;
+  const puede = (h: ReturnType<typeof completarHistoria>, dia: number) => escenasDisponibles(escenas, h, dia, "manana", "casa", "refrigerador").length > 0;
+  let h = completarHistoria({});
+  assert.equal(puede(h, DIAS), false); // durante la historia no sale
+  assert.equal(puede(h, libre), true);
+  assert.equal(hitoActual(hitos, h.hechas, libre, "manana")?.mision, "Ir a la escuela");
+  assert.equal(hitoActual(hitos, h.hechas, DIAS, "manana"), undefined);
+  h = cerrarEscena(h, claveEscena(escenas[0], libre), true, 0);
+  assert.equal(puede(h, libre), false); // hecha hoy
+  assert.equal(hitoActual(hitos, h.hechas, libre, "manana")?.mision, "Salir");
+  assert.equal(puede(h, libre + 1), true); // mañana vuelve
+  assert.equal(hitoActual(hitos, h.hechas, libre + 1, "manana")?.mision, "Ir a la escuela");
 });

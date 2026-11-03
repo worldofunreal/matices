@@ -62,6 +62,7 @@ escena:
     pensamiento: "Pensamiento"
     sistema: "Sistema"
     mensaje_mama: "Mensaje de mamá"
+    don_chuy: "Don Chuy"
   seguir: "Seguir"
   omitir: "Omitir"
   pausar: "Pausar"
@@ -75,7 +76,8 @@ mundo:
   noche: "Ya es de noche. Me quedo en casa."
   dormir: "A dormir."
   dia: "Día {n}"
-  fin: "Aquí terminan los tres días."
+  fin: "Aquí termina la historia. Puedes seguir jugando a tu ritmo."
+  seguir_jugando: "Seguir jugando"
   ensena_salto: "Toca este botón para saltar."
   ensena_salto_teclado: "Toca este botón o presiona Espacio para saltar."
   saludos:

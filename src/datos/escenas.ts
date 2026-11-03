@@ -2,7 +2,10 @@
 // behind, and the objective that guides the child next. The rules themselves are in progreso.ts.
 import contenido, { type Escena, type Hito } from "virtual:contenido";
 import { estado, cambiarEstado } from "./guardado";
-import { cerrarEscena, escenaPendiente, escenasDisponibles, esperaTras, hitoActual, pasoDeEscena, pendienteAbierta } from "./progreso";
+import { cerrarEscena, claveEscena, escenaPendiente, escenasDisponibles, esperaTras, hitoActual, pasoDeEscena, pendienteAbierta } from "./progreso";
+
+// The name the saved game keeps a scene under: a free-day scene, once per day (progreso.ts).
+const clave = (id: string) => claveEscena(contenido.escenas.find((x) => x.id === id) ?? { id }, estado().dia);
 
 export type Objetivo = Pick<Hito, "lugar" | "objeto" | "puertaDestino" | "mision" | "etiqueta">;
 
@@ -44,7 +47,7 @@ export function quedaAlgoCon(lugar: string, objeto: string): boolean {
 
 // The line a scene goes on from, when it was paused.
 export function pasoGuardado(id: string): number {
-  return pasoDeEscena(estado().historia, id);
+  return pasoDeEscena(estado().historia, clave(id));
 }
 
 // The words marked {o} follow the child's body: "list{o}" is "listo" or "lista" (contenido/README.md).
@@ -57,6 +60,6 @@ export const marcar = (marca: string) => {
 
 // A scene stops: finished or skipped ones never come back, a paused one keeps the line it stopped at (progreso.ts).
 export function terminarEscena(id: string, hecha: boolean, paso: number) {
-  cambiarEstado({ historia: cerrarEscena(estado().historia, id, hecha, paso) }, true);
+  cambiarEstado({ historia: cerrarEscena(estado().historia, clave(id), hecha, paso) }, true);
   sincronizarHistoria();
 }

@@ -34,6 +34,26 @@ Lectura, a confirmar con ellos:
 2. **Recuperar lo que hoy solo sabe la IA.** Los adolescentes se abren con ChatGPT porque no los juzga y nadie los está viendo. Las instituciones se están quedando sin esa información.
 3. **Sus datos no son concluyentes.** Un tamizaje por cuestionario tiene sesgo: el alumno contesta lo que cree que se espera, o se burla, y la cara de quien pregunta cambia lo que se dice. Por eso piden más.
 
+## Reunión con la coordinación (30-oct-2026)
+
+Con Karina Vázquez Horta (directora de la coordinación) y María Guadalupe Loza. Juana Patricia (Psicopedagogía) no pudo conectarse. Lo que hicimos con cada punto está en `decisiones.md` (2026-11-02).
+
+**Hecho, lo que dijeron:**
+
+- La propuesta "va por muy buen camino": las actividades cotidianas son atractivas y el niño no nota que se habla de emociones.
+- Karina preguntó qué pasa si el juego identifica a un niño con depresión o ansiedad y cómo se canaliza con un especialista. No le dimos una respuesta concreta.
+- Karina se imagina la versión completa con unas 30 horas de juego, al final de las cuales se sabe si el niño está en riesgo y si hay que canalizarlo.
+- Karina preguntó cómo se generan los reportes y cómo llegan a docentes o padres.
+- Para el tablero, Karina sugirió filtros por edad y por género, y ver las emociones que el niño expresa a lo largo del juego (miedo, soledad). También preguntó qué se quiere identificar exactamente, por ejemplo la omisión de cuidados, y cómo se refleja en la vida diaria.
+- María Guadalupe pidió una redacción de las opciones que no se preste a malinterpretarse, como "puedes jugar sin ropa deportiva".
+- Las preguntas de psicopedagogía van por escrito a la coordinación, que se las pasa a Juana Patricia. Karina sugirió copiar al doctor Arturo.
+
+**Lectura:** su "diagnóstico" es detección: a quién atender y si hay que canalizarlo. Nuestra respuesta a Karina está en "Qué ofrecemos y qué no" y en `metodologia.md` ("Lo que reciben los especialistas"). La ruta es esta:
+
+1. El juego registra lo que pasa.
+2. Las reglas de qué se marca dicen a quién revisar y por qué.
+3. El adulto a cargo canaliza con el protocolo que ya tiene la escuela.
+
 ## Para quién se diseña
 
 Para quien se beneficia: la sociedad y las instituciones que atienden a los adolescentes. Conecta es la puerta de entrada al premio, no el usuario.
@@ -42,7 +62,7 @@ Para quien se beneficia: la sociedad y las instituciones que atienden a los adol
 
 - **Ofrecemos** una metodología que busca reducir el sesgo de la información con la que trabajan, y la herramienta que la aplica (`metodologia.md`). No prometemos romper el sesgo: lo medimos y lo validamos (`validacion.md`).
 - **Herramientas fáciles para el personal educativo:** la computadora sube sus datos sola cuando tiene internet, y el personal revisa un tablero sencillo que muestra lo más importante y deja ir a fondo si lo necesita. *Hoy: la subida automática. Pendiente: la carga manual y el tablero por relevancia.*
-- **No tratamos.** No diagnosticamos. No sustituimos a nadie. Ayudar a manejar traumas queda como secundario: es trabajo del personal educativo y de salud del Estado.
+- **No tratamos.** No diagnosticamos: detectamos a quién revisar primero y por qué. No sustituimos a nadie. Ayudar a manejar traumas queda como secundario: es trabajo del personal educativo y de salud del Estado.
 - **El juego es su instrumento:**
   - ellos definen qué se mide;
   - ellos leen los resultados;

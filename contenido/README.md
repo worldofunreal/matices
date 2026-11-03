@@ -1,6 +1,6 @@
 # Contenido
 
-Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.8.0` (borrador, sin revisión clínica).
+Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual; los psicólogos los revisan aquí. Versión del contenido: `0.9.0` (borrador, sin revisión clínica).
 
 | Archivo | Qué es |
 | --- | --- |
@@ -18,6 +18,7 @@ Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual
   donde: casa                          # un mapa de public/mapas/
   al: mesa                             # entrar | salir:<lugar> | un objeto o persona de ese mapa
   dia: 1                               # 1 a 3
+  libre: true                          # en vez de dia: cada día libre después de la historia, una vez por día
   hora: manana                         # manana | tarde | noche
   tras: T03                            # opcional: una escena o una lista; el juego anuncia la espera (nunca en la cama)
   si: [ropa_deporte]                   # opcional: marcas que tienen que estar
@@ -28,10 +29,10 @@ Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual
   ensena: salto                        # opcional: al terminar, el juego muestra el salto junto a su botón
   pasos:
     - {de: madre, texto: "¡Buenos días! Ya despertaste."}
-    - opciones:                        # de 2 a 4; cada una: [CÓDIGO, texto, respuesta o null], y `cierra` al final si negarse termina ahí la escena
+    - opciones:                        # de 2 a 4; cada una: [CÓDIGO, texto, respuesta o null], y al final `cierra` si negarse termina ahí la escena y la emoción que expresa (codigos.md), si la expresa
         - [ACEPTA, "Está bien, mamá.", "Gracias. Nos vemos más tarde."]
         - [PIDE_AYUDA, "¿Podrías ayudarme?", null]
-    - {minijuego: refri}               # refri, estufa, ropero, cuerda, dibujo, pistas, examen, tienda
+    - {minijuego: refri}               # refri, estufa, ropero, cuerda, dibujo, pistas, examen, tienda, trabajo
     - {marca: conocio_valeria}         # una marca que otras escenas pueden pedir con si y no
     - {de: sistema, titulo: "Alarma escolar", texto: "Es hora de ponerte el uniforme en tu cuarto."}
 ```
@@ -70,6 +71,7 @@ hitos:
 - `dia`, `hora` y `lugar`: cuándo y dónde vale el objetivo.
 - `objeto`, o `puertaDestino` (la puerta que lleva a otro lugar): a qué apunta la guía. Debe existir en el mapa.
 - `mision`: el letrero de arriba. `etiqueta`: el nombre en la guía.
+- `libre: true` en vez de `dia`: vale cada día libre, después de la historia; su `cumple` son escenas libres.
 - `cumple`: una o más escenas. Basta con que una esté hecha. Un objetivo sin `cumple` dura hasta que cambie la parte del día, así que va al final de su bloque.
 
 ## Reglas

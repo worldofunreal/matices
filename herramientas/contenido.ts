@@ -16,11 +16,11 @@ const README = join(DIR, "README.md");
 const MODULOS: Record<string, () => unknown> = { "virtual:contenido": validar, "virtual:arte": validarArte };
 
 // What each minigame leaves behind: the marks it sets in the child's story. Scenes can ask for them (si, no).
-const MINIJUEGOS: Record<string, string[]> = { refri: [], estufa: ["estufa_prendida"], ropero: ["ropa_uniforme", "ropa_deporte", "ropa_casual"], cuerda: [], dibujo: [], pistas: [], examen: [], tienda: [] };
+const MINIJUEGOS: Record<string, string[]> = { refri: [], estufa: ["estufa_prendida"], ropero: ["ropa_uniforme", "ropa_deporte", "ropa_casual"], cuerda: [], dibujo: [], pistas: [], examen: [], tienda: [], trabajo: [] };
 // The effects a scene can set on screen, as the story asks for them (src/pantallas/escena.css); Opciones scales them.
 const EFECTOS = new Set(["inquietud", "miedo", "intensidad", "acompanamiento", "alegria"]);
 const HORAS = new Set(["manana", "tarde", "noche"]);
-const DIAS = 3; // as in src/datos/dia.ts
+const DIAS = 3; // as in src/datos/progreso.ts
 
 // The areas, from the table in contenido/areas.md (the only place they are written).
 function areasDelMarco(): { id: string; nombre: string; familia: string }[] {
@@ -28,6 +28,12 @@ function areasDelMarco(): { id: string; nombre: string; familia: string }[] {
   return [...doc.matchAll(/^\| ([^|]+?) \| ([^|]+?) \| `([a-z_]+)` \|/gm)].map((m) => ({ familia: m[1], nombre: m[2], id: m[3] }));
 }
 const areasValidas = () => new Set(areasDelMarco().map((a) => a.id));
+
+// The emotions an option can carry, from the "Emociones" table in contenido/codigos.md (the only place they are written).
+function emocionesValidas(): Set<string> {
+  const seccion = readFileSync(DOC_CODIGOS, "utf8").split(/^## Emociones$/m)[1]?.split(/^## /m)[0] ?? "";
+  return new Set([...seccion.matchAll(/^\| `([a-z_]+)` \|/gm)].map((m) => m[1]));
+}
 
 function version(): string {
   const m = readFileSync(README, "utf8").match(/Versión del contenido: `([0-9.]+)`/);
@@ -42,6 +48,7 @@ const CON_GENERO = /(^|[«"¡¿ ])(?:lo|la) (?=levanta|lleva|regaña|saca|abraza
 export function validar() {
   const codigos = codigosValidos();
   const areas = areasValidas();
+  const emociones = emocionesValidas();
   const errores: string[] = [];
   const err = (donde: string, msg: string) => errores.push(`${donde}: ${msg}`);
 
@@ -184,6 +191,7 @@ export function validar() {
       if (mapas[x.donde] && !tocable(x.donde, x.al)) err(d, `al: ${x.al} no es un objeto ni una persona de ${x.donde}`);
     }
     if (x.dia !== undefined && !(Number.isInteger(x.dia) && x.dia >= 1 && x.dia <= DIAS)) err(d, `dia debe ser de 1 a ${DIAS}`);
+    if (x.libre && x.dia !== undefined) err(d, "libre es cada día libre, después de la historia: no lleva dia");
     if (x.hora !== undefined && !HORAS.has(x.hora)) err(d, `hora inválida ${x.hora}`);
     for (const t of ([] as string[]).concat(x.tras ?? [])) if (!escenas.some((y) => y.id === t)) err(d, `tras: ${t} no es una escena`);
     if (x.al === "cama" && x.tras !== undefined) err(d, "una escena de la cama no lleva tras: esa espera impediría dormir (usa si:)");
@@ -210,8 +218,11 @@ export function validar() {
         if (!ultimo) err(dp, "las opciones necesitan una línea antes");
         if (p.titulo !== undefined) texto(`${dp} titulo`, p.titulo);
         p.opciones.forEach((o, j) => {
-          if (!Array.isArray(o) || o.length < 3 || o.length > 4 || (o.length === 4 && o[3] !== "cierra")) return err(`${dp} opción ${j + 1}`, "debe ser [CÓDIGO, texto, respuesta] o [CÓDIGO, texto, respuesta, cierra]");
-          if (o[3] && o[2] === null) err(`${dp} opción ${j + 1}`, "una opción que cierra la escena necesita respuesta");
+          const resto = Array.isArray(o) ? (o.slice(3) as string[]) : [];
+          const bien = resto.length === new Set(resto).size && resto.filter((r) => r !== "cierra").length <= 1 && resto.every((r) => r === "cierra" || emociones.has(r));
+          if (!Array.isArray(o) || o.length < 3 || !bien)
+            return err(`${dp} opción ${j + 1}`, "debe ser [CÓDIGO, texto, respuesta] y después, si van, cierra y una emoción de contenido/codigos.md");
+          if (resto.includes("cierra") && o[2] === null) err(`${dp} opción ${j + 1}`, "una opción que cierra la escena necesita respuesta");
           codigo(`${dp} opción ${j + 1}`, o[0]);
           texto(`${dp} opción ${j + 1}`, o[1]);
           if (o[2] !== null) texto(`${dp} opción ${j + 1} respuesta`, o[2]);
@@ -250,7 +261,7 @@ export function validar() {
   // one of its part of the day; otherwise the ones after it could never be reached.
   hitos.forEach((h, i) => {
     const d = `hitos ${i + 1}`;
-    if (!(Number.isInteger(h.dia) && h.dia >= 1 && h.dia <= DIAS)) err(d, `dia debe ser de 1 a ${DIAS}`);
+    if (h.libre ? h.dia !== undefined : !(Number.isInteger(h.dia) && h.dia! >= 1 && h.dia! <= DIAS)) err(d, `lleva dia de 1 a ${DIAS}, o libre sin dia`);
     if (!HORAS.has(h.hora)) err(d, `hora inválida ${h.hora}`);
     const mapa = mapas[h.lugar];
     if (!mapa) err(d, `lugar: ${h.lugar} no es un mapa`);
@@ -260,10 +271,10 @@ export function validar() {
     for (const c of ([] as string[]).concat(h.cumple ?? [])) {
       const s = escenas.find((x) => x.id === c);
       if (!s) err(d, `cumple: ${c} no es una escena`);
-      else if (s.donde !== h.lugar || (s.dia !== undefined && s.dia !== h.dia) || (s.hora !== undefined && s.hora !== h.hora))
-        err(d, `cumple: ${c} no se puede jugar en ${h.lugar}, día ${h.dia}, ${h.hora}`);
+      else if (s.donde !== h.lugar || (h.libre ? !s.libre : s.libre || (s.dia !== undefined && s.dia !== h.dia)) || (s.hora !== undefined && s.hora !== h.hora))
+        err(d, `cumple: ${c} no se puede jugar en ${h.lugar}, ${h.libre ? "día libre" : `día ${h.dia}`}, ${h.hora}`);
     }
-    if (h.cumple === undefined && hitos.slice(i + 1).some((x) => x.dia === h.dia && x.hora === h.hora))
+    if (h.cumple === undefined && hitos.slice(i + 1).some((x) => x.dia === h.dia && !!x.libre === !!h.libre && x.hora === h.hora))
       err(d, "sin cumple, tiene que ser el último de su parte del día");
     texto(`${d} mision`, h.mision);
     texto(`${d} etiqueta`, h.etiqueta);
@@ -276,10 +287,10 @@ export function validar() {
   return { version: version(), escenas, textos, figuras, lugares, conexiones, objetos, areas: areasDelMarco(), pendientes, hitos };
 }
 
-type Paso = { de?: string; titulo?: string; texto?: string; opciones?: [string, string, string | null, "cierra"?][]; marca?: string; minijuego?: string; efecto?: string };
-type Escena = { id: string; nombre: string; donde: string; al: string; dia?: number; hora?: string; tras?: string | string[]; si?: string[]; no?: string[]; areas?: string[]; delicada?: boolean; saltable?: boolean; frena?: boolean; sugerida?: boolean; ensena?: string; pasos: Paso[] };
+type Paso = { de?: string; titulo?: string; texto?: string; opciones?: [string, string, string | null, ...string[]][]; marca?: string; minijuego?: string; efecto?: string };
+type Escena = { id: string; nombre: string; donde: string; al: string; dia?: number; libre?: boolean; hora?: string; tras?: string | string[]; si?: string[]; no?: string[]; areas?: string[]; delicada?: boolean; saltable?: boolean; frena?: boolean; sugerida?: boolean; ensena?: string; pasos: Paso[] };
 type Pendiente = { id: string; abre: string; cierra: string; lugar: string; objeto: string; etiqueta: string; mision: string };
-type Hito = { dia: number; hora: string; lugar: string; objeto?: string; puertaDestino?: string; mision: string; etiqueta: string; cumple?: string | string[] };
+type Hito = { dia?: number; libre?: boolean; hora: string; lugar: string; objeto?: string; puertaDestino?: string; mision: string; etiqueta: string; cumple?: string | string[] };
 
 type ObjetoMapa = { name: string; type: string; properties?: { name: string; value: string }[] };
 type Mapa = { width: number; height: number; layers: { name: string; objects?: ObjetoMapa[] }[] };

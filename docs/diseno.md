@@ -61,7 +61,15 @@ Algunas personas y animales vigilan al niño: se voltean hacia él según de qu�
 
 Casa (sala y comedor, cocina, recámaras, baño, patio), escuela (dos plantas: la baja con patio y cancha al centro, salones, oficina de la orientadora, baños y entrada; la alta con galería, salones, sala de cómputo y baños), biblioteca, parque, tienda del vecindario y calle. Los mapas viven en `public/mapas/`.
 
-El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tienda, parque) y noche (a dormir). El demo cubre tres días.
+El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tienda, parque) y noche (a dormir). La historia del demo cubre tres días.
+
+**Días libres.** Al dormir la noche del día 3, un cartel dice que terminó la historia y deja seguir jugando o empezar de nuevo. Después siguen los días libres, todos iguales y sin historia nueva:
+
+- Los objetivos solo nombran la rutina: la escuela en la mañana, volver a casa en la tarde y dormir en la noche.
+- Cada día se repiten las tareas libres (`libre: true` en `contenido/escenas.yaml`): comer en casa, los compañeros en el recreo, el trabajo en la tiendita y un pensamiento antes de dormir.
+- Lo que el niño hace con el tiempo sin nada que hacer también se mide (`metodologia.md`).
+
+Así la sesión del piloto dura una hora sin alargar la historia (`validacion.md`).
 
 ## Arte y aparato
 

@@ -177,14 +177,16 @@ export function Escena({ escena, alTerminar }: { escena: Escena; alTerminar: (he
   const elegir = (j: number) => {
     sonarToque();
     if (typeof navigator !== "undefined" && navigator.vibrate) navigator.vibrate(15);
-    const [codigo, , res, fin] = p.opciones![j];
-    cierra.current = !!fin;
+    const [codigo, , res, ...resto] = p.opciones![j];
+    cierra.current = resto.includes("cierra");
+    const emocion = resto.find((x) => x !== "cierra"); // the emotion the option expresses, if any (contenido/codigos.md)
     registrar("escena", {
       escena: escena.id,
       paso: "opcion",
       de: ultimoAntes(pasos, i),
       opciones: orden.map((k) => p.opciones![k][0]),
       elegida: codigo,
+      ...(emocion ? { emocion } : {}),
       ms_decidir: Math.round(performance.now() - t0.current),
     });
     setOpcionElegida(j);
