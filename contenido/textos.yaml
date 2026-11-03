@@ -234,6 +234,6 @@ opciones:
   empezar_aviso: "Se borran tu partida y Mi libro. Pide a un adulto que escriba la clave."
   empezar_mal: "Esa no es la clave. Pídesela a un adulto."
   empezar_campo: "Clave del adulto"
-  empezar_clave: "4817"
+  empezar_clave: "admin"
   empezar_si: "Sí, empezar"
   empezar_no: "No"

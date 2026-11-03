@@ -57,8 +57,9 @@ export function EmpezarDeNuevo() {
       <input
         className="campo"
         type="password"
-        inputMode="numeric"
         autoComplete="off"
+        autoCapitalize="off"
+        autoCorrect="off"
         aria-label={O.empezar_campo}
         placeholder={O.empezar_campo}
         value={clave}
