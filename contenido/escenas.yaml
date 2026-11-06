@@ -813,6 +813,136 @@ escenas:
             - Algo me tiene preocupad{o}.
             - null
             - nervios
+  # Vida cotidiana del storyboard (jornadas 5 y 8+): variedad de días libres, sin moraleja.
+  - id: L-feria
+    nombre: Feria del patio (día libre)
+    donde: escuela_planta_baja
+    al: companero_3
+    libre: true
+    hora: tarde
+    saltable: true
+    areas:
+      - companeros
+      - prosocial
+    pasos:
+      - de: sam
+        texto: Hoy hay feria en el patio. Hay puestos, juegos y premios. ¿Vienes?
+      - titulo: ¿Vas a la feria con Sam?
+        opciones:
+          - - ACEPTA
+            - Sí, vamos.
+            - Vamos a ver los puestos.
+          - - POSPONE
+            - Ahorita no puedo.
+            - Sale. Aquí seguimos.
+            - cierra
+      - efecto: alegria
+      - minijuego: pistas
+  - id: L-desacuerdo
+    nombre: Valeria y la idea del juego (día libre)
+    donde: escuela_planta_baja
+    al: companero_1
+    libre: true
+    hora: tarde
+    si:
+      - conocio_valeria
+    saltable: true
+    areas:
+      - companeros
+      - prosocial
+    pasos:
+      - de: valeria
+        texto: Quiero que juguemos a las atrapadas, pero Sam quiere el juego de las pistas. ¿Qué crees?
+      - titulo: ¿Qué le dices a Valeria?
+        opciones:
+          - - ACEPTA
+            - Vamos a las atrapadas.
+            - Va. Te busco en la cancha.
+          - - PROPONE
+            - ¿Y si jugamos a las dos cosas?
+            - ¿Cuál quieres jugar primero?
+          - - DESACUERDO
+            - No estoy de acuerdo con las atrapadas.
+            - Entonces decidimos juntos. Hay tiempo.
+          - - EVITA
+            - Decídanlo ustedes. Yo juego después.
+            - Sale. Nos vemos al rato.
+  - id: L-regalo
+    nombre: El regalo de Valeria (día libre)
+    donde: escuela_planta_baja
+    al: companero_2
+    libre: true
+    hora: manana
+    si:
+      - conocio_leo
+    saltable: true
+    areas:
+      - companeros
+      - prosocial
+    pasos:
+      - de: leo
+        texto: El sábado es el cumpleaños de Valeria. Quiero hacerle algo. ¿Me ayudas a pensar qué?
+      - titulo: ¿Qué le sugieres a Leo?
+        opciones:
+          - - PROPONE
+            - Un dibujo de la cancha con todos nosotros.
+            - Buena idea. Lo hacemos en el recreo.
+          - - PREGUNTA
+            - ¿Qué le gusta a Valeria?
+            - Dice que le gusta saltar y competir.
+          - - EVITA
+            - No sé qué regalarle.
+            - Sale. Lo pienso yo.
+          - - POSPONE
+            - Ahorita no tengo tiempo.
+            - Está bien. Otro día lo vemos.
+            - cierra
+      - marca: pensaron_regalo
+  - id: L-lluvia
+    nombre: Día de lluvia (día libre)
+    donde: casa
+    al: sillon
+    libre: true
+    hora: tarde
+    areas:
+      - sintomas_emocionales
+      - supervision
+    pasos:
+      - de: pensamiento
+        texto: Está lloviendo y no se puede salir al patio.
+      - titulo: ¿Qué haces en la casa?
+        opciones:
+          - - ACEPTA
+            - Me siento a ver la lluvia un rato.
+            - null
+          - - EVITA
+            - Me quedo en mi cuarto.
+            - null
+          - - PROPONE
+            - Pongo un juego de mesa.
+            - Hay tiempo para jugar.
+            - cierra
+  - id: L-barrio
+    nombre: Caminar por el barrio (día libre)
+    donde: calle
+    al: vecino_1
+    libre: true
+    hora: tarde
+    saltable: true
+    areas:
+      - supervision
+    pasos:
+      - de: pensamiento
+        texto: Hoy hay mucha gente en la calle.
+      - titulo: ¿Sigues caminando?
+        opciones:
+          - - ACEPTA
+            - Sí, camino un rato más.
+            - null
+          - - EVITA
+            - Mejor regreso a casa.
+            - Sale. Ve con cuidado.
+            - cierra
 pendientes:
   - id: apagar-estufa
     abre: estufa_prendida

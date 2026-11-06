@@ -116,6 +116,27 @@ Es el guion a grandes rasgos de las 30 horas, para validar con CESMA y Psicopeda
 - **Ánimo.** El PHQ-A pregunta por el ánimo de las dos últimas semanas. Todavía no hay escena que lo observe (`sintomas_emocionales` en `areas.md`). Por ahora la única señal son las emociones que el niño elige en las opciones. Es el hueco más grande del guion.
 - **Un solo informante.** Kuhn et al. (2017) encuentran que combinar el reporte del adolescente con el de sus padres detecta mejor, y que si solo se puede uno, debe ser el de los padres. El juego tiene solo el del niño, así que el reporte de un adulto es indispensable (`areas.md`, `metodologia.md`).
 
+### Plan por jornada
+
+Agrupa las jornadas del storyboard (`Ejemplo de secuencia de jornadas`, sección 4) en bloques de horas, con la lista de prioridades (sección 8). Las horas son un supuesto por validar: el piloto dirá cuánto tarda cada bloque.
+
+| Jornada | Horas | Qué pasa | Estado en `escenas.yaml` |
+| --- | --- | --- | --- |
+| 1 · Tutorial, desayuno y escuela | 0–1 | Casa, uniforme, primer recreo, compras | Hecho (`T03`–`T09`, `U01`, `R01`–`R02`, `C03`) |
+| 2 · Examen y amistad | 1–3 | Examen, recreo con Leo, noche con el padre | Hecho (`X01`, `R05`, `E2-01`, `E2-02`) |
+| 3 · Proyecto y orientadora | 3–5 | Consecuencia, reconocimiento, orientadora, proyecto en parejas | Hecho en versión corta (`E2-04`, `E2-05`, `O01`, `C02`). Falta la versión con las tres ramas |
+| 4 · Deporte o feria | 5–8 | Competencia de Valeria, educación física, feria | Parcial: `L-feria`, `L-desacuerdo`. Falta la competencia |
+| 5 · Conflicto en casa | 8–14 | Varios días con el padre: crítica, chantaje, secuelas en la noche y en la escuela | Parcial: `E2-02`, `E2-04`. Falta el seguimiento de varios días |
+| 6 · Nueva jornada y redes | 14–20 | Amistades que crecen, exposición de Leo, calificación baja, cumpleaños | Parcial: libres `L-regalo`, `L-leo`. Falta calificación baja y exposición |
+| 7 · Vida cotidiana | 20–24 | Lluvia, barrio, tiendita, recreos | Hecho en libres: `L-comer`, `L-lluvia`, `L-barrio`, `L-trabajo`, `L-noche` |
+| 8 · Tío de visita | 24–27 | Storyboard `E1-01` a `E1-10` | Fuera del demo. Va después de validar el storyboard |
+| 9 · No resolverlo solo | 27–30 | Comunicar necesidades, adulto seguro, ruta de protección | Falta casi todo. `O01` es el inicio |
+
+Lo que falta para la versión completa, en orden:
+1. La ruta de protección de la jornada 9, con un adulto seguro siempre disponible (storyboard, sección 8, prioridad 7).
+2. El seguimiento de la jornada 5, con días que se conectan entre sí.
+3. Los libres de la jornada 7 que ya tienen texto: revisión de los especialistas.
+
 ## Lo que el juego nunca hace
 
 - Preguntarle al jugador algo sobre sí mismo. Los personajes de la historia sí hablan con su personaje.
