@@ -81,7 +81,7 @@ mundo:
   ensena_salto: "Toca este botón para saltar."
   ensena_salto_teclado: "Toca este botón o presiona Espacio para saltar."
   saludos:
-    vecino_1: ["Buenos días.", "Qué calor hace hoy."]
+    vecino_1: ["Buenos días.", "Hoy hace calor."]
     vecino_2: ["Hola.", "Ya pasó el camión de la basura."]
     vecino_3: ["Buenas tardes.", "Hoy está nublado."]
     vecino_4: ["Buenos días.", "Ahí va el camión del gas."]
@@ -89,16 +89,16 @@ mundo:
     nico: ["¡Hola!", "¿Viste el partido de ayer?"]
     conserje: ["Buenos días.", "Cuidado, está mojado el piso."]
     companero_1: ["Hola.", "Ya va a ser el recreo."]
-    companero_2: ["Hola.", "Me gusta tu mochila."]
+    companero_2: ["Hola.", "Estoy esperando el recreo."]
     companero_3: ["Hola.", "¿Juegas fut?"]
     companero_4: ["Hola.", "Ya casi es la salida."]
     don_chuy: ["Buenas.", "Llegaron paletas nuevas."]
     clara: ["Bienvenido a la biblioteca.", "Los libros de cuentos están arriba."]
-    cuentera: ["Hola. Aquí vengo a leer.", "Qué gusto verte."]
+    cuentera: ["Hola. Aquí vengo a leer.", "Te veo por aquí."]
     orientadora: ["Buenos días.", "Mi oficina está en la planta baja."]
     mama: ["¡Buenos días! Ven a platicar al comedor.", "Buenos días, ven al comedor."]
     papa: ["Ahora estoy descansando.", "Más tarde platicamos."]
-    vecino_generico: ["Buenos días.", "Hola.", "Buenas tardes.", "Qué buen día hace."]
+    vecino_generico: ["Buenos días.", "Hola.", "Buenas tardes.", "Hoy hace sol."]
     gato: ["¡Miau!", "El gato se estira.", "El gato ronronea al verte.", "¡Miau!"]
     perro: ["¡Guau!", "El perro mueve la cola.", "¡Guau, guau!"]
   # El nombre en la placa de cada personaje fijo.
@@ -169,9 +169,9 @@ mundo:
       resbaladilla: "La resbaladilla."
       arbol_grande: "Un árbol grande."
     tiendita:
-      refrigerador_refrescos: "El refri de los refrescos bien fríos."
+      refrigerador_refrescos: "El refri de los refrescos."
       estante: "Dulces, papitas y frituras surtidas."
-      mesa_pan: "Pan dulce calientito: conchas, bolillos y empanadas."
+      mesa_pan: "Pan dulce: conchas, bolillos y empanadas."
       estante_salsas: "Salsas picantes y latas de chiles."
       arroz: "Costales de arroz y harina en la bodega."
     biblioteca_planta_alta:

@@ -99,6 +99,7 @@ La psicología ya tiene tareas que miden por conducta y no por lo que la persona
 - Cada medida se expresa contra el mismo alumno (cambio) y contra su grupo (posición).
 - Los tramos jugados en broma pesan menos (regla 9).
 - Se compara con el tamizaje: dónde coinciden prueba que se mide algo real; **dónde no coinciden** (salió bien en el cuestionario y en el juego no) es el caso que hoy no se ve.
+- **Reporte de un adulto.** Cada alumno tiene también un reporte de un adulto que lo conoce, con el instrumento que use la coordinación (indispensable: Kuhn et al., 2017). Entra al mismo cálculo como segundo informante. Si quien contesta es la persona que aparece como causante del daño en el juego, su reporte no decide nada: lo ve la escuela con su protocolo.
 
 ## Lo que reciben los especialistas
 

@@ -59,7 +59,7 @@ escenas:
             - No tengo muchas ganas de cocinar.
             - Hay algo sencillo en la cocina. Al rato hablamos.
       - de: pensamiento
-        texto: Últimamente mamá nunca tiene tiempo para desayunar conmigo.
+        texto: Últimamente mamá no tiene tiempo para desayunar conmigo.
       - marca: hablo_mama
   - id: T05b
     nombre: Conversación con la madre, con los huevos ya sacados
@@ -80,7 +80,7 @@ escenas:
       - de: yo
         texto: Gracias, mamá. Ya casi estoy list{o} para salir.
       - de: pensamiento
-        texto: Mamá tampoco se sienta a desayunar conmigo, pero al menos ya tengo con qué.
+        texto: Mamá tampoco se sienta a desayunar conmigo. Ya tengo con qué desayunar.
       - marca: hablo_mama
   - id: T06
     nombre: El refrigerador
@@ -94,7 +94,7 @@ escenas:
       - minijuego: refri
       - de: sistema
         titulo: Huevos listos
-        texto: ¡Encontraste los huevos! Ahora puedes cocinarlos en la estufa.
+        texto: Encontraste los huevos. Ahora puedes cocinarlos en la estufa.
       - marca: saco_huevos
   - id: T07
     nombre: Preparar el desayuno
@@ -149,7 +149,7 @@ escenas:
       - estufa_apagada
     pasos:
       - de: pensamiento
-        texto: Giro la perilla y apago la estufa para evitar accidentes.
+        texto: Giro la perilla y apago la estufa.
       - marca: estufa_apagada
   - id: C-estufa
     nombre: Al volver, la comida quemada
@@ -215,7 +215,7 @@ escenas:
       - escuela_aprendizaje
     pasos:
       - de: pensamiento
-        texto: Espero que hoy sea un buen día con mis compañeros.
+        texto: Hoy veré cómo va el día con mis compañeros.
       - de: sistema
         titulo: Camino libre
         texto: Ya puedes explorar el pueblo, platicar con gente y entrar a la escuela.
@@ -252,7 +252,7 @@ escenas:
         opciones:
           - - ACEPTA
             - Sí, quiero participar.
-            - Perfecto. Te explico la actividad.
+            - Te explico la actividad.
           - - PREGUNTA
             - ¿Qué puedo hacer sin cambiarme?
             - Puedes ayudar a contar puntos y pasar balones.
@@ -307,10 +307,10 @@ escenas:
         opciones:
           - - ACEPTA
             - Sí, me gustaría jugar otra vez.
-            - ¡Genial! Te busco en el patio.
+            - Te busco en el patio.
           - - PROPONE
             - Podemos probar otro juego.
-            - Buena idea, ¿cuál se te ocurre?
+            - ¿Cuál se te ocurre?
           - - EVITA
             - A veces prefiero caminar, pero platicamos.
             - Claro, cuando quieras.
@@ -334,7 +334,7 @@ escenas:
         opciones:
           - - ACEPTA
             - Sí, me gusta mucho dibujar.
-            - ¡Genial! Pinta el cielo y las bancas.
+            - Pinta el cielo y las bancas.
           - - PREGUNTA
             - ¿Qué estás dibujando?
             - Un paisaje del patio con la cancha de básquet.
@@ -364,7 +364,7 @@ escenas:
         opciones:
           - - ACEPTA
             - Vamos a buscar de quién es.
-            - ¡Vamos! Revisemos las pistas juntos.
+            - Revisemos las pistas juntos.
           - - PREGUNTA
             - ¿Dónde la viste?
             - Junto a la jardinera, cerca de la canasta.
@@ -418,11 +418,11 @@ escenas:
         opciones:
           - - ACEPTA
             - ¡Estoy list{o}!
-            - Muy bien. Mucho éxito con tus respuestas.
+            - Mucho éxito con tus respuestas.
             - tranquilidad
           - - EXPRESA_MALESTAR
             - Tengo un poco de nervios.
-            - Respira con calma. Las preguntas son sencillas.
+            - Respira con calma. Lee cada pregunta con tiempo.
             - nervios
           - - EXPRESA_MALESTAR
             - Debí repasar un poco más.
@@ -449,7 +449,7 @@ escenas:
       - de: leo
         texto: ¿Te acuerdas del dibujo que empezamos? Hoy podemos acabarlo.
       - de: leo
-        texto: Te noto algo callad{o}. ¿Quieres jugar o platicamos en la banca?
+        texto: ¿Quieres jugar o platicamos en la banca?
       - titulo: ¿Qué prefieres hacer con Leo?
         opciones:
           - - ACEPTA
@@ -485,7 +485,7 @@ escenas:
         opciones:
           - - ACEPTA
             - Sí, me siento un rato.
-            - Qué bien. Aquí hay lugar.
+            - Aquí hay lugar.
           - - EVITA
             - Prefiero caminar un poco.
             - Está bien. Aquí andamos.
@@ -501,7 +501,7 @@ escenas:
     pasos:
       - minijuego: dibujo
       - de: pensamiento
-        texto: Me gustó mucho cómo quedó. Voy a enseñárselo a papá en la sala.
+        texto: Ya terminé el dibujo. Voy a enseñárselo a papá en la sala.
       - marca: dibujo_listo
   - id: E2-02
     nombre: Encuentro con el padre
@@ -576,7 +576,7 @@ escenas:
     pasos:
       - efecto: acompanamiento
       - de: pensamiento
-        texto: Estaba content{o} con mi dibujo antes de bajar a la sala.
+        texto: Antes de bajar a la sala, tenía el dibujo en mi cuaderno.
       - de: pensamiento
         texto: Ahora ya no sé si quiero que alguien más lo vea.
       - titulo: ¿Qué decides hacer con el dibujo?
@@ -606,11 +606,11 @@ escenas:
     pasos:
       - efecto: alegria
       - de: leo
-        texto: ¡Oye, qué padre te quedó el dibujo! ¿Lo hiciste tú?
+        texto: ¡Oye! ¿Ese dibujo lo hiciste tú?
       - de: yo
         texto: Sí, aunque en mi casa dijeron que era una tontería.
       - de: leo
-        texto: No tiene que gustarle a todos. Lo que importa es que tú lo disfrutes.
+        texto: ¿Y qué más dibujas?
       - marca: reconocio_dibujo
   - id: O01
     nombre: Hablar con la orientadora
@@ -666,13 +666,13 @@ escenas:
         opciones:
           - - ACEPTA
             - Me late tu idea, hagámoslo así.
-            - ¡Súper! Empezamos a prepararlo.
+            - Empezamos a prepararlo.
           - - PROPONE
             - Tengo otra idea diferente.
             - A ver, platícamela.
           - - PROPONE
             - ¿Y si juntamos las dos ideas?
-            - Me parece muy bien. Lo combinamos.
+            - Lo combinamos.
       - marca: proyecto_pareja
   # Días libres, después de la historia (docs/diseno.md): cada escena libre se repite una vez por día.
   # Nadie las anuncia (regla 12 de docs/metodologia.md): si el niño come, se acerca o trabaja, es por su cuenta.
@@ -712,7 +712,7 @@ escenas:
         opciones:
           - - ACEPTA
             - ¡Va, vamos!
-            - ¡Sale! Entras en la siguiente vuelta.
+            - Entras en la siguiente vuelta.
           - - POSPONE
             - Ahorita no, gracias.
             - Está bien. Aquí andamos.
@@ -734,7 +734,7 @@ escenas:
         opciones:
           - - ACEPTA
             - Sí, un rato.
-            - Qué bien. Aquí hay colores.
+            - Aquí hay colores.
           - - POSPONE
             - Hoy no, gracias.
             - Sale, otro día.
@@ -778,7 +778,7 @@ escenas:
         opciones:
           - - ACEPTA
             - Sí, le ayudo.
-            - Órale, gracias. Tú escoges qué acomodar.
+            - Gracias. Tú escoges qué acomodar.
           - - POSPONE
             - Ahorita no puedo.
             - No pasa nada. Otro día.

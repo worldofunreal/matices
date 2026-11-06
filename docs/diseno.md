@@ -114,7 +114,7 @@ Es el guion a grandes rasgos de las 30 horas, para validar con CESMA y Psicopeda
 - **Responsabilidad.** Los pendientes son el único sistema para esto: el juego recuerda una vez lo que el niño dejó sin hacer y después lo deja salir. Lo que pasa después y lo que hace con ello se registra. La base es la Escala de Afrontamiento para Niños (EAN), que distingue el afrontamiento centrado en el problema del improductivo, y se usa para decidir qué se observa, no para calificar en pantalla.
 - **Experiencias adversas, sin cuestionario.** El ACE-Q se hizo para adultos que recuerdan su infancia. Pregunta de frente por violencia, abuso sexual y cárcel en la casa, es detonante para quien lo vivió, y McLennan et al. (2020) cuestionan su uso. El juego observa esas situaciones en la conducta del niño en los capítulos 3 y 6.
 - **Ánimo.** El PHQ-A pregunta por el ánimo de las dos últimas semanas. Todavía no hay escena que lo observe (`sintomas_emocionales` en `areas.md`). Por ahora la única señal son las emociones que el niño elige en las opciones. Es el hueco más grande del guion.
-- **Un solo informante.** Kuhn et al. (2017) encuentran que combinar el reporte del adolescente con el de sus padres detecta mejor, y que si solo se puede uno, debe ser el de los padres. El juego tiene solo el del niño. Decisión pendiente del owner (`areas.md`).
+- **Un solo informante.** Kuhn et al. (2017) encuentran que combinar el reporte del adolescente con el de sus padres detecta mejor, y que si solo se puede uno, debe ser el de los padres. El juego tiene solo el del niño, así que el reporte de un adulto es indispensable (`areas.md`, `metodologia.md`).
 
 ## Lo que el juego nunca hace
 
