@@ -10,8 +10,8 @@ El juego observa 15 áreas agrupadas en tres familias, alineadas con instrumento
 | Negligencia | Apoyo emocional | `apoyo_emocional` | Cuando se lastima o algo sale mal: si busca a alguien y a quién | MNBS-CR; escala de Dubowitz |
 | Negligencia | Supervisión | `supervision` | Quién está en casa de noche y quién cuida de él | MNBS-CR; escala de Dubowitz |
 | Negligencia | Escuela y aprendizaje | `escuela_aprendizaje` | Si hace la tarea, cuándo, y si pide ayuda con ella | MNBS-CR (área cognitiva) |
-| SDQ | Síntomas emocionales | `sintomas_emocionales` | Por ahora no hay escena que lo observe sin preguntar; pendiente con los psicólogos | SDQ, CBCL (internalizante) |
-| SDQ | Conducta | `conducta` | Qué hace ante un límite de un adulto: acepta, no está de acuerdo, pospone o se retira, y si después hace lo que dijo | SDQ, CBCL (externalizante) |
+| SDQ | Síntomas emocionales | `sintomas_emocionales` | Por ahora solo la emoción que el niño elige en una opción (`emocion`); no hay escena que lo observe sin preguntar; pendiente con los psicólogos | SDQ, CBCL (internalizante); PHQ-A (ánimo) |
+| SDQ | Conducta | `conducta` | Qué hace ante un límite de un adulto: acepta, no está de acuerdo, pospone o se retira, y si después hace lo que dijo. Qué hace con lo que dejó pendiente después del recordatorio | SDQ, CBCL (externalizante); EAN (afrontamiento) |
 | SDQ | Compañeros | `companeros` | Escenas de recreo: alguien solo, alguien que le quita algo | SDQ |
 | SDQ | Prosocial | `prosocial` | Si el personaje ayuda, comparte o consuela | SDQ |
 | SDQ | Atención durante el juego | `atencion` | Ritmo de juego y pausas. Solo para saber cuánto pesan las demás respuestas. No es un indicador clínico | SDQ (hiperactividad), sin uso diagnóstico |
@@ -43,6 +43,7 @@ El juego observa 15 áreas agrupadas en tres familias, alineadas con instrumento
 | Mismas escenas para todos | Sin contenido común no hay comparación entre reportes |
 | Cada área en al menos dos escenas | Una respuesta aislada no significa nada; un patrón sí |
 | No pregunta por la vida real | Lo que se observa sale del juego, no de un cuestionario |
+| No se pregunta por experiencias adversas en un cuestionario | El ACE-Q, hecho para adultos que recuerdan su infancia, pregunta de frente por violencia, abuso sexual y cárcel en la casa. Es detonante para quien lo vivió, y McLennan et al. (2020) cuestionan su uso. El juego observa la conducta y no hace esas preguntas |
 | Ninguna escena muestra violencia | El contenido grave, si aparece, lo trae el niño, y eso es lo que importa |
 
 ## Límites que el psicólogo debe conocer
@@ -50,3 +51,4 @@ El juego observa 15 áreas agrupadas en tres familias, alineadas con instrumento
 - **Es una adaptación nueva.** Observar al niño en escenas de un videojuego no tiene validación previa para 8–12 años. El piloto la debe hacer.
 - **Lo que no reemplaza.** El CBCL se usa con licencia de pago. El SDQ no se puede modificar y su versión electrónica requiere permiso previo. El juego no reproduce ninguno.
 - **Jugar como uno mismo.** El niño juega con un personaje que se parece a él. Eso puede aumentar la identificación y también la tendencia a cuidar lo que hace. El piloto lo debe revisar.
+- **Un solo informante.** Kuhn et al. (2017) encuentran que combinar el reporte del adolescente con el de sus padres detecta mejor, y que si solo se puede uno, debe ser el de los padres. El juego tiene solo el del niño. Decisión pendiente: si se agrega un reporte de un adulto, y cuál.

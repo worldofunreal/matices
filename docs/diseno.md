@@ -26,16 +26,16 @@ La historia tiene una línea central con secuencias obligatorias. Entre una y ot
 
 Bucle: **evento principal → ventana de libertad → exploración, minijuego o persona → registro de decisiones → nueva misión principal.**
 
-La propuesta organiza la historia en seis capítulos. Son una guía de escenas, no un reemplazo de capítulos ya desarrollados:
+La propuesta organiza la historia en seis capítulos. Son una guía de escenas, no un reemplazo de capítulos ya desarrollados. Entre paréntesis, las horas aproximadas de la versión completa (borrador, por validar):
 
 | Capítulo | Tema |
 | --- | --- |
-| 1 · Un día como cualquier otro | Tutorial doméstico, llegada a la escuela, primeros compañeros; señales familiares discretas |
-| 2 · Pequeñas cosas que cambian | Examen, tarea, ir a la tienda, explorar; ver las rutinas sin convertirlas en tragedia |
-| 3 · Palabras que pesan | Crítica, humillación y chantaje emocional de la figura paterna, junto a la vida escolar normal |
-| 4 · Personas en quienes confiar | Profundizar amistades, cooperación, ferias o actividades; conocer adultos seguros |
-| 5 · Un secreto que no debería existir | Visita de un tío, transgresión de límites. Fase posterior, después de validar el storyboard |
-| 6 · No resolverlo todo a solas | Comunicar necesidades, alternativas de protección y acompañamiento |
+| 1 · Un día como cualquier otro (0–4 h) | Tutorial doméstico, llegada a la escuela, primeros compañeros; señales familiares discretas |
+| 2 · Pequeñas cosas que cambian (4–10 h) | Examen, tarea, ir a la tienda, explorar; ver las rutinas sin convertirlas en tragedia |
+| 3 · Palabras que pesan (10–18 h) | Crítica, humillación y chantaje emocional de la figura paterna, junto a la vida escolar normal |
+| 4 · Personas en quienes confiar (18–24 h) | Profundizar amistades, cooperación, ferias o actividades; conocer adultos seguros |
+| 5 · Un secreto que no debería existir (24–27 h) | Visita de un tío, transgresión de límites. Fase posterior, después de validar el storyboard |
+| 6 · No resolverlo todo a solas (27–30 h) | Comunicar necesidades, alternativas de protección y acompañamiento |
 
 ## Protagonista
 
@@ -101,9 +101,20 @@ Así la sesión del piloto dura una hora sin alargar la historia (`validacion.md
 - Cada opción lleva un código que **describe** lo que hizo. El código no dice si fue bueno o malo.
 - Una escena delicada siempre permite omitirla, pausarla y pedir ayuda con el botón de siempre. La ruta de protección no depende de elegir bien una opción ni de haber vivido otra escena.
 - Elegir callar, obedecer o retirarse nunca se presenta como responsabilidad del protagonista.
+- **Sin sesgo.** Ninguna situación llega calificada: ni el narrador ni los personajes dicen si algo está bien o mal, ni lo presentan como positivo o negativo antes de que el niño lo viva. Los adultos describen lo que pasa; no elogian ni regañan con juicios de valor.
 - Las escenas de abuso sugieren la transgresión y cortan a negro. No se muestra violencia sexual. Lo que se nombra en lenguaje claro, según la edad, lo revisan los especialistas.
 - Lo que el niño deja sin hacer, como apagar la estufa, lo retiene la puerta una vez: se le recuerda y, si insiste, puede salir. El juego no le pregunta si lo va a hacer: lee lo que hace.
 - Al volver, la consecuencia llega como escena y como hecho (la comida quemada; mamá tuvo que apagar la estufa porque le avisaron). No es un juicio: el juego registra qué hace después, por ejemplo si limpia el sartén.
+
+## Versión completa: cómo se arma (borrador)
+
+Es el guion a grandes rasgos de las 30 horas, para validar con CESMA y Psicopedagogía. El piloto de una hora es el primer bloque de la versión completa (`validacion.md`).
+
+- **Qué observa cada capítulo.** Se apoya en las áreas de `contenido/areas.md`. Las áreas se ven en lo que el niño hace; nunca se le muestran como prueba.
+- **Responsabilidad.** Los pendientes son el único sistema para esto: el juego recuerda una vez lo que el niño dejó sin hacer y después lo deja salir. Lo que pasa después y lo que hace con ello se registra. La base es la Escala de Afrontamiento para Niños (EAN), que distingue el afrontamiento centrado en el problema del improductivo, y se usa para decidir qué se observa, no para calificar en pantalla.
+- **Experiencias adversas, sin cuestionario.** El ACE-Q se hizo para adultos que recuerdan su infancia. Pregunta de frente por violencia, abuso sexual y cárcel en la casa, es detonante para quien lo vivió, y McLennan et al. (2020) cuestionan su uso. El juego observa esas situaciones en la conducta del niño en los capítulos 3 y 6.
+- **Ánimo.** El PHQ-A pregunta por el ánimo de las dos últimas semanas. Todavía no hay escena que lo observe (`sintomas_emocionales` en `areas.md`). Por ahora la única señal son las emociones que el niño elige en las opciones. Es el hueco más grande del guion.
+- **Un solo informante.** Kuhn et al. (2017) encuentran que combinar el reporte del adolescente con el de sus padres detecta mejor, y que si solo se puede uno, debe ser el de los padres. El juego tiene solo el del niño. Decisión pendiente del owner (`areas.md`).
 
 ## Lo que el juego nunca hace
 

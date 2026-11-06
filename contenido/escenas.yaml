@@ -76,7 +76,7 @@ escenas:
       - apoyo_emocional
     pasos:
       - de: madre
-        texto: ¡Buenos días! Veo que ya sacaste los huevos. Qué bien. Prepárate algo rápido antes de irte.
+        texto: ¡Buenos días! Veo que ya sacaste los huevos. Prepárate algo rápido antes de irte.
       - de: yo
         texto: Gracias, mamá. Ya casi estoy list{o} para salir.
       - de: pensamiento
@@ -232,7 +232,7 @@ escenas:
       - conducta
     pasos:
       - de: lucia
-        texto: ¡Buenos días! Qué bien que viniste list{o} para educación física.
+        texto: ¡Buenos días! ¿Vienes list{o} para educación física?
   - id: U01b
     nombre: Revisión del uniforme, con otra ropa
     donde: escuela_planta_baja
