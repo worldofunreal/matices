@@ -7,7 +7,8 @@ import { azar } from "../datos/azar";
 import { registrar, semilla } from "../datos/eventos";
 import { conGenero, marcar, pasoGuardado, terminarEscena } from "../datos/escenas";
 import { Bocina } from "../ui/Bocina";
-import { Cabeza, Cara } from "../lienzo/Personaje";
+import { Cabeza, Cara, Imagen } from "../lienzo/Personaje";
+import { esFinal } from "../lienzo/arte";
 import { sonarToque } from "../ui/sonido";
 import { JUEGOS, type Resultado } from "./Juegos";
 import "./escena.css";
@@ -20,6 +21,9 @@ const hablante = (de: string) => E.hablantes[de]?.replace("{nombre}", estado().n
 export type TipoLinea = "dialogo" | "pensamiento" | "sistema";
 const tipoDeLinea = (de: string): TipoLinea => (de === "pensamiento" || de === "sistema" ? de : "dialogo");
 
+// The portrait of each speaker who is called otherwise in the story (manifiesto.yaml, retratos).
+const RETRATO: Record<string, string> = { madre: "mama", padre: "papa", companero_1: "valeria", companero_2: "leo", companero_3: "sam" };
+
 function RetratoHablante({ de }: { de: string }) {
   if (de === "sistema" || de === "mensaje_mama") return null;
   if (de === "yo" || de === "pensamiento") {
@@ -30,6 +34,15 @@ function RetratoHablante({ de }: { de: string }) {
     );
   }
   const piel = estado().apariencia.colores.piel ?? 0;
+  const retrato = `retratos/${RETRATO[de] ?? de}`;
+  if (esFinal(retrato)) {
+    return (
+      <div className="escena-retrato" aria-hidden="true">
+        <Imagen id={retrato} piel={piel} tam={64} />
+      </div>
+    );
+  }
+  // Until its portrait arrives (manifiesto.yaml, retratos), the head of the speaker's figure.
   if (de === "madre" || de === "mama") {
     return (
       <div className="escena-retrato" aria-hidden="true">

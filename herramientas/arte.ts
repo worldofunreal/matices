@@ -25,6 +25,8 @@ export interface Pieza {
   medida: [number, number];
   que: string;
   colores: Rampa[];
+  estilo?: string; // how its group is drawn, for whoever makes the art (manifiesto.yaml, group `estilo`)
+  respaldo?: string; // the piece the game draws while this one is still a placeholder (same size)
   generacion?: {
     orden: number;
     prompt: string;
@@ -44,7 +46,8 @@ type Grupo = {
   tipo: Tipo;
   medida?: [number, number];
   colores?: Rampa[];
-  piezas?: Record<string, string | { que: string; medida?: [number, number]; colores?: Rampa[]; generacion?: Pieza["generacion"] }>;
+  estilo?: string;
+  piezas?: Record<string, string | { que: string; medida?: [number, number]; colores?: Rampa[]; respaldo?: string; generacion?: Pieza["generacion"] }>;
 };
 
 export function codigosValidos(): Set<string> {
@@ -62,8 +65,9 @@ export function leerManifiesto(): Manifiesto {
       const medida = (typeof v === "string" ? undefined : v.medida) ?? g.medida;
       const colores = (typeof v === "string" ? undefined : v.colores) ?? g.colores ?? [];
       const generacion = typeof v === "string" ? undefined : v.generacion;
+      const respaldo = typeof v === "string" ? undefined : v.respaldo;
       if (!medida) throw new Error(`manifiesto: ${g.carpeta}/${nombre} no tiene medida`);
-      piezas.push({ id: `${g.carpeta}/${nombre}`, archivo: `${g.carpeta}/${nombre}.png`, tipo: g.tipo, medida, que, colores, ...(generacion ? { generacion } : {}) });
+      piezas.push({ id: `${g.carpeta}/${nombre}`, archivo: `${g.carpeta}/${nombre}.png`, tipo: g.tipo, medida, que, colores, ...(g.estilo ? { estilo: g.estilo } : {}), ...(respaldo ? { respaldo } : {}), ...(generacion ? { generacion } : {}) });
     }
   }
   const repetidos = piezas.filter((p, i) => piezas.findIndex((q) => q.id === p.id) !== i);

@@ -9,7 +9,7 @@ import type { Colores } from "../lienzo/arte";
 export interface Apariencia {
   cuerpo: "nina" | "nino";
   cabello: string; // "01".."10"
-  ropa: "uniforme" | "casa";
+  ropa: "uniforme" | "casa" | "deporte"; // deporte: only from the wardrobe of the story (Juegos.tsx, Ropero)
   abajo: "pantalon" | "falda"; // only for the uniform
   extras: Extra[];
   // Chosen variant of each color ramp (skin, hair, each garment and extra); a missing ramp is variant 0.
@@ -32,7 +32,7 @@ export const APARIENCIA_INICIAL: Apariencia = {
 
 // Walking sheets stacked bottom to top. Every layer shares the same frame, so they always line up.
 export function capas(a: Apariencia): string[] {
-  const ropa = a.ropa === "uniforme" ? ["ropa_uniforme_" + a.abajo, "ropa_uniforme_arriba"] : ["ropa_casa_abajo", "ropa_casa_arriba"];
+  const ropa = a.ropa === "uniforme" ? ["ropa_uniforme_" + a.abajo, "ropa_uniforme_arriba"] : [`ropa_${a.ropa}_abajo`, `ropa_${a.ropa}_arriba`];
   const extras = (["mochila", "lentes", "aretes", "gorra"] as const).filter((e) => a.extras.includes(e)).map((e) => "extra_" + e);
   return ["cuerpo_" + a.cuerpo, "calzado_tenis", ...ropa, "cabello_" + a.cabello, ...extras].map((c) => "personaje/" + c);
 }

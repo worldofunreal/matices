@@ -17,7 +17,7 @@ Texto de las escenas y del resto del juego. El juego lee estos archivos tal cual
   nombre: Conversación con la madre    # solo para el tablero
   donde: casa                          # un mapa de public/mapas/
   al: mesa                             # entrar | salir:<lugar> | un objeto o persona de ese mapa
-  dia: 1                               # 1 a 3
+  dia: 1                               # 1 a 6 (DIAS en src/datos/progreso.ts)
   libre: true                          # en vez de dia: cada día libre después de la historia, una vez por día
   hora: manana                         # manana | tarde | noche
   tras: T03                            # opcional: una escena o una lista; el juego anuncia la espera (nunca en la cama)

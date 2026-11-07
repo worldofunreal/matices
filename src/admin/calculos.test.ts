@@ -61,6 +61,6 @@ test("uso por pantalla, avance y apariencia", () => {
   const mundo = usoPorPantalla(g).find((f) => f.pantalla === "mundo")!;
   assert.equal(mundo.sinEfecto, 1);
   assert.equal(mundo.segundos, 4); // 9 s to the last event at 13 s
-  assert.deepEqual(avance(g).map((p) => p.n), [1, 1, 1, 0, 0]);
+  assert.deepEqual(avance(g).map((p) => p.n), [1, 1, 1, 0, 0, 0, 0, 0]);
   assert.deepEqual(aparienciaDe(g.get("a")!), { cuerpo: "nina", cabello: "02", ropa: "uniforme", abajo: "falda", extras: ["mochila"], colores: { sueter: 2, uniforme_abajo: 0, tenis: 1, piel: 2, cabello: 0, mochila: 1 } });
 });

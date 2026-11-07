@@ -46,6 +46,8 @@ const CAPAS: Record<string, { que: string; verde?: boolean; cabeza?: boolean; cu
   ropa_uniforme_pantalon: { que: "navy-blue long school trousers covering both legs down to the ankles. Only the trousers: the gray t-shirt, arms and bare feet stay exactly as they are" },
   ropa_uniforme_falda: { que: "a navy-blue pleated school skirt down to the knees. Only the skirt: the gray t-shirt, arms, lower legs and bare feet stay exactly as they are" },
   ropa_casa_arriba: { que: "a plain dark-teal short-sleeve t-shirt. Only the t-shirt: the gray shorts, arms, legs and bare feet stay exactly as they are" },
+  ropa_deporte_arriba: { que: "a plain short-sleeve sports t-shirt with a round neck. Only the t-shirt: the gray shorts, arms, legs and bare feet stay exactly as they are" },
+  ropa_deporte_abajo: { que: "plain sports shorts down to mid-thigh. Only the shorts: the t-shirt, arms, lower legs and bare feet stay exactly as they are" },
   ropa_casa_abajo: { que: "dark-gray sweatpants covering both legs down to the ankles. Only the sweatpants: the t-shirt, arms and bare feet stay exactly as they are" },
   calzado_tenis: { que: "white sneakers with light-gray soles on both feet. Only the shoes: everything above the ankles stays exactly as it is" },
   extra_lentes: { que: "simple round dark-frame glasses", cabeza: true },

@@ -1,12 +1,12 @@
 // The story's rules, pure: what can start now, what waits for another scene, where a paused scene goes on, and the
 // objective of the moment. escenas.ts feeds them the saved game and the story file; `npm test` runs them on their own.
 import type { Escena, Hito, Pendiente } from "virtual:contenido";
-import type { Historia, Hora } from "./guardado";
+import type { Historia, Hora } from "./guardado.ts";
 
 const ids = (x: string | string[] | undefined): string[] => ([] as string[]).concat(x ?? []);
 
 // The days of the story. After them come the free days, all alike (docs/diseno.md).
-export const DIAS = 3;
+export const DIAS = 6;
 
 // A free-day scene or objective (`libre`) belongs to every day after the story; the rest to their day, or to any day.
 const deHoy = (x: { dia?: number; libre?: boolean }, dia: number) => (x.libre ? dia > DIAS : x.dia === undefined || x.dia === dia);

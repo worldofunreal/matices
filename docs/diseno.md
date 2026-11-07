@@ -43,7 +43,7 @@ Nombre y apariencia los elige el jugador: cuerpo, piel, cabello, ropa, extras, t
 
 **Al abrir con una partida guardada** se elige: Seguir donde me quedé, Cambiar mi personaje o Empezar de nuevo. Las mismas opciones aparecen después de cambiar de personaje: el nuevo reemplaza al anterior. Cada cambio queda registrado con su momento, para poder separarlo en el análisis. En el espejo también se elige el color de la cama y del ropero del cuarto.
 
-**Empezar de nuevo**, al abrir, en Opciones y al terminar los tres días, borra la partida y Mi libro, y cuenta como otro participante. Pide la clave de un adulto (`opciones.empezar_clave` en `contenido/textos.yaml`) y deja registrado el reinicio en el participante anterior.
+**Empezar de nuevo**, al abrir, en Opciones y al terminar la historia, borra la partida y Mi libro, y cuenta como otro participante. Pide la clave de un adulto (`opciones.empezar_clave` en `contenido/textos.yaml`) y deja registrado el reinicio en el participante anterior.
 
 **Historias:** por ahora hay una sola. El primer día y el tutorial serán iguales para todos; después la historia podrá seguir caminos distintos según las decisiones, respetando los objetivos de la historia base y sin sesgar lo que se mide. Esos objetivos están por definirse.
 
@@ -61,9 +61,9 @@ Algunas personas y animales vigilan al niño: se voltean hacia él según de qu�
 
 Casa (sala y comedor, cocina, recámaras, baño, patio), escuela (dos plantas: la baja con patio y cancha al centro, salones, oficina de la orientadora, baños y entrada; la alta con galería, salones, sala de cómputo y baños), biblioteca, parque, tienda del vecindario y calle. Los mapas viven en `public/mapas/`.
 
-El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tienda, parque) y noche (a dormir). La historia del demo cubre tres días.
+El tiempo del día sigue `src/datos/dia.ts`: mañana (escuela), tarde (casa, tienda, parque) y noche (a dormir). La historia del demo cubre seis días (`DIAS` en `src/datos/progreso.ts`). `npm run tiempo` estima cuánto dura cada día con los supuestos que dice el archivo; el tablero da los minutos reales de cada niño.
 
-**Días libres.** Al dormir la noche del día 3, un cartel dice que terminó la historia y deja seguir jugando o empezar de nuevo. Después siguen los días libres, todos iguales y sin historia nueva:
+**Días libres.** Al dormir la noche del último día, un cartel dice que terminó la historia y deja seguir jugando o empezar de nuevo. Después siguen los días libres, todos iguales y sin historia nueva:
 
 - Los objetivos solo nombran la rutina: la escuela en la mañana, volver a casa en la tarde y dormir en la noche.
 - Cada día se repiten las tareas libres (`libre: true` en `contenido/escenas.yaml`): comer en casa, los compañeros en el recreo, el trabajo en la tiendita y un pensamiento antes de dormir.
@@ -75,6 +75,7 @@ Así la sesión del piloto dura una hora sin alargar la historia (`validacion.md
 
 - Las Chromebooks escolares son de gama baja: el arte es **2D** (pixel art o ilustración plana), sin efectos pesados. 3D queda fuera.
 - Corre en el navegador. Los datos se guardan en el aparato y se envían cuando hay red. Hoy el juego necesita conexión para abrirse; poder abrirlo sin red está pendiente.
+- **Producción de arte.** Todo el arte es una pieza de `public/assets/manifiesto.yaml`, con su medida, su carpeta y qué es. `npm run provisionales` crea el provisional de cada pieza nueva y `npm run arte` lista lo que falta mandar a hacer. Mientras una pieza sea provisional, el juego muestra su respaldo: la cabeza de la figura en vez del retrato, el emoji en los minijuegos, la ropa de casa en vez de la de deporte. El arte final se pone reemplazando el PNG con el mismo nombre y la misma medida; no se toca código.
 - Todo lo hablado aparece también escrito. El texto es mínimo: a los adolescentes no les gusta leer, y a los que traen problemas menos.
 
 ## Inmersión y efectos
@@ -124,13 +125,13 @@ Agrupa las jornadas del storyboard (`Ejemplo de secuencia de jornadas`, sección
 | --- | --- | --- | --- |
 | 1 · Tutorial, desayuno y escuela | 0–1 | Casa, uniforme, primer recreo, compras | Hecho (`T03`–`T09`, `U01`, `R01`–`R02`, `C03`) |
 | 2 · Examen y amistad | 1–3 | Examen, recreo con Leo, noche con el padre | Hecho (`X01`, `R05`, `E2-01`, `E2-02`) |
-| 3 · Proyecto y orientadora | 3–5 | Consecuencia, reconocimiento, orientadora, proyecto en parejas | Hecho en versión corta (`E2-04`, `E2-05`, `O01`, `C02`). Falta la versión con las tres ramas |
-| 4 · Deporte o feria | 5–8 | Competencia de Valeria, educación física, feria | Parcial: `L-feria`, `L-desacuerdo`. Falta la competencia |
-| 5 · Conflicto en casa | 8–14 | Varios días con el padre: crítica, chantaje, secuelas en la noche y en la escuela | Parcial: `E2-02`, `E2-04`. Falta el seguimiento de varios días |
-| 6 · Nueva jornada y redes | 14–20 | Amistades que crecen, exposición de Leo, calificación baja, cumpleaños | Parcial: libres `L-regalo`, `L-leo`. Falta calificación baja y exposición |
+| 3 · Proyecto y orientadora | 3–5 | Consecuencia, reconocimiento, orientadora, proyecto en parejas | Hecho en versión corta (`E2-04`, `E2-05`, `O01`, `C02`, `D3-biblio`, `D3-cena`). Falta la versión con las tres ramas |
+| 4 · Deporte o feria | 5–8 | Competencia de Valeria, educación física, feria | Versión corta en el día 4 (`D4-ef`, `D4-competencia`, `D4-sam`), y libres `L-feria`, `L-desacuerdo` |
+| 5 · Conflicto en casa | 8–14 | Varios días con el padre: crítica, chantaje, secuelas en la noche y en la escuela | Versión corta: `E2-02`, `E2-04`, `D4-papa`, `D5-firma-papa`, `D6-cena`. Falta la versión larga |
+| 6 · Nueva jornada y redes | 14–20 | Amistades que crecen, exposición de Leo, calificación baja, cumpleaños | Versión corta en el día 5 (`D5-calif`, `D5-expo`, `D5-leo`) y el cumpleaños en el día 6 (`D6-parque`, `D6-permiso`) |
 | 7 · Vida cotidiana | 20–24 | Lluvia, barrio, tiendita, recreos | Hecho en libres: `L-comer`, `L-lluvia`, `L-barrio`, `L-trabajo`, `L-noche` |
 | 8 · Tío de visita | 24–27 | Storyboard `E1-01` a `E1-10` | Fuera del demo. Va después de validar el storyboard |
-| 9 · No resolverlo solo | 27–30 | Comunicar necesidades, adulto seguro, ruta de protección | Falta casi todo. `O01` es el inicio |
+| 9 · No resolverlo solo | 27–30 | Comunicar necesidades, adulto seguro, ruta de protección | Versión corta en el día 6: `D6-leo`, `D6-orientadora` (adulto seguro). Falta la ruta completa |
 
 Lo que falta para la versión completa, en orden:
 1. La ruta de protección de la jornada 9, con un adulto seguro siempre disponible (storyboard, sección 8, prioridad 7).

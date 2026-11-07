@@ -2,7 +2,8 @@
 // ends with alTerminar; the scene goes on from there. Every minigame is simple and has no wrong answer.
 import { useEffect, useRef, useState, type ReactElement, type ReactNode } from "react";
 import { Dibujo } from "./Dibujo";
-import { Personaje } from "../lienzo/Personaje";
+import { Imagen, Personaje } from "../lienzo/Personaje";
+import { esFinal } from "../lienzo/arte";
 import { Icono } from "../ui/iconos";
 import { sonarSalto } from "../ui/sonido";
 import { cambiarEstado, estado } from "../datos/guardado";
@@ -37,6 +38,13 @@ const ICONOS_ITEMS: Record<string, string> = {
   Cuerda: "🪢",
   Gis: "🖍️",
 };
+
+// The picture of a thing in a minigame: its art (manifiesto.yaml, juegos) once it arrives, its emoji until then.
+const juegoId = (nombre: string) => "juegos/" + nombre.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/ /g, "_");
+function Cosa({ nombre, emoji, tam = 32 }: { nombre: string; emoji?: string; tam?: number }) {
+  if (esFinal(juegoId(nombre))) return <Imagen id={juegoId(nombre)} tam={tam} />;
+  return emoji ? <span className="juego-icono" aria-hidden="true">{emoji}</span> : null;
+}
 
 // What the game asks of the child: the voice of the game, not of the story (estilos.css, data-tipo).
 function Instruccion({ titulo, children }: { titulo: ReactNode; children?: ReactNode }) {
@@ -87,7 +95,7 @@ function Buscar({ titulo, items, alTerminar, alProgreso }: Alto & { titulo: stri
               className={`boton juego-celda${tocada ? " tocada" : ""}${acertada ? " acertada" : ""}`}
               onClick={() => tocar(i)}
             >
-              <span className="juego-icono" aria-hidden="true">{ICONOS_ITEMS[x.nombre] ?? "📦"}</span>
+              <Cosa nombre={x.nombre} emoji={ICONOS_ITEMS[x.nombre] ?? "📦"} />
               <span className="juego-texto">{x.nombre}</span>
             </button>
           );
@@ -177,7 +185,7 @@ function Estufa({ alTerminar, alProgreso }: Alto) {
 // Three sets of clothes. The one chosen is the one the child wears in the world.
 const ROPA = [
   { nombre: "Uniforme", icono: "👔", marca: "ropa_uniforme", codigo: "ELIGE_UNIFORME", ropa: "uniforme" as const },
-  { nombre: "Ropa de deporte", icono: "👟", marca: "ropa_deporte", codigo: "ELIGE_DEPORTE", ropa: "casa" as const },
+  { nombre: "Ropa de deporte", icono: "👟", marca: "ropa_deporte", codigo: "ELIGE_DEPORTE", ropa: "deporte" as const },
   { nombre: "Ropa casual", icono: "👕", marca: "ropa_casual", codigo: "ELIGE_CASUAL", ropa: "casa" as const },
 ];
 
@@ -195,7 +203,7 @@ function Ropero({ alTerminar, alProgreso }: Alto) {
       <div className="juego-opciones">
         {ROPA.map((o) => (
           <button key={o.marca} className="boton principal juego-ropa-btn" onClick={() => elegir(o)}>
-            <span className="juego-icono-ropa" aria-hidden="true">{o.icono}</span>
+            <Cosa nombre={o.nombre} emoji={o.icono} />
             <span>{o.nombre}</span>
           </button>
         ))}
@@ -387,6 +395,7 @@ function Tienda({ items, alTerminar, alProgreso }: Alto & { items: { nombre: str
           const sube = !carrito.includes(i) && total + x.precio > PRESUPUESTO;
           return (
             <button key={x.nombre} className={`boton juego-celda${carrito.includes(i) ? " tocada" : ""}`} disabled={sube} onClick={() => alternar(i)}>
+              <Cosa nombre={x.nombre} />
               {x.nombre} ${x.precio}
             </button>
           );

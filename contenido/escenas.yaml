@@ -674,6 +674,703 @@ escenas:
             - ¿Y si juntamos las dos ideas?
             - Lo combinamos.
       - marca: proyecto_pareja
+  # Día 2, tarde: la tarea.
+  - id: D2-tarea
+    nombre: La tarea de la tarde
+    donde: casa
+    al: mesa
+    dia: 2
+    hora: tarde
+    areas: [escuela_aprendizaje, supervision, pedir_ayuda]
+    pasos:
+      - de: pensamiento
+        texto: Tengo tarea de matemáticas para mañana. Son diez problemas de fracciones.
+      - titulo: ¿Qué haces?
+        opciones:
+          - [ACEPTA, "Hacerla ahorita en la mesa.", null]
+          - [POSPONE, "Ver la tele un rato primero.", null]
+          - [PIDE_AYUDA, "Mandarle un mensaje a mamá para que me ayude.", null]
+          - [EVITA, "No hacerla.", null]
+      - de: mensaje_mama
+        texto: Estoy en el trabajo. Si no te sale un problema, márcalo y en la noche lo vemos.
+      - titulo: ¿Cómo te va con la tarea?
+        opciones:
+          - [ACEPTA, "Me salen casi todos.", null, tranquilidad]
+          - [EXPRESA_MALESTAR, "No le entiendo a las fracciones.", null, nervios]
+          - [PREGUNTA, "Busco cómo se hacen en mi libro.", null]
+          - [SE_RETIRA, "Cerrar el cuaderno e irme a mi cuarto.", null]
+      - marca: tarea_dia2
+  # Día 3, tarde y noche: el proyecto sigue en la biblioteca; la cena en casa.
+  - id: D3-biblio
+    nombre: Libros para el proyecto
+    donde: biblioteca_planta_baja
+    al: clara
+    dia: 3
+    hora: tarde
+    areas: [escuela_aprendizaje, pedir_ayuda]
+    pasos:
+      - de: clara
+        texto: Buenas tardes. ¿Buscas algo en especial?
+      - de: yo
+        texto: Necesito libros para un proyecto en parejas.
+      - de: clara
+        texto: Los de ciencias están en ese librero. Los cuentos, arriba.
+      - titulo: ¿Qué haces?
+        opciones:
+          - [PIDE_AYUDA, "¿Me ayuda a encontrar uno?", "Claro. Dime de qué trata tu proyecto."]
+          - [ACEPTA, "Busco yo sol{o}.", "Aquí estoy si lo necesitas."]
+          - [PREGUNTA, "¿Me puedo llevar los libros a mi casa?", "Sí, con tu credencial. Los regresas en una semana."]
+          - [POSPONE, "Mejor vengo otro día.", "La biblioteca abre todas las tardes."]
+      - de: pensamiento
+        texto: Hay libros de volcanes, de animales y de las estrellas.
+      - titulo: ¿Cuál tomas para el proyecto?
+        opciones:
+          - [EXPRESA_AGRADO, "El de los animales.", null]
+          - [EXPRESA_AGRADO, "El de las estrellas.", null]
+          - [PROPONE, "Le pregunto mañana a Valeria cuál quiere.", null]
+      - marca: libro_proyecto
+  - id: D3-cuentera
+    nombre: Un cuento en la planta alta
+    donde: biblioteca_planta_alta
+    al: cuentera
+    dia: 3
+    hora: tarde
+    sugerida: true
+    saltable: true
+    areas: [apoyo_emocional]
+    pasos:
+      - de: cuentera
+        texto: Voy a leer un cuento de una niña que construía puentes. ¿Te quedas a escuchar?
+      - titulo: ¿Te quedas?
+        opciones:
+          - [ACEPTA, "Sí, me quedo.", "Siéntate donde quieras."]
+          - [PREGUNTA, "¿De qué se tratan los puentes?", "De cómo llegar a donde una quiere ir. Ya verás."]
+          - [SE_RETIRA, "Ahorita no, gracias.", "Aquí leo todas las tardes.", cierra]
+      - de: cuentera
+        texto: La niña quería cruzar el río, pero sola no podía cargar las piedras.
+      - de: cuentera
+        texto: Un día le pidió a su vecino que le ayudara con una piedra. Al otro día eran tres.
+      - de: cuentera
+        texto: Y así, piedra por piedra, el puente llegó al otro lado.
+      - titulo: ¿Qué piensas del cuento?
+        opciones:
+          - [EXPRESA_AGRADO, "Me gustó el final.", "A mí también."]
+          - [PREGUNTA, "¿Y si nadie le hubiera ayudado?", "Buena pregunta. ¿Tú qué crees?"]
+          - [COMPARTE, "Yo también he pedido ayuda.", "Gracias por contármelo."]
+          - [CALLA, "Quedarme pensando.", "Tómate tu tiempo."]
+  - id: D3-cena
+    nombre: La cena en casa
+    donde: casa
+    al: mesa
+    dia: 3
+    hora: noche
+    areas: [representacion_adultos, supervision]
+    pasos:
+      - de: madre
+        texto: Ya está la cena. Siéntate, que se enfría.
+      - de: papa
+        texto: ¿Qué hicieron hoy en la escuela?
+      - titulo: ¿Qué les cuentas?
+        opciones:
+          - [CUENTA, "Me tocó hacer un proyecto con Valeria.", "¿Y ya saben de qué va a ser?"]
+          - [CUENTA, "Fui a la biblioteca por libros.", "¿Y encontraste algo?"]
+          - [EVITA, "Nada importante.", "Siempre dices lo mismo."]
+          - [CALLA, "Seguir comiendo sin contestar.", null]
+      - de: madre
+        texto: Mañana salgo temprano a trabajar. Te dejo el desayuno en la mesa.
+      - titulo: ¿Qué le dices a mamá?
+        opciones:
+          - [ACEPTA, "Está bien.", "Gracias."]
+          - [PREGUNTA, "¿A qué hora regresas?", "En la noche, como a las nueve."]
+          - [EXPRESA_MALESTAR, "Casi no te veo en la semana.", "Lo sé. Ahorita tengo mucho trabajo.", tristeza]
+      - de: pensamiento
+        texto: Mañana es educación física. Valeria tiene su competencia de cuerda.
+      - marca: ceno_dia3
+
+  # Día 4: educación física, la competencia de Valeria, una tarde sin adultos y papá en la noche.
+  - id: D4-desayuno
+    nombre: Desayuno sin mamá
+    donde: casa
+    al: mesa
+    dia: 4
+    hora: manana
+    areas: [necesidades_fisicas, supervision]
+    pasos:
+      - de: pensamiento
+        texto: Mamá ya se fue. Dejó pan y una nota en la mesa.
+      - de: mensaje_mama
+        texto: Hay pan y leche. Cierra bien la puerta al salir. Llego en la noche.
+      - titulo: ¿Qué haces?
+        opciones:
+          - [ACEPTA, "Desayunar el pan con leche.", null]
+          - [POSPONE, "Guardar el pan para el recreo.", null]
+          - [EVITA, "Irme sin desayunar.", null]
+      - marca: desayuno_dia4
+  - id: D4-ef
+    nombre: Educación física
+    donde: escuela_planta_baja
+    al: entrar
+    dia: 4
+    hora: manana
+    areas: [companeros, prosocial]
+    pasos:
+      - de: lucia
+        texto: Hoy toca educación física. Formen equipos de cuatro.
+      - de: valeria
+        texto: ¿Te vienes a nuestro equipo? Nos falta una persona.
+      - titulo: ¿Qué le dices a Valeria?
+        opciones:
+          - [ACEPTA, "Sí, me uno.", "Va. Ya somos cuatro."]
+          - [PREGUNTA, "¿Quiénes más están?", "Sam y Nico. ¿Te late?"]
+          - [PROPONE, "¿Y si invitamos a Leo?", "Pregúntale. Si quiere, cabe."]
+          - [EVITA, "Prefiero ver desde la banca.", "Está bien. Si cambias de idea, aquí estamos.", cierra]
+      - de: lucia
+        texto: Después de calentar, cada equipo practica en el patio.
+      - marca: equipo_ef
+  - id: D4-competencia
+    nombre: La competencia de Valeria
+    donde: escuela_planta_baja
+    al: companero_1
+    dia: 4
+    hora: manana
+    tras: D4-ef
+    areas: [companeros, prosocial, sintomas_emocionales]
+    pasos:
+      - de: valeria
+        texto: En un rato es la competencia de cuerda contra el otro salón. Me tiemblan las piernas.
+      - titulo: ¿Qué le dices?
+        opciones:
+          - [COMPARTE, "A mí también me pasa antes de algo así.", "¿Neta? Pensé que solo a mí."]
+          - [PREGUNTA, "¿Qué te ayuda cuando te pones así?", "Respirar y contar los saltos en voz baja."]
+          - [PROPONE, "¿Practicamos una vez antes?", "Sí. Tú le das vuelta a la cuerda."]
+          - [CALLA, "Quedarme a su lado.", "Gracias por quedarte."]
+      - minijuego: cuerda
+      - de: valeria
+        texto: Se me enredó la cuerda al final. Perdimos por dos saltos.
+      - titulo: ¿Qué haces?
+        opciones:
+          - [COMPARTE, "Te vi saltar muchas veces seguidas.", "Sí, llegué a cuarenta."]
+          - [PREGUNTA, "¿Cómo te sientes?", "Con coraje. Ya se me pasará."]
+          - [EXPRESA_MALESTAR, "A mí me dio coraje perder.", "A mí también.", enojo]
+          - [CALLA, "Sentarme junto a ella sin decir nada.", null]
+      - marca: vio_competencia
+  - id: D4-leo
+    nombre: Leo y la exposición
+    donde: escuela_planta_baja
+    al: companero_2
+    dia: 4
+    hora: manana
+    sugerida: true
+    saltable: true
+    areas: [companeros, prosocial]
+    pasos:
+      - de: leo
+        texto: Mañana me toca exponer enfrente de todo el salón. No me gusta hablar enfrente.
+      - titulo: ¿Qué le dices a Leo?
+        opciones:
+          - [PREGUNTA, "¿De qué vas a exponer?", "De los volcanes. Hice un dibujo de uno."]
+          - [PROPONE, "Si quieres, practicas conmigo.", "¿Ahorita? Bueno, va."]
+          - [COMPARTE, "A mí también me da pena.", "Entonces somos dos."]
+          - [POSPONE, "Luego me cuentas.", "Va."]
+      - marca: leo_expone
+  - id: D4-casa
+    nombre: Una tarde sin adultos
+    donde: casa
+    al: entrar
+    dia: 4
+    hora: tarde
+    areas: [supervision, cuidar_de_mas]
+    pasos:
+      - de: pensamiento
+        texto: No hay nadie en la casa.
+      - de: mensaje_mama
+        texto: Llego a las nueve. Antes de salir, lava los trastes del desayuno, por favor.
+      - titulo: ¿Qué le contestas a mamá?
+        opciones:
+          - [ACEPTA, "Sí, ahorita los lavo.", null]
+          - [POSPONE, "Al rato los lavo.", null]
+          - [PREGUNTA, "¿Puedo ir al parque un rato?", null]
+          - [CALLA, "No contestar.", null]
+      - marca: trastes_pendientes
+  - id: A-trastes
+    nombre: Lavar los trastes
+    donde: casa
+    al: fregadero
+    si: [trastes_pendientes]
+    no: [trastes_lavados]
+    pasos:
+      - de: pensamiento
+        texto: Lavo los platos y los vasos del desayuno, y los pongo a escurrir.
+      - marca: trastes_lavados
+  - id: R-trastes
+    nombre: Antes de salir, los trastes
+    donde: casa
+    al: salir:calle
+    si: [trastes_pendientes]
+    no: [trastes_lavados]
+    frena: true
+    pasos:
+      - de: pensamiento
+        texto: Mamá me pidió lavar los trastes antes de salir.
+  - id: C-trastes
+    nombre: Al volver, los trastes sin lavar
+    donde: casa
+    al: entrar
+    hora: noche
+    si: [trastes_pendientes]
+    no: [trastes_lavados, consecuencia_trastes]
+    pasos:
+      - de: madre
+        texto: Llegué y los trastes seguían en el fregadero. Ya los lavé yo.
+      - titulo: ¿Qué le dices a mamá?
+        opciones:
+          - [CUENTA, "Se me olvidó.", "Mañana te toca a ti."]
+          - [CUENTA, "Me fui al parque y se me pasó.", "Para la otra, primero los trastes."]
+          - [DESACUERDO, "Iba a lavarlos más tarde.", "Ya son las nueve."]
+          - [CALLA, "Quedarme callad{o}.", null]
+      - marca: trastes_lavados
+      - marca: consecuencia_trastes
+  - id: D4-parque
+    nombre: Una tarde en el parque
+    donde: parque
+    al: entrar
+    dia: 4
+    hora: tarde
+    areas: [supervision]
+    pasos:
+      - de: pensamiento
+        texto: El parque está lleno. Hay niños en los columpios y una señora vendiendo elotes.
+  - id: D4-sam
+    nombre: Sam junta hojas
+    donde: parque
+    al: companero_3
+    dia: 4
+    hora: tarde
+    areas: [companeros, prosocial]
+    pasos:
+      - de: sam
+        texto: Estoy juntando hojas de árboles distintos para ciencias. Me faltan tres.
+      - titulo: ¿Le ayudas a Sam?
+        opciones:
+          - [ACEPTA, "Te ayudo a buscar.", "Va. Busca las que no se parezcan."]
+          - [PREGUNTA, "¿Cómo sabes cuáles te faltan?", "Las tengo pegadas en mi libreta. Mira."]
+          - [POSPONE, "Ahorita no, ando paseando.", "Sale. Al rato paso por la fuente.", cierra]
+      - minijuego: pistas
+      - de: sam
+        texto: Con estas ya completé. Mañana las llevo.
+      - marca: ayudo_sam
+  - id: D4-papa
+    nombre: Papá y el sábado
+    donde: casa
+    al: papa
+    dia: 4
+    hora: noche
+    delicada: true
+    saltable: true
+    areas: [abuso_emocional, limites, representacion_adultos]
+    pasos:
+      - efecto: inquietud
+      - de: papa
+        texto: El sábado me vas a ayudar a lavar el carro y a limpiar el patio.
+      - de: yo
+        texto: El sábado me invitaron a jugar al parque.
+      - de: papa
+        texto: Si no me ayudas, olvídate de salir todo el mes.
+      - titulo: ¿Qué le contestas a papá?
+        opciones:
+          - [ACEPTA, "Está bien, te ayudo.", null]
+          - [PROPONE, "¿Puedo ayudarte en la mañana e ir en la tarde?", null]
+          - [DESACUERDO, "Ya había quedado con mis amigos.", null]
+          - [CALLA, "Quedarme callad{o}.", null]
+      - de: papa
+        texto: Aquí las cosas se hacen como yo digo. Ya vete a dormir.
+      - titulo: ¿Qué haces?
+        opciones:
+          - [SE_RETIRA, "Irme a mi cuarto.", null]
+          - [EXPRESA_MALESTAR, "No es justo.", null, enojo]
+          - [PIDE_AYUDA, "Le voy a preguntar a mamá cuando llegue.", null]
+          - [CALLA, "Quedarme un rato en la sala sin decir nada.", null, tristeza]
+      - marca: visto_papa_sabado
+  - id: D4-noche
+    nombre: Antes de dormir, el día 4
+    donde: casa
+    al: cama
+    dia: 4
+    hora: noche
+    areas: [sintomas_emocionales]
+    pasos:
+      - de: pensamiento
+        texto: Hoy fue un día largo.
+      - titulo: ¿Qué haces antes de dormir?
+        opciones:
+          - [EXPRESA_AGRADO, "Pensar en la competencia de Valeria.", null, alegria]
+          - [EXPRESA_MALESTAR, "Pensar en lo que dijo papá.", null, enojo]
+          - [COMPARTE, "Mandarle un mensaje a Leo.", null]
+          - [ACEPTA, "Dormirme ya.", null, tranquilidad]
+
+  # Día 5: entregan el examen, Leo expone, y en casa piden firmar.
+  - id: D5-manana
+    nombre: La mañana del examen calificado
+    donde: casa
+    al: entrar
+    dia: 5
+    hora: manana
+    areas: [escuela_aprendizaje]
+    pasos:
+      - de: pensamiento
+        texto: Hoy entregan los exámenes del martes.
+      - titulo: ¿Cómo amaneces?
+        opciones:
+          - [EXPRESA_MALESTAR, "Con nervios por la calificación.", null, nervios]
+          - [ACEPTA, "Tranquil{o}.", null, tranquilidad]
+          - [EVITA, "Prefiero no pensar en eso.", null]
+  - id: D5-calif
+    nombre: El examen calificado
+    donde: escuela_planta_baja
+    al: entrar
+    dia: 5
+    hora: manana
+    areas: [escuela_aprendizaje, sintomas_emocionales]
+    pasos:
+      - de: lucia
+        texto: Aquí están sus exámenes. Llévenlos firmados el lunes.
+      - de: pensamiento
+        texto: Saqué seis.
+      - titulo: ¿Qué haces?
+        opciones:
+          - [EXPRESA_MALESTAR, "Esperaba sacar más.", null, tristeza]
+          - [PREGUNTA, "Maestra, ¿puedo ver en qué me equivoqué?", "Sí. A la hora de la salida lo revisamos."]
+          - [CALLA, "Guardar el examen en la mochila.", null]
+          - [ACEPTA, "Pasé. Con eso está bien.", null, tranquilidad]
+      - marca: examen_seis
+  - id: D5-valeria
+    nombre: ¿Cuánto sacaste?
+    donde: escuela_planta_baja
+    al: companero_1
+    dia: 5
+    hora: manana
+    tras: D5-calif
+    sugerida: true
+    saltable: true
+    areas: [companeros]
+    pasos:
+      - de: valeria
+        texto: Yo saqué ocho. ¿Y tú?
+      - titulo: ¿Qué le dices?
+        opciones:
+          - [COMPARTE, "Seis.", "En las de patrones yo también me confundí."]
+          - [EVITA, "Prefiero no decir.", "Va, no hay bronca."]
+          - [PREGUNTA, "¿Cuáles se te hicieron difíciles?", "Las de ordenar. Me tardé mucho."]
+  - id: D5-expo
+    nombre: La exposición de Leo
+    donde: escuela_planta_baja
+    al: pizarron
+    dia: 5
+    hora: manana
+    tras: D5-calif
+    areas: [companeros, prosocial]
+    pasos:
+      - de: lucia
+        texto: Leo, te toca. Pasa al frente.
+      - de: leo
+        texto: Mi tema es… los volcanes. Un volcán es…
+      - de: pensamiento
+        texto: Leo se quedó callado. Algunos se empiezan a reír.
+      - titulo: ¿Qué haces?
+        opciones:
+          - [PREGUNTA, "Levantar la mano: ¿cuál es el volcán más alto?", null]
+          - [PROPONE, "Hacerle una seña para que siga.", null]
+          - [CALLA, "Quedarme callad{o} mirando.", null]
+          - [EVITA, "Mirar hacia otro lado.", null]
+      - de: leo
+        texto: Un volcán es una montaña que por dentro tiene roca derretida. Aquí está mi dibujo.
+      - de: lucia
+        texto: Gracias, Leo. Siguiente equipo.
+      - marca: vio_expo_leo
+  - id: D5-leo
+    nombre: Después de exponer
+    donde: escuela_planta_baja
+    al: companero_2
+    dia: 5
+    hora: manana
+    tras: D5-expo
+    areas: [companeros, apoyo_emocional]
+    pasos:
+      - de: leo
+        texto: Me temblaban las manos. Se me olvidó todo al principio.
+      - titulo: ¿Qué le dices a Leo?
+        opciones:
+          - [COMPARTE, "Tu dibujo del volcán se veía muy bien.", "Lo hice ayer en la noche."]
+          - [PREGUNTA, "¿Qué sentiste cuando se rieron?", "Ganas de salirme del salón."]
+          - [COMPARTE, "A mí me hubiera pasado lo mismo.", "Entonces no soy el único."]
+          - [EVITA, "Cambiar de tema.", "¿Vamos a la cancha?"]
+  - id: D5-casa
+    nombre: El examen para firmar
+    donde: casa
+    al: entrar
+    dia: 5
+    hora: tarde
+    areas: [escuela_aprendizaje, representacion_adultos]
+    pasos:
+      - de: pensamiento
+        texto: Tengo que pedir que me firmen el examen para el lunes.
+      - de: pensamiento
+        texto: Mamá está en la cocina. Papá está en la sala.
+  - id: D5-firma-mama
+    nombre: Mamá firma el examen
+    donde: casa
+    al: mama
+    dia: 5
+    hora: tarde
+    no: [examen_firmado]
+    areas: [representacion_adultos, pedir_ayuda, escuela_aprendizaje]
+    pasos:
+      - de: yo
+        texto: Mamá, ¿me firmas el examen?
+      - de: madre
+        texto: A ver. Un seis. ¿Qué pasó?
+      - titulo: ¿Qué le dices a mamá?
+        opciones:
+          - [CUENTA, "Me confundí en las de patrones.", "Esas también se me hacían difíciles."]
+          - [EXPRESA_MALESTAR, "Me siento mal por la calificación.", "Pasa. La próxima la repasamos juntos.", tristeza]
+          - [PIDE_AYUDA, "¿Me ayudas a estudiar para el próximo?", "Sí. El domingo en la tarde."]
+          - [EVITA, "No sé.", "Bueno. Aquí está la firma."]
+      - de: madre
+        texto: Listo, ya está firmado. Guárdalo en tu mochila.
+      - marca: examen_firmado
+      - marca: firmo_mama
+  - id: D5-firma-papa
+    nombre: Papá firma el examen
+    donde: casa
+    al: papa
+    dia: 5
+    hora: tarde
+    no: [examen_firmado]
+    delicada: true
+    saltable: true
+    areas: [representacion_adultos, abuso_emocional, limites]
+    pasos:
+      - de: yo
+        texto: Papá, ¿me firmas el examen?
+      - efecto: inquietud
+      - de: papa
+        texto: ¿Un seis? ¿Para esto vas a la escuela?
+      - titulo: ¿Qué le dices a papá?
+        opciones:
+          - [CUENTA, "Me confundí en las de patrones.", null]
+          - [DESACUERDO, "Pasé el examen.", null]
+          - [EXPRESA_MALESTAR, "No me hables así.", null, enojo]
+          - [CALLA, "Quedarme callad{o}.", null]
+      - de: papa
+        texto: Se acabaron los dibujos hasta que subas esa calificación.
+      - titulo: ¿Qué haces?
+        opciones:
+          - [ACEPTA, "Está bien.", null]
+          - [PREGUNTA, "¿Y si estudio y dibujo un rato?", null]
+          - [SE_RETIRA, "Tomar el examen e irme a mi cuarto.", null]
+          - [CALLA, "Esperar a que firme sin decir nada.", null, tristeza]
+      - de: papa
+        texto: Ahí está tu firma.
+      - marca: examen_firmado
+      - marca: firmo_papa
+  - id: D5-tienda
+    nombre: Las compras de la cena
+    donde: tiendita
+    al: mostrador
+    dia: 5
+    hora: tarde
+    areas: [prosocial, cuidar_de_mas]
+    pasos:
+      - de: don_chuy
+        texto: Buenas tardes. ¿Qué te llevas hoy?
+      - de: mensaje_mama
+        texto: Trae lo que haga falta para la cena con los 120 pesos.
+      - minijuego: tienda
+      - de: don_chuy
+        texto: Aquí está tu cambio. Saludos en tu casa.
+  - id: D5-noche
+    nombre: Antes de dormir, el día 5
+    donde: casa
+    al: cama
+    dia: 5
+    hora: noche
+    areas: [sintomas_emocionales, apoyo_emocional]
+    pasos:
+      - efecto: acompanamiento
+      - de: pensamiento
+        texto: El examen ya está firmado en mi mochila.
+      - titulo: ¿Qué haces antes de dormir?
+        opciones:
+          - [EXPRESA_AGRADO, "Dibujar un rato en mi cuaderno.", null]
+          - [EVITA, "Guardar el cuaderno de dibujo.", null]
+          - [COMPARTE, "Escribirle a Leo cómo me fue.", null]
+          - [ACEPTA, "Dormirme ya.", null]
+
+  # Día 6: entregar el proyecto, no resolverlo sol{o}, el cumpleaños de Sam y la última noche.
+  - id: D6-manana
+    nombre: Mamá antes de la escuela
+    donde: casa
+    al: mama
+    dia: 6
+    hora: manana
+    areas: [representacion_adultos, apoyo_emocional]
+    pasos:
+      - de: madre
+        texto: Hoy entregan su proyecto, ¿verdad? ¿Llevas todo?
+      - titulo: ¿Qué le dices a mamá?
+        opciones:
+          - [ACEPTA, "Sí, ya llevo todo.", "Que les vaya bien."]
+          - [PREGUNTA, "¿Papá sigue con coraje conmigo?", "Tu papá trae mucho trabajo y llega sin ganas de nada. No es por ti."]
+          - [CUENTA, "Papá me trae de malas.", "Luego hablo con él. Ahorita vete, que se hace tarde."]
+          - [EVITA, "Ya me voy.", "Cuídate."]
+  - id: D6-proyecto
+    nombre: Entregar el proyecto
+    donde: escuela_planta_baja
+    al: entrar
+    dia: 6
+    hora: manana
+    areas: [companeros, escuela_aprendizaje, a_quien_culpa]
+    pasos:
+      - de: lucia
+        texto: Hoy presentan el proyecto en parejas. Valeria, ustedes van primero.
+      - de: valeria
+        texto: Se me olvidó la cartulina en mi casa. La dejé en la mesa.
+      - titulo: ¿Qué haces?
+        opciones:
+          - [PROPONE, "Lo explicamos con dibujos en el pizarrón.", "Va. Tú dibujas y yo explico."]
+          - [PIDE_AYUDA, "Le pedimos a la maestra pasar al final.", "Sí, vamos a decirle."]
+          - [DESACUERDO, "Era tu parte traerla.", "Ya sé. Perdón.", enojo]
+          - [CALLA, "Quedarme callad{o}.", "¿Qué hacemos?"]
+      - de: lucia
+        texto: Adelante, cuando estén listos.
+      - minijuego: trabajo
+      - de: valeria
+        texto: Ya pasó. Al final sí nos salió.
+      - marca: proyecto_entregado
+  - id: D6-leo
+    nombre: Leo se da cuenta
+    donde: escuela_planta_baja
+    al: companero_2
+    dia: 6
+    hora: manana
+    areas: [companeros, pedir_ayuda, apoyo_emocional]
+    pasos:
+      - de: leo
+        texto: Ayer en la salida te vi muy callad{o}. ¿Pasó algo?
+      - titulo: ¿Qué le dices a Leo?
+        opciones:
+          - [CUENTA, "Pasaron cosas en mi casa.", "¿Quieres contarme? Si prefieres, vamos juntos con la orientadora."]
+          - [CUENTA, "Me sentí mal por el examen.", "A mí me pasó con el de mate."]
+          - [EVITA, "No es nada.", "Va. Si un día quieres contarme, aquí estoy."]
+          - [POSPONE, "Luego te cuento.", "Va. Aquí estoy."]
+      - marca: hablo_con_leo
+  - id: D6-orientadora
+    nombre: Volver con la orientadora
+    donde: escuela_planta_baja
+    al: orientadora
+    dia: 6
+    hora: manana
+    delicada: true
+    saltable: true
+    areas: [pedir_ayuda, representacion_adultos, apoyo_emocional]
+    pasos:
+      - efecto: acompanamiento
+      - de: orientadora
+        texto: Pasa. Aquí sigo, como te dije.
+      - de: orientadora
+        texto: Mi trabajo es cuidarte. Si algo te pone en riesgo, busco a otros adultos que te protejan, y antes te lo digo.
+      - titulo: ¿Qué haces?
+        opciones:
+          - [CUENTA, "En mi casa pasan cosas que no me gustan.", "Gracias por contármelo. Te escucho."]
+          - [PREGUNTA, "¿Le van a decir a mi papá?", "Primero lo platicamos tú y yo. Nada pasa sin que lo sepas."]
+          - [PIDE_AYUDA, "¿Me ayuda a hablar con mi mamá?", "Sí. Podemos buscarla juntos."]
+          - [SE_RETIRA, "Mejor regreso otro día.", "Está bien. La puerta sigue abierta.", cierra]
+      - de: orientadora
+        texto: ¿Quién es un adulto con el que te sientes segur{o}?
+      - titulo: ¿A quién eliges?
+        opciones:
+          - [CUENTA, "Mi mamá.", "Lo tendremos en cuenta."]
+          - [CUENTA, "La maestra Lucía.", "Ella también está aquí para ti."]
+          - [CUENTA, "Usted.", "Aquí me encuentras todos los días."]
+          - [CALLA, "No sé.", "No pasa nada. Lo pensamos juntos."]
+      - marca: adulto_seguro
+  - id: D6-parque
+    nombre: El cumpleaños de Sam
+    donde: parque
+    al: companero_3
+    dia: 6
+    hora: tarde
+    areas: [companeros, supervision, pedir_ayuda]
+    pasos:
+      - de: sam
+        texto: Mañana es mi cumpleaños. Voy a hacer una comida en mi casa. ¿Vienes?
+      - titulo: ¿Qué le dices a Sam?
+        opciones:
+          - [ACEPTA, "Sí, ahí voy.", "Va. Es a las dos."]
+          - [PREGUNTA, "Primero tengo que pedir permiso.", "Va. Me avisas."]
+          - [EXPRESA_MALESTAR, "Mi papá dijo que no puedo salir.", "Ah. Si te dejan, ahí te espero.", tristeza]
+          - [POSPONE, "Te digo mañana.", "Sale."]
+      - marca: invitacion_sam
+  - id: D6-permiso
+    nombre: Pedir permiso
+    donde: casa
+    al: mama
+    dia: 6
+    hora: tarde
+    si: [invitacion_sam]
+    areas: [pedir_ayuda, representacion_adultos, supervision]
+    pasos:
+      - de: yo
+        texto: Mamá, mañana es el cumpleaños de Sam. ¿Puedo ir?
+      - de: madre
+        texto: ¿Ya le dijiste a tu papá?
+      - titulo: ¿Qué le contestas?
+        opciones:
+          - [CUENTA, "Me dijo que no puedo salir en todo el mes.", "Déjame hablar con él."]
+          - [PIDE_AYUDA, "¿Le puedes decir tú?", "Sí, yo le digo."]
+          - [EVITA, "Todavía no.", "Pregúntale primero a él."]
+          - [POSPONE, "Mejor no voy.", "¿Seguro? Lo platicamos en la cena."]
+      - marca: pidio_permiso
+  - id: D6-cena
+    nombre: La última cena de la semana
+    donde: casa
+    al: mesa
+    dia: 6
+    hora: noche
+    areas: [representacion_adultos, supervision]
+    pasos:
+      - de: madre
+        texto: ¿Cómo les fue con el proyecto?
+      - titulo: ¿Qué cuentas?
+        opciones:
+          - [CUENTA, "Se nos olvidó la cartulina, pero lo presentamos.", "¿Y cómo le hicieron?"]
+          - [CUENTA, "Fui con la orientadora.", "¿Y de qué platicaron?"]
+          - [EVITA, "Bien.", "Ah, bueno."]
+          - [CALLA, "Seguir comiendo.", null]
+      - de: papa
+        texto: Yo te ayudo el sábado temprano con el carro, y en la tarde ya veremos.
+      - titulo: ¿Qué le dices a papá?
+        opciones:
+          - [ACEPTA, "Está bien.", null]
+          - [PREGUNTA, "¿Entonces sí puedo ir con Sam?", null]
+          - [CALLA, "No decir nada.", null]
+  - id: D6-cierre
+    nombre: La última noche de la historia
+    donde: casa
+    al: cama
+    dia: 6
+    hora: noche
+    areas: [representacion_adultos, apoyo_emocional]
+    pasos:
+      - efecto: acompanamiento
+      - de: pensamiento
+        texto: Esta semana pasaron muchas cosas.
+      - titulo: ¿A quién quieres ver mañana?
+        opciones:
+          - [EXPRESA_AGRADO, "A Leo.", null]
+          - [EXPRESA_AGRADO, "A Valeria y a Sam.", null]
+          - [EXPRESA_AGRADO, "A mamá.", null]
+          - [CALLA, "A nadie. Quiero estar sol{o}.", null, soledad]
   # Días libres, después de la historia (docs/diseno.md): cada escena libre se repite una vez por día.
   # Nadie las anuncia (regla 12 de docs/metodologia.md): si el niño come, se acerca o trabaja, es por su cuenta.
   - id: L-comer
@@ -958,6 +1655,13 @@ pendientes:
     objeto: fregadero
     etiqueta: Fregadero
     mision: Lavar el sartén quemado
+  - id: lavar-trastes
+    abre: trastes_pendientes
+    cierra: trastes_lavados
+    lugar: casa
+    objeto: fregadero
+    etiqueta: Fregadero
+    mision: Lavar los trastes
 # Objetivos en orden, por parte del día. En cada parte, el primero que no está cumplido es el que guía al jugador.
 # `cumple` son escenas: basta una. Un hito sin `cumple` dura hasta que cambia la parte del día.
 hitos:
@@ -969,12 +1673,34 @@ hitos:
   - { dia: 1, hora: noche, lugar: casa, objeto: cama, mision: Ir a tu cama para dormir, etiqueta: A dormir }
   - { dia: 2, hora: manana, lugar: escuela_planta_baja, mision: Ir a la escuela para el examen, etiqueta: Escuela, cumple: [X01] }
   - { dia: 2, hora: manana, lugar: calle, mision: Salir de la escuela para regresar a casa, etiqueta: Salir a la calle }
-  - { dia: 2, hora: tarde, lugar: casa, mision: Regresar a casa después de clases, etiqueta: Casa }
+  - { dia: 2, hora: tarde, lugar: casa, objeto: mesa, mision: Hacer la tarea en el comedor, etiqueta: Tarea, cumple: [D2-tarea] }
   - { dia: 2, hora: noche, lugar: casa, objeto: cama, mision: Dormir en tu cama para descansar, etiqueta: A dormir }
   - { dia: 3, hora: manana, lugar: escuela_planta_baja, mision: Preparar el proyecto en parejas en el salón, etiqueta: Escuela, cumple: [C02] }
   - { dia: 3, hora: manana, lugar: calle, mision: Salir de la escuela para regresar a casa, etiqueta: Salir a la calle }
+  - { dia: 3, hora: tarde, lugar: biblioteca_planta_baja, mision: Ir a la biblioteca por libros para el proyecto, etiqueta: Biblioteca, cumple: [D3-biblio] }
   - { dia: 3, hora: tarde, lugar: casa, mision: Regresar a casa, etiqueta: Casa }
-  - { dia: 3, hora: noche, lugar: casa, objeto: cama, mision: Dormir en tu cama para terminar la historia, etiqueta: A dormir }
+  - { dia: 3, hora: noche, lugar: casa, objeto: mesa, mision: Cenar en el comedor, etiqueta: Cena, cumple: [D3-cena] }
+  - { dia: 3, hora: noche, lugar: casa, objeto: cama, mision: Dormir en tu cama, etiqueta: A dormir }
+  - { dia: 4, hora: manana, lugar: casa, objeto: mesa, mision: Desayunar en el comedor, etiqueta: Desayuno, cumple: [D4-desayuno] }
+  - { dia: 4, hora: manana, lugar: escuela_planta_baja, mision: Ir a la escuela, hoy hay educación física, etiqueta: Escuela, cumple: [D4-ef] }
+  - { dia: 4, hora: manana, lugar: escuela_planta_baja, mision: Salir al patio para la competencia de cuerda, etiqueta: Patio, cumple: [D4-competencia] }
+  - { dia: 4, hora: manana, lugar: calle, mision: Salir de la escuela para regresar a casa, etiqueta: Salir a la calle }
+  - { dia: 4, hora: tarde, lugar: casa, mision: Regresar a casa, etiqueta: Casa, cumple: [D4-casa] }
+  - { dia: 4, hora: tarde, lugar: parque, mision: Ir al parque, etiqueta: Parque, cumple: [D4-parque] }
+  - { dia: 4, hora: noche, lugar: casa, objeto: cama, mision: Ir a tu cama para dormir, etiqueta: A dormir }
+  - { dia: 5, hora: manana, lugar: escuela_planta_baja, mision: Ir a la escuela, hoy entregan los exámenes, etiqueta: Escuela, cumple: [D5-calif] }
+  - { dia: 5, hora: manana, lugar: escuela_planta_baja, objeto: pizarron, mision: Ver las exposiciones en el salón, etiqueta: Pizarrón, cumple: [D5-expo] }
+  - { dia: 5, hora: manana, lugar: calle, mision: Salir de la escuela para regresar a casa, etiqueta: Salir a la calle }
+  - { dia: 5, hora: tarde, lugar: casa, mision: Pedir que te firmen el examen, etiqueta: Casa, cumple: [D5-firma-mama, D5-firma-papa] }
+  - { dia: 5, hora: tarde, lugar: tiendita, objeto: mostrador, mision: Ir a la tiendita por lo de la cena, etiqueta: Tiendita, cumple: [D5-tienda] }
+  - { dia: 5, hora: tarde, lugar: casa, mision: Regresar a casa, etiqueta: Casa }
+  - { dia: 5, hora: noche, lugar: casa, objeto: cama, mision: Dormir en tu cama, etiqueta: A dormir }
+  - { dia: 6, hora: manana, lugar: escuela_planta_baja, mision: Ir a la escuela a entregar el proyecto, etiqueta: Escuela, cumple: [D6-proyecto] }
+  - { dia: 6, hora: manana, lugar: calle, mision: Salir de la escuela para regresar a casa, etiqueta: Salir a la calle }
+  - { dia: 6, hora: tarde, lugar: parque, mision: Ir al parque, etiqueta: Parque, cumple: [D6-parque] }
+  - { dia: 6, hora: tarde, lugar: casa, mision: Regresar a casa, etiqueta: Casa }
+  - { dia: 6, hora: noche, lugar: casa, objeto: mesa, mision: Cenar en el comedor, etiqueta: Cena, cumple: [D6-cena] }
+  - { dia: 6, hora: noche, lugar: casa, objeto: cama, mision: Dormir en tu cama para terminar la historia, etiqueta: A dormir }
   # Días libres: solo la rutina, sin historia (docs/diseno.md).
   - { libre: true, hora: manana, lugar: escuela_planta_baja, mision: Ir a la escuela, etiqueta: Escuela, cumple: [L-recreo] }
   - { libre: true, hora: manana, lugar: calle, mision: Salir de la escuela para regresar a casa, etiqueta: Salir a la calle }

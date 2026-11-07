@@ -1,7 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import contenido from "virtual:contenido";
 import { Personaje, Cabeza, Hoja } from "../lienzo/Personaje";
-import { precargar, idsDe, queEs, colorMedio, cuantos, rampaDe, CUADRO, TINTES } from "../lienzo/arte";
+import { precargar, idsDe, queEs, colorMedio, cuantos, rampaDe, CUADRO, TINTES, esFinal } from "../lienzo/arte";
 import { cargarMapa, type Punto } from "../mundo/mapa";
 import type { Rampa } from "../../herramientas/arte.ts";
 import { Bocina } from "../ui/Bocina";
@@ -40,6 +40,9 @@ function useEscala(caja: React.RefObject<HTMLElement | null>) {
   return escala;
 }
 
+// The cover's picture behind the character, once its art arrives (manifiesto.yaml, portada).
+const FONDO_PORTADA = esFinal("portada/fondo") ? { background: "url(assets/portada/fondo.png) center / cover", imageRendering: "pixelated" as const } : undefined;
+
 // Opening the game with a saved game: the child's character on the same stage, and the three ways on from it.
 export function Portada({ alContinuar, alEspejo }: { alContinuar: () => void; alEspejo: () => void }) {
   const escenario = useRef<HTMLDivElement>(null);
@@ -47,7 +50,7 @@ export function Portada({ alContinuar, alEspejo }: { alContinuar: () => void; al
   const { apariencia, nombre } = estado();
   return (
     <main className="pantalla creacion" data-paso="cuerpo">
-      <div className="escenario" ref={escenario}>
+      <div className="escenario" ref={escenario} style={FONDO_PORTADA}>
         <div className="foco" />
         <div className="tarima">
           <Personaje a={apariencia} escala={escala} />

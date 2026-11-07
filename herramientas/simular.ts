@@ -1,6 +1,7 @@
 // npm run simular: 20 made-up participants for working on the dashboard locally. Their choices are random picks
 // from the real content; their codes start with "sim-". Only for the local server (npm run dev).
 import { validar } from "./contenido.ts";
+import { DIAS } from "../src/datos/progreso.ts";
 
 const C = validar();
 const N = Number(process.argv[2] ?? 20);
@@ -32,7 +33,7 @@ function participante(i: number) {
   if (llega < 0.05) return eventos;
   if (llega < 0.12) return eventos;
   pantalla("mundo", "creacion");
-  for (const dia of [1, 2, 3]) {
+  for (let dia = 1; dia <= DIAS; dia++) {
     if (dia > 1) {
       sesion++;
       t = 0;

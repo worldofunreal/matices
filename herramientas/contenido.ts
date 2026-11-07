@@ -7,7 +7,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { parse } from "yaml";
 import type { Plugin } from "vite";
-import { ROOT, MANIFIESTO, DOC_CODIGOS, codigosValidos, leerManifiesto, medidaPng, RAMPAS, FIGURAS } from "./arte.ts";
+import { ROOT, MANIFIESTO, DOC_CODIGOS, codigosValidos, leerManifiesto, medidaPng, esProvisional, RAMPAS, FIGURAS } from "./arte.ts";
 
 const DIR = join(ROOT, "contenido");
 const DOC_AREAS = join(ROOT, "contenido/areas.md");
@@ -20,7 +20,7 @@ const MINIJUEGOS: Record<string, string[]> = { refri: [], estufa: ["estufa_prend
 // The effects a scene can set on screen, as the story asks for them (src/pantallas/escena.css); Opciones scales them.
 const EFECTOS = new Set(["inquietud", "miedo", "intensidad", "acompanamiento", "alegria"]);
 const HORAS = new Set(["manana", "tarde", "noche"]);
-const DIAS = 3; // as in src/datos/progreso.ts
+import { DIAS } from "../src/datos/progreso.ts";
 
 // The areas, from the table in contenido/areas.md (the only place they are written).
 function areasDelMarco(): { id: string; nombre: string; familia: string }[] {
@@ -318,6 +318,13 @@ function validarArte() {
   for (const r of RAMPAS) if (!rampas.includes(r)) errores.push(`colores: falta la rampa ${r}`);
   for (const r of rampas) if (!(RAMPAS as readonly string[]).includes(r)) errores.push(`colores: ${r} no está en RAMPAS (herramientas/arte.ts)`);
   for (const p of m.piezas) for (const r of p.colores) if (!m.colores[r]) errores.push(`${p.id}: no hay rampa ${r}`);
+  // A placeholder is never shown when it has a stand-in: the stand-in must exist, be final and be the same size.
+  for (const p of m.piezas.filter((p) => p.respaldo)) {
+    const r = m.piezas.find((q) => q.id === p.respaldo);
+    if (!r) errores.push(`${p.id}: su respaldo ${p.respaldo} no está en el manifiesto`);
+    else if (r.medida.join() !== p.medida.join()) errores.push(`${p.id}: su respaldo ${p.respaldo} mide distinto`);
+    else if (esProvisional(r.archivo)) errores.push(`${p.id}: su respaldo ${p.respaldo} también es provisional`);
+  }
   // The game swaps exact colors: a key color repeated in another ramp of the same piece would be swapped twice.
   for (const p of m.piezas) {
     const vistos = p.colores.flatMap((r) => m.colores[r]?.clave ?? []);
@@ -327,7 +334,8 @@ function validarArte() {
   // Recorded voice lines present in public/assets/voz/; any other line uses the browser voice.
   const carpetaVoz = join(ROOT, "public/assets/voz");
   const voces = existsSync(carpetaVoz) ? readdirSync(carpetaVoz).filter((f) => f.endsWith(".mp3")).map((f) => f.slice(0, -4)) : [];
-  return { ...m, voces };
+  // Which pieces are still placeholders: the game draws their stand-in, or what it drew before the art existed.
+  return { ...m, piezas: m.piezas.map(({ generacion: _, estilo: __, ...p }) => ({ ...p, provisional: esProvisional(p.archivo) })), voces };
 }
 
 export function contenido(): Plugin {

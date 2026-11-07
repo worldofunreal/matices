@@ -124,6 +124,8 @@ grupos:
       ropa_casa_arriba: { que: Playera de casa, colores: [ playera ] }
       ropa_casa_abajo: { que: Pants de casa, colores: [ pants ] }
       calzado_tenis: { que: Tenis, colores: [ tenis ] }
+      ropa_deporte_arriba: { que: Playera deportiva de la escuela (la que elige en el ropero), colores: [ playera ], respaldo: personaje/ropa_casa_arriba }
+      ropa_deporte_abajo: { que: Short deportivo a medio muslo, colores: [ pants ], respaldo: personaje/ropa_casa_abajo }
       extra_lentes: { que: Lentes, colores: [ lentes ] }
       extra_aretes: { que: Aretes pequeños, colores: [ aretes ] }
       extra_gorra: { que: Gorra, colores: [ gorra ] }
@@ -1055,3 +1057,67 @@ grupos:
       gato_negro: Gato negro, sentado
       gato_persa: Gato persa, esponjado
       gato_siames: Gato siames, sentado
+
+  # Retratos del cuadro de diálogo. Mientras una pieza sea provisional, el diálogo muestra la cabeza de su figura.
+  - carpeta: retratos
+    tipo: objeto
+    medida: [ 64, 64 ]
+    estilo: >-
+      Retrato de busto, de frente y un poco de tres cuartos, en el mismo pixel art que su figura del juego (contorno oscuro,
+      colores planos con sombra suave, ojos y cara como la figura). Expresión tranquila y neutra: ni sonriente ni enojada.
+      Fondo transparente, sin texto. La cabeza ocupa dos tercios del cuadro.
+    piezas:
+      mama: { que: Mamá, igual que figuras/mama; lleva la piel del niño, colores: [ piel ] }
+      papa: { que: Papá, igual que figuras/papa; lleva la piel del niño, colores: [ piel ] }
+      lucia: Maestra Lucía, igual que personajes/lucia
+      valeria: Valeria, igual que personajes/companero_1
+      leo: Leo, igual que personajes/companero_2
+      sam: Sam, igual que personajes/companero_3
+      orientadora: La orientadora, igual que personajes/orientadora
+      don_chuy: Don Chuy, el de la tiendita, igual que personajes/don_chuy
+      nico: Nico, igual que personajes/nico
+      clara: Clara, la bibliotecaria, igual que personajes/clara
+      conserje: El conserje, igual que personajes/conserje
+      cuentera: La Cuentera, igual que personajes/cuentera
+
+  # Las cosas de los minijuegos (src/pantallas/Juegos.tsx). El nombre es el de la cosa en el juego, sin acentos.
+  # Mientras una pieza sea provisional, el minijuego muestra su emoji o solo el texto.
+  - carpeta: juegos
+    tipo: objeto
+    medida: [ 32, 32 ]
+    estilo: >-
+      Un objeto solo, de frente, centrado, en el mismo pixel art de los objetos de la casa (contorno oscuro, colores
+      planos con sombra suave). Productos mexicanos de todos los días, sin marcas ni texto. Fondo transparente.
+    piezas:
+      huevos: Tres huevos blancos o un cartón de huevos (refri y tienda)
+      leche: Un cartón de leche sin marca (refri y tienda)
+      queso: Un trozo de queso blanco fresco (refri)
+      jamon: Un paquete de jamón de pavo en rebanadas (refri)
+      yogur: Un vaso de yogur con tapa (refri)
+      jugo: Una caja de jugo con popote (refri y tienda)
+      verduras: Unas verduras juntas, brócoli y zanahoria (refri)
+      libreta: Una libreta escolar de pasta azul (pistas)
+      pelota: Una pelota de futbol (pistas)
+      hoja: Una hoja de cuaderno con renglones (pistas)
+      mochila: Una mochila escolar (pistas)
+      lapiz: Un lápiz amarillo con goma (pistas)
+      cuerda: Una cuerda para saltar con mangos (pistas)
+      gis: Un gis de colores (pistas)
+      pan: Un bolillo y una concha (tienda)
+      manzanas: Dos manzanas rojas (tienda)
+      tortillas: Un kilo de tortillas envueltas en papel (tienda)
+      frijoles: Una bolsa de frijoles (tienda)
+      arroz: Una bolsa de arroz (tienda)
+      uniforme: El uniforme doblado, suéter y pantalón (ropero)
+      ropa_de_deporte: Playera deportiva y short doblados, con tenis (ropero)
+      ropa_casual: Playera y pants de casa doblados (ropero)
+
+  # La portada (src/pantallas/Creacion.tsx, Portada): detrás del personaje cuando el niño vuelve al juego.
+  - carpeta: portada
+    tipo: objeto
+    medida: [ 480, 270 ]
+    estilo: >-
+      Pixel art del mismo estilo que los lugares del juego, vista de frente. Sin personas ni texto: el personaje del niño
+      se para al centro, así que el centro queda despejado.
+    piezas:
+      fondo: El cuarto del niño en la mañana, soleado, con la mochila, fotos en la pared y la ventana abierta

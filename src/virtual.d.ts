@@ -151,6 +151,8 @@ declare module "virtual:arte" {
     medida: [number, number];
     que: string;
     colores: Rampa[];
+    respaldo?: string; // drawn instead while this piece is a placeholder
+    provisional: boolean; // still a placeholder (npm run provisionales): the final art has not arrived
   }
   const arte: {
     colores: Record<Rampa, { clave: string[]; variantes: string[][] }>;

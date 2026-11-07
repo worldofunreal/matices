@@ -12,11 +12,15 @@ const piezas = new Map(arte.piezas.map((p) => [p.id, p]));
 const imagenes = new Map<string, Promise<HTMLImageElement>>();
 const listos = new Map<string, HTMLCanvasElement>();
 
+// The final art of a piece has arrived (manifiesto.yaml): until then the game shows what it showed before.
+export const esFinal = (id: string) => piezas.get(id)?.provisional === false;
+
 function imagen(id: string): Promise<HTMLImageElement> {
   let p = imagenes.get(id);
   if (!p) {
-    const pieza = piezas.get(id);
-    if (!pieza) throw new Error(`No hay pieza ${id} en el manifiesto`);
+    const propia = piezas.get(id);
+    if (!propia) throw new Error(`No hay pieza ${id} en el manifiesto`);
+    const pieza = propia.provisional && propia.respaldo ? piezas.get(propia.respaldo)! : propia; // its stand-in, same size (checked at build)
     p = new Promise((ok, mal) => {
       const img = new Image();
       img.onload = () => ok(img);

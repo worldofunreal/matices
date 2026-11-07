@@ -1,6 +1,7 @@
 // Creates a placeholder PNG for every piece in public/assets/manifiesto.yaml that has no file yet.
 // Run: npm run provisionales. With --rehacer it also redraws its own placeholders (marked inside
 // the PNG with esProvisional); final art never carries the mark, so it is never touched.
+// npm run arte (--lista): the art still to be made, from the same marks: what it is, its size and where it goes.
 import { mkdirSync, writeFileSync, readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { createCanvas, type SKRSContext2D } from "@napi-rs/canvas";
@@ -157,6 +158,19 @@ function dibujar(p: Pieza, m: Manifiesto) {
 
 const rehacer = process.argv.includes("--rehacer");
 const m = leerManifiesto();
+
+if (process.argv.includes("--lista")) {
+  const faltan = m.piezas.filter((p) => esProvisional(p.archivo));
+  let grupo = "";
+  for (const p of faltan) {
+    const g = p.id.slice(0, p.id.lastIndexOf("/"));
+    if (g !== grupo) console.log(`\n## ${(grupo = g)} (${faltan.filter((q) => q.id.startsWith(g + "/")).length})${p.estilo ? `\n${p.estilo}` : ""}`);
+    console.log(`- public/assets/${p.archivo}  ${p.medida.join(" × ")}  ${p.que}${p.colores.length ? `  [colores clave: ${p.colores.join(", ")}]` : ""}`);
+  }
+  console.log(`\n${faltan.length} piezas por hacer de ${m.piezas.length}`);
+  process.exit(0);
+}
+
 let creados = 0;
 // Until the boy's body is drawn, his placeholder is the girl's body: both share the same silhouette, so
 // every hair, garment and extra already fits him.

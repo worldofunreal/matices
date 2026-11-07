@@ -1,6 +1,7 @@
 // From events to what the dashboard shows. Pure functions: the content comes in as
 // a parameter, so `npm test` runs them without the game.
 import type { Apariencia } from "../personaje/apariencia";
+import { DIAS } from "../datos/progreso.ts";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Evento = { nino: string; id: number; tipo: string; sesion: number; t_ms: number; cuando?: number; [k: string]: any };
@@ -90,8 +91,7 @@ export function avance(grupos: Map<string, Evento[]>) {
   const pasos: [string, (evs: Evento[]) => boolean][] = [
     ["Creó su personaje", (evs) => evs.some((e) => e.tipo === "personaje")],
     ["Entró al juego", (evs) => evs.some((e) => e.tipo === "pantalla" && e.pantalla === "mundo")],
-    ["Llegó al día 2", (evs) => evs.some((e) => e.tipo === "tramo" && e.dia >= 2)],
-    ["Llegó al día 3", (evs) => evs.some((e) => e.tipo === "tramo" && e.dia >= 3)],
+    ...Array.from({ length: DIAS - 1 }, (_, i): [string, (evs: Evento[]) => boolean] => [`Llegó al día ${i + 2}`, (evs) => evs.some((e) => e.tipo === "tramo" && e.dia >= i + 2)]),
     ["Terminó", (evs) => evs.some((e) => e.tipo === "tramo" && e.hora === "fin")],
   ];
   const todos = [...grupos.values()];
