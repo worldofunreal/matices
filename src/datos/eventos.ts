@@ -38,6 +38,8 @@ export async function iniciarRegistro(): Promise<Partida> {
 }
 
 export const semilla = () => partida.semilla;
+// The child's code, shown in Opciones so the school can keep which code is whose (docs/validacion.md).
+export const codigo = () => partida.nino;
 
 function guardarEvento(evento: object) {
   return cifrar(evento).then(agregarEvento);

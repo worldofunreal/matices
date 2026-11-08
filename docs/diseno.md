@@ -143,7 +143,7 @@ Lo que falta para la versión completa, en orden:
 - Preguntarle al jugador algo sobre sí mismo. Los personajes de la historia sí hablan con su personaje.
 - Mostrar un marcador, una calificación, un premio o un castigo por lo que se mide.
 - Poner un reloj en pantalla.
-- Decir que avisó a alguien: el botón de ayuda deja una señal en la pantalla y nada más.
+- Decir que avisó a alguien: "Quiero hablar con alguien" muestra líneas de ayuda reales (075, Línea de la Vida y 911) y la orientación de su escuela, y queda en el registro. Los números están en `contenido/textos.yaml`.
 - Poner en un objetivo a una persona o a una escena emocional.
 - Decirle al jugador si lo que eligió estuvo bien o mal.
 - Usar mecánicas adictivas para retenerlo.

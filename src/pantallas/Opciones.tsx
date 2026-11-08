@@ -3,7 +3,7 @@
 // simple reading are saved for when they exist.
 import { useState, type FormEvent, type ReactNode } from "react";
 import contenido from "virtual:contenido";
-import { registrar } from "../datos/eventos";
+import { codigo, registrar } from "../datos/eventos";
 import { cambiarEstado, estado, type Opciones as Ajustes } from "../datos/guardado";
 import { Bocina } from "../ui/Bocina";
 import { Icono } from "../ui/iconos";
@@ -136,6 +136,12 @@ export function Opciones({ alCerrar, alEspejo }: { alCerrar: () => void; alEspej
             </Fila>
           </>
         )}
+        {/* The school writes it next to the child's name; the game never knows the name. */}
+        <Fila icono={Icono.nombre} texto={O.codigo} clave="codigo">
+          <div className="preferencia-control">
+            <code className="preferencia-codigo">{codigo()}</code>
+          </div>
+        </Fila>
         <Fila icono={Icono.bocina} texto={O.voz} clave="voz">
           {nivel("voz", 1)}
         </Fila>

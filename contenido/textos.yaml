@@ -204,12 +204,18 @@ libro:
   consigna: "Dibuja lo que quieras."
   listo: "Listo"
 
-# Siempre a la mano: los botones de todas las pantallas. Lo que dice la frase es fijo.
+# Siempre a la mano: los botones de todas las pantallas. "Quiero hablar con alguien" muestra
+# líneas de ayuda reales; cambiar un número aquí lo cambia en el juego.
 siempre:
   mi_libro: "Mi libro"
   quiero_hablar: "Quiero hablar con alguien"
   opciones: "Opciones"
-  aviso: "Quedó una señal en la pantalla. Un adulto que esté contigo puede verla. Puedes seguir jugando o esperar aquí."
+  aviso: "Puedes llamar gratis, a cualquier hora:"
+  lineas:
+    - { nombre: "Línea de Intervención en Crisis de Jalisco", numero: "075" }
+    - { nombre: "Línea de la Vida", numero: "800 911 2000" }
+    - { nombre: "Si estás en peligro", numero: "911" }
+  escuela: "También puedes buscar a alguien de orientación en tu escuela."
   seguir: "Seguir jugando"
 
 # Opciones. Música, efectos, velocidad del texto y lectura sencilla se guardan y
@@ -234,6 +240,7 @@ opciones:
   personaje: "Mi personaje"
   cambiar: "Cambiar"
   partida: "Mi partida"
+  codigo: "Mi código"
   empezar: "Empezar de nuevo"
   empezar_aviso: "Se borran tu partida y Mi libro. Pide a un adulto que escriba la clave."
   empezar_mal: "Esa no es la clave. Pídesela a un adulto."

@@ -51,7 +51,7 @@ Todos llevan: código del participante, sesión, versión del contenido y del ju
 | `corre` | Lugar y ms que corrió, al dejar de correr | Cuánto corre y dónde |
 | `accion_personaje` | Acción motriz ejecutada (salto o combos de ataque estilo arcade: `combo_1`, `combo_2`, `combo_remate`, e impacto de caída al aterrizar: `impacto_caida`), paso del combo (`0` a `3`), objetivo alcanzado (`objetivo`), tipo (`npc`, `fauna`, `objeto`, `muro`, `nada`), distancia en píxeles, coordenadas `x`, `y` | Patrones de exploración física, motricidad, impulsividad, ritmo de pulsaciones e interacción hacia personas, animales u objetos |
 | `dibujo` | Si confirmó un dibujo vacío o uno con trazos, cantidad de trazos y puntos, trazos con color/grosor/goma, cuántos deshizo, tiempo e imagen final | El dibujo y su proceso; Listo vacío queda distinguido de una omisión explícita |
-| `quiero_hablar` | Pantalla y hora | Deja una señal en pantalla para el adulto que esté con el niño |
+| `quiero_hablar` | Pantalla y hora | Abrió las líneas de ayuda: lo ve el tablero en "Pidió hablar con alguien" |
 | `repetir_voz` | Pantalla y línea que pidió oír | Separar duda de dificultad para leer |
 | `inactividad` | Pantalla, duración (pausas de 30 s o más) | Pausas largas |
 

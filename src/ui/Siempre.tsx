@@ -1,6 +1,6 @@
 // Siempre a la mano: Mi libro arriba a la izquierda, "Quiero hablar con alguien" arriba a la
-// derecha y Opciones abajo a la derecha, en cualquier pantalla. Mi libro, Opciones y la frase de "Quiero
-// hablar" cubren lo que hay debajo; mientras cubren, el mundo se queda quieto (useSuperpuesto).
+// derecha y Opciones abajo a la derecha, en cualquier pantalla. Mi libro, Opciones y las líneas de ayuda
+// de "Quiero hablar" cubren lo que hay debajo; mientras cubren, el mundo se queda quieto (useSuperpuesto).
 import { createContext, useContext, useState, type ReactNode } from "react";
 import contenido from "virtual:contenido";
 import { registrar } from "../datos/eventos";
@@ -12,6 +12,8 @@ import { Icono } from "./iconos";
 import "./siempre.css";
 
 const S = contenido.textos.siempre;
+// What the speaker reads: the whole card, numbers included.
+const AYUDA = [S.aviso, ...S.lineas.map((l) => `${l.nombre}: ${l.numero}.`), S.escuela].join(" ");
 
 type Capa = "libro" | "opciones" | "hablar";
 const Superpuesto = createContext(false);
@@ -21,16 +23,13 @@ export const useSuperpuesto = () => useContext(Superpuesto);
 
 export function Siempre({ pantalla, alEspejo, children }: { pantalla: string; alEspejo?: () => void; children: ReactNode }) {
   const [capa, setCapa] = useState<Capa | null>(null);
-  // The mark for the adult. It stays until the game is closed.
-  const [senal, setSenal] = useState(false);
 
   const alternar = (c: "libro" | "opciones") => setCapa(capa === c ? null : c);
 
   // The record goes to the device's log with the screen and the time (contenido/codigos.md).
-  // The card says only what the sign on screen is: it stays up for an adult who is with the child.
+  // The card shows real help lines; the game itself never says it called anyone.
   const quieroHablar = () => {
     registrar("quiero_hablar", { pantalla: capa === "libro" || capa === "opciones" ? capa : (detalleActual() ?? pantalla) });
-    setSenal(true);
     setCapa("hablar");
   };
 
@@ -45,17 +44,22 @@ export function Siempre({ pantalla, alEspejo, children }: { pantalla: string; al
           <section className="siempre-aviso panel" role="dialog" aria-label={S.quiero_hablar}>
             <span className="siempre-icono">{Icono.hablar}</span>
             <p>{S.aviso}</p>
-            <Bocina clave="siempre.aviso" texto={S.aviso} />
+            <ul className="siempre-lineas">
+              {S.lineas.map((l) => (
+                <li key={l.numero}>
+                  <span>{l.nombre}</span>
+                  <a className="siempre-numero" href={`tel:${l.numero.replace(/ /g, "")}`}>
+                    {l.numero}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <p className="siempre-escuela">{S.escuela}</p>
+            <Bocina clave="siempre.aviso" texto={AYUDA} />
             <button className="boton principal" onClick={() => setCapa(null)}>
               {S.seguir}
             </button>
           </section>
-        </div>
-      )}
-
-      {senal && (
-        <div className="siempre-senal" aria-hidden="true">
-          {Icono.hablar}
         </div>
       )}
 

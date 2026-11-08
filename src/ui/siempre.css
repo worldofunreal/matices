@@ -1,5 +1,5 @@
-/* Siempre a la mano: the three corner buttons, the mark for the adult and the card that says
-   someone was called. Only the buttons take taps; the rest of the screen stays usable. */
+/* Siempre a la mano: the three corner buttons and the card with the help lines.
+   Only the buttons take taps; the rest of the screen stays usable. */
 .siempre {
   position: fixed;
   inset: 0;
@@ -30,29 +30,7 @@
   bottom: max(var(--barra-margen), env(safe-area-inset-bottom));
 }
 
-/* The mark for the adult: small, with no words, in the bottom-left corner. */
-.siempre-senal {
-  position: fixed;
-  z-index: 55;
-  left: max(var(--barra-margen), env(safe-area-inset-left));
-  bottom: max(var(--barra-margen), env(safe-area-inset-bottom));
-  width: 36px;
-  height: 36px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--tarjeta);
-  color: var(--terracota);
-  box-shadow: var(--sombra);
-  pointer-events: none;
-}
-
-.siempre-senal svg {
-  width: 20px;
-  height: 20px;
-}
-
-/* The card of "Quiero hablar": the fixed line, its speaker and the way back to playing. */
+/* The card of "Quiero hablar": the help lines, its speaker and the way back to playing. */
 .siempre-velo {
   position: fixed;
   inset: 0;
@@ -66,6 +44,8 @@
 
 .siempre-aviso {
   width: min(100%, 440px);
+  max-height: 100%;
+  overflow-y: auto;
   display: grid;
   justify-items: center;
   gap: 14px;
@@ -78,6 +58,39 @@
   font-size: 21px;
   font-weight: 750;
   line-height: 1.35;
+}
+
+/* One line per number: the name, then the number big enough to read across the room. */
+.siempre-lineas {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.siempre-lineas li {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--papel-2);
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.siempre-numero {
+  color: var(--terracota);
+  font-size: 28px;
+  font-weight: 800;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+
+.siempre-aviso .siempre-escuela {
+  font-size: 17px;
+  font-weight: 650;
 }
 
 .siempre-aviso .boton.principal {

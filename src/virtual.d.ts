@@ -113,7 +113,7 @@ declare module "virtual:contenido" {
     };
     portada: { continuar: string; cambiar: string };
     libro: { titulo: string; dibujar: string; consigna: string; listo: string };
-    siempre: { mi_libro: string; quiero_hablar: string; opciones: string; aviso: string; seguir: string };
+    siempre: { mi_libro: string; quiero_hablar: string; opciones: string; aviso: string; lineas: { nombre: string; numero: string }[]; escuela: string; seguir: string };
     opciones: {
       titulo: string;
       cerrar: string;
@@ -130,6 +130,7 @@ declare module "virtual:contenido" {
       personaje: string;
       cambiar: string;
       partida: string;
+      codigo: string;
       empezar: string;
       empezar_aviso: string;
       empezar_mal: string;

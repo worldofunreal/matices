@@ -25,7 +25,7 @@ Nada de la metodología se da por cierto hasta probarlo. Este documento dice qu�
 ## Qué se necesita de ellos
 
 - El instrumento del tamizaje y qué mide cada parte.
-- Que los resultados del cuestionario de los alumnos del piloto se puedan comparar con el juego por código, sin nombres. El enlace entre código y alumno lo guarda la institución, no el juego.
+- Que los resultados del cuestionario de los alumnos del piloto se puedan comparar con el juego por código, sin nombres. El enlace entre código y alumno lo guarda la institución, no el juego: el código de cada alumno aparece en Opciones → Mi código, y el docente lo anota junto a su nombre. Empezar de nuevo crea otro código, que también se anota.
 - Un especialista para las entrevistas de H2.
 - Un reporte de un adulto por alumno, con el instrumento que usa la coordinación y cómo se llena. Es indispensable, porque el juego solo tiene el reporte del niño (`metodologia.md`).
 

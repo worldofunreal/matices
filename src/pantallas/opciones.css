@@ -125,3 +125,11 @@
 .preferencia-barras span.on {
   background: var(--verde);
 }
+
+/* The child's code: big and plain, so an adult can copy it next to the name. */
+.preferencia-codigo {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  user-select: all;
+}
